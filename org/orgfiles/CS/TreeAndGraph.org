@@ -1,0 +1,228 @@
+#+TITLE: 树与图
+#+KEYWORDS: Tree, Graph
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+SETUPFILE: ../../configOrg/level1.org
+#+OPTIONS: LaTeX:t
+* 树
+** 定义
+树是 $n(n\ge 0)$ 个结点的有限集。
+1) 有且仅有一个Root的结点
+2) 同级结点不存在逻辑关系
+** 存储结构
+*** 父亲表示法
+|data|parent|
+**** 找父结点时间复杂度O(1)
+**** 找子结点，需遍历整个结构。
+*** 孩子表示法
+**** 方案一
+#+BEGIN_VERSE
+每个结点都保存与树的度相等的孩子指针域。
+#+END_VERSE
+|data|child1|child2|...|childn|
+#+BEGIN_VERSE
+会造成空间浪费
+#+END_VERSE
+
+**** 方案二
+#+BEGIN_VERSE
+每个结点增加一个字段保存该结点的度，
+需动态分配每个结点的指针域空间。
+#+END_VERSE
+|data|degree|child1|child2|...|childn|
+#+BEGIN_VERSE
+维护degree会有一定的代价。
+#+END_VERSE
+
+**** 孩子表示法
+#+BEGIN_VERSE
+每个结点的孩子们以单链表的形式排列起来。
+而结点又通过顺序表存储。
+#+END_VERSE
+#+BEGIN_SRC dot :file ../../resources/TreeAndGraph/TreeStructure1.png :cmdline -Kdot -Tpng
+digraph tree {
+        rankdir=LR;
+        node [shape=record fontsize=14 width=0.2 height=0.3 fontname="Inconsolata"];
+        edge [tailclip=false];
+        a [label="{Nodes}|{{index|0|1|2|3|4}|{data|A|B|C|D|E}|{firstchild|<ref1>|<ref2>|^|^|^}}"];
+        b [label="{{child|3}|{next|<ref>}}"];
+        c [label="{ 2 | ^ }"];
+        d [label="{ 5 | ^ }"];
+        a:ref1:c -> b:data [arrowhead=vee, arrowtail=dot, dir=both];
+        b:ref:c -> c:data [arrowhead=vee, arrowtail=dot, dir=both];
+        a:ref2:c -> d:data [arrowhead=vee, arrowtail=dot, dir=both];
+}
+#+END_SRC
+#+results:
+[[file:../../resources/TreeAndGraph/TreeStructure1.png]]
+#+BEGIN_VERSE
+找孩子只需遍历某个节点的孩子单链表
+找父亲可以需要遍历整棵树，可结合父亲表示法，变为父亲孩子表示法
+在Node结构中加入一个指向Parent的指针，用空间换取运行时间。
+#+END_VERSE
+
+*** 孩子兄弟表示法
+| data | firstchild | rightsib |
+#+BEGIN_VERSE
+该表示法无需链表，要找结点的某一个孩子，
+首先通过firstchild找到第一个孩子，再通过孩子的rightsib，
+依次遍历所有的sibling。
+要快速查找父亲，与之前一样，可以结合父亲表示法。
+#+END_VERSE
+
+** 二叉树
+*** 定义
+二叉树是由一个根结点和 *两棵* 互不相交的子树组成。(子树可为空)
+**** 特点
+
+1) 树的度最多为2
+2) 左子树和右子树是有顺序的，不能交换位置。即使只有一个子树，也要区分左右。
+
+**** 五种基本形态
+
+1) 空二叉树
+2) 只有一个根结点
+3) 根结点只有左子树
+4) 根结点只有右子树
+5) 根结点既有左子树又有右子树
+
+**** 特殊二叉树
+
+1) 斜树：所有结点都只有左子树，称为左斜树。
+2) 满二叉树：所有分支结点都有左右子树，所有叶子都在同一层上。
+3) 完全二叉树
+   #+BEGIN_VERSE
+   如果对完全二叉树的每一个结点从上到下，从左到右进行编号。
+   如果每个结点的编号与满二叉树中的编号都一致，称为完全二叉树。
+   *同样结点数的二叉树，完全二叉树的深度最小* 。
+   #+END_VERSE
+   - 完全二叉树
+     #+BEGIN_SRC dot :file ../../resources/TreeAndGraph/CompleteTree.png :cmdline -Kdot -Tpng		
+       graph completetree{
+         size="2,2";
+         node [shape=circle fontsize=14 width=0.1 fontname="Inconsolata"];
+         "1" -- "2";
+           "2" -- "4";
+           "2" -- "5";
+         "1" -- "3";
+           "3" -- "6";
+       }
+     #+END_SRC
+   
+     #+results:
+      [[file:../../resources/TreeAndGraph/CompleteTree.png]]
+
+   - 非完全二叉树
+     #+BEGIN_SRC dot :file ../../resources/TreeAndGraph/NotCompleteTree1.png :cmdline -Kdot -Tpng		
+       graph notcompletetree{
+         size="2,2";
+         node [shape=circle fontsize=14 width=0.1 fontname="Inconsolata"];
+         5 [shape=circle fontsize=14 width=0.1 color="grey" fontcolor="grey" fontname="Inconsolata"]
+         "1" -- "2";
+           "2" -- "4";
+           "2" -- 5 [color="grey"];
+         "1" -- "3";
+           "3" -- "6";
+       }
+     #+END_SRC
+
+     #+results:
+     [[file:../../resources/TreeAndGraph/NotCompleteTree1.png]]
+
+   - 非完全二叉树
+     #+BEGIN_SRC dot :file ../../resources/TreeAndGraph/NotCompleteTree2.png :cmdline -Kdot -Tpng		
+       graph notcompletetree{
+         size="2,2";
+         node [shape=circle fontsize=14 width=0.1 fontname="Inconsolata"];
+         3 [shape=circle fontsize=14 width=0.1 color="grey" fontcolor="grey" fontname="Inconsolata"]
+         "1" -- "2";
+           "2" -- "4";
+           "2" -- "5";
+         "1" -- 3 [color="grey"];
+       }
+     #+END_SRC
+
+     #+results:
+     [[file:../../resources/TreeAndGraph/NotCompleteTree2.png]]
+
+*** 性质
+**** *在二叉树第i层上至多有$2^{i-1}$ 个结点。(数学归纳法证明)*
+**** *深度为k的二叉树至多有$2^k - 1$ 个结点。(数学归纳法证明)*
+**** *对任何一棵二叉树，设叶子结点数为$n_0$ ，度为2的结点数为$n_2$ ，则$n_0=n_2+1$ 。*
+#+BEGIN_VERSE
+总结点数$n = n_0+n_1+n_2$ 
+分支线总数$n_1+2n_2 = n - 1$ 
+$n-1$ 是因为除了根结点，每个节点都有一根分支线连接起父亲。
+#+END_VERSE
+**** *具有n个结点的完全二叉树的深度为$\lfloor\log{n}\rfloor + 1$ 。*
+#+BEGIN_VERSE
+截止到最后一层的所有结点数至多为$2^k-1$
+截止到最后第二层的所有结点数至多为$2^{k-1}-1$ 
+则有，$2^{k-1}-1< n\le 2^k-1$ 
+因为n是整数，$n\le 2^k-1$ 等同于$n<2^k$
+同理 $n\ge 2^{k-1}$ ，得到$2^{k-1}\le n < 2^k$
+$k-1\le\log n < k$
+因为k也是整数，$\lfloor \log n \rfloor = k-1$
+#+END_VERSE
+
+**** *完全二叉树性质*
+如果对一棵有n个结点的完全二叉树的结点编号，对任一结点($1\le i\le n$ )有：
+1) $i=1$ ：根结点，无父亲； $i>1$ ：父亲结点是$\lfloor i/2 \rfloor$
+2) 如果$2i>n$ ：则结点i无左孩子，否则其左孩子是$2i$
+3) 如果$2i+1>n$ ：则结点i无右孩子，否则其右孩子是$2i+1$
+
+*** 存储结构
+**** 顺序结构
+#+BEGIN_VERSE
+完全二叉树由于定义严格，可以用顺序结构表示。
+结点的编号反应了逻辑关系。
+如：设n为当前结点编号，
+父结点为$\lfloor n/2\rfloor$ ，
+第一个子结点为$n\times 2$
+
+普通二叉树，也可以根据完全二叉树的位置来编号，空的位置内容存放"^"。
+右斜树的情况，会造成很多空间浪费，一般只用顺序结构表示完全二叉树。
+#+END_VERSE
+
+**** 链表结构
+#+BEGIN_VERSE
+由于每个结点的子结点数一共只有两个。可以如下设计结点的数据结构：
+| lchild | data | rchild |
+这种结构叫二叉链表。
+
+如果为方便找父亲再加上一个父结点指针，则结构称之为三叉链表。
+#+END_VERSE
+
+*** 遍历
+#+BEGIN_VERSE
+二叉树遍历的次序是关键，影响效率。
+#+END_VERSE
+#+BEGIN_SRC dot :file ../../resources/TreeAndGraph/TreeTraversal.png :cmdline -Kdot -Tpng		
+  digraph binarytree{
+    size="3,3";
+    graph [ordering="out"];
+    "A" -> "B";
+    "B" -> "D";
+    "D" -> "G";
+    "D" -> "H";
+    "A" -> "C";
+    "C" -> "E";
+    "C" -> "F";
+    "E" -> "I";
+  }
+#+END_SRC
+
+#+results:
+[[file:../../resources/TreeAndGraph/TreeTraversal.png]]
+- 前序遍历：ABDGHCEIF
+  
+  先遍历左子树，再遍历右子树
+
+- 中序遍历：GDHBAEICF
+
+  
+
+- 后序遍历：GHDBIEFCA
+- 层序遍历：ABCDEFGHI
+
+
+* 图

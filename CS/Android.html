@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Android Development</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="Android Development"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2014-03-21T11:45+0800"/>
+<meta name="author" content="ChrisChen"/>
+<meta name="description" content=""/>
+<meta name="keywords" content="Android"/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" href="../css/stylesheet.css" type="text/css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+<div id="org-div-home-and-up" style="text-align:right;font-size:100%;white-space:nowrap;">
+ <a accesskey="h" href="../index.html"> UP </a>
+ |
+ <a accesskey="H" href="../index.html"> HOME </a>
+</div>
+
+
+<div id="content">
+<h1 class="title">Android Development</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Application Components</a>
+<ul>
+<li><a href="#sec-1-1">1.1 Activity</a></li>
+<li><a href="#sec-1-2">1.2 Service</a></li>
+<li><a href="#sec-1-3">1.3 BroadcastReceiver</a></li>
+<li><a href="#sec-1-4">1.4 Content Provider</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 Major Class</a>
+<ul>
+<li><a href="#sec-2-1">2.1 Intent</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 SDK Manager Proxy</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Application Components</h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Activity</h3>
+<div class="outline-text-3" id="text-1-1">
+
+
+<p class="verse">
+Provides a visual interface for user interaction.<br/>
+Each activity supports one thing. E.g: viewing an email message<br/>
+Application often comprise several activities.<br/>
+</p>
+
+
+
+</div>
+
+<div id="outline-container-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> Navigation Through Activities</h4>
+<div class="outline-text-4" id="text-1-1-1">
+
+<ul>
+<li id="sec-1-1-1-1">Tasks<br/>
+<ul>
+<li>A task is a set of related activities
+</li>
+<li>And these related activities don't have to be part of the same application
+</li>
+</ul>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-1-2">The Task Backstack<br/>
+<ul>
+<li>Backstack serves for back key
+</li>
+<li>When an activity is launched, it goes on top of the backstack
+</li>
+<li>When the activity is destoried, it is popped off the backstack
+</li>
+</ul>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-1-3">startActivityForResult()<br/>
+
+<p class="verse">
+Invoke a callback method when the called activity finishes to return a result.<br/>
+Started activity can call setResult(int resultCode, Intent data). Intent data is optional.<br/>
+Result Code: RESULT_CANCELED, RESULT_OK, RESULT_FIRST_USER, also custom resultcodes.<br/>
+</p>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> LifeCycle</h4>
+<div class="outline-text-4" id="text-1-1-2">
+
+<p><img src="../../resources/android/ActivityLifeCycle.png" align="center" alt="../../resources/android/ActivityLifeCycle.png" />
+</p>
+<ul>
+<li id="sec-1-1-2-1">States Description<br/>
+<ul>
+<li>Resumed/Running: Visible, User interacting
+</li>
+<li>Paused: Visible, User not interacting, Can be terminated
+</li>
+<li>Stopped: Not visible, Can be terminated
+</li>
+</ul>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-2">onCreate()<br/>
+<ol>
+<li>Call super.onCreate()
+</li>
+<li>Set the activity's content view
+</li>
+<li>Retain reference to UI views as necessary
+</li>
+<li>Configure views as necessary
+</li>
+</ol>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-3">onRestart()<br/>
+Special processing needed only after having been stopped.
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-4">onStart()<br/>
+<ol>
+<li>Start when visible-only behaviors
+</li>
+<li>Loading persistent application state
+</li>
+</ol>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-5">onResume()<br/>
+Start foreground-only behaviors
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-6">onPause()<br/>
+<ol>
+<li>Shutdown foreground-only behaviors
+</li>
+<li>Save persistent state
+</li>
+</ol>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-7">onStop()<br/>
+
+<p class="verse">
+Cache state<br/>
+<b>Note: May not be called if android kills your apps</b><br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-8">onDestory()<br/>
+
+<p class="verse">
+Release activity resources<br/>
+<b>Note: May not be called if android kills your apps</b><br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-9">Configuration Changes<br/>
+
+<p class="verse">
+On configuration changes(keyboard, orientation), <br/>
+android usually kills the current activity and <br/>
+then restarts it.<br/>
+<br/>
+If restarting is slow, we can:<br/>
+</p>
+
+
+<ul>
+<li id="sec-1-1-2-9-1">Retain an Object<br/>
+
+<p class="verse">
+Hard to recompute data can be cached.<br/>
+<br/>
+Override onRetainNonConfigurationInstance() to build &amp; return such an object.<br/>
+This callback function will be called between onStop() and onDestroy().<br/>
+<br/>
+Call getLastNonConfigurationInstance() during onCreate()<br/>
+<br/>
+Note:These methods have been deprecated in <br/>
+favor of methods in the Fragment class <br/>
+<br/>
+onSaveInstanceState()<br/>
+onRestoreInstanceState()<br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-1-2-9-2">Manually Reconfiguration<br/>
+Can prevent system from restarting.
+
+<ol>
+<li>Declare the configuration changes your activity handles in AndoridManifest.xml
+
+
+
+<pre class="src src-xml">&lt;<span style="color: #00008b; font-weight: bold;">activity</span> <span style="color: #0000ff; text-decoration: underline;">android</span>:<span style="color: #008b8b;">name</span>=<span style="color: #9400d3;">"</span><span style="color: #9400d3;">.MyActivity</span><span style="color: #9400d3;">"</span>
+<span style="color: #0000ff; text-decoration: underline;">android</span>:<span style="color: #008b8b;">configChanges</span>=
+<span style="color: #9400d3;">"</span><span style="color: #9400d3;">orientation|screensize|keyboardHidden</span><span style="color: #9400d3;">"</span> &#8230;&gt;
+</pre>
+
+</li>
+<li>Override onConﬁgurationChanged()
+</li>
+</ol>
+
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Service</h3>
+<div class="outline-text-3" id="text-1-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> BroadcastReceiver</h3>
+<div class="outline-text-3" id="text-1-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> Content Provider</h3>
+<div class="outline-text-3" id="text-1-4">
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Major Class</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Intent</h3>
+<div class="outline-text-3" id="text-2-1">
+
+<p>A data structure that represents
+</p><ul>
+<li>An operation to be performed
+</li>
+<li>An event that has occurred<sup><a class="footref" name="fnr-.1" href="#fn-.1">1</a></sup>
+</li>
+</ul>
+
+
+</div>
+
+<div id="outline-container-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> Operation to Be Performed</h4>
+<div class="outline-text-4" id="text-2-1-1">
+
+
+<p class="verse">
+Intents provide a flexible language<br/>
+for specifying operation to be performed<br/>
+E.g: pick a contact, take a photo, dial a phone etc.<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> Event</h4>
+<div class="outline-text-4" id="text-2-1-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3"><span class="section-number-4">2.1.3</span> Fields</h4>
+<div class="outline-text-4" id="text-2-1-3">
+
+<ul>
+<li id="sec-2-1-3-1">Action<br/>
+
+<p class="verse">
+String representing desired operation.<br/>
+Examples:<br/>
+</p>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">ACTION_DIAL</td><td class="left">dial a number</td></tr>
+<tr><td class="left">ACTION_EDIT</td><td class="left">display data to edit</td></tr>
+<tr><td class="left">ACTION_SYNC</td><td class="left">sychronize device data with server</td></tr>
+<tr><td class="left">ACTION_MAIN</td><td class="left">start as initial activity of app</td></tr>
+</tbody>
+</table>
+
+Can be set by constructor or setAction() method.
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-3-2">Data<br/>
+
+<p class="verse">
+Data associated with the intent.<br/>
+Formatted as a uniform resource identifier(URI)<br/>
+<br/>
+intent.setData(Uri.parse("tel:+1555555555"));<br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-3-3">Category<br/>
+
+<p class="verse">
+Additional information about the components<br/>
+that can handle the intent.<br/>
+Example:<br/>
+</p>
+
+
+<ul>
+<li>CATEGORY_BROWSABLE
+
+<p>
+  can be invoke by a browser to display data ref's by a URI
+</p></li>
+<li>CATEGORY_LAUNCHER
+
+<p class="verse">
+can be the initial activity of a task &amp;<br/>
+is listed in top-level app launcher<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-3-4">Type<br/>
+
+<p class="verse">
+Specifies the mime type of the intent data<br/>
+Example:<br/>
+image/*, image/png, image/jpg <br/>
+text/plain, text/html<br/>
+<br/>
+If <b>unspecified</b>, Android will infer the type.<br/>
+<br/>
+Intent.setType(String type);<br/>
+Intent.setDataAndType(Uri data, String type);<br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-3-5">Component<br/>
+
+<p class="verse">
+The component that should receive this intent.<br/>
+Use this when there's <b>exactly one</b> component that should<br/>
+receive the intent.<br/>
+<br/>
+Intent newInt = Intent(Context packageContext, Class&lt;?&gt; cls);<br/>
+or <br/>
+setComponent(), setClass(), setClassName()<br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-3-6">Extras<br/>
+
+<p class="verse">
+Add information associated with Intent <br/>
+Treated as a map (key-value pairs)<br/>
+</p>
+
+
+
+
+<pre class="src src-java"><span style="color: #daa520;">Intent</span> <span style="color: #008b8b;">newInt</span> = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">Intent</span>(<span style="color: #ff6347;">Intent</span>.ACTION_SEND);
+newInt.putExtra(<span style="color: #ff6347;">android</span>.<span style="color: #ff6347;">content</span>.<span style="color: #ff6347;">Intent</span>.EXTRA_EMAIL, <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">String</span>[]{
+        <span style="color: #9400d3;">"aporter@cs.umd.edu"</span>, <span style="color: #9400d3;">"ceo@microsoft.com"</span>,
+        <span style="color: #9400d3;">"potus@whitehouse.gov"</span>,<span style="color: #9400d3;">"mozart@musician.org"</span>
+    }
+);
+</pre>
+
+<p>
+putExtra(String name, String value);
+putExtra(String name, float[] value);
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-3-7">Flags<br/>
+
+<p class="verse">
+Specify how intent should be handled<br/>
+</p>
+
+
+<ul>
+<li>FLAG_ACTIVITY_NO_HISTORY
+
+<p>
+  Don't put this activity in the history stack.
+</p>
+</li>
+<li>FLAG_DEBUG_LOG_RESOLUTION
+
+<p class="verse">
+Print extra logging information when this<br/>
+intent is processed.<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+<p>
+intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+</p>
+
+
+
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> SDK Manager Proxy</h2>
+<div class="outline-text-2" id="text-3">
+
+<p>mirrors.neusoft.edu.cn 80
+</p>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+<p class="footnote"><sup><a class="footnum" name="fn-.1" href="#fnr-.1">1</a></sup> Will be covered in broadcast receiver
+</p>
+
+
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Emacs</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="Emacs"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2014-03-21T11:44+0800"/>
+<meta name="author" content="ChrisChen"/>
+<meta name="description" content=""/>
+<meta name="keywords" content="emacs"/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" href="../css/stylesheet.css" type="text/css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+<div id="org-div-home-and-up" style="text-align:right;font-size:100%;white-space:nowrap;">
+ <a accesskey="h" href="../index.html"> UP </a>
+ |
+ <a accesskey="H" href="../index.html"> HOME </a>
+</div>
+
+
+<div id="content">
+<h1 class="title">Emacs</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 安装配置</a>
+<ul>
+<li><a href="#sec-1-1">1.1 Windows</a>
+<ul>
+<li><a href="#sec-1-1-1">1.1.1 环境变量，设置HOME，值[.emacs所在目录路径]</a></li>
+<li><a href="#sec-1-1-2">1.1.2 Mapping Caps lock to Ctrl</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-2">1.2 Linux中文输入法</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 文件编码问题</a></li>
+<li><a href="#sec-3">3 实用键盘宏</a></li>
+<li><a href="#sec-4">4 图片支持 on windows</a></li>
+<li><a href="#sec-5">5 mode详解</a>
+<ul>
+<li><a href="#sec-5-1">5.1 shell-mode</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6 启动调试错误位置</a></li>
+<li><a href="#sec-7">7 开发环境</a>
+<ul>
+<li><a href="#sec-7-1">7.1 C</a>
+<ul>
+<li><a href="#sec-7-1-1">7.1.1 CEDET</a></li>
+<li><a href="#sec-7-1-2">7.1.2 yasnippet</a></li>
+<li><a href="#sec-7-1-3">7.1.3 Auto-Complete</a></li>
+<li><a href="#sec-7-1-4">7.1.4 flymake</a></li>
+</ul>
+</li>
+<li><a href="#sec-7-2">7.2 Python</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 安装配置</h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Windows</h3>
+<div class="outline-text-3" id="text-1-1">
+
+
+</div>
+
+<div id="outline-container-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> 环境变量，设置HOME，值[.emacs所在目录路径]</h4>
+<div class="outline-text-4" id="text-1-1-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> Mapping Caps lock to Ctrl</h4>
+<div class="outline-text-4" id="text-1-1-2">
+
+
+
+
+<pre class="example">修改注册表项，重启
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,1d,00,3a,00, 00,00,00,00
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Linux中文输入法</h3>
+<div class="outline-text-3" id="text-1-2">
+
+
+<p class="verse">
+方法一：<br/>
+执行以下操作：<br/>
+sudo add-apt-repository ppa:irie/elisp<br/>
+sudo apt-get update<br/>
+sudo apt-get install ibus-el<br/>
+</p>
+
+
+<p>
+emacs配置文件中加
+</p>
+
+
+<pre class="src src-elisp">(<span style="color: #1e90ff; font-weight: bold;">require</span> '<span style="color: #ff6347;">ibus</span>)
+<span style="color: #8b8989;">;; </span><span style="color: #8b8989;">Turn on ibus-mode automatically after loading .emacs</span>
+(add-hook 'after-init-hook 'ibus-mode-on)
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 文件编码问题</h2>
+<div class="outline-text-2" id="text-2">
+
+
+<p class="verse">
+(prefer-coding-system 'utf-8)<br/>
+(setq coding-system-for-read 'utf-8)<br/>
+(setq coding-system-for-write 'utf-8)<br/>
+<br/>
+C-x &lt;RET&gt; f coding &lt;RET&gt;<br/>
+Use coding system coding to save or revisit the file in the current buffer (set-buffer-file-coding-system). <br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 实用键盘宏</h2>
+<div class="outline-text-2" id="text-3">
+
+
+<p class="verse">
+C-( C-)<br/>
+C-x e 执行宏<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> 图片支持 on windows</h2>
+<div class="outline-text-2" id="text-4">
+
+<p>图片支持库列表
+M-x: image-library-alist RET
+</p>
+<p>
+是否支持某种图片格式：
+(image-type-available-p 'png)
+</p>
+<p>
+下载地址：
+<a href="http://vgoulet.act.ulaval.ca/en/emacs/windows/">http://vgoulet.act.ulaval.ca/en/emacs/windows/</a>
+or
+<a href="https://github.com/jixiuf/emacs_conf">https://github.com/jixiuf/emacs\_conf</a>
+</p>
+<p>
+调整图片位置
+</p>
+
+
+<pre class="src src-org"><span style="color: #8b8989;">#+ATTR_HTML: alt="Image" style="margin:0px 150px"</span>
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> mode详解</h2>
+<div class="outline-text-2" id="text-5">
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> shell-mode</h3>
+<div class="outline-text-3" id="text-5-1">
+
+
+<p class="verse">
+M-x shell 进入shell mode<br/>
+M-p 上一条执行过的Shell命令<br/>
+</p>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> 启动调试错误位置</h2>
+<div class="outline-text-2" id="text-6">
+
+
+<p class="verse">
+buffer postion <br/>
+C-x = ：获取当前位置<br/>
+M-x goto-char pos ：跳转到pos<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> 开发环境</h2>
+<div class="outline-text-2" id="text-7">
+
+
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> C</h3>
+<div class="outline-text-3" id="text-7-1">
+
+
+</div>
+
+<div id="outline-container-7-1-1" class="outline-4">
+<h4 id="sec-7-1-1"><span class="section-number-4">7.1.1</span> CEDET</h4>
+<div class="outline-text-4" id="text-7-1-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-7-1-2" class="outline-4">
+<h4 id="sec-7-1-2"><span class="section-number-4">7.1.2</span> yasnippet</h4>
+<div class="outline-text-4" id="text-7-1-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-7-1-3" class="outline-4">
+<h4 id="sec-7-1-3"><span class="section-number-4">7.1.3</span> Auto-Complete</h4>
+<div class="outline-text-4" id="text-7-1-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-7-1-4" class="outline-4">
+<h4 id="sec-7-1-4"><span class="section-number-4">7.1.4</span> flymake</h4>
+<div class="outline-text-4" id="text-7-1-4">
+
+<p>需要在makefile中增加检查语法的规则：
+</p>
+
+
+<pre class="src src-makefile"><span style="color: #00008b; font-weight: bold;">check-syntax</span>:
+    g++ -o nul -S ${<span style="color: #008b8b;">CHK_SOURCES</span>}
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> Python</h3>
+<div class="outline-text-3" id="text-7-2">
+
+
+<p class="verse">
+有用工具：<br/>
+flymake 语法检查<br/>
+pycomplete 更强大的python补全工具<br/>
+rope and ropemacs 重构 跳转工具<br/>
+pdb 调试<br/>
+</p>
+
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

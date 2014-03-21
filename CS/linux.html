@@ -1,0 +1,1189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Linux基础</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="Linux基础"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2014-03-21T11:45+0800"/>
+<meta name="author" content="ChrisChen"/>
+<meta name="description" content=""/>
+<meta name="keywords" content="Linux, 基础"/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" href="../css/stylesheet.css" type="text/css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+<div id="org-div-home-and-up" style="text-align:right;font-size:100%;white-space:nowrap;">
+ <a accesskey="h" href="../index.html"> UP </a>
+ |
+ <a accesskey="H" href="../index.html"> HOME </a>
+</div>
+
+
+<div id="content">
+<h1 class="title">Linux基础</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 系统运行模式(run level)</a></li>
+<li><a href="#sec-2">2 Bash</a>
+<ul>
+<li><a href="#sec-2-1">2.1 基础</a></li>
+<li><a href="#sec-2-2">2.2 man命令说明</a></li>
+<li><a href="#sec-2-3">2.3 info命令说明</a></li>
+<li><a href="#sec-2-4">2.4 重要快捷键</a></li>
+<li><a href="#sec-2-5">2.5 所有命令文档位置</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 权限</a>
+<ul>
+<li><a href="#sec-3-1">3.1 特殊权限</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4 文件系统</a>
+<ul>
+<li><a href="#sec-4-1">4.1 硬件相关目录</a></li>
+<li><a href="#sec-4-2">4.2 文件权限</a></li>
+<li><a href="#sec-4-3">4.3 FHS目录划分</a></li>
+<li><a href="#sec-4-4">4.4 路径符号说明</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5 XWindows</a>
+<ul>
+<li><a href="#sec-5-1">5.1 启动禁用XWin</a></li>
+<li><a href="#sec-5-2">5.2 命令行界面启动XWin</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6 错误信息</a>
+<ul>
+<li><a href="#sec-6-1">6.1 log</a></li>
+</ul>
+</li>
+<li><a href="#sec-7">7 设置语言环境</a>
+<ul>
+<li><a href="#sec-7-1">7.1 修改系统默认语系</a></li>
+<li><a href="#sec-7-2">7.2 sunpinyin config</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">8 Commands</a>
+<ul>
+<li><a href="#sec-8-1">8.1 常用命令行列表</a></li>
+<li><a href="#sec-8-2">8.2 bc</a></li>
+<li><a href="#sec-8-3">8.3 sync</a></li>
+<li><a href="#sec-8-4">8.4 目录操作</a></li>
+<li><a href="#sec-8-5">8.5 浏览文件内容</a></li>
+<li><a href="#sec-8-6">8.6 文件系统操作</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 系统运行模式(run level)</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>切换方式： sudo init 0
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="right" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="right">run level</th><th scope="col" class="left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td class="right">0</td><td class="left">关机</td></tr>
+<tr><td class="right">3</td><td class="left">文字界面模式</td></tr>
+<tr><td class="right">5</td><td class="left">图形接口模式</td></tr>
+<tr><td class="right">6</td><td class="left">重启</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Bash</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 基础</h3>
+<div class="outline-text-3" id="text-2-1">
+
+
+</div>
+
+<div id="outline-container-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> 启动注销</h4>
+<div class="outline-text-4" id="text-2-1-1">
+
+
+<p class="verse">
+登陆信息存放在/etc/issue<br/>
+注销命令：exit<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> 命令格式说明</h4>
+<div class="outline-text-4" id="text-2-1-2">
+
+
+
+
+<pre class="example">command [-options] parameter1 parameter2 ... 
+命令     选项      参数(1)    参数(2)
+</pre>
+
+<p>
+说明：
+</p><ol>
+<li>多个空格视为一个
+</li>
+<li>全名参数 &ndash;help 单名 -h
+</li>
+<li>命令太长，换行使用"\"
+</li>
+<li>大小写敏感
+</li>
+</ol>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3"><span class="section-number-4">2.1.3</span> 命令行语言环境</h4>
+<div class="outline-text-4" id="text-2-1-3">
+
+
+
+
+<pre class="src src-sh"><span style="color: #0000ff; text-decoration: underline;">echo</span> $<span style="color: #008b8b;">LANG</span> <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#26174;&#31034;&#24403;&#21069;&#35821;&#35328;</span>
+<span style="color: #008b8b;">LANG</span>=en_US <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#25913;&#21464;&#35821;&#35328;&#21464;&#37327;&#20026;&#33521;&#35821;</span>
+</pre>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> man命令说明</h3>
+<div class="outline-text-3" id="text-2-2">
+
+
+</div>
+
+<div id="outline-container-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 命令分类</h4>
+<div class="outline-text-4" id="text-2-2-1">
+
+<p>   eg: DATE(1)
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="right" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="right">代号</th><th scope="col" class="left">代表的内容</th></tr>
+</thead>
+<tbody>
+<tr><td class="right">1</td><td class="left">使用者在shell环境中可操作命令或可执行文件</td></tr>
+<tr><td class="right">2</td><td class="left">系统核心可呼叫的函数与工具</td></tr>
+<tr><td class="right">3</td><td class="left">一些常用的函数与函数库，大部分为C函数库(libc)</td></tr>
+<tr><td class="right">4</td><td class="left">装置文件的说明，通常在/dev下</td></tr>
+<tr><td class="right">5</td><td class="left">配置文件或者是某种文件的格式</td></tr>
+<tr><td class="right">6</td><td class="left">游戏</td></tr>
+<tr><td class="right">7</td><td class="left">惯例与协议，如：Linux文件系统、网络协议、ASCII码说明</td></tr>
+<tr><td class="right">8</td><td class="left">系统管理员可用的管理命令</td></tr>
+<tr><td class="right">9</td><td class="left">跟kernel有关的文件</td></tr>
+</tbody>
+</table>
+
+1、5、8特别重要。
+</div>
+
+</div>
+
+<div id="outline-container-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 命令各部分说明</h4>
+<div class="outline-text-4" id="text-2-2-2">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">代号</th><th scope="col" class="left">内容说明</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">DESCRIPTION</td><td class="left">完整的说明</td></tr>
+<tr><td class="left">OPTIONS</td><td class="left">针对语法部分中，可用选项的说明</td></tr>
+<tr><td class="left">COMMANDS</td><td class="left">当程序运行时，可在此程序中下达的命令</td></tr>
+<tr><td class="left">FILES</td><td class="left">这个程序所使用或参考或连接到的文件</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> MAN快捷键</h4>
+<div class="outline-text-4" id="text-2-2-3">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">按键</th><th scope="col" class="left">行为</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">空格，Page Down</td><td class="left">往下翻页</td></tr>
+<tr><td class="left">Page Up</td><td class="left">往上翻页</td></tr>
+<tr><td class="left">HOME</td><td class="left">第一页</td></tr>
+<tr><td class="left">END</td><td class="left">最后一页</td></tr>
+<tr><td class="left">/string</td><td class="left">向下搜索字符串“string”</td></tr>
+<tr><td class="left">？string</td><td class="left">向上搜索字符串"string"</td></tr>
+<tr><td class="left">n,N</td><td class="left">搜索时向下、向上</td></tr>
+<tr><td class="left">q</td><td class="left">结束man</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2-4" class="outline-4">
+<h4 id="sec-2-2-4"><span class="section-number-4">2.2.4</span> MAN内容文件位置</h4>
+<div class="outline-text-4" id="text-2-2-4">
+
+<ul>
+<li>通常放在/usr/share/man与/usr/local/man。ubuntu：/etc/manpath.conf 
+</li>
+<li>[man man]一样可以查询
+</li>
+<li>man -f [CAMMAND] 查找与CAMMAND有关的说明文件；等同命令 whatis [CAMMAND]，需先安装makewhatis
+</li>
+</ul>
+
+
+
+
+<pre class="src src-sh">man -f man
+<span style="color: #00008b; font-weight: bold;">man</span> (7)              - macros to format man pages
+<span style="color: #00008b; font-weight: bold;">man</span> (1)              - an interface to the on-line reference manuals
+man 7 man <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#23519;&#30475;man(7)&#30340;&#35828;&#26126;</span>
+</pre>
+
+<ul>
+<li>man -k [keyword] 关键字各Man Page[Description]中搜索；等同命令apropos [keyword]
+</li>
+<li>man -K [keyword] 关键字全文搜索
+</li>
+</ul>
+
+
+
+
+<pre class="src src-sh">man -k man
+<span style="color: #00008b; font-weight: bold;">deja-dup-preferences</span> (1) - manual page for deja-dup-preferences 22.0
+<span style="color: #00008b; font-weight: bold;">UPower</span> (7)           - System-wide Power Management
+<span style="color: #00008b; font-weight: bold;">Xcursor</span> (3)          - Cursor management library
+<span style="color: #00008b; font-weight: bold;">accessdb</span> (8)         - dumps the content of a man-db database<span style="color: #1e90ff; font-weight: bold;"> in</span> a human readable format
+<span style="color: #00008b; font-weight: bold;">aclocal</span> (1)          - manual page for aclocal 1.11.3
+...
+</pre>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> info命令说明</h3>
+<div class="outline-text-3" id="text-2-3">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">快捷键</th><th scope="col" class="left">行为</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">空格、page down</td><td class="left">下一页</td></tr>
+<tr><td class="left">page up</td><td class="left">上一页</td></tr>
+<tr><td class="left">tab</td><td class="left">顶部node间游走</td></tr>
+<tr><td class="left">Enter</td><td class="left">进入超链接</td></tr>
+<tr><td class="left">n</td><td class="left">Next</td></tr>
+<tr><td class="left">p</td><td class="left">Prev</td></tr>
+<tr><td class="left">u</td><td class="left">Up</td></tr>
+<tr><td class="left">s</td><td class="left">字符串搜索</td></tr>
+<tr><td class="left">h</td><td class="left">显示help</td></tr>
+<tr><td class="left">?</td><td class="left">命令一览表</td></tr>
+<tr><td class="left">q</td><td class="left">结束</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+<div id="outline-container-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> info内容所在文件</h4>
+<div class="outline-text-4" id="text-2-3-1">
+
+<p>/usr/share/info
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> 重要快捷键</h3>
+<div class="outline-text-3" id="text-2-4">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">C-c</td><td class="left">中断命令</td></tr>
+<tr><td class="left">C-d</td><td class="left">中断键盘输入</td></tr>
+<tr><td class="left">Tab</td><td class="left">补全</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> 所有命令文档位置</h3>
+<div class="outline-text-3" id="text-2-5">
+
+<p>/usr/share/doc
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 权限</h2>
+<div class="outline-text-2" id="text-3">
+
+
+<p class="verse">
+使用者信息，记录在/etc/passwd<br/>
+个人的密码记录在/etc/shadow<br/>
+群组记录在/etc/group<br/>
+</p>
+
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> 特殊权限</h3>
+<div class="outline-text-3" id="text-3-1">
+
+<p>SUID=4, SGID=2, SBIT=1
+</p>
+</div>
+
+<div id="outline-container-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> Set UID</h4>
+<div class="outline-text-4" id="text-3-1-1">
+
+<ul>
+<li>SUID仅对二进制程序和目录有效
+</li>
+<li>运行者对于该程序需要有x可运行权限
+</li>
+<li>运行者将临时性具有该程序拥有者的权限
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> Set GID</h4>
+<div class="outline-text-4" id="text-3-1-2">
+
+<p>基本同SUID，区别在于运行者将临时性具有该程序 <b>群组</b> 的权限
+</p></div>
+
+</div>
+
+<div id="outline-container-3-1-3" class="outline-4">
+<h4 id="sec-3-1-3"><span class="section-number-4">3.1.3</span> Sticky Bit</h4>
+<div class="outline-text-4" id="text-3-1-3">
+
+<p>只针对目录有效：
+</p><ul>
+<li>使用者对此目录拥有写入权限
+</li>
+<li>当使用者创建文件或目录时，仅有自己和root有权删除
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> 文件系统</h2>
+<div class="outline-text-2" id="text-4">
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> 硬件相关目录</h3>
+<div class="outline-text-3" id="text-4-1">
+
+<p>根目录 /dev
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">设备</th><th scope="col" class="left">文件名</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">IDE硬盘</td><td class="left">/hd[a-d]</td></tr>
+<tr><td class="left">SATA硬盘/U盘/SCSI</td><td class="left">/sd[a-p]</td></tr>
+<tr><td class="left">打印机(COM)</td><td class="left">/lp[0-2]</td></tr>
+<tr><td class="left">打印机(U口)</td><td class="left">/usb/lp[0-15]</td></tr>
+<tr><td class="left">鼠标</td><td class="left">/usb/mouse[0-15]</td></tr>
+<tr><td class="left">CDROM</td><td class="left">/cdrom</td></tr>
+<tr><td class="left">当前鼠标</td><td class="left">/mouse</td></tr>
+<tr><td class="left">磁带机</td><td class="left">IDE:/ht0 SCSI:/st0</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+<div id="outline-container-4-1-1" class="outline-4">
+<h4 id="sec-4-1-1"><span class="section-number-4">4.1.1</span> IDE接口</h4>
+<div class="outline-text-4" id="text-4-1-1">
+
+
+<p class="verse">
+一个IDE接口可以有两条排线，可连接两个IDE设备。<br/>
+一般PC上会有两个IDE接口。以此为例。<br/>
+</p>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left"></td><td class="left">Master</td><td class="left">Slave</td></tr>
+<tr><td class="left">IDE1</td><td class="left">/dev/hda</td><td class="left">/dev/hdb</td></tr>
+<tr><td class="left">IDE2</td><td class="left">/dev/hdc</td><td class="left">/dev/hdd</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-1-2" class="outline-4">
+<h4 id="sec-4-1-2"><span class="section-number-4">4.1.2</span> SATA接口</h4>
+<div class="outline-text-4" id="text-4-1-2">
+
+
+<p class="verse">
+由于根据SCSI模块来驱动，文件夹名按内核识别的顺序<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-1-3" class="outline-4">
+<h4 id="sec-4-1-3"><span class="section-number-4">4.1.3</span> 相关硬盘知识</h4>
+<div class="outline-text-4" id="text-4-1-3">
+
+
+<p class="verse">
+主要启动记录区(Master Boot Record, MBR)：可以安装启动管理程序的地方，有446 bytes<br/>
+分割表(partition table)：记录整颗硬盘分割的状态，有64 bytes<br/>
+</p>
+
+
+
+<hr/>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> 文件权限</h3>
+<div class="outline-text-3" id="text-4-2">
+
+
+
+
+<pre class="example">drwxr-xr-x  3 root root 4096 10月  1  2012 .local
+-rw-r--r--  1 root root  140  4月 19  2012 .profile
+</pre>
+
+<ul>
+<li>第一列表示文件权限，由十个字符组成。例：-rwxrwx---
+<ul>
+<li>第一个字符表示档案类型。
+<ul>
+<li><b>d</b> 表示目录
+</li>
+<li><b>-</b> 表示文件
+</li>
+<li><b>l</b> 表示链接文件(link file)，即windows下的快捷方式
+</li>
+<li><b>b</b> /dev/中的存储设备(block设备档)
+</li>
+<li><b>c</b> /dev/中的输入输出设备(character设备文件)
+</li>
+<li><b>s</b> sockets 一般在/var/run中可以看到该类型文件
+</li>
+<li><b>p</b> pipe,FIFO first in first out主要解决多个程序同时存取一个文件造成的问题
+</li>
+</ul>
+
+</li>
+<li>rwx [x]代表可执行文件,第一组文件拥有者的权限，第二组同群组的权限，第三组其他非本群组的权限
+</li>
+</ul>
+
+</li>
+<li>第二列数字代表有多少个文件名连接到此i-node
+</li>
+<li>第三列表示这个文件的拥有者帐号
+</li>
+<li>第四列表示这个文件的所属群组
+</li>
+<li>第五列表示这个文件的Size,默认单位bytes
+</li>
+<li>第六列表示这个文件的建档日期或者最近的修改日期
+</li>
+<li>第七列为文件名
+</li>
+</ul>
+
+
+</div>
+
+<div id="outline-container-4-2-1" class="outline-4">
+<h4 id="sec-4-2-1"><span class="section-number-4">4.2.1</span> 相关命令</h4>
+<div class="outline-text-4" id="text-4-2-1">
+
+
+<p class="verse">
+chgrp: 改变文件所属群组<br/>
+chown: 改变文件拥有者，同样能修改所属群组名称。例：chown user:users test.txt<br/>
+以上两个命令使用的时机：不如cp命令会拷贝文件，且保留源文件的拥有者和群组信息。可以手动修改。<br/>
+chmod: 改变文件的权限<br/>
+</p>
+
+
+<ul>
+<li>chmod命令详解
+
+<p class="verse">
+数字方式：<br/>
+权限数字对照表如下：<br/>
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="right" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">r</td><td class="right">4</td><td class="left">\\</td></tr>
+<tr><td class="left">w</td><td class="right">2</td><td class="left">\\</td></tr>
+<tr><td class="left">x</td><td class="right">1</td><td class="left">\\</td></tr>
+</tbody>
+</table>
+
+例：chmod 644 test.txt 对应 -rw-r&ndash;r&ndash;<br/>
+符号方式：<br/>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">chmod</td><td class="left">ugoa</td><td class="left">+-=</td><td class="left">rwx</td><td class="left">file or folder path</td><td class="left">\\</td></tr>
+</tbody>
+</table>
+
+例：chmod u=rwx,go=rx test.txt<br/>
+chmod a+w test.txt (所有账户都赋予写权限)<br/>
+</p>
+
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-2-2" class="outline-4">
+<h4 id="sec-4-2-2"><span class="section-number-4">4.2.2</span> 权限细节</h4>
+<div class="outline-text-4" id="text-4-2-2">
+
+
+<p class="verse">
+文件的写权限只针对文件的内容，不能删除该文件。<br/>
+目录的写权限才能对目录下的文件或子目录进行新建、删除。<br/>
+目录的可执行权限表明可以使用cd指令将其转为工作目录。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-2-3" class="outline-4">
+<h4 id="sec-4-2-3"><span class="section-number-4">4.2.3</span> 文件名长度限制</h4>
+<div class="outline-text-4" id="text-4-2-3">
+
+<p>单一文件或目录255个字符；完整路径4096个字符。
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> FHS目录划分</h3>
+<div class="outline-text-3" id="text-4-3">
+
+<ul>
+<li>/ (root):与开机、系统恢复有关
+
+<p class="verse">
+FHS标准建议将根目录放在较小的分区内，最好不要跟其他应用程序分在一个分区中。<br/>
+理由：根目录下的东西越多出错的几率就越大。另外一点，单独的根目录有较佳的性能。<br/>
+以下五个目录必须与根目录挂载在同一分区：<br/>
+/etc：配置文件<br/>
+/bin：重要执行档<br/>
+/dev：所需要的设备文件<br/>
+/lib：执行档所需的函式库与核心所需的模块<br/>
+/sbin：重要的系统执行文件<br/>
+</p>
+
+
+</li>
+<li>/usr:与软件安装/执行有关
+</li>
+<li>/var:与系统运作过程有关
+</li>
+</ul>
+
+<p>关于更具体的子目录划分，参照<a href="http://www.pathname.com/fhs/">FHS官方说明档</a>， 简要中文说明<a href="http://vbird.dic.ksu.edu.tw/linux_basic/0210filepermission_3.php">鸟哥私房菜</a>。
+</p></div>
+
+</div>
+
+<div id="outline-container-4-4" class="outline-3">
+<h3 id="sec-4-4"><span class="section-number-3">4.4</span> 路径符号说明</h3>
+<div class="outline-text-3" id="text-4-4">
+
+<p>.         代表此层目录
+..        代表上一层目录
+</p><ul>
+<li>代表前一个工作目录
+</li>
+</ul>
+
+<p>~         代表『目前使用者身份』所在的家目录
+~account  代表 account 这个使用者的家目录(account是个帐号名称)
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> XWindows</h2>
+<div class="outline-text-2" id="text-5">
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> 启动禁用XWin</h3>
+<div class="outline-text-3" id="text-5-1">
+
+<p>   /etc/inittab
+</p></div>
+
+</div>
+
+<div id="outline-container-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> 命令行界面启动XWin</h3>
+<div class="outline-text-3" id="text-5-2">
+
+<p>   startx命令
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> 错误信息</h2>
+<div class="outline-text-2" id="text-6">
+
+
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> log</h3>
+<div class="outline-text-3" id="text-6-1">
+
+<p>在/var/log目录
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> 设置语言环境</h2>
+<div class="outline-text-2" id="text-7">
+
+
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> 修改系统默认语系</h3>
+<div class="outline-text-3" id="text-7-1">
+
+
+<p class="verse">
+red hat: /etc/sysconfig/i18n<br/>
+ubuntu: /etc/default/locale<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> sunpinyin config</h3>
+<div class="outline-text-3" id="text-7-2">
+
+<p>/usr/lib/ibus-sunpinyin/ibus-setup-sunpinyin
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Commands</h2>
+<div class="outline-text-2" id="text-8">
+
+
+</div>
+
+<div id="outline-container-8-1" class="outline-3">
+<h3 id="sec-8-1"><span class="section-number-3">8.1</span> 常用命令行列表</h3>
+<div class="outline-text-3" id="text-8-1">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">命令</th><th scope="col" class="left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">date</td><td class="left">察看日期时间。常用："+%Y/%m/%d" "+%H:%M" 注：FORMAT前缀为"+"</td></tr>
+<tr><td class="left">cal</td><td class="left">日历。常用：cal [month] [year]</td></tr>
+<tr><td class="left">bc</td><td class="left">计算器。进入命令环境</td></tr>
+<tr><td class="left">who</td><td class="left">查看在线用户</td></tr>
+<tr><td class="left">netstat</td><td class="left">查看网络状态。常用："-a"</td></tr>
+<tr><td class="left">ps</td><td class="left">查看运行进程。常用："-aux"</td></tr>
+<tr><td class="left">fsck</td><td class="left">文件系统检查</td></tr>
+<tr><td class="left">sync</td><td class="left">将内存中的当前用户数据同步写入磁盘</td></tr>
+<tr><td class="left">cp</td><td class="left">复制文件。</td></tr>
+<tr><td class="left">uname</td><td class="left">打印系统信息。</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2" class="outline-3">
+<h3 id="sec-8-2"><span class="section-number-3">8.2</span> bc</h3>
+<div class="outline-text-3" id="text-8-2">
+
+<ul>
+<li>保留小数点后位数
+
+
+
+<pre class="src src-sh"><span style="color: #008b8b;">scale</span>=3 <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#20445;&#30041;&#19977;&#20301;</span>
+</pre>
+
+</li>
+<li>进制转换
+
+
+
+<pre class="src src-sh"><span style="color: #0000ff; text-decoration: underline;">echo</span> <span style="color: #9400d3;">"obase=16;10"</span> | bc <span style="color: #8b8989;">#</span><span style="color: #8b8989;">out: A</span>
+</pre>
+
+</li>
+<li>退出quit
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-8-3" class="outline-3">
+<h3 id="sec-8-3"><span class="section-number-3">8.3</span> sync</h3>
+<div class="outline-text-3" id="text-8-3">
+
+<p>将内存中数据同步写入磁盘
+</p><ul>
+<li>一般账户使用时，仅同步自己的数据
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-4" class="outline-3">
+<h3 id="sec-8-4"><span class="section-number-3">8.4</span> 目录操作</h3>
+<div class="outline-text-3" id="text-8-4">
+
+<p> <span class="timestamp-wrapper"><span class="timestamp-kwd">CLOSED: </span> <span class="timestamp">2014-02-07 周五 11:47</span></span><br/>
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">命令</th><th scope="col" class="left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">cd</td><td class="left">变换目录</td></tr>
+<tr><td class="left">pwd</td><td class="left">显示当前目录全路径</td></tr>
+<tr><td class="left">mkdir</td><td class="left">创建新目录</td></tr>
+<tr><td class="left">rmdir</td><td class="left">删除空目录</td></tr>
+<tr><td class="left">rm</td><td class="left">删除目录或文件</td></tr>
+<tr><td class="left">cp</td><td class="left">复制文件或目录；文件更名；创建快捷方式</td></tr>
+<tr><td class="left">ls</td><td class="left">遍历该目录。常用："-a" "-l"</td></tr>
+<tr><td class="left">mv</td><td class="left">移动目录或文件</td></tr>
+<tr><td class="left">chattr</td><td class="left">配置隐藏属性</td></tr>
+<tr><td class="left">lsattr</td><td class="left">查看隐藏属性</td></tr>
+<tr><td class="left">umask</td><td class="left">查看配置创建目录或文件时的默认权限</td></tr>
+<tr><td class="left">whereis</td><td class="left">从文件系统DB中查找指定文件</td></tr>
+<tr><td class="left">locate</td><td class="left">从/var/lib/mlocate/mlocate.db中查找指定文件</td></tr>
+<tr><td class="left">updatedb</td><td class="left">根据 /etc/updatedb.conf 的配置去遍历文件系统，更新/var/lib/mlocate/mlocate.db</td></tr>
+<tr><td class="left">find</td><td class="left">直接从文件系统中查找</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+<div id="outline-container-8-4-1" class="outline-4">
+<h4 id="sec-8-4-1"><span class="section-number-4">8.4.1</span> rm</h4>
+<div class="outline-text-4" id="text-8-4-1">
+
+<p>rm -r romove folder recursively
+\rm -r suspend the prompt
+</p></div>
+
+</div>
+
+<div id="outline-container-8-4-2" class="outline-4">
+<h4 id="sec-8-4-2"><span class="section-number-4">8.4.2</span> ls</h4>
+<div class="outline-text-4" id="text-8-4-2">
+
+<p>     ls -F append indicator
+</p></div>
+
+</div>
+
+<div id="outline-container-8-4-3" class="outline-4">
+<h4 id="sec-8-4-3"><span class="section-number-4">8.4.3</span> cp</h4>
+<div class="outline-text-4" id="text-8-4-3">
+
+
+<p class="verse">
+cp -l hard link<br/>
+cp -s symbolic link(shortcut)<br/>
+cp -p preserve the specified attribute,always use in backup[Important]<br/>
+cp -a equals -pdr<br/>
+cp -u copy when the source is newer than distination<br/>
+cp -d [symbolic link] [destination] copy link<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-4-4" class="outline-4">
+<h4 id="sec-8-4-4"><span class="section-number-4">8.4.4</span> chattr</h4>
+<div class="outline-text-4" id="text-8-4-4">
+
+
+<p class="verse">
+chattr +i  file can not be changed -i cancel<br/>
+chattr +a can not modify and remove content but can append new text.(always us <br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-4-5" class="outline-4">
+<h4 id="sec-8-4-5"><span class="section-number-4">8.4.5</span> find</h4>
+<div class="outline-text-4" id="text-8-4-5">
+
+<p>find -mtime 3 查找3天前24小时内修改过的文件，也可加上+-号。+4 -4的例子：
+</p>
+<div class="figure">
+<p><img src="../../resources/linux/find_time.gif" align="center" alt="../../resources/linux/find_time.gif" /></p>
+
+</div>
+<p>
+find -newer  例子：find [folder] -newer [file] 找出比file的修改时间更新的其他文件。
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8-5" class="outline-3">
+<h3 id="sec-8-5"><span class="section-number-3">8.5</span> 浏览文件内容</h3>
+<div class="outline-text-3" id="text-8-5">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">命令</th><th scope="col" class="left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">cat</td><td class="left">从第一行开始显示文件内容</td></tr>
+<tr><td class="left">tac</td><td class="left">从最后一行开始显示</td></tr>
+<tr><td class="left">nl</td><td class="left">显示并输出行号</td></tr>
+<tr><td class="left">more</td><td class="left">一页一页显示</td></tr>
+<tr><td class="left">less</td><td class="left">与more类似，可往前翻页</td></tr>
+<tr><td class="left">head</td><td class="left">只看头几行</td></tr>
+<tr><td class="left">tail</td><td class="left">只看最后几行</td></tr>
+<tr><td class="left">od</td><td class="left">以二进制方式显示！</td></tr>
+<tr><td class="left">file</td><td class="left">查看文件的类型</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+<div id="outline-container-8-5-1" class="outline-4">
+<h4 id="sec-8-5-1"><span class="section-number-4">8.5.1</span> less</h4>
+<div class="outline-text-4" id="text-8-5-1">
+
+
+<p class="verse">
+man command used less to show the help doc<br/>
+less常用快捷键一览：<br/>
+空白键    ：向下翻动一页；<br/>
+[pagedown]：向下翻动一页；<br/>
+[pageup]  ：向上翻动一页；<br/>
+/字串     ：向下搜寻『字串』的功能；<br/>
+?字串     ：向上搜寻『字串』的功能；<br/>
+n         ：重复前一个搜寻 (与 / 或 ? 有关！)<br/>
+N         ：反向的重复前一个搜寻 (与 / 或 ? 有关！)<br/>
+q         ：离开 less 这个程序；<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-5-2" class="outline-4">
+<h4 id="sec-8-5-2"><span class="section-number-4">8.5.2</span> head</h4>
+<div class="outline-text-4" id="text-8-5-2">
+
+
+<p class="verse">
+head -n 20 show the first 20 lines<br/>
+head -n -20 skip the last 20 lines<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-5-3" class="outline-4">
+<h4 id="sec-8-5-3"><span class="section-number-4">8.5.3</span> tail</h4>
+<div class="outline-text-4" id="text-8-5-3">
+
+<p>tail -f output appended data as the file grows[Important]
+</p></div>
+
+</div>
+
+<div id="outline-container-8-5-4" class="outline-4">
+<h4 id="sec-8-5-4"><span class="section-number-4">8.5.4</span> od</h4>
+<div class="outline-text-4" id="text-8-5-4">
+
+
+<p class="verse">
+-t  ：后面可以接各种『类型 (TYPE)』的输出，例如：<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a       ：利用默认的字节来输出；<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c       ：使用 ASCII 字节来输出<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d[size] ：利用十进位(decimal)来输出数据，每个整数占用 size bytes ；<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; f[size] ：利用浮点数值(floating)来输出数据，每个数占用 size bytes ；<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o[size] ：利用八进位(octal)来输出数据，每个整数占用 size bytes ；<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; x[size] ：利用十六进位(hexadecimal)来输出数据，每个整数占用 size bytes ；<br/>
+</p>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8-6" class="outline-3">
+<h3 id="sec-8-6"><span class="section-number-3">8.6</span> 文件系统操作</h3>
+<div class="outline-text-3" id="text-8-6">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">命令</th><th scope="col" class="left">说明</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">df</td><td class="left">查看文件系统容量使用情况，常用参数iah</td></tr>
+<tr><td class="left">du</td><td class="left">查看目录下文件和子目录所占容量，常用参数a</td></tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,2767 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>设计模式笔记</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="设计模式笔记"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2014-03-21T11:44+0800"/>
+<meta name="author" content="ChrisChen"/>
+<meta name="description" content=""/>
+<meta name="keywords" content="design pattern"/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" href="../css/stylesheet.css" type="text/css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+<div id="org-div-home-and-up" style="text-align:right;font-size:100%;white-space:nowrap;">
+ <a accesskey="h" href="../index.html"> UP </a>
+ |
+ <a accesskey="H" href="../index.html"> HOME </a>
+</div>
+
+
+<div id="content">
+<h1 class="title">设计模式笔记</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 OO基本原则</a></li>
+<li><a href="#sec-2">2 策略模式</a></li>
+<li><a href="#sec-3">3 状态模式</a></li>
+<li><a href="#sec-4">4 观察者模式</a></li>
+<li><a href="#sec-5">5 模板方法</a></li>
+<li><a href="#sec-6">6 装饰者模式</a></li>
+<li><a href="#sec-7">7 单件模式</a></li>
+<li><a href="#sec-8">8 工厂模式</a></li>
+<li><a href="#sec-9">9 命令模式</a></li>
+<li><a href="#sec-10">10 适配器模式</a></li>
+<li><a href="#sec-11">11 外观模式</a></li>
+<li><a href="#sec-12">12 迭代器模式</a></li>
+<li><a href="#sec-13">13 一些OO提示</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> OO基本原则</h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 单一职责原则(SRP)</h3>
+<div class="outline-text-3" id="text-1-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 开放封闭原则</h3>
+<div class="outline-text-3" id="text-1-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> 依赖倒置原则</h3>
+<div class="outline-text-3" id="text-1-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> 子类替换原则</h3>
+<div class="outline-text-3" id="text-1-4">
+
+</div>
+
+</div>
+
+<div id="outline-container-1-5" class="outline-3">
+<h3 id="sec-1-5"><span class="section-number-3">1.5</span> 接口隔离原则</h3>
+<div class="outline-text-3" id="text-1-5">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><a name="Strategy" id="Strategy"></a><span class="section-number-2">2</span> 策略模式</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 概述</h3>
+<div class="outline-text-3" id="text-2-1">
+
+<p>定义了算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。
+</p></div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-2-2">
+
+<ul>
+<li>许多 <b>相关</b> 的类仅仅是行为有异
+</li>
+<li>需要使用一个算法的不同变体
+</li>
+<li>使算法使用的数据结构不暴露于客户
+</li>
+<li>一个类定义了多种行为，且这些行为在类中是以多个条件语句的形式出现的
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> 结构</h3>
+<div class="outline-text-3" id="text-2-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/Strategy.png" align="center" alt="../../resources/OO/img/Strategy.png" /></p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> 优点</h3>
+<div class="outline-text-3" id="text-2-4">
+
+<ul>
+<li>定义了一组可供重用的算法，继承自Strategy基类，有助于将共同内容放置于基类
+</li>
+<li>替代继承实现方法，不用硬编码至Context中
+</li>
+<li>消除了一些条件语句
+</li>
+<li>客户代码可以动态的选择具体算法
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> 缺点</h3>
+<div class="outline-text-3" id="text-2-5">
+
+<ul>
+<li>客户代码必须了解到具体算法之间的区别（增加耦合）
+<ul>
+<li>Gof建议：仅当不同行为变体是与客户相关的行为时，才需要使用Strategy模式
+</li>
+</ul>
+
+</li>
+<li>Strategy和Context之间的通信开销
+<ul>
+<li>各具体算法所需要的参数不一样，但是接口共享。会导致需要额外增加两边接口，导致这两个类更紧密的耦合
+</li>
+</ul>
+
+</li>
+<li>增加了对象的数目
+<ul>
+<li>参考<a href="#Flyweight">Flyweight</a>模式
+</li>
+</ul>
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-6" class="outline-3">
+<h3 id="sec-2-6"><span class="section-number-3">2.6</span> 实现</h3>
+<div class="outline-text-3" id="text-2-6">
+
+
+</div>
+
+<div id="outline-container-2-6-1" class="outline-4">
+<h4 id="sec-2-6-1"><span class="section-number-4">2.6.1</span> 定义Context和Strategy的接口</h4>
+<div class="outline-text-4" id="text-2-6-1">
+
+<ul>
+<li id="sec-2-6-1-1">必须使得ConcreteStrategy和Context类能够获取对方的任何数据<br/>
+<ul>
+<li id="sec-2-6-1-1-1">方法1：Context将各算法需要的参数传递给Strategy<br/>
+
+<p class="verse">
+好处：Strategy对Context解耦(Strategy不需要知道Context的存在)<br/>
+缺点：Context可能发送一些具体算法不需要的冗余数据<br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-6-1-1-2">方法2：Context自身作为一个参数传递给Strategy，由Strateg去显式调用Get获取数据<br/>
+
+<p class="verse">
+缺点：Context必须更精确的定义和分出多个Get接口，Strategy跟Context之间耦合更紧密。(修改时，会同时需要修改这两个类)<br/>
+</p>
+
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2-6-2" class="outline-4">
+<h4 id="sec-2-6-2"><span class="section-number-4">2.6.2</span> 将Strategy作为模板参数</h4>
+<div class="outline-text-4" id="text-2-6-2">
+
+<ul>
+<li id="sec-2-6-2-1">优点：<br/>
+<ul>
+<li>不再需要Stratgy抽象基类
+</li>
+<li>将Strategy实例和模板方法进行了静态绑定，提高了运行效率
+</li>
+</ul>
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-6-2-2">缺点：<br/>
+<ul>
+<li>不能在运行时改变行为
+</li>
+</ul>
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2-6-3" class="outline-4">
+<h4 id="sec-2-6-3"><span class="section-number-4">2.6.3</span> 使Strategy成为可选的</h4>
+<div class="outline-text-4" id="text-2-6-3">
+
+<p>Context执行缺省行为，只有当用户不喜欢缺省行为时，才选择可选的Strategy。
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-2-7" class="outline-3">
+<h3 id="sec-2-7"><span class="section-number-3">2.7</span> 相关模式</h3>
+<div class="outline-text-3" id="text-2-7">
+
+<p><a href="#sec-3">State</a> <a href="#sec-3-7-1">两者区别</a>、<a href="#sec-5">Template Method</a>
+</p></div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><a name="State" id="State"></a><span class="section-number-2">3</span> 状态模式</h2>
+<div class="outline-text-2" id="text-3">
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> 概述</h3>
+<div class="outline-text-3" id="text-3-1">
+
+<p>允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-3-2">
+
+<ul>
+<li>一个对象的行为取决于它的状态，并且需要在 <b>运行时</b> 根据它的状态改变它的行为
+</li>
+<li>一个操作中含有 <b>庞大</b> 的分支条件语句，且这些分支依赖于该对象的状态
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> 结构</h3>
+<div class="outline-text-3" id="text-3-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/State.png" align="center" alt="../../resources/OO/img/State.png" /></p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> 优点</h3>
+<div class="outline-text-3" id="text-3-4">
+
+<ul>
+<li>将与特定状态相关的行为局部化，把不同状态的行为分割开来
+</li>
+<li>通过定义新的子类，很容易增加新的状态和转化
+</li>
+<li>它使得状态转换显式化
+<ol>
+<li>当一个对象某个成员变量来定义状态时，其状态仅表现为对变量赋值，不够明确。
+</li>
+<li>从Context的角度看，状态转换是原子的——只需重新绑定一个State对象变量。
+</li>
+</ol>
+
+</li>
+<li>State对象可以被多个Context对象共享()
+<ul>
+<li>条件：状态 <b>对象</b> 不能持有自己的状态实例。需要将状态实例指定到一个静态变量中(即实现单件模式)
+</li>
+<li>如果状态需要利用Context中的数据或方法，必须在每个接口方法内传入Context的引用
+
+<p class="verse">
+这样可实现没有内部状态，只有行为的轻量级对象<sup><a class="footref" name="fnr-.1" href="#fn-.1">1</a></sup><br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-5" class="outline-3">
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> 缺点</h3>
+<div class="outline-text-3" id="text-3-5">
+
+<ul>
+<li>类的数目增加了，看起来不够紧凑
+
+<p class="verse">
+真正重要的是暴露给客户的类数目。如果状态有很多，这样分布更好，否则需要庞大的条件语句。<br/>
+</p>
+
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-6" class="outline-3">
+<h3 id="sec-3-6"><span class="section-number-3">3.6</span> 实现</h3>
+<div class="outline-text-3" id="text-3-6">
+
+
+</div>
+
+<div id="outline-container-3-6-1" class="outline-4">
+<h4 id="sec-3-6-1"><span class="section-number-4">3.6.1</span> 谁定义状态转换</h4>
+<div class="outline-text-4" id="text-3-6-1">
+
+<ul>
+<li id="sec-3-6-1-1">State模式不指定哪个参与者定义状态转换准则。如果该准则固定，可在Context中完全实现。<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-3-6-1-2">如果让State子类自身指定他们的后继状态以及何时进行转换，通常更灵活更合适<br/>
+
+<p class="verse">
+这需要Context增加一个接口，让State子类对象显示地设定Context当前状态<br/>
+缺点：产生了子类之间的实现依赖<br/>
+</p>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-3-6-2" class="outline-4">
+<h4 id="sec-3-6-2"><span class="section-number-4">3.6.2</span> 使用表驱动方法替代</h4>
+<div class="outline-text-4" id="text-3-6-2">
+
+<p>将条件代码(State模式下的虚函数)映射为一张查找表。
+</p><ul>
+<li>缺点：对表的查找通常不如(虚)函数调用效率高。
+</li>
+</ul>
+
+<p>总结：表驱动着重于定义状态转换；State模式则是针对状态相关的行为进行建模。
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-3-6-3" class="outline-4">
+<h4 id="sec-3-6-3"><span class="section-number-4">3.6.3</span> 创建和销毁State对象</h4>
+<div class="outline-text-4" id="text-3-6-3">
+
+<ul>
+<li id="sec-3-6-3-1">面临权衡：(1)需要时创建；(2)始终置于内存<br/>
+<ol>
+<li>将要进入的状态，在运行时是不可知的，且上下文不经常改变状态时，选择1。
+</li>
+<li>另外，当State对象存储大量的信息时，使用1
+</li>
+<li>当状态频繁变化时，第2种方法更好。Context必须保存对所有可能会进入的那些状态的引用。
+</li>
+</ol>
+
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3-7" class="outline-3">
+<h3 id="sec-3-7"><span class="section-number-3">3.7</span> 相关模式</h3>
+<div class="outline-text-3" id="text-3-7">
+
+<p><a href="#sec-2">Strategy</a>、<a href="#sec-5">Template Method</a>
+</p>
+</div>
+
+<div id="outline-container-3-7-1" class="outline-4">
+<h4 id="sec-3-7-1"><a name="diff-between-strategy-and-state" id="diff-between-strategy-and-state"></a><span class="section-number-4">3.7.1</span> 与Strategy模式的区别</h4>
+<div class="outline-text-4" id="text-3-7-1">
+
+
+<p class="verse">
+定义上讲：<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Strategy定义的是一组平行的算法，这些算法有着共同的目标。<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - State模式更关注根据内在状态的不同，执行不同的行为，这些行为可能目的完全不同。<br/>
+客户角度：<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - State模式：一般的用法，状态通常跟着Context的行为而改变，对客户来说，浑然不知。封装了状态的转换规则。<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Strategy模式：通常是由客户来选择具体的行为策略。<br/>
+总结：<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Strategy模式提供了一个继承之外更具弹性的替换方案。<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - State模式更多的用来避免Context中过多的分支语句。<br/>
+</p>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><a name="Observer" id="Observer"></a><span class="section-number-2">4</span> 观察者模式</h2>
+<div class="outline-text-2" id="text-4">
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> 概述</h3>
+<div class="outline-text-3" id="text-4-1">
+
+<p>定义对象之间一种一对多的依赖，当一个对象状态发生变化时，所有依赖于它的对象都得到通知。
+</p></div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-4-2">
+
+<p>以下任一情况可使用Observer模式
+</p><ul>
+<li>当一个抽象模型有两个方面，一个方面依赖于另一方面，将两者独立封装起来以便修改和复用。
+</li>
+<li>当一个对象的改变需要同时改变其他对象，而不知道具体有多少对象有待改变。
+</li>
+<li>当一个对象必须通知其他对象，而又不能知道其他对象是谁的情况下。（即不希望是紧耦合）
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> 结构</h3>
+<div class="outline-text-3" id="text-4-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/Observer.png" align="center" alt="../../resources/OO/img/Observer.png" /></p>
+
+</div>
+<p>
+   流程图
+   </p>
+<div class="figure">
+<p><img src="../../resources/OO/img/ObsSeq.png" align="center" alt="../../resources/OO/img/ObsSeq.png" /></p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4-4" class="outline-3">
+<h3 id="sec-4-4"><span class="section-number-3">4.4</span> 优点</h3>
+<div class="outline-text-3" id="text-4-4">
+
+<ul>
+<li>Subject和Observer间的抽象耦合(都只了解对方的接口)
+</li>
+</ul>
+
+
+<p class="verse">
+因为是非紧密耦合的，Subject和Observer可以来自于系统中的不同的抽象层次<br/>
+低层次Subject一样可以通知高层次Observer，使用该模式不会破坏系统层次<br/>
+这就是抽象Subject和Observer的作用。<br/>
+</p>
+
+
+<ul>
+<li>支持广播通信
+</li>
+</ul>
+
+
+<p class="verse">
+是否要加入广播列表取决于观察者<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-5" class="outline-3">
+<h3 id="sec-4-5"><span class="section-number-3">4.5</span> 缺点</h3>
+<div class="outline-text-3" id="text-4-5">
+
+<ul>
+<li>来自某一观察者的意外更新
+</li>
+</ul>
+
+
+<p class="verse">
+某个观察者更新了主题的状态，导致其他观察者也发生了改变。<br/>
+如果更新准则定义或维护不当，常常会引起错误的更新。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-6" class="outline-3">
+<h3 id="sec-4-6"><span class="section-number-3">4.6</span> 实现</h3>
+<div class="outline-text-3" id="text-4-6">
+
+
+</div>
+
+<div id="outline-container-4-6-1" class="outline-4">
+<h4 id="sec-4-6-1"><span class="section-number-4">4.6.1</span> 创建主题与其观察者之间的映射</h4>
+<div class="outline-text-4" id="text-4-6-1">
+
+<ul>
+<li>主题跟踪观察者最简单的方式是保存观察者们的引用
+</li>
+<li>当主题很多，观察者较少时，以上方法空间代价可能很高(不是太大的问题)
+</li>
+</ul>
+
+
+<p class="verse">
+解决方案，拿时间换空间，维护一份主题和观察者之间的映射表。<br/>
+该方案增加了访问观察者的开销(每次访问都需要读映射表)。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-6-2" class="outline-4">
+<h4 id="sec-4-6-2"><span class="section-number-4">4.6.2</span> 观察多个主题</h4>
+<div class="outline-text-4" id="text-4-6-2">
+
+
+<p class="verse">
+某些情况下，观察多个主题是有意义的，例如：一个表格对象依赖于多个数据源。<br/>
+需要拓展Update接口使观察者知道是哪一个主题送来的。<br/>
+主题可以简单的将自己作为观察者Update接口的参数，让观察者知道应去检查哪一个目标。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-6-3" class="outline-4">
+<h4 id="sec-4-6-3"><span class="section-number-4">4.6.3</span> 谁触发更新</h4>
+<div class="outline-text-4" id="text-4-6-3">
+
+<p>Notify谁来调用？
+</p><ul>
+<li>由主题对象的状态设定操作自动调用。
+<ul>
+<li>优点：客户不需要调用Notify。
+</li>
+<li>缺点：多个连续的设定操作会产生多次连续更新，可能效率较低。(关键还是要看需求：在更新状态的时候是否需要通知)
+</li>
+</ul>
+
+</li>
+<li>客户负责调用Notify
+<ul>
+<li>优点：客户可以在一系列状态设定操作之后一次性通知更新。
+</li>
+<li>缺点：给客户增加了触发更新的责任。客户忘记的话，容易出错。
+</li>
+</ul>
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-6-4" class="outline-4">
+<h4 id="sec-4-6-4"><span class="section-number-4">4.6.4</span> 避免悬挂引用</h4>
+<div class="outline-text-4" id="text-4-6-4">
+
+
+<p class="verse">
+当删除一个主题时，应注意不要在其观察者中遗留对该目标的悬挂引用。<br/>
+方法：删除时，通知观察者将对该主题的引用复位(=NULL)<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-6-5" class="outline-4">
+<h4 id="sec-4-6-5"><span class="section-number-4">4.6.5</span> 在发出通知前，确保主题的状态自身是一致的(很重要)</h4>
+<div class="outline-text-4" id="text-4-6-5">
+
+
+
+
+<pre class="src src-c++"><span style="color: #daa520;">void</span> <span style="color: #ff6347;">MySubject</span>::<span style="color: #00008b; font-weight: bold;">Operation</span> (<span style="color: #daa520;">int</span> <span style="color: #008b8b;">newValue</span>)
+{
+  <span style="color: #ff6347;">BaseClassSubject</span>::Operation(newValue);<span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#20808;&#35302;&#21457;&#20102;&#36890;&#30693;</span>
+  _myInstVar += newValue;<span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#21518;&#20462;&#25913;&#33258;&#36523;&#29366;&#24577;</span>
+}
+</pre>
+
+<p>
+可以使用<a href="#sec-5">模板方法</a>发送通知来避免这种错误。(模板方法定死修改状态和触发通知的顺序)
+</p></div>
+
+</div>
+
+<div id="outline-container-4-6-6" class="outline-4">
+<h4 id="sec-4-6-6"><span class="section-number-4">4.6.6</span> 推拉模型的取舍</h4>
+<div class="outline-text-4" id="text-4-6-6">
+
+<ul>
+<li>推模型(大多数情况使用它)
+<ul>
+<li>Update参数传入信息可能极大，并不是所有观察者都需要。
+</li>
+<li>假定了主题知道一些观察者所需要的信息。可能导致观察者接口难以复用，主题对观察者所需要的信息的假定，并不总是正确。
+</li>
+</ul>
+
+</li>
+<li>拉模型
+<ul>
+<li>观察者自己向主题获取信息。
+</li>
+<li>强调主题并不知道它的观察者。
+</li>
+<li>缺点：可能效率较差，因为观察者有时需要自己去确认什么改变了。
+</li>
+<li>缺点2：可能需要调用多个接口以搜集全观察者自己需要的状态，比较麻烦。(耦合度增高)
+</li>
+</ul>
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-6-7" class="outline-4">
+<h4 id="sec-4-6-7"><span class="section-number-4">4.6.7</span> 只关注感兴趣的改变</h4>
+<div class="outline-text-4" id="text-4-6-7">
+
+
+<p class="verse">
+拓展主题的注册接口，加入interest参数<br/>
+</p>
+
+
+
+
+<pre class="src src-c++"><span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#20027;&#39064;</span>
+<span style="color: #daa520;">void</span> <span style="color: #ff6347;">Subject</span>::<span style="color: #00008b; font-weight: bold;">Attach</span>(<span style="color: #daa520;">Observer</span>*, <span style="color: #daa520;">Aspect</span>&amp; <span style="color: #008b8b;">interest</span>);
+<span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#35266;&#23519;&#32773;</span>
+<span style="color: #daa520;">void</span> <span style="color: #ff6347;">Observer</span>::<span style="color: #00008b; font-weight: bold;">Update</span>(<span style="color: #daa520;">Subject</span>*, <span style="color: #daa520;">Aspect</span>&amp; <span style="color: #008b8b;">interest</span>);
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-6-8" class="outline-4">
+<h4 id="sec-4-6-8"><span class="section-number-4">4.6.8</span> 封装复杂的更新语义(ChangeManager)</h4>
+<div class="outline-text-4" id="text-4-6-8">
+
+
+<p class="verse">
+当主题与观察者之间的依赖关系特别复杂时，需要一个对象来维护这些关系。<br/>
+这样的对象成为ChangeManager。<br/>
+目的：尽量减少观察者反映其主题的状态变化所需的工作量。<br/>
+例子：如果一操作涉及到几个主题，就必须保证所有的主题都更改完了，再<br/>
+一并通知它们的观察者。<br/>
+</p>
+
+
+<p>
+<b>三个责任</b> ：
+</p><ul>
+<li>管理主题与观察者之间的映射表，提供接口来维护这个映射表。
+</li>
+<li>它定义一个特定的更新策略。
+</li>
+<li>根据一个主题的请求，更新所有它的观察者。
+</li>
+</ul>
+
+<p>详细参考：<a href="#sec-4-7">基于ChangeManager的Observer模式</a>
+</p></div>
+
+</div>
+
+<div id="outline-container-4-6-9" class="outline-4">
+<h4 id="sec-4-6-9"><span class="section-number-4">4.6.9</span> 结合主题类和观察者类（针对不支持多重继承语言）</h4>
+<div class="outline-text-4" id="text-4-6-9">
+
+
+<p class="verse">
+对不支持多重继承或接口的语言(SmallTalk)，不单独定义Subject和Observer。<br/>
+而将他们的接口结合到一个类中。<br/>
+</p>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4-7" class="outline-3">
+<h3 id="sec-4-7"><a name="ChangeManager-Observer" id="ChangeManager-Observer"></a><span class="section-number-3">4.7</span> 拓展</h3>
+<div class="outline-text-3" id="text-4-7">
+
+
+<p class="verse">
+基于ChangeManager的Observer模式<br/>
+</p>
+
+
+<ul>
+<li>结构
+   <div class="figure">
+<p><img src="../../resources/OO/img/ChangeManagerObserver.png" align="center" alt="../../resources/OO/img/ChangeManagerObserver.png" /></p>
+
+</div>
+</li>
+<li>说明
+<ul>
+<li>SimpleChangeManager总是更新每一个主题的所有观察者(简单)
+</li>
+<li>DAGChangeManager实现多个主题变更时，只更新观察者一次
+</li>
+</ul>
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-8" class="outline-3">
+<h3 id="sec-4-8"><span class="section-number-3">4.8</span> 相关模式</h3>
+<div class="outline-text-3" id="text-4-8">
+
+<ul>
+<li>ChangeManager是一个<a href="#Mediator">Mediator</a>模式的实例
+</li>
+<li>通常只有一个ChangeManager，可用<a href="#sec-7">Singleton</a>模式
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><a name="Template-Method" id="Template-Method"></a><span class="section-number-2">5</span> 模板方法</h2>
+<div class="outline-text-2" id="text-5">
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> 概述</h3>
+<div class="outline-text-3" id="text-5-1">
+
+
+<p class="verse">
+最基本的设计模式，代码复用的基本技术<br/>
+定义一系列算法的骨架，将其中的一些步骤延迟到子类中。<br/>
+使子类可以不改变一个算法的结构，而重定义算法的某些特定步骤。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-5-2">
+
+<ul>
+<li>一次性实现一个算法的不变的部分，将可变行为留给子类去实现。
+</li>
+<li>多个子类中存在一些公共行为，需要提取出来，做法如下：
+<ol>
+<li>识别代码中不同部分
+</li>
+<li>提取出新的函数
+</li>
+<li>用一个新的模板方法替换原算法(公共部分放于其中)
+</li>
+</ol>
+
+</li>
+<li>控制子类扩展，模板方法只在特定点调用子类方法
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> 结构</h3>
+<div class="outline-text-3" id="text-5-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/TemplateMethod.png" align="center" alt="../../resources/OO/img/TemplateMethod.png" /></p>
+
+</div>
+<ul>
+<li>ConcreteClass实现算法中与特定子类相关的步骤
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-5-4" class="outline-3">
+<h3 id="sec-5-4"><span class="section-number-3">5.4</span> 优点</h3>
+<div class="outline-text-3" id="text-5-4">
+
+<ul>
+<li>提供了反向的控制结构。即"好莱坞法则<sup><a class="footref" name="fnr-.2" href="#fn-.2">2</a></sup>"："别找我们，我们找你。"——高层组件调用低层组件，低层组件不能调用高层组件。
+</li>
+<li>一个模板方法整合了一些原语操作，从而减少了原语操作的数目，简化客户程序调用。
+</li>
+<li>客户代码只依赖于模板方法基类，不依赖于具体类，减少整个系统的 <b>依赖</b> 。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-5-5" class="outline-3">
+<h3 id="sec-5-5"><span class="section-number-3">5.5</span> 实现</h3>
+<div class="outline-text-3" id="text-5-5">
+
+<p>模板方法调用下列类型的操作：
+</p><ul>
+<li>具体的操作(ConcreteClass或客户类)
+</li>
+<li>具体的AbstractClass的操作
+</li>
+<li>抽象操作(必须被重定义)
+</li>
+<li><a href="#sec-8-2">Factory Method</a>
+</li>
+<li>hook operations 提供缺省<sup><a class="footref" name="fnr-.3" href="#fn-.3">3</a></sup>的行为，子类在必要时拓展。
+</li>
+</ul>
+
+
+<p class="verse">
+<b>重要</b> ：模板方法应该指明哪些操作是钩子(可被重定义)，哪些操作是抽象操作(必须被重定义)。<br/>
+</p>
+
+
+<p>
+<b>细节注意</b> ：
+</p><ol>
+<li>C++细节
+<ul>
+<li>模板方法调用的原语操作(PrimitiveOperation1等)声明为protect
+</li>
+<li>抽象操作定义为纯虚函数。
+</li>
+<li>模板方法一般就是一个普通的非虚成员函数
+</li>
+<li>钩子使用Virtual方法
+</li>
+</ul>
+
+</li>
+<li>命名约定。可给应被重定义的操作上加一个前缀"Do"，例如："DoCreateDocument"
+</li>
+<li>模板方法可以声明为"Sealed"、"final"
+</li>
+</ol>
+
+<p><b>钩子使用</b> 
+钩子实现算法中可选部分
+</p>
+
+
+<pre class="src src-c++"><span style="color: #daa520;">void</span> <span style="color: #ff6347;">AbstractClass</span>::<span style="color: #00008b; font-weight: bold;">TemplateMethod</span>()
+{
+  Operation1();
+  Operation2();
+  Hook1();
+  <span style="color: #1e90ff; font-weight: bold;">if</span> (HookFileExisted())
+    {
+      Operation3();
+    }
+}
+
+<span style="color: #daa520;">bool</span> <span style="color: #ff6347;">AbstractClass</span>::<span style="color: #00008b; font-weight: bold;">HookFileExisted</span>()
+{
+  <span style="color: #1e90ff; font-weight: bold;">return</span> <span style="color: #ff6347;">true</span>;
+}  
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-5-6" class="outline-3">
+<h3 id="sec-5-6"><span class="section-number-3">5.6</span> 相关模式</h3>
+<div class="outline-text-3" id="text-5-6">
+
+<ul>
+<li><a href="#sec-8-2">Factory Method</a>常被模板方法调用。
+</li>
+<li><a href="#sec-2">Strategy</a>使用委托来改变整个算法，模板方法使用继承来改变算法的一部分。
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><a name="Decorator" id="Decorator"></a><span class="section-number-2">6</span> 装饰者模式</h2>
+<div class="outline-text-2" id="text-6">
+
+
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> 概述</h3>
+<div class="outline-text-3" id="text-6-1">
+
+<p>动态地给一个对象添加一些额外的职责。提供了比继承更大的灵活<sup><a class="footref" name="fnr-.4" href="#fn-.4">4</a></sup>。
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-6-2">
+
+<ul>
+<li>以动态、透明的方式给单个对象添加职责。
+</li>
+<li>处理那些可以撤销的职责。
+</li>
+<li>不能采用继承进行拓展时。
+
+<p class="verse">
+一种情况：有大量独立的拓展，仅因为这些拓展的组合不同而使得子类数目爆炸性增长。<br/>
+另一种情况：类定义被隐藏，或者类不可被继承。<br/>
+</p>
+
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-3" class="outline-3">
+<h3 id="sec-6-3"><span class="section-number-3">6.3</span> 结构</h3>
+<div class="outline-text-3" id="text-6-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/Decorator.png" align="center" alt="../../resources/OO/img/Decorator.png" /></p>
+
+</div>
+<p>
+   此处的继承为了达到类型匹配的目的，使用户在使用Decorator对象时，与使用Component一样。
+</p></div>
+
+</div>
+
+<div id="outline-container-6-4" class="outline-3">
+<h3 id="sec-6-4"><span class="section-number-3">6.4</span> 优点</h3>
+<div class="outline-text-3" id="text-6-4">
+
+<ul>
+<li>比静态继承更灵活，在运行时添加职责。
+</li>
+<li>继承在添加一些共通职责时，容易产生类爆炸。Decorator添加的职责大多数情况下能重用。
+</li>
+<li>使结构层次较高的类更简洁。不依赖于现有已拓展的Decorator类，定义新类型的Decorator很容易。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-5" class="outline-3">
+<h3 id="sec-6-5"><span class="section-number-3">6.5</span> 缺点</h3>
+<div class="outline-text-3" id="text-6-5">
+
+<ul>
+<li>使用装饰时不应该依赖于对象标识。被装饰了的组件与这个组件本身就对象标识而言，是有区别的。
+</li>
+<li>产生很多小对象。对于不了解系统的人，难以学习，排错也比较困难。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-6" class="outline-3">
+<h3 id="sec-6-6"><span class="section-number-3">6.6</span> 实现</h3>
+<div class="outline-text-3" id="text-6-6">
+
+<ol>
+<li>接口一致性。所有的Component和Decorator必须有一个公共的父类。
+</li>
+<li>省略抽象的Decorator类。仅需添加一个职责时，没必要抽象Decorator类。
+</li>
+<li>保持Component类的简单性。公共父类仅定义接口，尽量避免添加子类并不需要的职责。
+</li>
+</ol>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-7" class="outline-3">
+<h3 id="sec-6-7"><span class="section-number-3">6.7</span> 相关模式</h3>
+<div class="outline-text-3" id="text-6-7">
+
+
+</div>
+
+<div id="outline-container-6-7-1" class="outline-4">
+<h4 id="sec-6-7-1"><span class="section-number-4">6.7.1</span> 与<a href="#sec-2">Strategy</a>的比较：</h4>
+<div class="outline-text-4" id="text-6-7-1">
+
+<ul>
+<li>Decorator可看做一个对象的 <b>外壳</b> 。
+</li>
+<li>Strategy则是改变对象的内核。
+</li>
+</ul>
+
+<p>当Component基类很 <b>庞大</b> 时，使用Decorator代价太高，Strategy模式更好一些。
+</p>
+
+
+<pre class="example">比如，绘制边框的职责，既可以使用Decorator模式包一层外壳，
+也可以使用Border对象专门负责，再组合进Context。
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-7-2" class="outline-4">
+<h4 id="sec-6-7-2"><span class="section-number-4">6.7.2</span> <a href="#Composite">Composite</a>模式</h4>
+<div class="outline-text-4" id="text-6-7-2">
+
+<p>可以将装饰视为一个退化的、仅有一个组件的组合。另外，它的目的在于添加职责，而Composite目的在于对象聚集。
+</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><a name="Singleton" id="Singleton"></a><span class="section-number-2">7</span> 单件模式</h2>
+<div class="outline-text-2" id="text-7">
+
+
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> 概述</h3>
+<div class="outline-text-3" id="text-7-1">
+
+<p>保证类仅有一个实例，并提供该实例的全局访问点。
+</p></div>
+
+</div>
+
+<div id="outline-container-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-7-2">
+
+<ul>
+<li>当类只能有一个实例。
+</li>
+<li>当这个唯一实例需要可以通过子类化扩展
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-7-3" class="outline-3">
+<h3 id="sec-7-3"><span class="section-number-3">7.3</span> 结构</h3>
+<div class="outline-text-3" id="text-7-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/Singleton.png" align="center" alt="../../resources/OO/img/Singleton.png" /></p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7-4" class="outline-3">
+<h3 id="sec-7-4"><span class="section-number-3">7.4</span> 优点</h3>
+<div class="outline-text-3" id="text-7-4">
+
+<ul>
+<li>缩小名空间。单件是对全局变量的一种改进。全局变量会污染名空间（多模块都有某全局变量就会产生编译冲突）。
+</li>
+<li>可以被继承。
+</li>
+<li><b>重点拓展</b> 允许可变数目的实例。允许Singleton类可以管理多个实例（考虑连接池和线程池之类的实现）。
+</li>
+<li>比类方法(静态)更灵活。无法实现维护多个实例的情况。另外静态方法无法通过多态由子类重定义。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-7-5" class="outline-3">
+<h3 id="sec-7-5"><span class="section-number-3">7.5</span> 实现</h3>
+<div class="outline-text-3" id="text-7-5">
+
+
+
+
+<pre class="src src-cpp"><span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">Singleton</span>
+{
+<span style="color: #1e90ff; font-weight: bold;">public</span>:
+  <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span>* <span style="color: #00008b; font-weight: bold;">GetInstance</span>();
+<span style="color: #1e90ff; font-weight: bold;">protected</span>:
+  <span style="color: #00008b; font-weight: bold;">Singleton</span>();
+<span style="color: #1e90ff; font-weight: bold;">private</span>:
+  <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span>* <span style="color: #008b8b;">_instance</span>;
+};
+
+<span style="color: #daa520;">Singleton</span>* <span style="color: #ff6347;">Singleton</span>::<span style="color: #008b8b;">_instance</span> = 0;
+<span style="color: #daa520;">Singleton</span>* <span style="color: #ff6347;">Singleton</span>::<span style="color: #00008b; font-weight: bold;">GetInstance</span> ()
+{
+  <span style="color: #1e90ff; font-weight: bold;">if</span> (_instance == 0)
+    {
+      _instance = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">Singleton</span>();
+    }
+  <span style="color: #1e90ff; font-weight: bold;">return</span> _instance;
+}
+</pre>
+
+
+</div>
+
+<div id="outline-container-7-5-1" class="outline-4">
+<h4 id="sec-7-5-1"><span class="section-number-4">7.5.1</span> 同步问题</h4>
+<div class="outline-text-4" id="text-7-5-1">
+
+
+<p class="verse">
+以下用Java示例说明较为简单。<br/>
+为了保证在多线程环境下能只创建一个实例，需要对GetInstance方法做同步处理。<br/>
+<br/>
+一个方法是：直接将GetInstance方法声明为synchronized。<br/>
+这样的做法有个问题：事实上我们需要同步的只是GetInstance内部负责创建实例的<br/>
+区块，对整个函数进行同步，如果外部调用很频繁，开销会很大。<br/>
+<br/>
+更好的做法如下：<br/>
+</p>
+
+
+
+
+<pre class="src src-java"><span style="color: #1e90ff; font-weight: bold;">public</span> <span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">Singleton</span>
+{
+    <span style="color: #1e90ff; font-weight: bold;">private</span> <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span> <span style="color: #008b8b;">uniqueInstance</span>;
+    <span style="color: #1e90ff; font-weight: bold;">private</span> Singleton() {}
+    <span style="color: #1e90ff; font-weight: bold;">public</span> <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span> <span style="color: #00008b; font-weight: bold;">GetInstance</span>()
+    {
+        <span style="color: #1e90ff; font-weight: bold;">if</span> (uniqueInstance == <span style="color: #ff6347;">null</span>) { <span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#21028;&#26029;&#26159;&#21542;&#35201;&#36827;&#20837;&#36127;&#36131;&#21019;&#24314;&#23454;&#20363;&#30340;&#21516;&#27493;&#27169;&#22359;</span>
+            <span style="color: #1e90ff; font-weight: bold;">synchronized</span> (Singleton.<span style="color: #1e90ff; font-weight: bold;">class</span>) {<span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#20165;&#19968;&#20010;&#32447;&#31243;&#25191;&#34892;&#27492;&#21306;&#22359;&#65292;&#30830;&#20445;&#21482;&#21019;&#24314;&#19968;&#20010;&#23454;&#20363;&#12290;</span>
+                <span style="color: #1e90ff; font-weight: bold;">if</span> (uniqueInstance == <span style="color: #ff6347;">null</span>) { 
+                    uniqueInstance = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">Singleton</span>();
+                }
+            }
+        }
+        <span style="color: #1e90ff; font-weight: bold;">return</span> uniqueInstance;
+    }
+}
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-7-5-2" class="outline-4">
+<h4 id="sec-7-5-2"><span class="section-number-4">7.5.2</span> 继承问题</h4>
+<div class="outline-text-4" id="text-7-5-2">
+
+
+<p class="verse">
+问题所在：子类的单件实例化在何处实现？<br/>
+几种选择：<br/>
+</p>
+
+
+<ul>
+<li>在父类Singleton的GetInstance中决定使用哪一个单件子类。可以传入参数，使用条件语句在运行时期选择适合的子类。
+  局限在于硬性限定了可能的Singleton子类的集合。
+</li>
+<li>将GetInstance类从父类中剥出，并将它放入子类。客户代码在使用时自行决定使用哪个子类的GetInstance。
+  该方法是在编译时决定使用哪个子类的，非运行时，不够灵活。
+</li>
+<li>将要使用的单件类记录在设定文件(或注册表等)中。
+
+<p class="verse">
+用法：记录所使用的单件类名作为配置项，在程序中加入该字符串与单件具体类的映射。<br/>
+Singleton父类只需通过映射选择相应的子类，而不需要知道所有的子类。<br/>
+<br/>
+注意事项：映射表谁来维护？以何种形式存储？子类如何注册进映射表？具体可参考《GOF设计模式》<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7-6" class="outline-3">
+<h3 id="sec-7-6"><span class="section-number-3">7.6</span> 与一些语言的纯静态类比较</h3>
+<div class="outline-text-3" id="text-7-6">
+
+
+</div>
+
+<div id="outline-container-7-6-1" class="outline-4">
+<h4 id="sec-7-6-1"><span class="section-number-4">7.6.1</span> 概念上的理解</h4>
+<div class="outline-text-4" id="text-7-6-1">
+
+<p>单件模式只是一种OO思想，而静态类可以当为单件模式的一种特殊实现方式。
+</p><ul>
+<li>静态类更多的用于与特定实例无关的 <b>全局</b> 属性和 <b>全局</b> 方法的分类。比如<a href="http://msdn.microsoft.com/zh-cn/library/system.math_members(v=vs.80).aspx">.NET的MATH类</a>
+</li>
+<li>而单件的概念是确实需要一个实例，而且实例只能有一个。比如：注册表对象，线程池对象
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-7-6-2" class="outline-4">
+<h4 id="sec-7-6-2"><span class="section-number-4">7.6.2</span> 创建的时机</h4>
+<div class="outline-text-4" id="text-7-6-2">
+
+<ul>
+<li>静态类在编译时创建
+</li>
+<li>单件模式的类在运行时创建
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-7-6-3" class="outline-4">
+<h4 id="sec-7-6-3"><span class="section-number-4">7.6.3</span> 继承性</h4>
+<div class="outline-text-4" id="text-7-6-3">
+
+<ul>
+<li>静态类不能被继承，也无法继承其他类。(如果该类需要实现一些接口，则不能使用静态类)
+</li>
+<li>单件类可以被继承
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-7-6-4" class="outline-4">
+<h4 id="sec-7-6-4"><span class="section-number-4">7.6.4</span> 总结</h4>
+<div class="outline-text-4" id="text-7-6-4">
+
+<ul>
+<li>静态类是对全局方法、全局变量的分类组织方法。
+</li>
+<li>单件模式表示有且仅有一个对象。单件类可以被继承。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-7-6-5" class="outline-4">
+<h4 id="sec-7-6-5"><span class="section-number-4">7.6.5</span> 建议</h4>
+<div class="outline-text-4" id="text-7-6-5">
+
+
+<p class="verse">
+当对于是否使用单件模式没把握的时候，使用单件类更好一些。<br/>
+原因：静态类改成实例类，会改变接口，从而影响所有的客户代码。<br/>
+</p>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7-7" class="outline-3">
+<h3 id="sec-7-7"><span class="section-number-3">7.7</span> 相关模式</h3>
+<div class="outline-text-3" id="text-7-7">
+
+<p>经常使用Singleton模式的其他模式：
+</p><ul>
+<li><a href="#sec-8-3">Abstract Factory</a>
+</li>
+<li><a href="#Builder">Builder</a>
+</li>
+<li><a href="#Prototype">Prototype</a>
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><a name="Factory" id="Factory"></a><span class="section-number-2">8</span> 工厂模式</h2>
+<div class="outline-text-2" id="text-8">
+
+
+</div>
+
+<div id="outline-container-8-1" class="outline-3">
+<h3 id="sec-8-1"><a name="SimpleFactory" id="SimpleFactory"></a><span class="section-number-3">8.1</span> 简单工厂</h3>
+<div class="outline-text-3" id="text-8-1">
+
+
+</div>
+
+<div id="outline-container-8-1-1" class="outline-4">
+<h4 id="sec-8-1-1"><span class="section-number-4">8.1.1</span> 结构</h4>
+<div class="outline-text-4" id="text-8-1-1">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/SimpleFactory.png" align="center" alt="../../resources/OO/img/SimpleFactory.png" /></p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8-1-2" class="outline-4">
+<h4 id="sec-8-1-2"><span class="section-number-4">8.1.2</span> 代码示例</h4>
+<div class="outline-text-4" id="text-8-1-2">
+
+
+
+
+<pre class="src src-cpp"><span style="color: #1e90ff; font-weight: bold;">public</span> <span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">SimplePizzaFactory</span>
+{
+<span style="color: #1e90ff; font-weight: bold;">public</span>:
+    <span style="color: #daa520;">Pizza</span> <span style="color: #00008b; font-weight: bold;">Create</span>(<span style="color: #daa520;">string</span> <span style="color: #008b8b;">type</span>);
+    <span style="color: #1e90ff; font-weight: bold;">virtual</span> ~<span style="color: #00008b; font-weight: bold;">SimplePizzaFactory</span>();
+};
+
+ <span style="color: #1e90ff; font-weight: bold;">public</span> Pizza* <span style="color: #ff6347;">SimplePizzaFactory</span>::Create(<span style="color: #daa520;">string</span> <span style="color: #008b8b;">type</span>)
+ {
+     <span style="color: #daa520;">Pizza</span>* <span style="color: #008b8b;">pizza</span> = null;
+     <span style="color: #1e90ff; font-weight: bold;">switch</span> (type)
+     {
+     <span style="color: #1e90ff; font-weight: bold;">case</span> <span style="color: #9400d3;">"cheese"</span>:
+         pizza = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">CheesePizza</span>();
+     <span style="color: #1e90ff; font-weight: bold;">case</span> <span style="color: #9400d3;">"pepperoni"</span>:
+         pizza = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">Pepperoni</span>();
+     <span style="color: #1e90ff; font-weight: bold;">default</span>:
+         pizza = null;
+     }
+     <span style="color: #1e90ff; font-weight: bold;">return</span> pizza;
+ }
+
+<span style="color: #daa520;">int</span> <span style="color: #00008b; font-weight: bold;">main</span>()
+{
+    <span style="color: #daa520;">SimplePizzaFactory</span>* <span style="color: #008b8b;">pFactory</span> = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">SimplePizzaFactory</span>();
+    <span style="color: #daa520;">Pizza</span>* <span style="color: #008b8b;">pPizza</span> = pFactory-&gt;Create(<span style="color: #9400d3;">"cheese"</span>);
+    <span style="color: #1e90ff; font-weight: bold;">return</span> 0;
+}
+</pre>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8-2" class="outline-3">
+<h3 id="sec-8-2"><a name="Factory-Method" id="Factory-Method"></a><span class="section-number-3">8.2</span> 工厂方法</h3>
+<div class="outline-text-3" id="text-8-2">
+
+
+</div>
+
+<div id="outline-container-8-2-1" class="outline-4">
+<h4 id="sec-8-2-1"><span class="section-number-4">8.2.1</span> 概述</h4>
+<div class="outline-text-4" id="text-8-2-1">
+
+<p>定义一个用于创建对象的接口，让子类决定实例化哪个类。
+</p></div>
+
+</div>
+
+<div id="outline-container-8-2-2" class="outline-4">
+<h4 id="sec-8-2-2"><span class="section-number-4">8.2.2</span> 适用性</h4>
+<div class="outline-text-4" id="text-8-2-2">
+
+<ul>
+<li>当一个类不知道它所必须创建的对象的时候。
+</li>
+<li>当一个类希望由它的子类来指定所要创建对象的时候。
+</li>
+<li>当类将创建的职责委托给多个子类中的一个，并且希望将指定代理类的过程局部化的时候。 
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2-3" class="outline-4">
+<h4 id="sec-8-2-3"><span class="section-number-4">8.2.3</span> 结构</h4>
+<div class="outline-text-4" id="text-8-2-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/FactoryMethod.png" align="center" alt="../../resources/OO/img/FactoryMethod.png" /></p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8-2-4" class="outline-4">
+<h4 id="sec-8-2-4"><span class="section-number-4">8.2.4</span> 拓展</h4>
+<div class="outline-text-4" id="text-8-2-4">
+
+<ul>
+<li>为子类提供hook
+</li>
+</ul>
+
+
+<p class="verse">
+用工厂方法在一个类的内部创建对象。提供缺省实现创建。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2-5" class="outline-4">
+<h4 id="sec-8-2-5"><span class="section-number-4">8.2.5</span> 实现</h4>
+<div class="outline-text-4" id="text-8-2-5">
+
+<ul>
+<li>两种情况
+<ol>
+<li>Creator是一个抽象类，且不提供工厂方法的实现。避免了不得不实例化不可预见的类的问题。
+</li>
+<li>Creator是一个具体类，为工厂方法提供一个缺省的实现。遵循的原则“有一个独立的操作创建对象，子类能重新定义”，保证了灵活性。
+</li>
+</ol>
+
+</li>
+<li>参数化工厂方法
+</li>
+<li>使用模板以避免创建子类
+
+<p class="verse">
+工厂方法一个潜在的问题是它们可能仅为了创建适当的Product对象<br/>
+而迫使你创建Creator子类，C++中可以提供一个模板子类。<br/>
+</p>
+
+
+
+
+<pre class="src src-cpp"><span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">Creator</span>
+{
+<span style="color: #1e90ff; font-weight: bold;">public</span>:
+    <span style="color: #1e90ff; font-weight: bold;">virtual</span> <span style="color: #daa520;">Product</span>* <span style="color: #00008b; font-weight: bold;">CreateProduct</span>() = 0;
+};
+
+<span style="color: #1e90ff; font-weight: bold;">template</span> &lt;<span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">TheProduct</span>&gt;
+<span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">StandardCreator</span> : <span style="color: #1e90ff; font-weight: bold;">public</span> <span style="color: #daa520;">Creator</span>
+{
+<span style="color: #1e90ff; font-weight: bold;">public</span>:
+    <span style="color: #1e90ff; font-weight: bold;">virtual</span> <span style="color: #daa520;">Product</span>* <span style="color: #00008b; font-weight: bold;">CreateProduct</span>();
+};
+
+<span style="color: #1e90ff; font-weight: bold;">template</span> &lt;<span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">TheProduct</span>&gt;
+<span style="color: #daa520;">Product</span>* <span style="color: #ff6347;">StandardCreator</span>&lt;<span style="color: #daa520;">TheProduct</span>&gt;::<span style="color: #00008b; font-weight: bold;">CreateProduct</span>()
+{
+    <span style="color: #1e90ff; font-weight: bold;">return</span> <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">TheProduct</span>;
+}
+</pre>
+
+<p>
+  客户代码：
+</p>
+
+
+<pre class="src src-cpp"><span style="color: #daa520;">StandardCreator</span>&lt;MyProduct&gt; <span style="color: #008b8b;">myCreator</span> = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">StandardCreator</span>&lt;MyProduct&gt;();
+<span style="color: #daa520;">Product</span>* <span style="color: #008b8b;">myProduct</span> = myCreator.CreateProduct();
+</pre>
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2-6" class="outline-4">
+<h4 id="sec-8-2-6"><span class="section-number-4">8.2.6</span> 相关模式</h4>
+<div class="outline-text-4" id="text-8-2-6">
+
+<ul>
+<li><a href="#sec-8-3">Abstract Factory</a>经常使用工厂方法来实现。
+</li>
+<li>工厂方法通常在<a href="#Template-Methods">Template Methods</a>中被调用。模板方法指定一系列的具体步骤，而创建对象的一步委托给工厂方法，以应对变化。
+</li>
+<li><a href="#Prototypes">Prototypes</a>不需要创建Creator的子类。但会要求一个针对Product类的Initialize操作。Creator使用Initialize来初始化对象。
+</li>
+</ul>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8-3" class="outline-3">
+<h3 id="sec-8-3"><a name="Abstract-Factory" id="Abstract-Factory"></a><span class="section-number-3">8.3</span> 抽象工厂</h3>
+<div class="outline-text-3" id="text-8-3">
+
+
+</div>
+
+<div id="outline-container-8-3-1" class="outline-4">
+<h4 id="sec-8-3-1"><span class="section-number-4">8.3.1</span> 概述</h4>
+<div class="outline-text-4" id="text-8-3-1">
+
+<p>提供创建一系列相关或相互依赖对象的接口，而无需指定它们的具体类。
+</p></div>
+
+</div>
+
+<div id="outline-container-8-3-2" class="outline-4">
+<h4 id="sec-8-3-2"><span class="section-number-4">8.3.2</span> 适用性</h4>
+<div class="outline-text-4" id="text-8-3-2">
+
+<ul>
+<li>一个系统要独立于它的产品创建、组合和表示时。
+</li>
+<li>一个系统要由多个产品系列中的一个来配置时。
+</li>
+<li>当你要强调一系列相关的产品对象的设计以便进行联合使用时。
+</li>
+<li>当你提供一个产品类库，而只想显示它们的接口而不是实现。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-8-3-3" class="outline-4">
+<h4 id="sec-8-3-3"><span class="section-number-4">8.3.3</span> 结构</h4>
+<div class="outline-text-4" id="text-8-3-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/AbstractFactory.png" align="center" width="90%" height="90%" alt="../../resources/OO/img/AbstractFactory.png" /></p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8-3-4" class="outline-4">
+<h4 id="sec-8-3-4"><span class="section-number-4">8.3.4</span> 优点</h4>
+<div class="outline-text-4" id="text-8-3-4">
+
+<ul>
+<li><b>通过接口隔离了具体工厂类。</b> 客户代码依赖于抽象工厂接口。产品的类名也在具体工厂的实现中被分离，不出现在客户代码中。
+</li>
+<li><b>使得易于交换产品系列。</b> 通过替换具体的工厂类，来改变产品系列。
+</li>
+<li><b>有利于产品的一致性。</b> 当一系列产品被设计成一起工作时，抽象工厂可以保证一个应用一次只能使用同一系列的对象。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-8-3-5" class="outline-4">
+<h4 id="sec-8-3-5"><span class="section-number-4">8.3.5</span> 缺点</h4>
+<div class="outline-text-4" id="text-8-3-5">
+
+<ul>
+<li><b>难以支持新种类的产品。</b> AbstractFactory接口定义了可以被创建的产品集合。支持新的种类，就需要扩展接口，还涉及到所有子类的改变。<a href="#extendable-concrete-factory">解决办法</a>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-8-3-6" class="outline-4">
+<h4 id="sec-8-3-6"><span class="section-number-4">8.3.6</span> 实现</h4>
+<div class="outline-text-4" id="text-8-3-6">
+
+<ul>
+<li>将工厂作为单件。一般每个产品系列只需一个ConcreteFactory的实例。
+</li>
+<li>创建产品。
+
+<p class="verse">
+AbstractFactory只声明创建产品的接口。由子类实现，一般子类实现时，<br/>
+使用<a href="#sec-8-2">Factory Method</a>模式。如果有多个可能的产品系列，具体工厂也可以<br/>
+使用<a href="#Prototype">Prototype</a>模式来实现。具体工厂使用产品系列中每一个产品的原型实<br/>
+例来初始化，且它通过复制它的原型来创建新的产品。基于原型的好处：不<br/>
+是每个新的产品系列都需要一个新的具体工厂类。<sup><a class="footref" name="fnr-.5" href="#fn-.5">5</a></sup><br/>
+</p>
+
+
+</li>
+</ul>
+
+<p><a name="extendable-concrete-factory" id="extendable-concrete-factory"></a>
+</p><ul>
+<li>定义可扩展的工厂
+
+<p class="verse">
+加入新产品需要扩展接口，影响子类。<br/>
+一个更灵活但不太安全的设计是给创建对象的操作增加一个参数。<br/>
+该参数指定了将被创建的对象的类型。(可以是类标识符、字符串等)<br/>
+AbstractFactory只需要一个Create操作，用参数指定要创建的产品<br/>
+类型。更适合于动态类型语言。<br/>
+<br/>
+当所有对象都有相同的基类，且产品对象可以安全的强转成正确的<br/>
+类型时。才能在C++这样的静态类型语言中使用。<br/>
+<br/>
+此方法有个本质的问题，因为返回的都是Object基类，客户无法区分<br/>
+或对一个产品类别进行安全的假定。需要dynamic_cast去转换，这种<br/>
+自上向下类型的转换并不总是安全的。<br/>
+<br/>
+总结：这是一个典型的高度灵活和可扩展接口的权衡问题。<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-3-7" class="outline-4">
+<h4 id="sec-8-3-7"><span class="section-number-4">8.3.7</span> 相关模式</h4>
+<div class="outline-text-4" id="text-8-3-7">
+
+<ul>
+<li><a href="#sec-8-3">Abstract Factory</a>通常用<a href="#sec-8-2">工厂方法</a>实现，也可用<a href="#Prototype">Prototype</a>实现。
+</li>
+<li>一个具体的工厂通常是一个<a href="#sec-7">单件</a>。
+</li>
+</ul>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9"><a name="Command" id="Command"></a><span class="section-number-2">9</span> 命令模式</h2>
+<div class="outline-text-2" id="text-9">
+
+
+</div>
+
+<div id="outline-container-9-1" class="outline-3">
+<h3 id="sec-9-1"><span class="section-number-3">9.1</span> 概述</h3>
+<div class="outline-text-3" id="text-9-1">
+
+
+<p class="verse">
+将各个具体请求封装成命令对象，实现统一的Execute()接口，从而可以使用不同的命令对象<br/>
+对客户进行参数化；对请求排队<sup><a class="footref" name="fnr-.6" href="#fn-.6">6</a></sup>；记录请求日志。另外还支持可撤销操作。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-9-2" class="outline-3">
+<h3 id="sec-9-2"><span class="section-number-3">9.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-9-2">
+
+<ul>
+<li>Command模式是回调机制的一个面向对象的替代品。
+</li>
+<li>可在不同的时刻，指定、排列或者执行请求。这些操作甚至可在不同的进程中进行(依赖于存储命令的媒介)
+</li>
+<li>支持取消操作。执行前记录状态，取消时利用该状态。考虑电风扇的例子<sup><a class="footref" name="fnr-.7" href="#fn-.7">7</a></sup>。也可以将每次执行的状态用队列形式保存，可实现逐步Undo或逐步Redo。
+</li>
+<li>支持修改日志。当系统崩溃时，记录下的日志过程可以重新来一遍。方法：添加Store()和Load()接口，利用序列化和持久化的方法记录日志。
+</li>
+<li>支持事务。一个ConcreteCommand实现一个事务，由于接口一致，可以用同一种方式调用所有的事务。 <b>方便</b>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-9-3" class="outline-3">
+<h3 id="sec-9-3"><span class="section-number-3">9.3</span> 结构</h3>
+<div class="outline-text-3" id="text-9-3">
+
+
+<div class="figure">
+<p><img src="../../resources/OO/img/Command.png" align="center" alt="../../resources/OO/img/Command.png" /></p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-9-4" class="outline-3">
+<h3 id="sec-9-4"><span class="section-number-3">9.4</span> 参与者</h3>
+<div class="outline-text-3" id="text-9-4">
+
+<ul>
+<li>Client 创建一个具体命令对象并指定它的接收者。
+</li>
+<li>Invoker 存储ConcreteCommand(可提供SetCommand方法)，并在适当的时候调用Execute()
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-9-5" class="outline-3">
+<h3 id="sec-9-5"><span class="section-number-3">9.5</span> 优点</h3>
+<div class="outline-text-3" id="text-9-5">
+
+<ol>
+<li>将调用命令的对象与知道如何实现该命令相关操作的对象解耦。
+</li>
+<li>Command对象可像其他的对象一样被操纵和扩展。
+</li>
+</ol>
+
+</div>
+
+</div>
+
+<div id="outline-container-9-6" class="outline-3">
+<h3 id="sec-9-6"><span class="section-number-3">9.6</span> 实现</h3>
+<div class="outline-text-3" id="text-9-6">
+
+<ul>
+<li>一个命令对象职责可大可小。
+<ul>
+<li>最小职责仅确定一个接收者和执行该请求的动作
+</li>
+<li>职责也可以大到，负责处理所有的功能，不需要接收者，直接包含具体动作。(当没有合适的接收者时使用)
+</li>
+</ul>
+
+</li>
+<li>实现undo和redo
+  ConcreteCommand类需要存储额外的状态信息，包括：
+<ul>
+<li>接收者对象
+</li>
+<li>接收者接口执行操作的参数
+</li>
+<li>接收者的状态值
+</li>
+</ul>
+
+<p>  如果将接收者的状态值通过历史列表保存，即可实现多级的取消与重做
+</p></li>
+<li>使用C++模板
+</li>
+</ul>
+
+
+<p class="verse">
+使用条件：1、不能被取消 2、接收者的执行接口不需要参数<br/>
+好处：避免每一个动作和接收者都创建一个Command子类。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-9-7" class="outline-3">
+<h3 id="sec-9-7"><span class="section-number-3">9.7</span> 扩展</h3>
+<div class="outline-text-3" id="text-9-7">
+
+<ul>
+<li>结合对象序列化和持久化的方法，可将命令的状态存于磁盘文件等，在系统奔溃后进行回滚或继续执行。
+</li>
+<li>可以将多个命令打包成一个宏命令。一般来说宏命令是<a href="#Composite">Composite</a>模式的一个实例。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-9-8" class="outline-3">
+<h3 id="sec-9-8"><span class="section-number-3">9.8</span> 相关模式</h3>
+<div class="outline-text-3" id="text-9-8">
+
+<ul>
+<li><a href="#Composite">Composite</a>可被用来实现宏命令。
+</li>
+<li><a href="#Memento">Memento</a>模式可用来保持一个状态，命令对象用该状态来取消之前执行效果。
+</li>
+</ul>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-2">
+<h2 id="sec-10"><a name="Adapter" id="Adapter"></a><span class="section-number-2">10</span> 适配器模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">结构型</span></span></h2>
+<div class="outline-text-2" id="text-10">
+
+
+</div>
+
+<div id="outline-container-10-1" class="outline-3">
+<h3 id="sec-10-1"><span class="section-number-3">10.1</span> 概述</h3>
+<div class="outline-text-3" id="text-10-1">
+
+
+<p class="verse">
+将一个或多个类的接口转换成用户希望的接口。别名Wrapper。<br/>
+现有类的接口与用户希望的接口通常是固定的，无法改变。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-10-2" class="outline-3">
+<h3 id="sec-10-2"><span class="section-number-3">10.2</span> 结构</h3>
+<div class="outline-text-3" id="text-10-2">
+
+
+</div>
+
+<div id="outline-container-10-2-1" class="outline-4">
+<h4 id="sec-10-2-1"><span class="section-number-4">10.2.1</span> 类适配器</h4>
+<div class="outline-text-4" id="text-10-2-1">
+
+
+
+<p>
+<img src="../../resources/OO/ClassAdapter.png"  alt="../../resources/OO/ClassAdapter.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-10-2-2" class="outline-4">
+<h4 id="sec-10-2-2"><span class="section-number-4">10.2.2</span> 对象适配器</h4>
+<div class="outline-text-4" id="text-10-2-2">
+
+<p>将Adapter与Adaptee之间的继承关系变为了组合。
+</p>
+
+<p>
+<img src="../../resources/OO/InstanceAdapter.png"  alt="../../resources/OO/InstanceAdapter.png" />
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-10-3" class="outline-3">
+<h3 id="sec-10-3"><span class="section-number-3">10.3</span> 角色</h3>
+<div class="outline-text-3" id="text-10-3">
+
+<ul>
+<li>Target
+  定义了满足用户需要的接口
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-10-4" class="outline-3">
+<h3 id="sec-10-4"><span class="section-number-3">10.4</span> 实现细节</h3>
+<div class="outline-text-3" id="text-10-4">
+
+
+</div>
+
+<div id="outline-container-10-4-1" class="outline-4">
+<h4 id="sec-10-4-1"><span class="section-number-4">10.4.1</span> 类适配器还是对象适配器？</h4>
+<div class="outline-text-4" id="text-10-4-1">
+
+<ul>
+<li>重定义Adaptee的行为
+
+<p class="verse">
+类适配器可以方便地重定义Adaptee的部分行为。<br/>
+对象适配器可能需要通过<a href="#sec-6">Decorator</a>模式先拓展Adaptee。<br/>
+</p>
+
+
+
+</li>
+<li>适配多个Adaptee？
+
+<p class="verse">
+类适配器只能适配一个Adaptee。<br/>
+对象适配器支持多个。<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-10-4-2" class="outline-4">
+<h4 id="sec-10-4-2"><span class="section-number-4">10.4.2</span> 如果原有的接口类可以修改</h4>
+<div class="outline-text-4" id="text-10-4-2">
+
+
+<p class="verse">
+如果允许直接修改用户期望接口或者Adaptee类的接口，<br/>
+那么可以通过以下方式实现可插入式的适配器：<br/>
+</p>
+
+
+<ol>
+<li>直接将Target与Client整合，Target接口直接变为Client的抽象方法
+</li>
+<li>Client使用代理对象<sup><a class="footref" name="fnr-.8" href="#fn-.8">8</a></sup>
+</li>
+</ol>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-10-4-3" class="outline-4">
+<h4 id="sec-10-4-3"><span class="section-number-4">10.4.3</span> 双向适配器增加透明性</h4>
+<div class="outline-text-4" id="text-10-4-3">
+
+
+<p class="verse">
+适配器因为改变了接口，Adapter对象与Adaptee对象不兼容(提示：<a href="#sec-6">Decorator</a>兼容)。<br/>
+原本使用Adaptee对象的用户就无法使用Adapter对象。<br/>
+可使用双向适配器，在实现Target的同时，保留原本Adaptee的接口。<br/>
+</p>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-10-5" class="outline-3">
+<h3 id="sec-10-5"><span class="section-number-3">10.5</span> 相关模式</h3>
+<div class="outline-text-3" id="text-10-5">
+
+<ul>
+<li><a href="#Bridge">Bridge</a>模式的结构与其有些相似，但意图不同。<a href="#Bridge">Bridge</a>的目的是将接口部分与实现部分分离。
+</li>
+<li><a href="#sec-6">Decorator</a>模式为类增加职责，不改变 <b>原先</b> 的接口。透明性比<a href="#sec-10">Adapter</a>好，并支持递归组合。
+</li>
+<li><a href="#Proxy">Proxy</a>模式在不改变其接口的条件下，为另一个对象定义了一个代理。
+</li>
+<li><a href="#sec-11">Facade</a>模式将一个或多个不同对象的复杂接口进行简化。
+</li>
+</ul>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-11" class="outline-2">
+<h2 id="sec-11"><a name="Facade" id="Facade"></a><span class="section-number-2">11</span> 外观模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">结构型</span></span></h2>
+<div class="outline-text-2" id="text-11">
+
+
+</div>
+
+<div id="outline-container-11-1" class="outline-3">
+<h3 id="sec-11-1"><span class="section-number-3">11.1</span> 概述</h3>
+<div class="outline-text-3" id="text-11-1">
+
+<p>为子系统中的一组接口进行简化，提供一组高级接口，使得子系统更加容易使用。
+</p></div>
+
+</div>
+
+<div id="outline-container-11-2" class="outline-3">
+<h3 id="sec-11-2"><span class="section-number-3">11.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-11-2">
+
+<ul>
+<li>为复杂子系统提供一个简单接口，对大部分用户来说足够用，必要时用户一样可以绕过该接口。
+</li>
+<li>使客户程序从子系统的各层次实现的细节中解脱出来。
+</li>
+<li>多层次结构，可以使用Facade模式定义每一层的抽象操作。可以让各层次之间通过facade进行通信，简化了各层次之间的依赖关系。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-11-3" class="outline-3">
+<h3 id="sec-11-3"><span class="section-number-3">11.3</span> 结构</h3>
+<div class="outline-text-3" id="text-11-3">
+
+
+
+<p>
+<img src="../../resources/OO/Facade.png"  alt="../../resources/OO/Facade.png" />
+</p></div>
+
+</div>
+
+<div id="outline-container-11-4" class="outline-3">
+<h3 id="sec-11-4"><span class="section-number-3">11.4</span> 优点</h3>
+<div class="outline-text-3" id="text-11-4">
+
+<ul>
+<li>实现了用户与子系统之间的 <b>松耦合</b> 关系
+</li>
+<li>对用户屏蔽子系统结构，更易用
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-11-5" class="outline-3">
+<h3 id="sec-11-5"><span class="section-number-3">11.5</span> 实现细节</h3>
+<div class="outline-text-3" id="text-11-5">
+
+<ul>
+<li>使用抽象类实现Facade可以进一步降低客户与子系统的耦合度。
+</li>
+<li>C++使用Namespace可以私有化子系统中的类。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-11-6" class="outline-3">
+<h3 id="sec-11-6"><span class="section-number-3">11.6</span> 相关模式</h3>
+<div class="outline-text-3" id="text-11-6">
+
+<ul>
+<li><a href="#sec-8-3">Abstract Factory</a>模式可与Facade模式一起使用以提供一个单独的创建产品簇的接口。
+</li>
+<li><a href="#Mediator">Mediator</a>模式与Facade模式的相似之处：都抽象了一些已有的类的功能。但<a href="#Mediator">Mediator</a>的目的是对同级之间的任意通讯进行抽象。<sup><a class="footref" name="fnr-.9" href="#fn-.9">9</a></sup>
+</li>
+<li>通常来说仅需要一个Facade对象，所以Facade类定义成<a href="#sec-7">Singleton</a>类。
+</li>
+</ul>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-12" class="outline-2">
+<h2 id="sec-12"><a name="Iterator" id="Iterator"></a><span class="section-number-2">12</span> 迭代器模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">结构型</span></span></h2>
+<div class="outline-text-2" id="text-12">
+
+
+</div>
+
+<div id="outline-container-12-1" class="outline-3">
+<h3 id="sec-12-1"><span class="section-number-3">12.1</span> 概述</h3>
+<div class="outline-text-3" id="text-12-1">
+
+<p>提供遍历集合对象中各元素的方法，并且不将集合具体的数据结构暴露给用户。
+</p></div>
+
+</div>
+
+<div id="outline-container-12-2" class="outline-3">
+<h3 id="sec-12-2"><span class="section-number-3">12.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-12-2">
+
+<ul>
+<li>遍历访问集合对象的内容，无需暴露它的内部结构。
+</li>
+<li>支持对同一集合对象的多种遍历方式。
+</li>
+<li>为遍历不同数据结构的集合对象提供统一的接口(即支持多态迭代）。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-12-3" class="outline-3">
+<h3 id="sec-12-3"><span class="section-number-3">12.3</span> 结构</h3>
+<div class="outline-text-3" id="text-12-3">
+
+
+
+<p>
+<img src="../../resources/OO/Iterator.png"  alt="../../resources/OO/Iterator.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-12-4" class="outline-3">
+<h3 id="sec-12-4"><span class="section-number-3">12.4</span> 角色</h3>
+<div class="outline-text-3" id="text-12-4">
+
+<ul>
+<li>Iterator
+
+<p>
+  定义访问和遍历元素的接口
+</p>
+</li>
+<li>ConcreteIterator
+
+<ul>
+<li>实现Iterator定义的接口
+</li>
+<li>在遍历集合时，跟踪当前位置
+
+</li>
+</ul>
+
+</li>
+<li>Aggregate
+
+<p>  
+  定义创建迭代器对象的接口
+</p>
+</li>
+<li>ConcreteAggregate
+
+<p>  
+  实现Aggregate定义的接口
+</p></li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-12-5" class="outline-3">
+<h3 id="sec-12-5"><span class="section-number-3">12.5</span> 优点</h3>
+<div class="outline-text-3" id="text-12-5">
+
+<ul>
+<li>支持以不同的方式遍历一个集合，使改变遍历算法变的容易。
+</li>
+<li>迭代器将遍历的职责从集合类中剥离出来。维护起来更容易。
+</li>
+<li>可以同时对一个集合进行多个遍历，只需多个迭代器实例对象。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-12-6" class="outline-3">
+<h3 id="sec-12-6"><span class="section-number-3">12.6</span> 实现细节</h3>
+<div class="outline-text-3" id="text-12-6">
+
+
+</div>
+
+<div id="outline-container-12-6-1" class="outline-4">
+<h4 id="sec-12-6-1"><span class="section-number-4">12.6.1</span> 由谁来控制迭代过程？</h4>
+<div class="outline-text-4" id="text-12-6-1">
+
+
+<p class="verse">
+由客户来控制的称为外部迭代器(或称为主动迭代器)。<br/>
+由迭代器自身来控制的，称为内部迭代器(或称为被动迭代器)。<br/>
+</p>
+
+
+<ul>
+<li>外部迭代器
+
+<p>  
+  使用外部迭代器时，客户必须主动推进迭代的步伐。
+</p>
+</li>
+<li>内部迭代器
+
+<p class="verse">
+使用内部迭代器时，客户只需指定一个操作，迭代器保证对集合<br/>
+中的每一个元素执行该操作。<sup><a class="footref" name="fnr-.10" href="#fn-.10">10</a></sup><br/>
+如何指定操作？支持匿名函数和闭包的语言很容易实现。<br/>
+C++中通常有两种方法可以选择<br/>
+</p>
+
+
+<ul>
+<li>函数指针
+    劣势在于如果需要更新某种状态，则需要使用全局变量。
+</li>
+<li>子类生成
+    需要定义额外的类来达到目的。<sup><a class="footref" name="fnr-.11" href="#fn-.11">11</a></sup>
+
+</li>
+</ul>
+
+</li>
+<li>权衡
+
+<p class="verse">
+内部迭代器定义好了迭代逻辑，使用起来更方便；<br/>
+外部迭代器由于将迭代逻辑交由用户来控制，使用起来更灵活。<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-12-6-2" class="outline-4">
+<h4 id="sec-12-6-2"><span class="section-number-4">12.6.2</span> 谁定义遍历算法？</h4>
+<div class="outline-text-4" id="text-12-6-2">
+
+<ul>
+<li>由集合自身定义
+
+<p class="verse">
+由集合自身定义遍历算法。迭代器仅用来指示当前的位置。这种迭代器称为 <b>游标</b> 。<br/>
+<br/>
+客户调用Next()时，需要将游标作为参数传入，Next操作内部仅改变游标的位置状态。<br/>
+可改接口为SetCursor(index)和int GetCursor()更容易理解。<br/>
+</p>
+
+
+</li>
+<li>由迭代器定义
+
+<p class="verse">
+遍历算法还可以由迭代器定义，优势在于，使得在相同的集合上使用不同的迭代算法、<br/>
+或是在不同的集合上使用相同的迭代算法更简单。<br/>
+<br/>
+注意：如果遍历算法会用到集合的私有变量，放在迭代器中，则破坏了集合对象的封装性。<br/>
+</p>
+
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-12-6-3" class="outline-4">
+<h4 id="sec-12-6-3"><span class="section-number-4">12.6.3</span> 线程安全的迭代器</h4>
+<div class="outline-text-4" id="text-12-6-3">
+
+
+<p class="verse">
+现实情况下，可能有多个不同线程创建的迭代器引用同一个集合对象。<br/>
+<br/>
+解决同步问题的一般做法是：<br/>
+各迭代器对象需要向集合对象进行注册(可用<a href="#sec-4">Observer</a>模式)，<br/>
+当改变发生时，集合对象更新每一个迭代器的状态。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-12-6-4" class="outline-4">
+<h4 id="sec-12-6-4"><span class="section-number-4">12.6.4</span> 关于多态迭代器</h4>
+<div class="outline-text-4" id="text-12-6-4">
+
+<ul>
+<li>结构图中所展示的是多态迭代器的实现
+
+<p class="verse">
+也可以不需要迭代器抽象基类，这样在 <b>工厂方法CreateIterator</b> 中<br/>
+也就不需要动态new出迭代器具体类对象。<br/>
+</p>
+
+
+
+</li>
+<li>多态迭代器是有代价的
+
+<p class="verse">
+因为 <b>动态</b> 的分配迭代器对象的本身是有代价的。<br/>
+一般情况使用分配在栈区上的具体迭代器即可。<br/>
+</p>
+
+
+</li>
+<li>多态意味着需要用new，也就需要用户负责删除它们，这样容易引发错误。
+</li>
+<li>因此，仅在必须要使用多态时才使用。
+
+<p>  
+  有关这一点，<a href="#Proxy">Proxy</a>模式提供了一个补救办法。<sup><a class="footref" name="fnr-.12" href="#fn-.12">12</a></sup>
+</p></li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-12-6-5" class="outline-4">
+<h4 id="sec-12-6-5"><span class="section-number-4">12.6.5</span> 迭代器与集合的紧密耦合</h4>
+<div class="outline-text-4" id="text-12-6-5">
+
+<p>迭代器一般作为集合的一个扩展，两者之间是紧密耦合的。
+</p>
+<ul>
+<li id="sec-12-6-5-1">利用C++友元实现<br/>
+
+<p class="verse">
+C++中迭代器可作为它的集合类的一个友元，<br/>
+这样集合类中就不必定义一些只有迭代器才用的到的方法。<br/>
+当然这破坏了集合类的封装性，但这点仅仅是针对迭代器而言的。<br/>
+<br/>
+问题：<br/>
+当定义新的ConcreteIterator(为了增加新的遍历方式)时，需要为集合类加上另一个友元。<br/>
+<br/>
+解决办法：<br/>
+为避免该问题，集合类可定义迭代器父类为友元，<br/>
+迭代器子类通过包含一些protected操作，来访问集合类非公共可见成员。<br/>
+</p>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-12-6-6" class="outline-4">
+<h4 id="sec-12-6-6"><span class="section-number-4">12.6.6</span> 与<a href="#Composite">Composite</a>模式的协作<sup><a class="footref" name="fnr-.13" href="#fn-.13">13</a></sup></h4>
+<div class="outline-text-4" id="text-12-6-6">
+
+</div>
+
+</div>
+
+<div id="outline-container-12-6-7" class="outline-4">
+<h4 id="sec-12-6-7"><span class="section-number-4">12.6.7</span> 空迭代器</h4>
+<div class="outline-text-4" id="text-12-6-7">
+
+
+<p class="verse">
+用于处理边界条件。<br/>
+一个NullIterator的IsDone()总是返回true，或者HasNext()总是返回false。<br/>
+<br/>
+提示：<br/>
+空迭代器更多的用于处理树形结构的集合。<br/>
+叶节点通常需要一个NullIterator。<br/>
+</p>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-12-7" class="outline-3">
+<h3 id="sec-12-7"><span class="section-number-3">12.7</span> 相关模式</h3>
+<div class="outline-text-3" id="text-12-7">
+
+<ul>
+<li>迭代器可在<a href="#Composite">Composite</a>模式这样的递归结构上使用。
+</li>
+<li>多态迭代器可以通过<a href="#sec-8-2">Factory Method</a>模式来实例化迭代器子类。
+</li>
+<li>迭代器可使用一个<a href="#memento">memento</a>来捕获一个迭代状态，即迭代器内部存储<a href="#memento">memento</a>。
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> 一些OO提示</h2>
+<div class="outline-text-2" id="text-13">
+
+
+</div>
+
+<div id="outline-container-13-1" class="outline-3">
+<h3 id="sec-13-1"><span class="section-number-3">13.1</span> 关于抽象类和接口</h3>
+<div class="outline-text-3" id="text-13-1">
+
+<ul>
+<li>抽象类可以有成员变量及非抽象方法(通常放入子类的共通代码)
+</li>
+<li>大部分语言(Java, C#等)仅能继承自一个抽象类，但能继承多个接口
+</li>
+</ul>
+
+<p>总结：抽象类主要用于对象系列的基类， <b>共享</b> 某些主要特性。
+</p></div>
+
+</div>
+
+<div id="outline-container-13-2" class="outline-3">
+<h3 id="sec-13-2"><span class="section-number-3">13.2</span> 活用空对象来避免null值检查</h3>
+<div class="outline-text-3" id="text-13-2">
+
+
+
+
+<pre class="src src-cpp"><span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">Object</span>
+{
+<span style="color: #1e90ff; font-weight: bold;">public</span>:
+    vitual <span style="color: #daa520;">void</span> <span style="color: #00008b; font-weight: bold;">DoSomething</span>() = 0;
+};
+
+<span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">NullObject</span> : <span style="color: #1e90ff; font-weight: bold;">public</span> <span style="color: #daa520;">Object</span>
+{
+<span style="color: #1e90ff; font-weight: bold;">public</span>:
+    <span style="color: #daa520;">void</span> <span style="color: #00008b; font-weight: bold;">DoSomething</span>();
+};
+
+<span style="color: #daa520;">void</span> <span style="color: #ff6347;">NullObject</span>::<span style="color: #00008b; font-weight: bold;">DoSomething</span>()
+{
+    <span style="color: #8b8989;">//</span><span style="color: #8b8989;">do nothing</span>
+}
+</pre>
+
+
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+<p class="footnote"><sup><a class="footnum" name="fn-.1" href="#fnr-.1">1</a></sup> 动手做一下这个实现。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.2" href="#fnr-.2">2</a></sup> 并非低层组件一定不能调用高层组件，最重要的是避免让高层组件和低层组件之间有明显的环状依赖。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.3" href="#fnr-.3">3</a></sup> hook操作缺省经常是一个空操作。空操作的意义：某些子类可能需要一些"特别"的操作，而大部分子类不需要。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.4" href="#fnr-.4">4</a></sup> 继承方式是在编译时静态扩展父类的职责，装饰者模式是动态的添加职责。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.5" href="#fnr-.5">5</a></sup> 学完原型模式，回过头来再看这段。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.6" href="#fnr-.6">6</a></sup> 如何实现请求队列？因为命令是一个个的对象，就可以存成对象列表或队列，何时执行由调用者决定。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.7" href="#fnr-.7">7</a></sup> 风量大小为调速命令的状态，执行调速命令前，可记录下当前的风量大小，以便取消命令设置回原先的速度。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.8" href="#fnr-.8">8</a></sup> 看完<a href="#proxy">proxy</a>模式再来理解。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.9" href="#fnr-.9">9</a></sup> 看到<a href="#Mediator">Mediator</a>的时候再理解这段话。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.10" href="#fnr-.10">10</a></sup> 实现MapReduce中"Map"的一种方式。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.11" href="#fnr-.11">11</a></sup> 具体代码示例参照《Gof设计模式》
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.12" href="#fnr-.12">12</a></sup> 看到<a href="#proxy">proxy</a>模式时回头再来补充。
+</p>
+
+
+<p class="footnote"><sup><a class="footnum" name="fn-.13" href="#fnr-.13">13</a></sup> 待学完组合模式再补充完
+</p>
+
+
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>
