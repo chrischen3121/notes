@@ -1,3 +1,3 @@
 #!bin/bash
-cp -r org/resources ./resources/
+cp -r org/resources resources
 git blog
