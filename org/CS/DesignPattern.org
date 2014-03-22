@@ -1,0 +1,1015 @@
+#+TITLE: 设计模式笔记
+#+KEYWORDS: design pattern
+#+OPTIONS: H:3 toc:1 num:3 ^:nil
+#+SETUPFILE: ../configOrg/level1.org
+* OO基本原则
+** 单一职责原则(SRP)
+** 开放封闭原则
+** 依赖倒置原则
+** 子类替换原则
+** 接口隔离原则
+* 策略模式
+#<<Strategy>>
+** 概述
+定义了算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。
+** 适用性
+- 许多 *相关* 的类仅仅是行为有异
+- 需要使用一个算法的不同变体
+- 使算法使用的数据结构不暴露于客户
+- 一个类定义了多种行为，且这些行为在类中是以多个条件语句的形式出现的
+** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/Strategy.png]]
+** 优点
+   - 定义了一组可供重用的算法，继承自Strategy基类，有助于将共同内容放置于基类
+   - 替代继承实现方法，不用硬编码至Context中
+   - 消除了一些条件语句
+   - 客户代码可以动态的选择具体算法
+#+END_VERSE
+** 缺点
+- 客户代码必须了解到具体算法之间的区别（增加耦合）
+   - Gof建议：仅当不同行为变体是与客户相关的行为时，才需要使用Strategy模式
+- Strategy和Context之间的通信开销
+   - 各具体算法所需要的参数不一样，但是接口共享。会导致需要额外增加两边接口，导致这两个类更紧密的耦合
+- 增加了对象的数目
+   - 参考[[Flyweight]]模式
+** 实现
+*** 定义Context和Strategy的接口
+**** 必须使得ConcreteStrategy和Context类能够获取对方的任何数据
+***** 方法1：Context将各算法需要的参数传递给Strategy
+#+BEGIN_VERSE
+好处：Strategy对Context解耦(Strategy不需要知道Context的存在)
+缺点：Context可能发送一些具体算法不需要的冗余数据
+#+END_VERSE
+***** 方法2：Context自身作为一个参数传递给Strategy，由Strateg去显式调用Get获取数据
+#+BEGIN_VERSE
+缺点：Context必须更精确的定义和分出多个Get接口，Strategy跟Context之间耦合更紧密。(修改时，会同时需要修改这两个类)
+#+END_VERSE
+*** 将Strategy作为模板参数
+**** 优点：
+- 不再需要Stratgy抽象基类
+- 将Strategy实例和模板方法进行了静态绑定，提高了运行效率
+**** 缺点：
+- 不能在运行时改变行为
+*** 使Strategy成为可选的
+Context执行缺省行为，只有当用户不喜欢缺省行为时，才选择可选的Strategy。
+** 相关模式
+[[State]] [[diff between strategy and state][两者区别]]、[[Template Method]]
+* 状态模式
+#<<State>>
+** 概述
+允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。
+** 适用性
+- 一个对象的行为取决于它的状态，并且需要在 *运行时* 根据它的状态改变它的行为
+- 一个操作中含有 *庞大* 的分支条件语句，且这些分支依赖于该对象的状态
+** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/State.png]]
+** 优点
+- 将与特定状态相关的行为局部化，把不同状态的行为分割开来
+- 通过定义新的子类，很容易增加新的状态和转化
+- 它使得状态转换显式化
+   1) 当一个对象某个成员变量来定义状态时，其状态仅表现为对变量赋值，不够明确。
+   2) 从Context的角度看，状态转换是原子的——只需重新绑定一个State对象变量。
+- State对象可以被多个Context对象共享()
+   - 条件：状态 *对象* 不能持有自己的状态实例。需要将状态实例指定到一个静态变量中(即实现单件模式)
+   - 如果状态需要利用Context中的数据或方法，必须在每个接口方法内传入Context的引用
+   #+BEGIN_VERSE
+   这样可实现没有内部状态，只有行为的轻量级对象[fn:1]
+   #+END_VERSE
+
+** 缺点
+- 类的数目增加了，看起来不够紧凑
+   #+BEGIN_VERSE
+   真正重要的是暴露给客户的类数目。如果状态有很多，这样分布更好，否则需要庞大的条件语句。
+   #+END_VERSE
+** 实现
+*** 谁定义状态转换
+**** State模式不指定哪个参与者定义状态转换准则。如果该准则固定，可在Context中完全实现。
+**** 如果让State子类自身指定他们的后继状态以及何时进行转换，通常更灵活更合适
+#+BEGIN_VERSE
+这需要Context增加一个接口，让State子类对象显示地设定Context当前状态
+缺点：产生了子类之间的实现依赖
+#+END_VERSE
+*** 使用表驱动方法替代
+将条件代码(State模式下的虚函数)映射为一张查找表。
+- 缺点：对表的查找通常不如(虚)函数调用效率高。
+总结：表驱动着重于定义状态转换；State模式则是针对状态相关的行为进行建模。
+
+*** 创建和销毁State对象
+**** 面临权衡：(1)需要时创建；(2)始终置于内存
+1) 将要进入的状态，在运行时是不可知的，且上下文不经常改变状态时，选择1。
+2) 另外，当State对象存储大量的信息时，使用1
+3) 当状态频繁变化时，第2种方法更好。Context必须保存对所有可能会进入的那些状态的引用。
+** 相关模式
+[[Strategy]]、[[Template Method]]
+#<<diff between strategy and state>>
+*** 与Strategy模式的区别
+#+BEGIN_VERSE
+定义上讲：
+    - Strategy定义的是一组平行的算法，这些算法有着共同的目标。
+    - State模式更关注根据内在状态的不同，执行不同的行为，这些行为可能目的完全不同。
+客户角度：
+    - State模式：一般的用法，状态通常跟着Context的行为而改变，对客户来说，浑然不知。封装了状态的转换规则。
+    - Strategy模式：通常是由客户来选择具体的行为策略。
+总结：
+    - Strategy模式提供了一个继承之外更具弹性的替换方案。
+    - State模式更多的用来避免Context中过多的分支语句。
+#+END_VERSE
+
+* 观察者模式
+#<<Observer>>
+** 概述
+定义对象之间一种一对多的依赖，当一个对象状态发生变化时，所有依赖于它的对象都得到通知。
+** 适用性
+以下任一情况可使用Observer模式
+- 当一个抽象模型有两个方面，一个方面依赖于另一方面，将两者独立封装起来以便修改和复用。
+- 当一个对象的改变需要同时改变其他对象，而不知道具体有多少对象有待改变。
+- 当一个对象必须通知其他对象，而又不能知道其他对象是谁的情况下。（即不希望是紧耦合）
+** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/Observer.png]]
+   流程图
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/ObsSeq.png]]
+** 优点
+- Subject和Observer间的抽象耦合(都只了解对方的接口)
+#+BEGIN_VERSE
+因为是非紧密耦合的，Subject和Observer可以来自于系统中的不同的抽象层次
+低层次Subject一样可以通知高层次Observer，使用该模式不会破坏系统层次
+这就是抽象Subject和Observer的作用。
+#+END_VERSE
+- 支持广播通信
+#+BEGIN_VERSE
+是否要加入广播列表取决于观察者
+#+END_VERSE
+** 缺点
+- 来自某一观察者的意外更新
+#+BEGIN_VERSE
+某个观察者更新了主题的状态，导致其他观察者也发生了改变。
+如果更新准则定义或维护不当，常常会引起错误的更新。
+#+END_VERSE
+** 实现
+*** 创建主题与其观察者之间的映射
+- 主题跟踪观察者最简单的方式是保存观察者们的引用
+- 当主题很多，观察者较少时，以上方法空间代价可能很高(不是太大的问题)
+#+BEGIN_VERSE
+解决方案，拿时间换空间，维护一份主题和观察者之间的映射表。
+该方案增加了访问观察者的开销(每次访问都需要读映射表)。
+#+END_VERSE
+*** 观察多个主题
+#+BEGIN_VERSE
+某些情况下，观察多个主题是有意义的，例如：一个表格对象依赖于多个数据源。
+需要拓展Update接口使观察者知道是哪一个主题送来的。
+主题可以简单的将自己作为观察者Update接口的参数，让观察者知道应去检查哪一个目标。
+#+END_VERSE
+*** 谁触发更新
+Notify谁来调用？
+- 由主题对象的状态设定操作自动调用。
+  - 优点：客户不需要调用Notify。
+  - 缺点：多个连续的设定操作会产生多次连续更新，可能效率较低。(关键还是要看需求：在更新状态的时候是否需要通知)
+- 客户负责调用Notify
+  - 优点：客户可以在一系列状态设定操作之后一次性通知更新。
+  - 缺点：给客户增加了触发更新的责任。客户忘记的话，容易出错。
+*** 避免悬挂引用
+#+BEGIN_VERSE
+当删除一个主题时，应注意不要在其观察者中遗留对该目标的悬挂引用。
+方法：删除时，通知观察者将对该主题的引用复位(=NULL)
+#+END_VERSE
+*** 在发出通知前，确保主题的状态自身是一致的(很重要)
+#+begin_src c++
+  void MySubject::Operation (int newValue)
+  {
+    BaseClassSubject::Operation(newValue);//先触发了通知
+    _myInstVar += newValue;//后修改自身状态
+  }
+#+end_src
+可以使用[[Template Method][模板方法]]发送通知来避免这种错误。(模板方法定死修改状态和触发通知的顺序)
+*** 推拉模型的取舍
+- 推模型(大多数情况使用它)
+  - Update参数传入信息可能极大，并不是所有观察者都需要。
+  - 假定了主题知道一些观察者所需要的信息。可能导致观察者接口难以复用，主题对观察者所需要的信息的假定，并不总是正确。
+- 拉模型
+  - 观察者自己向主题获取信息。
+  - 强调主题并不知道它的观察者。
+  - 缺点：可能效率较差，因为观察者有时需要自己去确认什么改变了。
+  - 缺点2：可能需要调用多个接口以搜集全观察者自己需要的状态，比较麻烦。(耦合度增高)
+*** 只关注感兴趣的改变
+#+BEGIN_VERSE
+拓展主题的注册接口，加入interest参数
+#+END_VERSE
+#+begin_src c++
+//主题
+void Subject::Attach(Observer*, Aspect& interest);
+//观察者
+void Observer::Update(Subject*, Aspect& interest);
+#+end_src
+*** 封装复杂的更新语义(ChangeManager)
+#+BEGIN_VERSE
+当主题与观察者之间的依赖关系特别复杂时，需要一个对象来维护这些关系。
+这样的对象成为ChangeManager。
+目的：尽量减少观察者反映其主题的状态变化所需的工作量。
+例子：如果一操作涉及到几个主题，就必须保证所有的主题都更改完了，再
+一并通知它们的观察者。
+#+END_VERSE
+*三个责任* ：
+- 管理主题与观察者之间的映射表，提供接口来维护这个映射表。
+- 它定义一个特定的更新策略。
+- 根据一个主题的请求，更新所有它的观察者。
+详细参考：[[ChangeManager Observer][基于ChangeManager的Observer模式]]
+*** 结合主题类和观察者类（针对不支持多重继承语言）
+#+BEGIN_VERSE
+对不支持多重继承或接口的语言(SmallTalk)，不单独定义Subject和Observer。
+而将他们的接口结合到一个类中。
+#+END_VERSE
+** 拓展
+#<<ChangeManager Observer>>
+#+BEGIN_VERSE
+基于ChangeManager的Observer模式
+#+END_VERSE
+- 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/ChangeManagerObserver.png]]
+- 说明
+  - SimpleChangeManager总是更新每一个主题的所有观察者(简单)
+  - DAGChangeManager实现多个主题变更时，只更新观察者一次
+** 相关模式
+  - ChangeManager是一个[[Mediator]]模式的实例
+  - 通常只有一个ChangeManager，可用[[Singleton]]模式
+
+* 模板方法
+#<<Template Method>>
+** 概述
+#+BEGIN_VERSE
+最基本的设计模式，代码复用的基本技术
+定义一系列算法的骨架，将其中的一些步骤延迟到子类中。
+使子类可以不改变一个算法的结构，而重定义算法的某些特定步骤。
+#+END_VERSE
+** 适用性
+- 一次性实现一个算法的不变的部分，将可变行为留给子类去实现。
+- 多个子类中存在一些公共行为，需要提取出来，做法如下：
+  1) 识别代码中不同部分
+  2) 提取出新的函数
+  3) 用一个新的模板方法替换原算法(公共部分放于其中)
+- 控制子类扩展，模板方法只在特定点调用子类方法
+** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/TemplateMethod.png]]
+- ConcreteClass实现算法中与特定子类相关的步骤
+** 优点
+- 提供了反向的控制结构。即"好莱坞法则[fn:2]"："别找我们，我们找你。"——高层组件调用低层组件，低层组件不能调用高层组件。
+- 一个模板方法整合了一些原语操作，从而减少了原语操作的数目，简化客户程序调用。
+- 客户代码只依赖于模板方法基类，不依赖于具体类，减少整个系统的 *依赖* 。
+** 实现
+模板方法调用下列类型的操作：
+- 具体的操作(ConcreteClass或客户类)
+- 具体的AbstractClass的操作
+- 抽象操作(必须被重定义)
+- [[Factory Method]]
+- hook operations 提供缺省[fn:3]的行为，子类在必要时拓展。
+#+BEGIN_VERSE
+*重要* ：模板方法应该指明哪些操作是钩子(可被重定义)，哪些操作是抽象操作(必须被重定义)。
+#+END_VERSE
+*细节注意* ：
+1) C++细节
+   - 模板方法调用的原语操作(PrimitiveOperation1等)声明为protect
+   - 抽象操作定义为纯虚函数。
+   - 模板方法一般就是一个普通的非虚成员函数
+   - 钩子使用Virtual方法
+2) 命名约定。可给应被重定义的操作上加一个前缀"Do"，例如："DoCreateDocument"
+3) 模板方法可以声明为"Sealed"、"final"
+*钩子使用* 
+钩子实现算法中可选部分
+#+begin_src c++
+  void AbstractClass::TemplateMethod()
+  {
+    Operation1();
+    Operation2();
+    Hook1();
+    if (HookFileExisted())
+      {
+        Operation3();
+      }
+  }
+  
+  bool AbstractClass::HookFileExisted()
+  {
+    return true;
+  }  
+#+end_src
+** 相关模式
+- [[Factory Method]]常被模板方法调用。
+- [[Strategy]]使用委托来改变整个算法，模板方法使用继承来改变算法的一部分。
+
+* 装饰者模式
+#<<Decorator>>
+** 概述
+动态地给一个对象添加一些额外的职责。提供了比继承更大的灵活[fn:4]。
+
+** 适用性
+- 以动态、透明的方式给单个对象添加职责。
+- 处理那些可以撤销的职责。
+- 不能采用继承进行拓展时。
+  #+BEGIN_VERSE
+  一种情况：有大量独立的拓展，仅因为这些拓展的组合不同而使得子类数目爆炸性增长。
+  另一种情况：类定义被隐藏，或者类不可被继承。
+  #+END_VERSE
+** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/Decorator.png]]
+   此处的继承为了达到类型匹配的目的，使用户在使用Decorator对象时，与使用Component一样。
+** 优点
+- 比静态继承更灵活，在运行时添加职责。
+- 继承在添加一些共通职责时，容易产生类爆炸。Decorator添加的职责大多数情况下能重用。
+- 使结构层次较高的类更简洁。不依赖于现有已拓展的Decorator类，定义新类型的Decorator很容易。
+** 缺点
+- 使用装饰时不应该依赖于对象标识。被装饰了的组件与这个组件本身就对象标识而言，是有区别的。
+- 产生很多小对象。对于不了解系统的人，难以学习，排错也比较困难。
+** 实现
+1) 接口一致性。所有的Component和Decorator必须有一个公共的父类。
+2) 省略抽象的Decorator类。仅需添加一个职责时，没必要抽象Decorator类。
+3) 保持Component类的简单性。公共父类仅定义接口，尽量避免添加子类并不需要的职责。
+** 相关模式
+*** 与[[Strategy]]的比较：
+- Decorator可看做一个对象的 *外壳* 。
+- Strategy则是改变对象的内核。
+当Component基类很 *庞大* 时，使用Decorator代价太高，Strategy模式更好一些。
+#+begin_example
+比如，绘制边框的职责，既可以使用Decorator模式包一层外壳，
+也可以使用Border对象专门负责，再组合进Context。
+#+end_example
+*** [[Composite]]模式
+可以将装饰视为一个退化的、仅有一个组件的组合。另外，它的目的在于添加职责，而Composite目的在于对象聚集。
+
+* 单件模式
+#<<Singleton>>
+** 概述
+保证类仅有一个实例，并提供该实例的全局访问点。
+** 适用性
+- 当类只能有一个实例。
+- 当这个唯一实例需要可以通过子类化扩展
+** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/Singleton.png]]
+** 优点
+- 缩小名空间。单件是对全局变量的一种改进。全局变量会污染名空间（多模块都有某全局变量就会产生编译冲突）。
+- 可以被继承。
+- *重点拓展* 允许可变数目的实例。允许Singleton类可以管理多个实例（考虑连接池和线程池之类的实现）。
+- 比类方法(静态)更灵活。无法实现维护多个实例的情况。另外静态方法无法通过多态由子类重定义。
+** 实现
+#+begin_src cpp
+  class Singleton
+  {
+  public:
+    static Singleton* GetInstance();
+  protected:
+    Singleton();
+  private:
+    static Singleton* _instance;
+  };
+  
+  Singleton* Singleton::_instance = 0;
+  Singleton* Singleton::GetInstance ()
+  {
+    if (_instance == 0)
+      {
+        _instance = new Singleton();
+      }
+    return _instance;
+  }
+#+end_src
+*** 同步问题
+#+BEGIN_VERSE
+以下用Java示例说明较为简单。
+为了保证在多线程环境下能只创建一个实例，需要对GetInstance方法做同步处理。
+
+一个方法是：直接将GetInstance方法声明为synchronized。
+这样的做法有个问题：事实上我们需要同步的只是GetInstance内部负责创建实例的
+区块，对整个函数进行同步，如果外部调用很频繁，开销会很大。
+
+更好的做法如下：
+#+END_VERSE
+#+begin_src java
+  public class Singleton
+  {
+      private static Singleton uniqueInstance;
+      private Singleton() {}
+      public static Singleton GetInstance()
+      {
+          if (uniqueInstance == null) { //判断是否要进入负责创建实例的同步模块
+              synchronized (Singleton.class) {//仅一个线程执行此区块，确保只创建一个实例。
+                  if (uniqueInstance == null) { 
+                      uniqueInstance = new Singleton();
+                  }
+              }
+          }
+          return uniqueInstance;
+      }
+  }
+#+end_src
+*** 继承问题
+#+BEGIN_VERSE
+问题所在：子类的单件实例化在何处实现？
+几种选择：
+#+END_VERSE	
+- 在父类Singleton的GetInstance中决定使用哪一个单件子类。可以传入参数，使用条件语句在运行时期选择适合的子类。
+  局限在于硬性限定了可能的Singleton子类的集合。
+- 将GetInstance类从父类中剥出，并将它放入子类。客户代码在使用时自行决定使用哪个子类的GetInstance。
+  该方法是在编译时决定使用哪个子类的，非运行时，不够灵活。
+- 将要使用的单件类记录在设定文件(或注册表等)中。
+   #+BEGIN_VERSE
+   用法：记录所使用的单件类名作为配置项，在程序中加入该字符串与单件具体类的映射。
+   Singleton父类只需通过映射选择相应的子类，而不需要知道所有的子类。
+
+   注意事项：映射表谁来维护？以何种形式存储？子类如何注册进映射表？具体可参考《GOF设计模式》
+   #+END_VERSE
+
+** 与一些语言的纯静态类比较
+*** 概念上的理解
+单件模式只是一种OO思想，而静态类可以当为单件模式的一种特殊实现方式。
+- 静态类更多的用于与特定实例无关的 *全局* 属性和 *全局* 方法的分类。比如[[http://msdn.microsoft.com/zh-cn/library/system.math_members(v=vs.80).aspx][.NET的MATH类]]
+- 而单件的概念是确实需要一个实例，而且实例只能有一个。比如：注册表对象，线程池对象
+*** 创建的时机
+- 静态类在编译时创建
+- 单件模式的类在运行时创建
+*** 继承性
+- 静态类不能被继承，也无法继承其他类。(如果该类需要实现一些接口，则不能使用静态类)
+- 单件类可以被继承
+*** 总结
+- 静态类是对全局方法、全局变量的分类组织方法。
+- 单件模式表示有且仅有一个对象。单件类可以被继承。
+*** 建议
+#+BEGIN_VERSE
+当对于是否使用单件模式没把握的时候，使用单件类更好一些。
+原因：静态类改成实例类，会改变接口，从而影响所有的客户代码。
+#+END_VERSE  
+
+** 相关模式
+经常使用Singleton模式的其他模式：
+- [[Abstract Factory]]
+- [[Builder]]
+- [[Prototype]]
+  
+* 工厂模式
+#<<Factory>>
+** 简单工厂
+#<<SimpleFactory>>
+*** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/SimpleFactory.png]]
+*** 代码示例
+#+BEGIN_SRC cpp
+  public class SimplePizzaFactory
+  {
+  public:
+      Pizza Create(string type);
+      virtual ~SimplePizzaFactory();
+  };
+  
+   public Pizza* SimplePizzaFactory::Create(string type)
+   {
+       Pizza* pizza = null;
+       switch (type)
+       {
+       case "cheese":
+           pizza = new CheesePizza();
+       case "pepperoni":
+           pizza = new Pepperoni();
+       default:
+           pizza = null;
+       }
+       return pizza;
+   }
+  
+  int main()
+  {
+      SimplePizzaFactory* pFactory = new SimplePizzaFactory();
+      Pizza* pPizza = pFactory->Create("cheese");
+      return 0;
+  }
+#+END_SRC
+** 工厂方法
+#<<Factory Method>>
+*** 概述
+定义一个用于创建对象的接口，让子类决定实例化哪个类。
+*** 适用性
+- 当一个类不知道它所必须创建的对象的时候。
+- 当一个类希望由它的子类来指定所要创建对象的时候。
+- 当类将创建的职责委托给多个子类中的一个，并且希望将指定代理类的过程局部化的时候。 
+*** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/FactoryMethod.png]]
+*** 拓展
+- 为子类提供hook
+#+BEGIN_VERSE
+用工厂方法在一个类的内部创建对象。提供缺省实现创建。
+#+END_VERSE
+*** 实现
+- 两种情况
+  1) Creator是一个抽象类，且不提供工厂方法的实现。避免了不得不实例化不可预见的类的问题。
+  2) Creator是一个具体类，为工厂方法提供一个缺省的实现。遵循的原则“有一个独立的操作创建对象，子类能重新定义”，保证了灵活性。
+- 参数化工厂方法
+- 使用模板以避免创建子类
+  #+BEGIN_VERSE
+  工厂方法一个潜在的问题是它们可能仅为了创建适当的Product对象
+  而迫使你创建Creator子类，C++中可以提供一个模板子类。
+  #+END_VERSE
+  #+BEGIN_SRC cpp
+    class Creator
+    {
+    public:
+        virtual Product* CreateProduct() = 0;
+    };
+    
+    template <class TheProduct>
+    class StandardCreator : public Creator
+    {
+    public:
+        virtual Product* CreateProduct();
+    };
+    
+    template <class TheProduct>
+    Product* StandardCreator<TheProduct>::CreateProduct()
+    {
+        return new TheProduct;
+    }
+  #+END_SRC
+  客户代码：
+  #+BEGIN_SRC cpp
+    StandardCreator<MyProduct> myCreator = new StandardCreator<MyProduct>();
+    Product* myProduct = myCreator.CreateProduct();
+  #+END_SRC
+*** 相关模式
+- [[Abstract Factory]]经常使用工厂方法来实现。
+- 工厂方法通常在[[Template Methods]]中被调用。模板方法指定一系列的具体步骤，而创建对象的一步委托给工厂方法，以应对变化。
+- [[Prototypes]]不需要创建Creator的子类。但会要求一个针对Product类的Initialize操作。Creator使用Initialize来初始化对象。
+** 抽象工厂
+#<<Abstract Factory>>
+*** 概述
+提供创建一系列相关或相互依赖对象的接口，而无需指定它们的具体类。
+*** 适用性
+- 一个系统要独立于它的产品创建、组合和表示时。
+- 一个系统要由多个产品系列中的一个来配置时。
+- 当你要强调一系列相关的产品对象的设计以便进行联合使用时。
+- 当你提供一个产品类库，而只想显示它们的接口而不是实现。
+*** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center" width="90%" height="90%"
+   [[file:../resources/OO/img/AbstractFactory.png]]
+*** 优点
+- *通过接口隔离了具体工厂类。* 客户代码依赖于抽象工厂接口。产品的类名也在具体工厂的实现中被分离，不出现在客户代码中。
+- *使得易于交换产品系列。* 通过替换具体的工厂类，来改变产品系列。
+- *有利于产品的一致性。* 当一系列产品被设计成一起工作时，抽象工厂可以保证一个应用一次只能使用同一系列的对象。
+*** 缺点
+- *难以支持新种类的产品。* AbstractFactory接口定义了可以被创建的产品集合。支持新的种类，就需要扩展接口，还涉及到所有子类的改变。[[extendable concrete factory][解决办法]]
+*** 实现
+- 将工厂作为单件。一般每个产品系列只需一个ConcreteFactory的实例。
+- 创建产品。
+  #+BEGIN_VERSE
+  AbstractFactory只声明创建产品的接口。由子类实现，一般子类实现时，
+  使用[[工厂方法][Factory Method]]模式。如果有多个可能的产品系列，具体工厂也可以
+  使用[[Prototype]]模式来实现。具体工厂使用产品系列中每一个产品的原型实
+  例来初始化，且它通过复制它的原型来创建新的产品。基于原型的好处：不
+  是每个新的产品系列都需要一个新的具体工厂类。[fn:5]
+  #+END_VERSE
+#<<extendable concrete factory>>
+- 定义可扩展的工厂
+  #+BEGIN_VERSE
+  加入新产品需要扩展接口，影响子类。
+  一个更灵活但不太安全的设计是给创建对象的操作增加一个参数。
+  该参数指定了将被创建的对象的类型。(可以是类标识符、字符串等)
+  AbstractFactory只需要一个Create操作，用参数指定要创建的产品
+  类型。更适合于动态类型语言。
+
+  当所有对象都有相同的基类，且产品对象可以安全的强转成正确的
+  类型时。才能在C++这样的静态类型语言中使用。
+
+  此方法有个本质的问题，因为返回的都是Object基类，客户无法区分
+  或对一个产品类别进行安全的假定。需要dynamic_cast去转换，这种
+  自上向下类型的转换并不总是安全的。
+  
+  总结：这是一个典型的高度灵活和可扩展接口的权衡问题。
+  #+END_VERSE
+
+*** 相关模式
+- [[Abstract Factory]]通常用[[Factory Method][工厂方法]]实现，也可用[[Prototype]]实现。
+- 一个具体的工厂通常是一个[[Singleton][单件]]。
+
+* 命令模式
+#<<Command>>
+** 概述
+#+BEGIN_VERSE
+将各个具体请求封装成命令对象，实现统一的Execute()接口，从而可以使用不同的命令对象
+对客户进行参数化；对请求排队[fn:6]；记录请求日志。另外还支持可撤销操作。
+#+END_VERSE
+** 适用性
+- Command模式是回调机制的一个面向对象的替代品。
+- 可在不同的时刻，指定、排列或者执行请求。这些操作甚至可在不同的进程中进行(依赖于存储命令的媒介)
+- 支持取消操作。执行前记录状态，取消时利用该状态。考虑电风扇的例子[fn:7]。也可以将每次执行的状态用队列形式保存，可实现逐步Undo或逐步Redo。
+- 支持修改日志。当系统崩溃时，记录下的日志过程可以重新来一遍。方法：添加Store()和Load()接口，利用序列化和持久化的方法记录日志。
+- 支持事务。一个ConcreteCommand实现一个事务，由于接口一致，可以用同一种方式调用所有的事务。 *方便*
+** 结构
+   #+CAPTION: 
+   #+ATTR_HTML: align="center"
+   [[file:../resources/OO/img/Command.png]]
+** 参与者
+- Client 创建一个具体命令对象并指定它的接收者。
+- Invoker 存储ConcreteCommand(可提供SetCommand方法)，并在适当的时候调用Execute()
+** 优点
+1) 将调用命令的对象与知道如何实现该命令相关操作的对象解耦。
+2) Command对象可像其他的对象一样被操纵和扩展。
+** 实现
+- 一个命令对象职责可大可小。
+   - 最小职责仅确定一个接收者和执行该请求的动作
+   - 职责也可以大到，负责处理所有的功能，不需要接收者，直接包含具体动作。(当没有合适的接收者时使用)
+- 实现undo和redo
+  ConcreteCommand类需要存储额外的状态信息，包括：
+  - 接收者对象
+  - 接收者接口执行操作的参数
+  - 接收者的状态值
+  如果将接收者的状态值通过历史列表保存，即可实现多级的取消与重做
+- 使用C++模板
+#+BEGIN_VERSE
+使用条件：1、不能被取消 2、接收者的执行接口不需要参数
+好处：避免每一个动作和接收者都创建一个Command子类。
+#+END_VERSE
+** 扩展
+- 结合对象序列化和持久化的方法，可将命令的状态存于磁盘文件等，在系统奔溃后进行回滚或继续执行。
+- 可以将多个命令打包成一个宏命令。一般来说宏命令是[[Composite]]模式的一个实例。
+** 相关模式
+- [[Composite]]可被用来实现宏命令。
+- [[Memento]]模式可用来保持一个状态，命令对象用该状态来取消之前执行效果。
+* 适配器模式                                                            :结构型:
+#<<Adapter>>
+** 概述
+#+BEGIN_VERSE
+将一个或多个类的接口转换成用户希望的接口。别名Wrapper。
+现有类的接口与用户希望的接口通常是固定的，无法改变。
+#+END_VERSE
+
+** 结构
+*** 类适配器
+#+BEGIN_SRC plantuml :file ../resources/OO/ClassAdapter.png :cmdline -charset UTF-8
+  scale 450 width
+  skinparam classAttributeIconSize 0
+  class Client
+  abstract class Target{
+      + {abstract} Request()
+  }
+  class Adaptee{
+      + SpecificRequest()
+  }
+  class Adapter{
+      + Request()
+  }
+  
+  note left of Adapter
+  SpecificRequest()
+  end note
+  
+  note "可用私有继承" as N1
+  
+  Client -> Target
+  Target <|.. Adapter
+  Adaptee <|-- Adapter
+  Adaptee .. N1
+  N1 .. Adapter
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/ClassAdapter.png]]
+
+*** 对象适配器
+将Adapter与Adaptee之间的继承关系变为了组合。
+#+BEGIN_SRC plantuml :file ../resources/OO/InstanceAdapter.png :cmdline -charset UTF-8
+  scale 520 width
+  skinparam classAttributeIconSize 0
+  class Client
+  abstract class Target{
+      + {abstract} Request()
+  }
+  class Adaptee{
+      + SpecificRequest()
+  }
+  class Adapter{
+      + Request()
+  }
+  
+  note left of Adapter
+  adaptee->SpecificRequest()
+  end note
+  
+  
+  Client -> Target
+  Target <|.. Adapter
+  Adaptee <-- "adaptee" Adapter
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/InstanceAdapter.png]]
+
+** 角色
+- Target
+  定义了满足用户需要的接口
+
+** 实现细节
+*** 类适配器还是对象适配器？
+- 重定义Adaptee的行为
+  #+BEGIN_VERSE
+  类适配器可以方便地重定义Adaptee的部分行为。
+  对象适配器可能需要通过[[Decorator]]模式先拓展Adaptee。
+  #+END_VERSE
+  
+- 适配多个Adaptee？
+  #+BEGIN_VERSE
+  类适配器只能适配一个Adaptee。
+  对象适配器支持多个。
+  #+END_VERSE
+
+*** 如果原有的接口类可以修改
+#+BEGIN_VERSE
+如果允许直接修改用户期望接口或者Adaptee类的接口，
+那么可以通过以下方式实现可插入式的适配器：
+#+END_VERSE
+
+1) 直接将Target与Client整合，Target接口直接变为Client的抽象方法
+2) Client使用代理对象[fn:13]
+
+*** 双向适配器增加透明性
+#+BEGIN_VERSE
+适配器因为改变了接口，Adapter对象与Adaptee对象不兼容(提示：[[Decorator]]兼容)。
+原本使用Adaptee对象的用户就无法使用Adapter对象。
+可使用双向适配器，在实现Target的同时，保留原本Adaptee的接口。
+#+END_VERSE
+
+** 相关模式
+- [[Bridge]]模式的结构与其有些相似，但意图不同。[[Bridge]]的目的是将接口部分与实现部分分离。
+- [[Decorator]]模式为类增加职责，不改变 *原先* 的接口。透明性比[[Adapter]]好，并支持递归组合。
+- [[Proxy]]模式在不改变其接口的条件下，为另一个对象定义了一个代理。
+- [[Facade]]模式将一个或多个不同对象的复杂接口进行简化。
+* 外观模式                                                              :结构型:
+#<<Facade>>
+** 概述
+为子系统中的一组接口进行简化，提供一组高级接口，使得子系统更加容易使用。
+** 适用性
+- 为复杂子系统提供一个简单接口，对大部分用户来说足够用，必要时用户一样可以绕过该接口。
+- 使客户程序从子系统的各层次实现的细节中解脱出来。
+- 多层次结构，可以使用Facade模式定义每一层的抽象操作。可以让各层次之间通过facade进行通信，简化了各层次之间的依赖关系。
+** 结构
+#+BEGIN_SRC plantuml :file ../resources/OO/Facade.png :cmdline -charset UTF-8
+  scale 450 width
+  title <b>Facade Pattern</b>
+  package Package <<Folder>> {
+      class Facade
+      class Class1
+      class Class2
+      class Class3
+      Facade ..> Class1
+      Facade ..> Class2
+      Facade ..> Class3
+  }
+  
+  class Client
+  Client ..> Facade
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Facade.png]]
+** 优点
+- 实现了用户与子系统之间的 *松耦合* 关系
+- 对用户屏蔽子系统结构，更易用
+** 实现细节
+- 使用抽象类实现Facade可以进一步降低客户与子系统的耦合度。
+- C++使用Namespace可以私有化子系统中的类。
+** 相关模式
+- [[Abstract Factory]]模式可与Facade模式一起使用以提供一个单独的创建产品簇的接口。
+- [[Mediator]]模式与Facade模式的相似之处：都抽象了一些已有的类的功能。但[[Mediator]]的目的是对同级之间的任意通讯进行抽象。[fn:8]
+- 通常来说仅需要一个Facade对象，所以Facade类定义成[[Singleton]]类。
+* 迭代器模式                                                            :结构型:
+#<<Iterator>>
+** 概述
+提供遍历集合对象中各元素的方法，并且不将集合具体的数据结构暴露给用户。
+** 适用性
+- 遍历访问集合对象的内容，无需暴露它的内部结构。
+- 支持对同一集合对象的多种遍历方式。
+- 为遍历不同数据结构的集合对象提供统一的接口(即支持多态迭代）。
+** 结构
+#+BEGIN_SRC plantuml :file ../resources/OO/Iterator.png :cmdline -charset UTF-8
+  scale 500 width
+  skinparam classAttributeIconSize 0
+  class Client
+  abstract class Aggregate{
+      + {abstract} Iterator CreateIterator()
+  }
+  abstract class Iterator{
+      + {abstract} First()
+      + {abstract} Next()
+      + {abstract} IsDone()
+      + {abstract} CurrentItem()
+  }
+  
+  class ConcreteAggregate{
+      + Iterator CreateIterator()
+  }
+  
+  class ConcreteIterator
+  
+  note "return new ConcreteIterator(this)" as N1
+  
+  Client -> Iterator
+  Aggregate <- Client
+  Aggregate <|-- ConcreteAggregate
+  Iterator <|-- ConcreteIterator
+  ConcreteAggregate .> ConcreteIterator
+  ConcreteAggregate <- ConcreteIterator
+  ConcreteAggregate .. N1 
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Iterator.png]]
+
+** 角色
+- Iterator
+
+  定义访问和遍历元素的接口
+
+- ConcreteIterator
+
+  - 实现Iterator定义的接口
+  - 在遍历集合时，跟踪当前位置
+
+- Aggregate
+  
+  定义创建迭代器对象的接口
+
+- ConcreteAggregate
+  
+  实现Aggregate定义的接口
+** 优点
+- 支持以不同的方式遍历一个集合，使改变遍历算法变的容易。
+- 迭代器将遍历的职责从集合类中剥离出来。维护起来更容易。
+- 可以同时对一个集合进行多个遍历，只需多个迭代器实例对象。
+** 实现细节
+*** 由谁来控制迭代过程？
+#+BEGIN_VERSE
+由客户来控制的称为外部迭代器(或称为主动迭代器)。
+由迭代器自身来控制的，称为内部迭代器(或称为被动迭代器)。
+#+END_VERSE
+
+- 外部迭代器
+  
+  使用外部迭代器时，客户必须主动推进迭代的步伐。
+
+- 内部迭代器
+  #+BEGIN_VERSE
+  使用内部迭代器时，客户只需指定一个操作，迭代器保证对集合
+  中的每一个元素执行该操作。[fn:9]
+  如何指定操作？支持匿名函数和闭包的语言很容易实现。
+  C++中通常有两种方法可以选择
+  #+END_VERSE
+  - 函数指针
+    劣势在于如果需要更新某种状态，则需要使用全局变量。
+  - 子类生成
+    需要定义额外的类来达到目的。[fn:12]
+
+- 权衡
+  #+BEGIN_VERSE
+  内部迭代器定义好了迭代逻辑，使用起来更方便；
+  外部迭代器由于将迭代逻辑交由用户来控制，使用起来更灵活。
+  #+END_VERSE
+
+*** 谁定义遍历算法？
+- 由集合自身定义
+  #+BEGIN_VERSE
+  由集合自身定义遍历算法。迭代器仅用来指示当前的位置。这种迭代器称为 *游标* 。
+
+  客户调用Next()时，需要将游标作为参数传入，Next操作内部仅改变游标的位置状态。
+  可改接口为SetCursor(index)和int GetCursor()更容易理解。
+  #+END_VERSE
+- 由迭代器定义
+  #+BEGIN_VERSE
+  遍历算法还可以由迭代器定义，优势在于，使得在相同的集合上使用不同的迭代算法、
+  或是在不同的集合上使用相同的迭代算法更简单。
+  
+  注意：如果遍历算法会用到集合的私有变量，放在迭代器中，则破坏了集合对象的封装性。
+  #+END_VERSE
+*** 线程安全的迭代器
+#+BEGIN_VERSE
+现实情况下，可能有多个不同线程创建的迭代器引用同一个集合对象。
+
+解决同步问题的一般做法是：
+各迭代器对象需要向集合对象进行注册(可用[[Observer]]模式)，
+当改变发生时，集合对象更新每一个迭代器的状态。
+#+END_VERSE
+*** 关于多态迭代器
+- 结构图中所展示的是多态迭代器的实现
+  #+BEGIN_VERSE
+  也可以不需要迭代器抽象基类，这样在 *工厂方法CreateIterator* 中
+  也就不需要动态new出迭代器具体类对象。
+  #+END_VERSE
+  
+- 多态迭代器是有代价的
+  #+BEGIN_VERSE
+  因为 *动态* 的分配迭代器对象的本身是有代价的。
+  一般情况使用分配在栈区上的具体迭代器即可。
+  #+END_VERSE
+- 多态意味着需要用new，也就需要用户负责删除它们，这样容易引发错误。
+- 因此，仅在必须要使用多态时才使用。
+  
+  有关这一点，[[Proxy]]模式提供了一个补救办法。[fn:10]
+
+*** 迭代器与集合的紧密耦合
+迭代器一般作为集合的一个扩展，两者之间是紧密耦合的。
+
+**** 利用C++友元实现
+#+BEGIN_VERSE
+C++中迭代器可作为它的集合类的一个友元，
+这样集合类中就不必定义一些只有迭代器才用的到的方法。
+当然这破坏了集合类的封装性，但这点仅仅是针对迭代器而言的。
+
+问题：
+当定义新的ConcreteIterator(为了增加新的遍历方式)时，需要为集合类加上另一个友元。
+
+解决办法：
+为避免该问题，集合类可定义迭代器父类为友元，
+迭代器子类通过包含一些protected操作，来访问集合类非公共可见成员。
+#+END_VERSE
+*** 与[[Composite]]模式的协作[fn:11]
+*** 空迭代器
+#+BEGIN_VERSE
+用于处理边界条件。
+一个NullIterator的IsDone()总是返回true，或者HasNext()总是返回false。
+
+提示：
+空迭代器更多的用于处理树形结构的集合。
+叶节点通常需要一个NullIterator。
+#+END_VERSE
+** 相关模式
+- 迭代器可在[[Composite]]模式这样的递归结构上使用。
+- 多态迭代器可以通过[[Factory Method]]模式来实例化迭代器子类。
+- 迭代器可使用一个[[memento]]来捕获一个迭代状态，即迭代器内部存储[[memento]]。
+
+* 一些OO提示
+** 关于抽象类和接口
+- 抽象类可以有成员变量及非抽象方法(通常放入子类的共通代码)
+- 大部分语言(Java, C#等)仅能继承自一个抽象类，但能继承多个接口
+总结：抽象类主要用于对象系列的基类， *共享* 某些主要特性。
+** 活用空对象来避免null值检查
+#+begin_src cpp
+  class Object
+  {
+  public:
+      vitual void DoSomething() = 0;
+  };
+  
+  class NullObject : public Object
+  {
+  public:
+      void DoSomething();
+  };
+  
+  void NullObject::DoSomething()
+  {
+      //do nothing
+  }
+#+end_src
+
+* Footnotes
+
+[fn:1] 动手做一下这个实现。
+
+[fn:2] 并非低层组件一定不能调用高层组件，最重要的是避免让高层组件和低层组件之间有明显的环状依赖。
+
+[fn:3] hook操作缺省经常是一个空操作。空操作的意义：某些子类可能需要一些"特别"的操作，而大部分子类不需要。
+
+[fn:4] 继承方式是在编译时静态扩展父类的职责，装饰者模式是动态的添加职责。
+
+[fn:5] 学完原型模式，回过头来再看这段。
+
+[fn:6] 如何实现请求队列？因为命令是一个个的对象，就可以存成对象列表或队列，何时执行由调用者决定。
+
+[fn:7] 风量大小为调速命令的状态，执行调速命令前，可记录下当前的风量大小，以便取消命令设置回原先的速度。
+
+[fn:8] 看到[[Mediator]]的时候再理解这段话。
+
+[fn:9] 实现MapReduce中"Map"的一种方式。
+
+[fn:10] 看到[[proxy]]模式时回头再来补充。
+
+[fn:11] 待学完组合模式再补充完
+
+[fn:12] 具体代码示例参照《Gof设计模式》
+
+[fn:13] 看完[[proxy]]模式再来理解。
+
+

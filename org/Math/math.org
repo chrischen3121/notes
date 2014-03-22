@@ -1,0 +1,116 @@
+#+TITLE: 数学
+#+KEYWORDS: math
+#+OPTIONS: H:2 toc:2 num:3 ^:nil
+#+OPTIONS: LaTeX:t
+#+SETUPFILE: ../configOrg/level1.org
+* 对数
+** 基本定理
+*** 定理1
+$\log_A B=\frac{\log_C B}{\log_C A}$
+*** 定理2
+$\log AB=\log A+\log B$
+*** 定理3
+$\log \frac{A}{B}=\log A-\log B$
+*** 定理4
+$\log A^B=B\log A$
+* 级数
+** 等比级数
+*** 2为公比的等比级数
+$\sum_{i=0}^n 2^i=2^{n+1}+1$
+*** 通用公式
+$\sum_{i=0}^n A^i=\frac{A^{n+1}-1}{A-1}$
+** 收敛级数 
+#+BEGIN_VERSE
+if 0<A<1, then
+$$\sum_{i=0}^n A^i\leq\frac{1}{1-A}$$
+当N趋向于\infty时，该和趋向于$\frac{1}{1-A}$
+#+END_VERSE
+*** 推导$\sum_{i=0}^{\infty} A^i\space (0<A<1)$
+$$S=1+A+A^2+A^3+\dots$$
+$$AS=A+A^2+A^3+\dots$$
+
+#+BEGIN_VERSE
+收敛于1(极限概念)
+#+END_VERSE
+$$S-AS=1$$
+$$S=\frac{1}{1-A}$$
+** 算术级数(Arithmetic series)
+- 等差级数
+   $$\sum_{i=1}^N i=\frac{N(N+1)}{2}\approx\frac{N^2}{2}$$
+- $\sum_{i=1}^N i^2$
+$$\sum_{i=1}^N i^2=\frac{N(N+1)(N+2)}{6}\approx\frac{N^3}{3}$$
+$$\sum_{i=1}^N i^k\approx\frac{N^{k+1}}{|k+1|}\space k\neq-1$$
+- 当k=-1时，以上等式不成立，需要用到下面的公式[fn:1]：
+$$H_N=\sum_{i=1}{N}\frac{1}{i}\approx\log_e{N}$$
+$H_N$ 叫作调和数，近似式中的误差趋向于$\lambda\approx0.57721566$ ，称为欧拉常数(Eular's constant)。
+** 最后，一般的代数运算级数
+$$\sum_{i=1}{N} f(N)=Nf(N)$$
+$$\sum_{i=n_0}^N f(i)=\sum_{i=1}^N f(i)-\sum_{i=1}^{n_0-1} f(i)$$
+* 数列
+** 等差数列
+*** 通项式
+$$a_n=a_1+(n-1)d$$
+*** 求和
+$$S_n=na_1+\frac{n(n-1)d}{2}=\frac{n(a_1+a_n)}{2}$$
+** 等比数列
+*** 通项式
+$$a_n=a_1q^{n-1}$$
+*** 求和
+$$S_n=\frac{a_1(1-q^n)}{1-q}条件：(q\neq1)$$
+** 数列求和方法
+*** 错位相减法
+- 适用情况：应用于等差与等比数列相乘的形式。
+- 使用例子：求和$\sum_{i=1}^n ia^i$
+$$a\sum_{i=1}^{n}{ia^i} - \sum_{i=1}^{n}{ia^i}=a\cdot{a^1}+a\cdot{2a^2}+\dots+a\cdot{na^n}-a^1-2a^2-3a^3-\dots-na^n$$
+$$=-(a^1+a^2+a^3+\dots+a^n)+na^{n+1}$$
+* 模运算
+** 定义
+#+BEGIN_VERSE
+A或者B被N整除，所得余数相同(即N整除A-B)，则称A与B模同余N。
+记作： $A\equiv{B}(mod\space{N})$
+例子： $81\equiv{61}\equiv{1}(mod\space{10})$
+#+END_VERSE
+** 运算规则
+#+BEGIN_VERSE
+同加法乘法:
+$$A+C\equiv{B+C}(mod\space{N})$$
+$$AD\equiv{BD}(mod\space{N})$$
+#+END_VERSE
+
+* 概率
+** Probability Axioms
+*** Nonnegativity
+For every event A, $P(A) \ge 0$.
+*** Additivity
+$$P(A \cup B) = P(A)+P(B)$$
+$$P(A_1 \cup A_2 \cup ...) = P(A_1) + P(A_2) + ...$$
+*** Normalization
+$$P(\Omega) = 1$$
+** Probability Laws
+- If $A\subset B$, then $P(A)\le P(B)$
+- $P(A \cup B) = P(A) + P(B) - P(A \cap B)$
+- $P(A\cup B) \le P(A)+P(B)$
+- $P(A\cup B\cup C) = P(A) + P(A^c\cap B) + P(A^c\cap B^c\cap C)$
+- if $P(A \cap B)$ equals to 0, this stuation is called mutually exclusive
+*** 独立事件的组合概率
+if $A_1$ and $A_2$ are independent events.
+$$P(A_1|A_2)=P(A_1)\times P(A_2)$$
+
+** Binomial Theorem
+$$(x+y)^n = \sum_{k=0}^{n} \dbinom{n}{k}x^{n-k}y^{k}$$
+* 三角函数
+** 特殊值
+| 三角函数 | $0$       | $\frac{\pi}{6}$    | $\frac{\pi}{4}$    | $\frac{\pi}{3}$    | $\frac{\pi}{2}$ | $\frac{2\pi}{3}$    | $\frac{3\pi}{4}$    | $\frac{5\pi}{6}$    | $\pi$     | $\frac{3\pi}{4}$ |
+| sin      | $0$       | $\frac{1}{2}$      | $\frac{\sqrt2}{2}$ | $\frac{\sqrt3}{2}$ | $1$             | $\frac{\sqrt3}{2}$  | $\frac{\sqrt2}{2}$  | $\frac{1}{2}$       | $0$       | $-1$             |
+| cos      | $1$       | $\frac{\sqrt3}{2}$ | $\frac{\sqrt2}{2}$ | $\frac{1}{2}$      | $0$             | $-\frac{1}{2}$      | $-\frac{\sqrt2}{2}$ | $-\frac{\sqrt3}{2}$ | $-1$      | $0$              |
+| tan      | $0$       | $\frac{\sqrt3}{3}$ | $1$                | $\sqrt3$           | $+ \infty$      | $-\sqrt3$           | $-1$                | $-\frac{\sqrt3}{3}$ | $0$       | $+ \infty$       |
+| cot      | $+ \infty$ | $\sqrt3$           | $1$                | $\frac{\sqrt3}{3}$ | 0               | $-\frac{\sqrt3}{3}$ | $-1$                | $-\sqrt3$           | $+ \infty$ | $0$              |
+** 三角恒等式简易记法
+#+BEGIN_VERSE
+最容易记的 $sin^2\theta +cos^2\theta = 1$
+两边同除以 $sin^2\theta$ 得到 $1 + cot^2\theta = csc^2\theta$
+若同除以 $cos^2\theta$ 得到 $tan^2\theta + 1=sec^2\theta$
+
+#+END_VERSE
+* Footnotes
+[fn:1] 该公式在计算机科学中远比在其他科学中用的多
