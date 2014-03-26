@@ -736,15 +736,6 @@ void Observer::Update(Subject*, Aspect& interest);
   对象适配器支持多个。
   #+END_VERSE
 
-*** 如果原有的接口类可以修改
-#+BEGIN_VERSE
-如果允许直接修改用户期望接口或者Adaptee类的接口，
-那么可以通过以下方式实现可插入式的适配器：
-#+END_VERSE
-
-1) 直接将Target与Client整合，Target接口直接变为Client的抽象方法
-2) Client使用代理对象[fn:13]
-
 *** 双向适配器增加透明性
 #+BEGIN_VERSE
 适配器因为改变了接口，Adapter对象与Adaptee对象不兼容(提示：[[Decorator]]兼容)。
@@ -757,6 +748,101 @@ void Observer::Update(Subject*, Aspect& interest);
 - [[Decorator]]模式为类增加职责，不改变 *原先* 的接口。透明性比[[Adapter]]好，并支持递归组合。
 - [[Proxy]]模式在不改变其接口的条件下，为另一个对象定义了一个代理。
 - [[Facade]]模式将一个或多个不同对象的复杂接口进行简化。
+* 代理模式                                                              :结构型:
+#<<Proxy>>
+** 概述
+控制和管理访问
+** 适用性
+1) *远程代理* 代理类隐藏网络层的实现，本地调用代理类就如同调用本地对象一样。
+2) *虚代理* 创建开销很大的对象时使用。代理类隐藏创建的细节。
+3) *保护代理* 用于权限控制。
+4) *智能指针*
+** 结构
+#+BEGIN_SRC plantuml :file ../resources/OO/Proxy.png :cmdline -charset UTF-8
+  scale 520 width
+  skinparam classAttributeIconSize 0
+  class Client
+  abstract class Subject{
+      + {abstract} Request()
+  }
+  class RealSubject{
+      + Request()
+  }
+  class Proxy{
+      + Request()
+  }
+  
+  note right of Proxy
+  realSubject->Request();
+  ...
+  end note
+  
+  
+  Client -> Subject
+  Subject <|-- RealSubject
+  Subject <|-- Proxy
+  RealSubject <- Proxy
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Proxy.png]]
+
+** 角色
+- Proxy
+
+  控制对实体的存取，并可能负责创建和删除实体。
+
+- Subject
+  
+  定义RealSubject与Proxy的共用接口。
+** 实现细节
+*** C++重载->,*运算符
+#+BEGIN_SRC c++
+  Image* ImageProxy::operator-> ()
+  {
+      return LoadImage();
+  }
+  Image& ImageProxy::operator* ()
+  {
+      return *LoadImage();
+  }
+  
+  int main()
+  {
+      ImageProxy imageptr;
+      imageptr->Draw();//此处实际调用的是Image的方法
+      (*image).Draw();
+      return 0;
+  }
+  
+#+END_SRC
+*** 远程代理
+#+BEGIN_VERSE
+远程代理不一定都是通过网络调用的，不同地址空间的对象访问也是远程代理。
+远程代理一般需要将对象、调用信息序列化，通过Socket等协议，通知远程的
+服务，然后有远程提供服务的程序，调用实体对象。
+
+Java中有成套的解决方案，叫做RMI。
+#+END_VERSE
+*** 智能指针
+- 对指向实际对象的引用计数，引用计数为0时，自动释放。
+- 第一次引用时，装入内存。
+- 访问实际对象前，检查被锁定。
+  
+*** 虚代理
+#+BEGIN_VERSE
+对于一些开销很大的对象，可能在实际真正用到的时候，才创建对象。
+例如：ImageProxy构造中什么都不做，而在Draw的接口中，才真正创建Image对象。
+#+END_VERSE
+
+** 相关模式
+#+BEGIN_VERSE
+[[Adapter]]模式：主要用于转换接口；而代理模式一般情况下不改变接口，意图不一样。
+
+[[Decorator]]模式：两者结构类似，但意图不同。
+装饰者模式支持多层装饰；而代理通常只会添加一层访问控制。
+代理模式通常与实际对象接口保持一致。装饰者通常需要增加接口以达到扩展功能的目的。
+#+END_VERSE
 * 外观模式                                                              :结构型:
 #<<Facade>>
 ** 概述
@@ -880,7 +966,7 @@ void Observer::Update(Subject*, Aspect& interest);
   - 函数指针
     劣势在于如果需要更新某种状态，则需要使用全局变量。
   - 子类生成
-    需要定义额外的类来达到目的。[fn:12]
+    需要定义额外的类来达到目的。[fn:10]
 
 - 权衡
   #+BEGIN_VERSE
@@ -924,9 +1010,34 @@ void Observer::Update(Subject*, Aspect& interest);
   一般情况使用分配在栈区上的具体迭代器即可。
   #+END_VERSE
 - 多态意味着需要用new，也就需要用户负责删除它们，这样容易引发错误。
-- 因此，仅在必须要使用多态时才使用。
+  #+BEGIN_VERSE
+  可以使用[[Proxy]]模式，在栈区创建一个代理迭代器对象，在代理迭代器析构中
+  释放具体迭代器对象。不能用工厂是因为工厂只负责对象的创建。
+  #+END_VERSE
+  #+BEGIN_SRC c++
+    IteratorProxy::IteratorProxy(Type type)
+    {
+        if (type == Type.Reverse) Iterator* m_iter = new ReverseIterator();
+        ...
+    }
+    
+    IteratorProxy::~IteratorProxy()
+    {
+        delete m_iter;
+    }
+    
+    int main()
+    {
+        IteratorProxy iter(Type.Reverse);
+        iter.next();
+        ...
+        return 0;
+    }
+        
+  #+END_SRC
   
-  有关这一点，[[Proxy]]模式提供了一个补救办法。[fn:10]
+
+- 仅在必须要使用多态时才使用。
 
 *** 迭代器与集合的紧密耦合
 迭代器一般作为集合的一个扩展，两者之间是紧密耦合的。
@@ -1004,12 +1115,8 @@ C++中迭代器可作为它的集合类的一个友元，
 
 [fn:9] 实现MapReduce中"Map"的一种方式。
 
-[fn:10] 看到[[proxy]]模式时回头再来补充。
+[fn:10] 具体代码示例参照《Gof设计模式》
 
 [fn:11] 待学完组合模式再补充完
-
-[fn:12] 具体代码示例参照《Gof设计模式》
-
-[fn:13] 看完[[proxy]]模式再来理解。
 
 
