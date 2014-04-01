@@ -609,33 +609,87 @@ void Observer::Update(Subject*, Aspect& interest);
 #<<Command>>
 ** 概述
 #+BEGIN_VERSE
-将请求封装成对象，实现统一的Execute()接口，从而可以使用不同的命令对象
-对客户进行参数化。
+将请求封装成对象，实现统一的Execute()接口，从而可以使用不同的请求
+实例对其他对象进行参数化。
+
+典型的例子：
+Button控件，对控件设计者来说，只知道Button按下应该会发生
+些什么，但具体会发生什么一无所知。只能由使用者来决定。
 #+END_VERSE
-- 对请求排队[fn:6]；
-- 记录请求日志
-- 支持撤销操作。
+
 ** 适用性
-- Command模式是回调机制的一个面向对象的替代品。
-- 可在不同的时刻，指定、排列或者执行请求。这些操作甚至可在不同的进程中进行(依赖于存储命令的媒介)
-- 支持取消操作。
+- *回调机制* 的一个面向对象的替代品
+
+- 支持对请求排队[fn:6]
+
+- 支持撤销操作
   #+BEGIN_VERSE
   Excute()在实施操作前记录状态，Undo()利用该记录状态取消之前执行的操作。
-  还可以将每次执行的状态用队列形式保存，可实现一系列的Undo或Redo。
+  将执行完的命令对象加入一个历史列表，可通过 *向前/向后遍历* 实现
+  一系列的 *Undo/Redo* 。
   #+END_VERSE
 
-- 支持修改日志。当系统崩溃时，记录下的日志过程可以重新来一遍。方法：添加Store()和Load()接口，利用序列化和持久化的方法记录日志。
-- 支持事务。一个ConcreteCommand实现一个事务，由于接口一致，可以用同一种方式调用所有的事务。 *方便*
+- 命令对象支持 *持久化*
+  #+BEGIN_VERSE
+  方法：添加Store()和Load()接口
+  在执行一些列命令前，调用Store()对命令对象进行序列化和持久化操作。
+  一旦系统崩溃，可以使用Load()复原命令对象，并重新执行。
+  #+END_VERSE
+
+- 支持事务处理
+  、、、
+  #+BEGIN_VERSE
+  一个ConcreteCommand实现一个事务，由于接口一致，可以用同一种方式调用所有的事务。 *方便*
+  #+END_VERSE
+  
 ** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/Command.png]]
+#+BEGIN_SRC plantuml :file ../resources/OO/Command.png :cmdline -charset UTF-8
+  scale 550 width
+  skinparam classAttributeIconSize 0
+  class Client
+  class Invoker
+  class Receiver{
+      + Action()
+  }
+  abstract class Command{
+      + {abstract} Execute()
+      + {abstract} Undo()
+  }
+  class ConcreteCommand{
+      + Execute()
+      + Undo()
+      - state
+  }
+  
+  note right of ConcreteCommand
+  receiver->Action();
+  end note
+  
+  Client --> Receiver
+  Receiver <- "receiver" ConcreteCommand
+  Client ..> ConcreteCommand
+  Command <|-- ConcreteCommand
+  Command -o Invoker
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Command.png]]
+
 ** 角色
-- Client 创建一个具体命令对象并指定它的接收者。
-- Invoker 存储ConcreteCommand(可提供SetCommand方法)，并在适当的时候调用Execute()
+- Client
+  #+BEGIN_VERSE
+  负责创建具体命令对象并指定它的接收者。
+  存储命令对象到某个媒介。
+  #+END_VERSE
+  
+- Invoker 从存储媒介中获取命令对象，并执行。
+
 ** 优点
-1) 将调用命令的对象与知道如何实现该命令相关操作的对象解耦。
-2) Command对象可像其他的对象一样被操纵和扩展。
+1) 增加新的Command很容易。
+2) 将调用命令的对象与知道如何实现该命令相关操作的对象解耦。
+3) Command对象和其他对象一样支持扩展。
+4) 支持MacroCommand。复合命令是Composite模式的一个实例。
+
 ** 实现
 - 一个命令对象职责可大可小。
    - 最小职责仅确定一个接收者和执行该请求的动作
