@@ -464,7 +464,7 @@ It takes quadratic time to deal with dulplicate keys.
   2) Scan i from left to right
      #+BEGIN_VERSE
      (a[i] < v): exchange a[lt] with a[i]; increment both lt and i
-     (a[i] > v): exchange a[gt] with a[i];decrement gt
+     (a[i] > v): exchange a[gt] with a[i]; decrement gt
      (a[i] == v): increment i
      #+END_VERSE
   #+ATTR_HTML: align="center"
@@ -489,7 +489,6 @@ Parent node should be larger than any of its child.
 2) Swap root and last leaf. 
 3) Pop last leaf.
 4) sink(root).
-
 
 - swim: *if* BH[k] > BH[floor(k/2)] *Exchange(BH[k], BH[floor(k/2)])*
 - sink:
@@ -585,6 +584,65 @@ j = n
 *else*
   *return* 0
 #+END_VERSE
+* Data Structure
+** Queue
+*** API
+- *enqueue*
+- *dequeue*
+- *isEmpty*
+
+** Stack
+*** API
+- *push*
+- *pop*
+- *isEmpty*
+
+** Priority Queue
+*** API
+- *MaxPQ()*
+- *void insert(Key v)*
+- *Key delMax()*
+- *bool isEmpty()*
+- Key max()
+- int size()
+
+*** Inner Structure
+Binary Heap (complete binary tree)
+- Property: All nodes are greater/less than or equal to each of its child.
+
+*** Analysis
+| insert   | delMax   | max |
+|----------+----------+-----|
+| $\log N$ | $\log N$ |   1 |
+
+
+** Symbol Table
+*** API
+ST<Key, Value>
+- *ST()*
+- *void put(Key key, Value val)*
+- *Value get(Key key)*
+- *void delete(Key key)*
+- *bool contains(Key key)*
+- *bool isEmpty()*
+- *int size()*
+
+*** Hibbard Deletion
+1) 0 child: delete node; set parent link to null;
+2) 1 child: delete node; set parent link to its child;
+3) 2 children:
+
+  #+ATTR_HTML: align="center"
+  file:../resources/algorithm/HibbardDeletion2Children.png
+
+*** Analysis
+| Implementation | search(wc) | insert(wc) | delete(wc) | search(ac) | insert(wc) | delete(ac) |
+|----------------+------------+------------+------------+------------+------------+------------|
+| seq search     | N          | N          | N          | N/2        | N          | N/2        |
+| binary search  | $\log N$   | N          | N          | $\log N$   | N/2        | N/2        |
+| BST            | N          | N          | N          | $\log N$   | $\log N$   | ?          |
+| red-black BST  | $\log N$   | $\log N$   | $\log N$   | $\log N$   | $\log N$   | $\log N$   |
+
 * Classic Problems
 ** Halting Problem
 Construct two procedure: H(P, I) and K(P)
