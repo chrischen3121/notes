@@ -348,66 +348,88 @@ void Observer::Update(Subject*, Aspect& interest);
 *** [[Composite]]模式
 可以将装饰视为一个退化的、仅有一个组件的组合。另外，它的目的在于添加职责，而Composite目的在于对象聚集。
 
-* 单件模式
+* 单件模式                                                           :创建型:对象:
 #<<Singleton>>
 ** 概述
 保证类仅有一个实例，并提供该实例的全局访问点。
 ** 适用性
-- 当类只能有一个实例。
-- 当这个唯一实例需要可以通过子类化扩展
+- 当类只能有一个实例
+- 当这个唯一实例需要通过子类化扩展
 ** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/Singleton.png]]
+#+BEGIN_SRC plantuml :file ../resources/OO/Singleton.png :cmdline -charset UTF-8
+  scale 200 width
+  skinparam classAttributeIconSize 0
+  class Singleton {
+      - {static} Singleton uniqueInstance
+      - Singleton()
+      - ~Singleton()
+      + {static} Singleton GetInstance()
+      + SingletonOperation()
+  }
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Singleton.png]]
+
 ** 优点
-- 缩小名空间。单件是对全局变量的一种改进。全局变量会污染名空间（多模块都有某全局变量就会产生编译冲突）。
-- 可以被继承。
-- *重点拓展* 允许可变数目的实例。允许Singleton类可以管理多个实例（考虑连接池和线程池之类的实现）。
-- 比类方法(静态)更灵活。无法实现维护多个实例的情况。另外静态方法无法通过多态由子类重定义。
+- *受控访问* 
+- 起到命名空间的作用
+  #+BEGIN_VERSE
+  对全局变量的一种改进，全局变量会污染名空间(容易重名)。
+  支持静态类的语言，使用静态类解决该问题更简单。
+  #+END_VERSE
+  
+
+- 可以被 *继承* 扩展。
+- 也可以拓展单例为 *多个实例*
+  
+  允许Singleton类可以管理多个实例（考虑各种池类设计）。
+
+- 比类方法(静态)更灵活
+
+  当需要拓展成多个实例时，灵活方便。而静态方法做不到。
+
 ** 实现
 #+begin_src cpp
   class Singleton
   {
   public:
-    static Singleton* GetInstance();
+      static Singleton* GetInstance();
   protected:
-    Singleton();
+      Singleton() : _instance(NULL);//隐藏的构造函数
   private:
-    static Singleton* _instance;
+      static Singleton* _instance;
   };
   
-  Singleton* Singleton::_instance = 0;
   Singleton* Singleton::GetInstance ()
   {
-    if (_instance == 0)
-      {
-        _instance = new Singleton();
-      }
-    return _instance;
+      if (_instance == NULL) _instance = new Singleton;
+      return _instance;
   }
 #+end_src
 *** 同步问题
 #+BEGIN_VERSE
-以下用Java示例说明较为简单。
-为了保证在多线程环境下能只创建一个实例，需要对GetInstance方法做同步处理。
+为了保证在多线程环境下只创建一个实例，需要对GetInstance方法做同步处理。
 
-一个方法是：直接将GetInstance方法声明为synchronized。
-这样的做法有个问题：事实上我们需要同步的只是GetInstance内部负责创建实例的
-区块，对整个函数进行同步，如果外部调用很频繁，开销会很大。
+简单的方法：直接将GetInstance方法声明为synchronized。
 
-更好的做法如下：
+这样的做法有个问题：
+我们需要同步的只是GetInstance内部负责创建实例的区块，
+对整个函数进行同步，如果函数体内内容较多且外部调用很频繁，
+开销会很大。
+
+应该只同步创建实例的区块：
 #+END_VERSE
 #+begin_src java
   public class Singleton
   {
       private static Singleton uniqueInstance;
       private Singleton() {}
-      public static Singleton GetInstance()
-      {
+      public static Singleton GetInstance() {
           if (uniqueInstance == null) { //判断是否要进入负责创建实例的同步模块
               synchronized (Singleton.class) {//仅一个线程执行此区块，确保只创建一个实例。
                   if (uniqueInstance == null) { 
-                      uniqueInstance = new Singleton();
+                      uniqueInstance = new Singleton();//对于同步数据，当你的写入依赖于读取的内容的时候，要小心。
                   }
               }
           }
@@ -416,41 +438,48 @@ void Observer::Update(Subject*, Aspect& interest);
   }
 #+end_src
 *** 继承问题
-#+BEGIN_VERSE
-问题所在：子类的单件实例化在何处实现？
-几种选择：
-#+END_VERSE	
-- 在父类Singleton的GetInstance中决定使用哪一个单件子类。可以传入参数，使用条件语句在运行时期选择适合的子类。
+问题：子类的单件实例化在何处实现？
+
+- 在父类的GetInstance中决定使用哪一个单件子类。
+  #+BEGIN_VERSE
+  可以传入参数，使用条件语句在运行时期选择适合的子类。
   局限在于硬性限定了可能的Singleton子类的集合。
-- 将GetInstance类从父类中剥出，并将它放入子类。客户代码在使用时自行决定使用哪个子类的GetInstance。
-  该方法是在编译时决定使用哪个子类的，非运行时，不够灵活。
-- 将要使用的单件类记录在设定文件(或注册表等)中。
-   #+BEGIN_VERSE
-   用法：记录所使用的单件类名作为配置项，在程序中加入该字符串与单件具体类的映射。
-   Singleton父类只需通过映射选择相应的子类，而不需要知道所有的子类。
+  优点：支持多态，运行时指定子类。
+  #+END_VERSE
 
-   注意事项：映射表谁来维护？以何种形式存储？子类如何注册进映射表？具体可参考《GOF设计模式》
-   #+END_VERSE
+- 将GetInstance类从父类中剥出，并将它放入子类。
+  #+BEGIN_VERSE
+  客户代码通过类名调用GetInstance自行决定使用哪个子类。
+  编译时决定使用哪个子类，非运行时，不够灵活。
+  #+END_VERSE
 
-** 与一些语言的纯静态类比较
+- 使用设定文件(或注册表等)记录单件类。
+
+  GetInstance()读取相关配置项，通过映射表找到相对应的单件类。
+
+** 与静态类比较
 *** 概念上的理解
-单件模式只是一种OO思想，而静态类可以当为单件模式的一种特殊实现方式。
-- 静态类更多的用于与特定实例无关的 *全局* 属性和 *全局* 方法的分类。比如[[http://msdn.microsoft.com/zh-cn/library/system.math_members(v=vs.80).aspx][.NET的MATH类]]
-- 而单件的概念是确实需要一个实例，而且实例只能有一个。比如：注册表对象，线程池对象
+静态类是单件模式的一种特殊实现方式。
+- 静态类更多的用于与特定实例无关的 *全局* 属性和 *全局* 方法的分类(起到命名空间的作用)。
+- 而单件的概念是确实需要一个实例，而且实例只能有一个。比如：注册表对象，线程池对象。
+
 *** 创建的时机
 - 静态类在编译时创建
-- 单件模式的类在运行时创建
-*** 继承性
+- 单件模式的类在运行时创建(创建的时机在一定程度上可选)
+
+*** 扩展性
 - 静态类不能被继承，也无法继承其他类。(如果该类需要实现一些接口，则不能使用静态类)
-- 单件类可以被继承
+- 单件类可以被继承扩展
+- 如需要从一个实例变为多个实例，静态类做不到。单件类可以扩展满足要求 *更灵活*
+
 *** 总结
-- 静态类是对全局方法、全局变量的分类组织方法。
-- 单件模式表示有且仅有一个对象。单件类可以被继承。
-*** 建议
+- 静态类更多地用于对全局方法、全局变量的分类组织。
+- 单件模式表示有且仅有一个对象。单件类可以被继承，易于扩展。
+
 #+BEGIN_VERSE
 当对于是否使用单件模式没把握的时候，使用单件类更好一些。
 原因：静态类改成实例类，会改变接口，从而影响所有的客户代码。
-#+END_VERSE  
+#+END_VERSE
 
 ** 相关模式
 经常使用Singleton模式的其他模式：
@@ -637,10 +666,6 @@ Button控件，对控件设计者来说，只知道Button按下应该会发生
   #+END_VERSE
 
 - 支持事务处理
-  、、、
-  #+BEGIN_VERSE
-  一个ConcreteCommand实现一个事务，由于接口一致，可以用同一种方式调用所有的事务。 *方便*
-  #+END_VERSE
   
 ** 结构
 #+BEGIN_SRC plantuml :file ../resources/OO/Command.png :cmdline -charset UTF-8
@@ -693,24 +718,24 @@ Button控件，对控件设计者来说，只知道Button按下应该会发生
 ** 实现
 - 一个命令对象职责可大可小。
    - 最小职责仅确定一个接收者和执行该请求的动作
-   - 职责也可以大到，负责处理所有的功能，不需要接收者，直接包含具体动作。(当没有合适的接收者时使用)
+   - 职责也可以大到负责处理所有的功能，不需要接收者，直接包含具体动作。(当没有合适的接收者时使用)
 - 实现undo和redo
+
   ConcreteCommand类需要存储额外的状态信息，包括：
+
   - 接收者对象
   - 接收者接口执行操作的参数
   - 接收者的状态值
-  如果将接收者的状态值通过历史列表保存，即可实现多级的取消与重做
+
 - 使用C++模板
-#+BEGIN_VERSE
-使用条件：1、不能被取消 2、接收者的执行接口不需要参数
-好处：避免每一个动作和接收者都创建一个Command子类。
-#+END_VERSE
-** 扩展
-- 结合对象序列化和持久化的方法，可将命令的状态存于磁盘文件等，在系统奔溃后进行回滚或继续执行。
-- 可以将多个命令打包成一个宏命令。一般来说宏命令是[[Composite]]模式的一个实例。
+  #+BEGIN_VERSE
+  好处：避免每一个动作和接收者都创建一个Command子类。
+  问题：1) 不支持撤销操作 2) 无法向接收者的执行接口传入参数
+  #+END_VERSE
 ** 相关模式
 - [[Composite]]可被用来实现宏命令。
 - [[Memento]]模式可用来保持一个状态，命令对象用该状态来取消之前执行效果。
+
 * 适配器模式                                                      :类:对象:结构型:
 #<<Adapter>>
 ** 概述
@@ -1133,10 +1158,6 @@ C++中迭代器可作为它的集合类的一个友元，
 - 迭代器可使用一个[[memento]]来捕获一个迭代状态，即迭代器内部存储[[memento]]。
 
 * 一些OO提示
-** 关于抽象类和接口
-- 抽象类可以有成员变量及非抽象方法(通常放入子类的共通代码)
-- 大部分语言(Java, C#等)仅能继承自一个抽象类，但能继承多个接口
-总结：抽象类主要用于对象系列的基类， *共享* 某些主要特性。
 ** 活用空对象来避免null值检查
 #+begin_src cpp
   class Object
@@ -1175,7 +1196,7 @@ C++中迭代器可作为它的集合类的一个友元，
 
 [fn:8] 实现MapReduce中"Map"的一种方式。
 
-[fn:9] 具体代码示例参照《Gof设计模式》
+[fn:9] 具体代码示例参照《Gof设计模式》5.4 10
 
 [fn:10] 待学完组合模式再补充完
 

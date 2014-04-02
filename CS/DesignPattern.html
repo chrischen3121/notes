@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="设计模式笔记"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-03-26T13:21+0800"/>
+<meta name="generated" content="2014-04-02T14:25+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="design pattern"/>
@@ -1289,7 +1289,7 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-7" class="outline-2">
-<h2 id="sec-7"><a name="Singleton" id="Singleton"></a><span class="section-number-2">7</span> 单件模式</h2>
+<h2 id="sec-7"><a name="Singleton" id="Singleton"></a><span class="section-number-2">7</span> 单件模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">创建型</span>&nbsp;<span class="__">对象</span></span></h2>
 <div class="outline-text-2" id="text-7">
 
 
@@ -1309,9 +1309,9 @@ for the JavaScript code in this tag.
 <div class="outline-text-3" id="text-7-2">
 
 <ul>
-<li>当类只能有一个实例。
+<li>当类只能有一个实例
 </li>
-<li>当这个唯一实例需要可以通过子类化扩展
+<li>当这个唯一实例需要通过子类化扩展
 </li>
 </ul>
 
@@ -1324,10 +1324,10 @@ for the JavaScript code in this tag.
 <div class="outline-text-3" id="text-7-3">
 
 
-<div class="figure">
-<p><img src="../resources/OO/img/Singleton.png" align="center" alt="../resources/OO/img/Singleton.png" /></p>
 
-</div>
+<p>
+<img src="../resources/OO/Singleton.png"  alt="../resources/OO/Singleton.png" />
+</p>
 </div>
 
 </div>
@@ -1337,15 +1337,37 @@ for the JavaScript code in this tag.
 <div class="outline-text-3" id="text-7-4">
 
 <ul>
-<li>缩小名空间。单件是对全局变量的一种改进。全局变量会污染名空间（多模块都有某全局变量就会产生编译冲突）。
+<li><b>受控访问</b> 
 </li>
-<li>可以被继承。
-</li>
-<li><b>重点拓展</b> 允许可变数目的实例。允许Singleton类可以管理多个实例（考虑连接池和线程池之类的实现）。
-</li>
-<li>比类方法(静态)更灵活。无法实现维护多个实例的情况。另外静态方法无法通过多态由子类重定义。
+<li>起到命名空间的作用
+
+<p class="verse">
+对全局变量的一种改进，全局变量会污染名空间(容易重名)。<br/>
+支持静态类的语言，使用静态类解决该问题更简单。<br/>
+</p>
+
+
 </li>
 </ul>
+
+
+
+<ul>
+<li>可以被 <b>继承</b> 扩展。
+</li>
+<li>也可以拓展单例为 <b>多个实例</b>
+
+<p>  
+  允许Singleton类可以管理多个实例（考虑各种池类设计）。
+</p>
+</li>
+<li>比类方法(静态)更灵活
+
+<p>
+  当需要拓展成多个实例时，灵活方便。而静态方法做不到。
+</p></li>
+</ul>
+
 
 </div>
 
@@ -1361,21 +1383,17 @@ for the JavaScript code in this tag.
 <pre class="src src-cpp"><span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">Singleton</span>
 {
 <span style="color: #1e90ff; font-weight: bold;">public</span>:
-  <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span>* <span style="color: #00008b; font-weight: bold;">GetInstance</span>();
+    <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span>* <span style="color: #00008b; font-weight: bold;">GetInstance</span>();
 <span style="color: #1e90ff; font-weight: bold;">protected</span>:
-  <span style="color: #00008b; font-weight: bold;">Singleton</span>();
+    <span style="color: #00008b; font-weight: bold;">Singleton</span>() : _instance(<span style="color: #ff6347;">NULL</span>);<span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#38544;&#34255;&#30340;&#26500;&#36896;&#20989;&#25968;</span>
 <span style="color: #1e90ff; font-weight: bold;">private</span>:
-  <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span>* <span style="color: #008b8b;">_instance</span>;
+    <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span>* <span style="color: #008b8b;">_instance</span>;
 };
 
-<span style="color: #daa520;">Singleton</span>* <span style="color: #ff6347;">Singleton</span>::<span style="color: #008b8b;">_instance</span> = 0;
 <span style="color: #daa520;">Singleton</span>* <span style="color: #ff6347;">Singleton</span>::<span style="color: #00008b; font-weight: bold;">GetInstance</span> ()
 {
-  <span style="color: #1e90ff; font-weight: bold;">if</span> (_instance == 0)
-    {
-      _instance = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">Singleton</span>();
-    }
-  <span style="color: #1e90ff; font-weight: bold;">return</span> _instance;
+    <span style="color: #1e90ff; font-weight: bold;">if</span> (_instance == <span style="color: #ff6347;">NULL</span>) _instance = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">Singleton</span>;
+    <span style="color: #1e90ff; font-weight: bold;">return</span> _instance;
 }
 </pre>
 
@@ -1388,14 +1406,16 @@ for the JavaScript code in this tag.
 
 
 <p class="verse">
-以下用Java示例说明较为简单。<br/>
-为了保证在多线程环境下能只创建一个实例，需要对GetInstance方法做同步处理。<br/>
+为了保证在多线程环境下只创建一个实例，需要对GetInstance方法做同步处理。<br/>
 <br/>
-一个方法是：直接将GetInstance方法声明为synchronized。<br/>
-这样的做法有个问题：事实上我们需要同步的只是GetInstance内部负责创建实例的<br/>
-区块，对整个函数进行同步，如果外部调用很频繁，开销会很大。<br/>
+简单的方法：直接将GetInstance方法声明为synchronized。<br/>
 <br/>
-更好的做法如下：<br/>
+这样的做法有个问题：<br/>
+我们需要同步的只是GetInstance内部负责创建实例的区块，<br/>
+对整个函数进行同步，如果函数体内内容较多且外部调用很频繁，<br/>
+开销会很大。<br/>
+<br/>
+应该只同步创建实例的区块：<br/>
 </p>
 
 
@@ -1405,12 +1425,11 @@ for the JavaScript code in this tag.
 {
     <span style="color: #1e90ff; font-weight: bold;">private</span> <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span> <span style="color: #008b8b;">uniqueInstance</span>;
     <span style="color: #1e90ff; font-weight: bold;">private</span> Singleton() {}
-    <span style="color: #1e90ff; font-weight: bold;">public</span> <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span> <span style="color: #00008b; font-weight: bold;">GetInstance</span>()
-    {
+    <span style="color: #1e90ff; font-weight: bold;">public</span> <span style="color: #1e90ff; font-weight: bold;">static</span> <span style="color: #daa520;">Singleton</span> <span style="color: #00008b; font-weight: bold;">GetInstance</span>() {
         <span style="color: #1e90ff; font-weight: bold;">if</span> (uniqueInstance == <span style="color: #ff6347;">null</span>) { <span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#21028;&#26029;&#26159;&#21542;&#35201;&#36827;&#20837;&#36127;&#36131;&#21019;&#24314;&#23454;&#20363;&#30340;&#21516;&#27493;&#27169;&#22359;</span>
             <span style="color: #1e90ff; font-weight: bold;">synchronized</span> (Singleton.<span style="color: #1e90ff; font-weight: bold;">class</span>) {<span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#20165;&#19968;&#20010;&#32447;&#31243;&#25191;&#34892;&#27492;&#21306;&#22359;&#65292;&#30830;&#20445;&#21482;&#21019;&#24314;&#19968;&#20010;&#23454;&#20363;&#12290;</span>
                 <span style="color: #1e90ff; font-weight: bold;">if</span> (uniqueInstance == <span style="color: #ff6347;">null</span>) { 
-                    uniqueInstance = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">Singleton</span>();
+                    uniqueInstance = <span style="color: #1e90ff; font-weight: bold;">new</span> <span style="color: #daa520;">Singleton</span>();<span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#23545;&#20110;&#21516;&#27493;&#25968;&#25454;&#65292;&#24403;&#20320;&#30340;&#20889;&#20837;&#20381;&#36182;&#20110;&#35835;&#21462;&#30340;&#20869;&#23481;&#30340;&#26102;&#20505;&#65292;&#35201;&#23567;&#24515;&#12290;</span>
                 }
             }
         }
@@ -1427,31 +1446,33 @@ for the JavaScript code in this tag.
 <h4 id="sec-7-5-2"><span class="section-number-4">7.5.2</span> 继承问题</h4>
 <div class="outline-text-4" id="text-7-5-2">
 
-
-<p class="verse">
-问题所在：子类的单件实例化在何处实现？<br/>
-几种选择：<br/>
+<p>问题：子类的单件实例化在何处实现？
 </p>
-
-
 <ul>
-<li>在父类Singleton的GetInstance中决定使用哪一个单件子类。可以传入参数，使用条件语句在运行时期选择适合的子类。
-  局限在于硬性限定了可能的Singleton子类的集合。
-</li>
-<li>将GetInstance类从父类中剥出，并将它放入子类。客户代码在使用时自行决定使用哪个子类的GetInstance。
-  该方法是在编译时决定使用哪个子类的，非运行时，不够灵活。
-</li>
-<li>将要使用的单件类记录在设定文件(或注册表等)中。
+<li>在父类的GetInstance中决定使用哪一个单件子类。
 
 <p class="verse">
-用法：记录所使用的单件类名作为配置项，在程序中加入该字符串与单件具体类的映射。<br/>
-Singleton父类只需通过映射选择相应的子类，而不需要知道所有的子类。<br/>
-<br/>
-注意事项：映射表谁来维护？以何种形式存储？子类如何注册进映射表？具体可参考《GOF设计模式》<br/>
+可以传入参数，使用条件语句在运行时期选择适合的子类。<br/>
+局限在于硬性限定了可能的Singleton子类的集合。<br/>
+优点：支持多态，运行时指定子类。<br/>
 </p>
 
 
 </li>
+<li>将GetInstance类从父类中剥出，并将它放入子类。
+
+<p class="verse">
+客户代码通过类名调用GetInstance自行决定使用哪个子类。<br/>
+编译时决定使用哪个子类，非运行时，不够灵活。<br/>
+</p>
+
+
+</li>
+<li>使用设定文件(或注册表等)记录单件类。
+
+<p>
+  GetInstance()读取相关配置项，通过映射表找到相对应的单件类。
+</p></li>
 </ul>
 
 
@@ -1461,7 +1482,7 @@ Singleton父类只需通过映射选择相应的子类，而不需要知道所�
 </div>
 
 <div id="outline-container-7-6" class="outline-3">
-<h3 id="sec-7-6"><span class="section-number-3">7.6</span> 与一些语言的纯静态类比较</h3>
+<h3 id="sec-7-6"><span class="section-number-3">7.6</span> 与静态类比较</h3>
 <div class="outline-text-3" id="text-7-6">
 
 
@@ -1471,13 +1492,14 @@ Singleton父类只需通过映射选择相应的子类，而不需要知道所�
 <h4 id="sec-7-6-1"><span class="section-number-4">7.6.1</span> 概念上的理解</h4>
 <div class="outline-text-4" id="text-7-6-1">
 
-<p>单件模式只是一种OO思想，而静态类可以当为单件模式的一种特殊实现方式。
+<p>静态类是单件模式的一种特殊实现方式。
 </p><ul>
-<li>静态类更多的用于与特定实例无关的 <b>全局</b> 属性和 <b>全局</b> 方法的分类。比如<a href="http://msdn.microsoft.com/zh-cn/library/system.math_members(v=vs.80).aspx">.NET的MATH类</a>
+<li>静态类更多的用于与特定实例无关的 <b>全局</b> 属性和 <b>全局</b> 方法的分类(起到命名空间的作用)。
 </li>
-<li>而单件的概念是确实需要一个实例，而且实例只能有一个。比如：注册表对象，线程池对象
+<li>而单件的概念是确实需要一个实例，而且实例只能有一个。比如：注册表对象，线程池对象。
 </li>
 </ul>
+
 
 </div>
 
@@ -1490,24 +1512,28 @@ Singleton父类只需通过映射选择相应的子类，而不需要知道所�
 <ul>
 <li>静态类在编译时创建
 </li>
-<li>单件模式的类在运行时创建
+<li>单件模式的类在运行时创建(创建的时机在一定程度上可选)
 </li>
 </ul>
+
 
 </div>
 
 </div>
 
 <div id="outline-container-7-6-3" class="outline-4">
-<h4 id="sec-7-6-3"><span class="section-number-4">7.6.3</span> 继承性</h4>
+<h4 id="sec-7-6-3"><span class="section-number-4">7.6.3</span> 扩展性</h4>
 <div class="outline-text-4" id="text-7-6-3">
 
 <ul>
 <li>静态类不能被继承，也无法继承其他类。(如果该类需要实现一些接口，则不能使用静态类)
 </li>
-<li>单件类可以被继承
+<li>单件类可以被继承扩展
+</li>
+<li>如需要从一个实例变为多个实例，静态类做不到。单件类可以扩展满足要求 <b>更灵活</b>
 </li>
 </ul>
+
 
 </div>
 
@@ -1518,19 +1544,12 @@ Singleton父类只需通过映射选择相应的子类，而不需要知道所�
 <div class="outline-text-4" id="text-7-6-4">
 
 <ul>
-<li>静态类是对全局方法、全局变量的分类组织方法。
+<li>静态类更多地用于对全局方法、全局变量的分类组织。
 </li>
-<li>单件模式表示有且仅有一个对象。单件类可以被继承。
+<li>单件模式表示有且仅有一个对象。单件类可以被继承，易于扩展。
 </li>
 </ul>
 
-</div>
-
-</div>
-
-<div id="outline-container-7-6-5" class="outline-4">
-<h4 id="sec-7-6-5"><span class="section-number-4">7.6.5</span> 建议</h4>
-<div class="outline-text-4" id="text-7-6-5">
 
 
 <p class="verse">
@@ -1926,7 +1945,7 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 </div>
 
 <div id="outline-container-9" class="outline-2">
-<h2 id="sec-9"><a name="Command" id="Command"></a><span class="section-number-2">9</span> 命令模式</h2>
+<h2 id="sec-9"><a name="Command" id="Command"></a><span class="section-number-2">9</span> 命令模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">行为型</span>&nbsp;<span class="__">对象</span></span></h2>
 <div class="outline-text-2" id="text-9">
 
 
@@ -1938,8 +1957,12 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 
 
 <p class="verse">
-将各个具体请求封装成命令对象，实现统一的Execute()接口，从而可以使用不同的命令对象<br/>
-对客户进行参数化；对请求排队<sup><a class="footref" name="fnr-.6" href="#fn-.6">6</a></sup>；记录请求日志。另外还支持可撤销操作。<br/>
+将请求封装成对象，实现统一的Execute()接口，从而可以使用不同的请求<br/>
+实例对其他对象进行参数化。<br/>
+<br/>
+典型的例子：<br/>
+Button控件，对控件设计者来说，只知道Button按下应该会发生<br/>
+些什么，但具体会发生什么一无所知。只能由使用者来决定。<br/>
 </p>
 
 
@@ -1952,17 +1975,36 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 <div class="outline-text-3" id="text-9-2">
 
 <ul>
-<li>Command模式是回调机制的一个面向对象的替代品。
+<li><b>回调机制</b> 的一个面向对象的替代品
+
 </li>
-<li>可在不同的时刻，指定、排列或者执行请求。这些操作甚至可在不同的进程中进行(依赖于存储命令的媒介)
+<li>支持对请求排队<sup><a class="footref" name="fnr-.6" href="#fn-.6">6</a></sup>
+
 </li>
-<li>支持取消操作。执行前记录状态，取消时利用该状态。考虑电风扇的例子<sup><a class="footref" name="fnr-.7" href="#fn-.7">7</a></sup>。也可以将每次执行的状态用队列形式保存，可实现逐步Undo或逐步Redo。
+<li>支持撤销操作
+
+<p class="verse">
+Excute()在实施操作前记录状态，Undo()利用该记录状态取消之前执行的操作。<br/>
+将执行完的命令对象加入一个历史列表，可通过 <b>向前/向后遍历</b> 实现<br/>
+一系列的 <b>Undo/Redo</b> 。<br/>
+</p>
+
+
 </li>
-<li>支持修改日志。当系统崩溃时，记录下的日志过程可以重新来一遍。方法：添加Store()和Load()接口，利用序列化和持久化的方法记录日志。
+<li>命令对象支持 <b>持久化</b>
+
+<p class="verse">
+方法：添加Store()和Load()接口<br/>
+在执行一些列命令前，调用Store()对命令对象进行序列化和持久化操作。<br/>
+一旦系统崩溃，可以使用Load()复原命令对象，并重新执行。<br/>
+</p>
+
+
 </li>
-<li>支持事务。一个ConcreteCommand实现一个事务，由于接口一致，可以用同一种方式调用所有的事务。 <b>方便</b>
+<li>支持事务处理
 </li>
 </ul>
+
 
 </div>
 
@@ -1973,24 +2015,33 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 <div class="outline-text-3" id="text-9-3">
 
 
-<div class="figure">
-<p><img src="../resources/OO/img/Command.png" align="center" alt="../resources/OO/img/Command.png" /></p>
 
-</div>
+<p>
+<img src="../resources/OO/Command.png"  alt="../resources/OO/Command.png" />
+</p>
 </div>
 
 </div>
 
 <div id="outline-container-9-4" class="outline-3">
-<h3 id="sec-9-4"><span class="section-number-3">9.4</span> 参与者</h3>
+<h3 id="sec-9-4"><span class="section-number-3">9.4</span> 角色</h3>
 <div class="outline-text-3" id="text-9-4">
 
 <ul>
-<li>Client 创建一个具体命令对象并指定它的接收者。
+<li>Client
+
+<p class="verse">
+负责创建具体命令对象并指定它的接收者。<br/>
+存储命令对象到某个媒介。<br/>
+</p>
+
+
+
 </li>
-<li>Invoker 存储ConcreteCommand(可提供SetCommand方法)，并在适当的时候调用Execute()
+<li>Invoker 从存储媒介中获取命令对象，并执行。
 </li>
 </ul>
+
 
 </div>
 
@@ -2001,11 +2052,16 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 <div class="outline-text-3" id="text-9-5">
 
 <ol>
+<li>增加新的Command很容易。
+</li>
 <li>将调用命令的对象与知道如何实现该命令相关操作的对象解耦。
 </li>
-<li>Command对象可像其他的对象一样被操纵和扩展。
+<li>Command对象和其他对象一样支持扩展。
+</li>
+<li>支持MacroCommand。复合命令是Composite模式的一个实例。
 </li>
 </ol>
+
 
 </div>
 
@@ -2020,57 +2076,45 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 <ul>
 <li>最小职责仅确定一个接收者和执行该请求的动作
 </li>
-<li>职责也可以大到，负责处理所有的功能，不需要接收者，直接包含具体动作。(当没有合适的接收者时使用)
+<li>职责也可以大到负责处理所有的功能，不需要接收者，直接包含具体动作。(当没有合适的接收者时使用)
 </li>
 </ul>
 
 </li>
 <li>实现undo和redo
+
+<p>
   ConcreteCommand类需要存储额外的状态信息，包括：
+</p>
 <ul>
 <li>接收者对象
 </li>
 <li>接收者接口执行操作的参数
 </li>
 <li>接收者的状态值
+
 </li>
 </ul>
 
-<p>  如果将接收者的状态值通过历史列表保存，即可实现多级的取消与重做
-</p></li>
+</li>
 <li>使用C++模板
-</li>
-</ul>
-
 
 <p class="verse">
-使用条件：1、不能被取消 2、接收者的执行接口不需要参数<br/>
 好处：避免每一个动作和接收者都创建一个Command子类。<br/>
+问题：1) 不支持撤销操作 2) 无法向接收者的执行接口传入参数<br/>
 </p>
 
+
+</li>
+</ul>
 
 </div>
 
 </div>
 
 <div id="outline-container-9-7" class="outline-3">
-<h3 id="sec-9-7"><span class="section-number-3">9.7</span> 扩展</h3>
+<h3 id="sec-9-7"><span class="section-number-3">9.7</span> 相关模式</h3>
 <div class="outline-text-3" id="text-9-7">
-
-<ul>
-<li>结合对象序列化和持久化的方法，可将命令的状态存于磁盘文件等，在系统奔溃后进行回滚或继续执行。
-</li>
-<li>可以将多个命令打包成一个宏命令。一般来说宏命令是<a href="#Composite">Composite</a>模式的一个实例。
-</li>
-</ul>
-
-</div>
-
-</div>
-
-<div id="outline-container-9-8" class="outline-3">
-<h3 id="sec-9-8"><span class="section-number-3">9.8</span> 相关模式</h3>
-<div class="outline-text-3" id="text-9-8">
 
 <ul>
 <li><a href="#Composite">Composite</a>可被用来实现宏命令。
@@ -2079,13 +2123,14 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 </li>
 </ul>
 
+
 </div>
 </div>
 
 </div>
 
 <div id="outline-container-10" class="outline-2">
-<h2 id="sec-10"><a name="Adapter" id="Adapter"></a><span class="section-number-2">10</span> 适配器模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">结构型</span></span></h2>
+<h2 id="sec-10"><a name="Adapter" id="Adapter"></a><span class="section-number-2">10</span> 适配器模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="_">类</span>&nbsp;<span class="__">对象</span>&nbsp;<span class="___">结构型</span></span></h2>
 <div class="outline-text-2" id="text-10">
 
 
@@ -2309,7 +2354,7 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 </div>
 
 <div id="outline-container-11-5-1" class="outline-4">
-<h4 id="sec-11-5-1"><span class="section-number-4">11.5.1</span> C++重载-&gt;运算符</h4>
+<h4 id="sec-11-5-1"><span class="section-number-4">11.5.1</span> C++重载-&gt;,*运算符</h4>
 <div class="outline-text-4" id="text-11-5-1">
 
 
@@ -2319,11 +2364,16 @@ AbstractFactory只需要一个Create操作，用参数指定要创建的产品<b
 {
     <span style="color: #1e90ff; font-weight: bold;">return</span> LoadImage();
 }
+<span style="color: #daa520;">Image</span>&amp; <span style="color: #ff6347;">ImageProxy</span>::<span style="color: #1e90ff; font-weight: bold;">operator</span><span style="color: #00008b; font-weight: bold;">*</span> ()
+{
+    <span style="color: #1e90ff; font-weight: bold;">return</span> *LoadImage();
+}
 
 <span style="color: #daa520;">int</span> <span style="color: #00008b; font-weight: bold;">main</span>()
 {
     <span style="color: #daa520;">ImageProxy</span> <span style="color: #008b8b;">imageptr</span>;
     imageptr-&gt;Draw();<span style="color: #8b8989;">//</span><span style="color: #8b8989;">&#27492;&#22788;&#23454;&#38469;&#35843;&#29992;&#30340;&#26159;Image&#30340;&#26041;&#27861;</span>
+    (*image).Draw();
     <span style="color: #1e90ff; font-weight: bold;">return</span> 0;
 }
 
@@ -2486,7 +2536,7 @@ Java中有成套的解决方案，叫做RMI。<br/>
 <ul>
 <li><a href="#sec-8-3">Abstract Factory</a>模式可与Facade模式一起使用以提供一个单独的创建产品簇的接口。
 </li>
-<li><a href="#Mediator">Mediator</a>模式与Facade模式的相似之处：都抽象了一些已有的类的功能。但<a href="#Mediator">Mediator</a>的目的是对同级之间的任意通讯进行抽象。<sup><a class="footref" name="fnr-.8" href="#fn-.8">8</a></sup>
+<li><a href="#Mediator">Mediator</a>模式与Facade模式的相似之处：都抽象了一些已有的类的功能。但<a href="#Mediator">Mediator</a>的目的是对同级之间的任意通讯进行抽象。<sup><a class="footref" name="fnr-.7" href="#fn-.7">7</a></sup>
 </li>
 <li>通常来说仅需要一个Facade对象，所以Facade类定义成<a href="#sec-7">Singleton</a>类。
 </li>
@@ -2628,7 +2678,7 @@ Java中有成套的解决方案，叫做RMI。<br/>
 
 <p class="verse">
 使用内部迭代器时，客户只需指定一个操作，迭代器保证对集合<br/>
-中的每一个元素执行该操作。<sup><a class="footref" name="fnr-.9" href="#fn-.9">9</a></sup><br/>
+中的每一个元素执行该操作。<sup><a class="footref" name="fnr-.8" href="#fn-.8">8</a></sup><br/>
 如何指定操作？支持匿名函数和闭包的语言很容易实现。<br/>
 C++中通常有两种方法可以选择<br/>
 </p>
@@ -2639,7 +2689,7 @@ C++中通常有两种方法可以选择<br/>
     劣势在于如果需要更新某种状态，则需要使用全局变量。
 </li>
 <li>子类生成
-    需要定义额外的类来达到目的。<sup><a class="footref" name="fnr-.10" href="#fn-.10">10</a></sup>
+    需要定义额外的类来达到目的。<sup><a class="footref" name="fnr-.9" href="#fn-.9">9</a></sup>
 
 </li>
 </ul>
@@ -2773,7 +2823,7 @@ C++中通常有两种方法可以选择<br/>
 
 
 <ul>
-<li>因此，仅在必须要使用多态时才使用。
+<li>仅在必须要使用多态时才使用。
 </li>
 </ul>
 
@@ -2816,7 +2866,7 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </div>
 
 <div id="outline-container-13-6-6" class="outline-4">
-<h4 id="sec-13-6-6"><span class="section-number-4">13.6.6</span> 与<a href="#Composite">Composite</a>模式的协作<sup><a class="footref" name="fnr-.11" href="#fn-.11">11</a></sup></h4>
+<h4 id="sec-13-6-6"><span class="section-number-4">13.6.6</span> 与<a href="#Composite">Composite</a>模式的协作<sup><a class="footref" name="fnr-.10" href="#fn-.10">10</a></sup></h4>
 <div class="outline-text-4" id="text-13-6-6">
 
 </div>
@@ -2870,24 +2920,8 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </div>
 
 <div id="outline-container-14-1" class="outline-3">
-<h3 id="sec-14-1"><span class="section-number-3">14.1</span> 关于抽象类和接口</h3>
+<h3 id="sec-14-1"><span class="section-number-3">14.1</span> 活用空对象来避免null值检查</h3>
 <div class="outline-text-3" id="text-14-1">
-
-<ul>
-<li>抽象类可以有成员变量及非抽象方法(通常放入子类的共通代码)
-</li>
-<li>大部分语言(Java, C#等)仅能继承自一个抽象类，但能继承多个接口
-</li>
-</ul>
-
-<p>总结：抽象类主要用于对象系列的基类， <b>共享</b> 某些主要特性。
-</p></div>
-
-</div>
-
-<div id="outline-container-14-2" class="outline-3">
-<h3 id="sec-14-2"><span class="section-number-3">14.2</span> 活用空对象来避免null值检查</h3>
-<div class="outline-text-3" id="text-14-2">
 
 
 
@@ -2938,23 +2972,19 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.7" href="#fnr-.7">7</a></sup> 风量大小为调速命令的状态，执行调速命令前，可记录下当前的风量大小，以便取消命令设置回原先的速度。
+<p class="footnote"><sup><a class="footnum" name="fn-.7" href="#fnr-.7">7</a></sup> 看到<a href="#Mediator">Mediator</a>的时候再理解这段话。
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.8" href="#fnr-.8">8</a></sup> 看到<a href="#Mediator">Mediator</a>的时候再理解这段话。
+<p class="footnote"><sup><a class="footnum" name="fn-.8" href="#fnr-.8">8</a></sup> 实现MapReduce中"Map"的一种方式。
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.9" href="#fnr-.9">9</a></sup> 实现MapReduce中"Map"的一种方式。
+<p class="footnote"><sup><a class="footnum" name="fn-.9" href="#fnr-.9">9</a></sup> 具体代码示例参照《Gof设计模式》5.4 10
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.10" href="#fnr-.10">10</a></sup> 具体代码示例参照《Gof设计模式》
-</p>
-
-
-<p class="footnote"><sup><a class="footnum" name="fn-.11" href="#fnr-.11">11</a></sup> 待学完组合模式再补充完
+<p class="footnote"><sup><a class="footnum" name="fn-.10" href="#fnr-.10">10</a></sup> 待学完组合模式再补充完
 </p>
 
 
