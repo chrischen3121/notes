@@ -199,7 +199,7 @@ $k-1\le\log n < k$
 #+END_VERSE
 #+BEGIN_SRC dot :file ../resources/TreeAndGraph/TreeTraversal.png :cmdline -Kdot -Tpng		
   graph binarytree{
-    size="3,3";
+    size="2.5,2.5";
     graph [ordering="out"];
     "A" -- "B";
     "B" -- "D";
@@ -245,7 +245,7 @@ $k-1\le\log n < k$
 **** 无子树引入空指针
 #+BEGIN_SRC dot :file ../resources/TreeAndGraph/TreeNullNode1.png :cmdline -Kdot -Tpng		
   graph nullnodetree{
-    size="3,3";
+    size="2.5,2.5";
     graph [ordering="out"];
     null1 [label = "^"];
     null2 [label = "^"];
@@ -267,9 +267,6 @@ $k-1\le\log n < k$
 [[file:../resources/TreeAndGraph/TreeNullNode1.png]]
 
 一次遍历确定一颗树。用于创建二叉树。
-
-#+results:
-[[file:../resources/TreeAndGraph/TreeNullNode1.png]]
 
 **** 有效利用空指针
 #+BEGIN_VERSE
@@ -347,7 +344,7 @@ $k-1\le\log n < k$
 - 例子：A5, E10, B15, D30, C40
   #+BEGIN_SRC dot :file ../resources/TreeAndGraph/HuffmanTree.png :cmdline -Kdot -Tpng		
     graph HuffmanTree{
-        size="4, 4";
+        size="3.5, 3.5";
         graph [ordering="out"];
         "T" -- "C" [label=40];
         "T" -- "N3" [label=60];
@@ -368,7 +365,7 @@ $k-1\le\log n < k$
 - 例：假设字母出现的频率A27, B8, C15, D15, E30, F5
   #+BEGIN_SRC dot :file ../resources/TreeAndGraph/HuffmanCode1.png :cmdline -Kdot -Tpng		
     graph HuffmanCode1{
-        size="4, 4";
+        size="3.5, 3.5";
         graph [ordering="out"];
         "T" -- "N4" [label=42];
         "N4" -- "D" [label=15];
@@ -386,9 +383,11 @@ $k-1\le\log n < k$
   #+results:
   [[file:../resources/TreeAndGraph/HuffmanCode1.png]]
 
+  修改权值为0和1，确定每个字母的编码。
+
   #+BEGIN_SRC dot :file ../resources/TreeAndGraph/HuffmanCode2.png :cmdline -Kdot -Tpng		
     graph HuffmanCode2{
-        size="4, 4";
+        size="3.5, 3.5";
         graph [ordering="out"];
         "T" -- "N4" [label=0];
         "N4" -- "D" [label=0];
@@ -410,13 +409,218 @@ $k-1\le\log n < k$
     |  A |    B |   C |  D |  E |    F |
     | 01 | 1001 | 101 | 00 | 11 | 1000 |
     #+BEGIN_VERSE
-    编码设计时，注意任一字符的编码不能是另一字符编码的前缀。
-    否则无法解码。
-    如：该编码表中就不能出现编码为"10"的字母了。
     "BADCADFEED"压缩为：1001010010101001000111100(25个字符)
     二进制需要30个字符。
     #+END_VERSE
-    
-
-  
+      
 * 图
+** 定义
+#+BEGIN_VERSE
+图由顶点的有穷非空集合和顶点之间边的集合组成。
+表示为G(V, E)。V,E分别表示Vertex, Edge。
+#+END_VERSE
+** 存储结构
+*** 邻接矩阵(Adjacency matrix)
+**** 无向图
+#+BEGIN_SRC dot :file ../resources/TreeAndGraph/UndirectG1.png :cmdline -Kdot -Tpng		
+  graph undirectG1{
+      size="1.8,1.8";
+      "v0" -- "v1";
+      "v0" -- "v2";
+      "v0" -- "v3";
+      "v1" -- "v2";
+      "v3" -- "v2";
+  }
+#+END_SRC
+
+#+results:
+[[file:../resources/TreeAndGraph/UndirectG1.png]]
+
+顶点数组：
+| v0 | v1 | v2 | v3 |
+
+表示边的矩阵：
+|    | v0 | v1 | v2 | v3 |
+| v0 |  - |  1 |  1 | 1  |
+| v1 |  1 |  - |  1 | 0  |
+| v2 |  1 |  1 |  - | 1  |
+| v3 |  1 |  0 |  1 | -  |
+
+**** 有向图
+#+BEGIN_SRC dot :file ../resources/TreeAndGraph/DirectG1.png :cmdline -Kdot -Tpng		
+  digraph directG1{
+      size="2.3,2.3";
+      v1 -> v0;
+      v2 -> v0;
+      v0 -> v3;
+      v1 -> v2;
+      v2 -> v1;
+  }
+#+END_SRC
+
+#+results:
+[[file:../resources/TreeAndGraph/directG1.png]]
+
+边矩阵：
+|    | v0 | v1 | v2 | v3 |
+| v0 | -  | 0  | 0  | 1  |
+| v1 | 1  | -  | 1  | 0  |
+| v2 | 1  | 1  | -  | 0  |
+| v3 | 0  | 0  | 0  | -  |
+
+行表示出度，列表是入度。如：v0出度为0+0+1=1；v0的入度为1+1+0=2
+
+**** 边权值表示
+#+BEGIN_VERSE
+可以将之前矩阵中的1由权值替代，注意0可能是有效的权值，
+那么非邻接的点就要考虑用无效值来表示。
+#+END_VERSE
+
+**** 分析
+
+1) 计算每个结点的度的复杂度为O(v)
+2) 查找某两个结点是否有邻接的复杂度为O(1)
+3) 边数远小于顶点数时，矩阵空间严重浪费
+
+*** 邻接表(Adjacency list)
+使用链表将边的信息保存为动态结构，减少空间浪费。
+**** 无向图
+
+#+ATTR_HTML: align="left"
+file:../resources/TreeAndGraph/UndirectG1.png
+
+存储结构：
+
+#+BEGIN_SRC dot :file ../resources/TreeAndGraph/UndirectStruct2.png :cmdline -Kdot -Tpng
+    digraph tree {
+            rankdir=LR;
+            node [shape=record fontsize=14 width=0.2 height=0.3 fontname="Inconsolata"];
+            edge [tailclip=false];
+            v [label="{Nodes}|{{index|0|1|2|3}|{data|v0|v1|v2|v3}|{firstedge|<ref1>|<ref2>|<ref3>|<ref4>}}"];
+            01 [label="{{adjvex|1}|{next|<ref>}}"];
+            02 [label="{2|<ref>}"];
+            03 [label="{3|^}"];
+            11 [label="{0|<ref>}"];
+            12 [label="{2|^}"];
+            21 [label="{2|<ref>}"];
+            22 [label="{2|<ref>}"];
+            23 [label="{2|^}"];
+            31 [label="{0|<ref>}"];
+            32 [label="{2|^}"];
+            v:ref1:c -> 01:data [arrowhead=vee, arrowtail=dot, dir=both];
+            01:ref:c -> 02:data [arrowhead=vee, arrowtail=dot, dir=both];
+            02:ref:c -> 03:data [arrowhead=vee, arrowtail=dot, dir=both];
+            v:ref2:c -> 11:data [arrowhead=vee, arrowtail=dot, dir=both];
+            11:ref:c -> 12:data [arrowhead=vee, arrowtail=dot, dir=both];
+            v:ref3:c -> 21:data [arrowhead=vee, arrowtail=dot, dir=both];
+            21:ref:c -> 22:data [arrowhead=vee, arrowtail=dot, dir=both];
+            22:ref:c -> 23:data [arrowhead=vee, arrowtail=dot, dir=both];
+            v:ref4:c -> 31:data [arrowhead=vee, arrowtail=dot, dir=both];
+            31:ref:c -> 32:data [arrowhead=vee, arrowtail=dot, dir=both];
+    }
+#+END_SRC
+
+#+results:
+[[file:../resources/TreeAndGraph/UndirectStruct2.png]]
+
+**** 有向图
+
+#+ATTR_HTML: align="left"
+file:../resources/TreeAndGraph/DirectG1.png
+
+存储结构：
+#+BEGIN_SRC dot :file ../resources/TreeAndGraph/DirectStruct2.png :cmdline -Kdot -Tpng
+    digraph tree {
+            rankdir=LR;
+            node [shape=record fontsize=14 width=0.2 height=0.3 fontname="Inconsolata"];
+            edge [tailclip=false];
+            v [label="{Nodes}|{{index|0|1|2|3}|{data|v0|v1|v2|v3}|{firstedge|<ref1>|<ref2>|<ref3>|^}}"];
+            01 [label="{3|^}"];
+            11 [label="{0|<ref>}"];
+            12 [label="{2|^}"];
+            21 [label="{0|<ref>}"];
+            22 [label="{2|^}"];
+
+            v:ref1:c -> 01:data [arrowhead=vee, arrowtail=dot, dir=both];
+            v:ref2:c -> 11:data [arrowhead=vee, arrowtail=dot, dir=both];
+            11:ref:c -> 12:data [arrowhead=vee, arrowtail=dot, dir=both];
+            v:ref3:c -> 21:data [arrowhead=vee, arrowtail=dot, dir=both];
+            21:ref:c -> 22:data [arrowhead=vee, arrowtail=dot, dir=both];
+    }
+#+END_SRC
+
+#+results:
+[[file:../resources/TreeAndGraph/DirectStruct2.png]]
+
+带权的边表结构扩展为：
+| adjvex | weight | next |
+
+**** 分析
+
+1) 计算每个结点出度的复杂度为O(e)
+2) 计算每个结点入度的复杂度为 *O(v+e)* ，太慢。
+
+*** 十字链表(有向图优化)
+#+BEGIN_VERSE
+解决了有向图邻接表计算入度慢的问题，以空间换时间的解决方案。
+#+END_VERSE
+结点结构：
+| data | firstin | firstout |
+
+边表结构
+| tailvex | headvex | headlink | taillink |
+
+#+BEGIN_VERSE
+headlink和taillink是边表指针域。
+headlink指向下一条headvex与当前边一致的边。
+#+END_VERSE
+
+- 分析
+  
+  1) 计算每个结点出入度的复杂度都为O(e)
+  2) 创建表的复杂度与邻接表一致，为O(v+e)
+
+*** 邻接多重表(无向图优化)
+**** 意图
+#+BEGIN_VERSE
+关注图的顶点的时候，邻接表不错。
+
+但如果操作边的情况多一些，比如：对边做标记，删除边。
+邻接表由于对于不同的顶点维护了两份同一条边的信息，
+对边操作时，都要变更两处。
+#+END_VERSE
+
+**** 存储结构
+重新定义边表结构：
+| ivex | ilink | jvex | jlink |
+
+#+ATTR_HTML: align="left"
+[[file:../resources/TreeAndGraph/UndirectG1.png]]
+
+第一步：列出所有边(ivex, jvex的值可随意交换)
+| index | ivex | ilink | jvex | jlink |
+|-------+------+-------+------+-------|
+|     0 |    0 |       |    1 |       |
+|     1 |    1 |       |    2 |       |
+|     2 |    2 |       |    3 |       |
+|     3 |    3 |       |    0 |       |
+|     4 |    0 |       |    2 |       | 
+
+第二步：连线ilink指向的jvex与自身的ivex相同
+| index | ivex | ilink | jvex | jlink |
+|-------+------+-------+------+-------|
+|     0 |    0 |     3 |    1 | ^     |
+|     1 |    1 |       |    2 |       |
+|     2 |    2 |       |    3 |       |
+|     3 |    3 |       |    0 | 4     |
+|     4 |    0 |       |    2 |       |
+
+
+
+*** 总结
+|              | 邻接矩阵 | 邻接表   |
+| 空间复杂度   | $O(v^2)$ | $O(v+e)$ |
+| AddVertex    | $O(v^2)$ | $O(1)$   |
+| AddEdge      | $O(1)$   | $O(1)$   |
+| RemoveVertex | $O(v^2)$ | $O(e)$   |
+| RemoveEdge   | $O(1)$   | $O(e)$   |

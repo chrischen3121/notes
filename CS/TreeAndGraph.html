@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="树与图"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-03-23T21:50+0800"/>
+<meta name="generated" content="2014-04-03T15:55+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Tree, Graph"/>
@@ -223,7 +223,12 @@ for the JavaScript code below.
 <li><a href="#sec-1-4">1.4 赫夫曼树</a></li>
 </ul>
 </li>
-<li><a href="#sec-2">2 图</a></li>
+<li><a href="#sec-2">2 图</a>
+<ul>
+<li><a href="#sec-2-1">2.1 定义</a></li>
+<li><a href="#sec-2-2">2.2 存储结构</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -660,9 +665,6 @@ print(Node.data)<br/>
 <p>
 一次遍历确定一颗树。用于创建二叉树。
 </p>
-<p>
-<img src="../resources/TreeAndGraph/TreeNullNode1.png"  alt="../resources/TreeAndGraph/TreeNullNode1.png" />
-</p>
 </li>
 </ul>
 <ul>
@@ -769,6 +771,9 @@ print(Node.data)<br/>
 <p>
   <img src="../resources/TreeAndGraph/HuffmanCode1.png"  alt="../resources/TreeAndGraph/HuffmanCode1.png" />
 </p>
+<p>
+  修改权值为0和1，确定每个字母的编码。
+</p>
 
 
 <p>
@@ -787,9 +792,6 @@ print(Node.data)<br/>
 
 
 <p class="verse">
-编码设计时，注意任一字符的编码不能是另一字符编码的前缀。<br/>
-否则无法解码。<br/>
-如：该编码表中就不能出现编码为"10"的字母了。<br/>
 "BADCADFEED"压缩为：1001010010101001000111100(25个字符)<br/>
 二进制需要30个字符。<br/>
 </p>
@@ -802,8 +804,6 @@ print(Node.data)<br/>
 </ul>
 
 
-
-
 </div>
 </div>
 </div>
@@ -814,6 +814,254 @@ print(Node.data)<br/>
 <h2 id="sec-2"><span class="section-number-2">2</span> 图</h2>
 <div class="outline-text-2" id="text-2">
 
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 定义</h3>
+<div class="outline-text-3" id="text-2-1">
+
+
+<p class="verse">
+图由顶点的有穷非空集合和顶点之间边的集合组成。<br/>
+表示为G(V, E)。V,E分别表示Vertex, Edge。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> 存储结构</h3>
+<div class="outline-text-3" id="text-2-2">
+
+
+</div>
+
+<div id="outline-container-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 邻接矩阵</h4>
+<div class="outline-text-4" id="text-2-2-1">
+
+<ul>
+<li id="sec-2-2-1-1">无向图<br/>
+
+
+<p>
+<img src="../resources/TreeAndGraph/UndirectG1.png"  alt="../resources/TreeAndGraph/UndirectG1.png" />
+</p>
+<p>
+顶点数组：
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">v0</td><td class="left">v1</td><td class="left">v2</td><td class="left">v3</td></tr>
+</tbody>
+</table>
+
+
+<p>
+表示边的矩阵：
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="right" /><col class="right" /><col class="right" /><col class="right" />
+</colgroup>
+<tbody>
+<tr><td class="left"></td><td class="right">v0</td><td class="right">v1</td><td class="right">v2</td><td class="right">v3</td></tr>
+<tr><td class="left">v0</td><td class="right">-</td><td class="right">1</td><td class="right">1</td><td class="right">1</td></tr>
+<tr><td class="left">v1</td><td class="right">1</td><td class="right">-</td><td class="right">1</td><td class="right">0</td></tr>
+<tr><td class="left">v2</td><td class="right">1</td><td class="right">1</td><td class="right">-</td><td class="right">1</td></tr>
+<tr><td class="left">v3</td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">-</td></tr>
+</tbody>
+</table>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-2-1-2">有向图<br/>
+
+
+<p>
+<img src="../resources/TreeAndGraph/directG1.png"  alt="../resources/TreeAndGraph/directG1.png" />
+</p>
+<p>
+边矩阵：
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="right" /><col class="right" /><col class="right" /><col class="right" />
+</colgroup>
+<tbody>
+<tr><td class="left"></td><td class="right">v0</td><td class="right">v1</td><td class="right">v2</td><td class="right">v3</td></tr>
+<tr><td class="left">v0</td><td class="right">-</td><td class="right">0</td><td class="right">0</td><td class="right">1</td></tr>
+<tr><td class="left">v1</td><td class="right">1</td><td class="right">-</td><td class="right">1</td><td class="right">0</td></tr>
+<tr><td class="left">v2</td><td class="right">1</td><td class="right">1</td><td class="right">-</td><td class="right">0</td></tr>
+<tr><td class="left">v3</td><td class="right">0</td><td class="right">0</td><td class="right">0</td><td class="right">-</td></tr>
+</tbody>
+</table>
+
+
+<p>
+行表示出度，列表是入度。如：v0出度为0+0+1=1；v0的入度为1+1+0=2
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-2-2-1-3">边权值表示<br/>
+
+<p class="verse">
+可以将之前矩阵中的1由权值替代，注意0可能是有效的权值，<br/>
+那么非邻接的点就要考虑用无效值来表示。<br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-2-1-4">分析<br/>
+
+<ol>
+<li>无相图边矩阵具有对称性
+</li>
+<li>计算每个结点的度的复杂度为O(v)
+</li>
+<li>查找某两个结点是否有邻接的复杂度为O(1)
+</li>
+<li>创建邻接矩阵的复杂度为 \(O(v^2)\)
+</li>
+<li>边数远小于顶点数时，矩阵空间严重浪费
+</li>
+</ol>
+
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 邻接表</h4>
+<div class="outline-text-4" id="text-2-2-2">
+
+<p>使用链表将边的信息保存为动态结构，减少空间浪费。
+</p><ul>
+<li id="sec-2-2-2-1">无向图<br/>
+
+<p>
+<img src="../resources/TreeAndGraph/UndirectG1.png"  alt="../resources/TreeAndGraph/UndirectG1.png" />
+</p>
+<p>
+存储结构：
+</p>
+
+
+<p>
+<img src="../resources/TreeAndGraph/UndirectStruct2.png" align="left" alt="../resources/TreeAndGraph/UndirectStruct2.png" />
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-2-2-2-2">有向图<br/>
+
+<p>
+<img src="../resources/TreeAndGraph/DirectG1.png"  alt="../resources/TreeAndGraph/DirectG1.png" />
+</p>
+<p>
+存储结构：
+</p>
+
+<p>
+<img src="../resources/TreeAndGraph/DirectStruct2.png" align="left" alt="../resources/TreeAndGraph/DirectStruct2.png" />
+</p>
+<p>
+带权的边表结构扩展为：
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">adjvex</td><td class="left">weight</td><td class="left">next</td></tr>
+</tbody>
+</table>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-2-2-3">分析<br/>
+
+<ol>
+<li>计算每个结点出度的复杂度为O(e)
+</li>
+<li>计算每个结点入度的复杂度为 <b>O(v+e)</b> ，太慢。
+</li>
+<li>查找某两个结点是否有邻接的复杂度为O(e)
+</li>
+<li>创建表的复杂度为O(v+e)
+</li>
+</ol>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> 十字链表</h4>
+<div class="outline-text-4" id="text-2-2-3">
+
+
+<p class="verse">
+解决了邻接表计算入度慢的问题，以空间换时间的解决方案。<br/>
+</p>
+
+
+<p>
+结点结构：
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">data</td><td class="left">firstin</td><td class="left">firstout</td></tr>
+</tbody>
+</table>
+
+
+<p>
+边表结构
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">tailvex</td><td class="left">headvex</td><td class="left">headlink</td><td class="left">taillink</td></tr>
+</tbody>
+</table>
+
+
+
+<p class="verse">
+headlink和taillink是边表指针域。<br/>
+headlink指向下一条headvex与当前边一致的边。<br/>
+</p>
+
+
+<ul>
+<li>分析
+
+<ol>
+<li>计算每个结点出入度的复杂度都为O(e)
+</li>
+<li>创建表的复杂度与邻接表一致，为O(v+e)
+</li>
+</ol>
+
+</li>
+</ul>
+
+</div>
+</div>
 </div>
 </div>
 </div>
