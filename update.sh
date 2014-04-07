@@ -1,3 +1,4 @@
 #!bin/bash
 cp -R -u org/resources/ ./
-git notes
+git add *
+git commit -m "update notes"

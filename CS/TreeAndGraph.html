@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="树与图"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-04-03T15:55+0800"/>
+<meta name="generated" content="2014-04-07T10:53+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Tree, Graph"/>
@@ -840,7 +840,7 @@ print(Node.data)<br/>
 </div>
 
 <div id="outline-container-2-2-1" class="outline-4">
-<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 邻接矩阵</h4>
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 邻接矩阵(Adjacency matrix)</h4>
 <div class="outline-text-4" id="text-2-2-1">
 
 <ul>
@@ -883,7 +883,7 @@ print(Node.data)<br/>
 
 
 <p>
-<img src="../resources/TreeAndGraph/directG1.png"  alt="../resources/TreeAndGraph/directG1.png" />
+<img src="../resources/TreeAndGraph/DirectG1.png"  alt="../resources/TreeAndGraph/DirectG1.png" />
 </p>
 <p>
 边矩阵：
@@ -920,18 +920,13 @@ print(Node.data)<br/>
 <li id="sec-2-2-1-4">分析<br/>
 
 <ol>
-<li>无相图边矩阵具有对称性
-</li>
 <li>计算每个结点的度的复杂度为O(v)
 </li>
 <li>查找某两个结点是否有邻接的复杂度为O(1)
 </li>
-<li>创建邻接矩阵的复杂度为 \(O(v^2)\)
-</li>
 <li>边数远小于顶点数时，矩阵空间严重浪费
 </li>
 </ol>
-
 
 
 </li>
@@ -941,7 +936,7 @@ print(Node.data)<br/>
 </div>
 
 <div id="outline-container-2-2-2" class="outline-4">
-<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 邻接表</h4>
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 邻接表(Adjacency list)</h4>
 <div class="outline-text-4" id="text-2-2-2">
 
 <p>使用链表将边的信息保存为动态结构，减少空间浪费。
@@ -955,25 +950,23 @@ print(Node.data)<br/>
 存储结构：
 </p>
 
-
 <p>
-<img src="../resources/TreeAndGraph/UndirectStruct2.png" align="left" alt="../resources/TreeAndGraph/UndirectStruct2.png" />
+<img src="../resources/TreeAndGraph/UndirectStruct2.png"  alt="../resources/TreeAndGraph/UndirectStruct2.png" />
 </p>
 </li>
 </ul>
 <ul>
 <li id="sec-2-2-2-2">有向图<br/>
-
-<p>
 <img src="../resources/TreeAndGraph/DirectG1.png"  alt="../resources/TreeAndGraph/DirectG1.png" />
-</p>
+
 <p>
 存储结构：
 </p>
 
 <p>
-<img src="../resources/TreeAndGraph/DirectStruct2.png" align="left" alt="../resources/TreeAndGraph/DirectStruct2.png" />
+<img src="../resources/TreeAndGraph/DirectStruct2.png"  alt="../resources/TreeAndGraph/DirectStruct2.png" />
 </p>
+
 <p>
 带权的边表结构扩展为：
 </p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
@@ -995,10 +988,6 @@ print(Node.data)<br/>
 </li>
 <li>计算每个结点入度的复杂度为 <b>O(v+e)</b> ，太慢。
 </li>
-<li>查找某两个结点是否有邻接的复杂度为O(e)
-</li>
-<li>创建表的复杂度为O(v+e)
-</li>
 </ol>
 
 
@@ -1009,12 +998,12 @@ print(Node.data)<br/>
 </div>
 
 <div id="outline-container-2-2-3" class="outline-4">
-<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> 十字链表</h4>
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> 十字链表(有向图优化)</h4>
 <div class="outline-text-4" id="text-2-2-3">
 
 
 <p class="verse">
-解决了邻接表计算入度慢的问题，以空间换时间的解决方案。<br/>
+解决了有向图邻接表计算入度慢的问题，以空间换时间的解决方案。<br/>
 </p>
 
 
@@ -1059,6 +1048,106 @@ headlink指向下一条headvex与当前边一致的边。<br/>
 
 </li>
 </ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2-4" class="outline-4">
+<h4 id="sec-2-2-4"><span class="section-number-4">2.2.4</span> 邻接多重表(无向图优化)</h4>
+<div class="outline-text-4" id="text-2-2-4">
+
+<ul>
+<li id="sec-2-2-4-1">意图<br/>
+
+<p class="verse">
+关注图的顶点的时候，邻接表不错。<br/>
+<br/>
+但如果操作边的情况多一些，比如：对边做标记，删除边。<br/>
+邻接表由于对于不同的顶点维护了两份同一条边的信息，<br/>
+对边操作时，都要变更两处。<br/>
+</p>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-2-4-2">存储结构<br/>
+重新定义边表结构：
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">ivex</td><td class="left">ilink</td><td class="left">jvex</td><td class="left">jlink</td></tr>
+</tbody>
+</table>
+
+
+<p>
+<img src="../resources/TreeAndGraph/UndirectG1.png"  alt="../resources/TreeAndGraph/UndirectG1.png" />
+</p>
+
+<p>
+第一步：列出所有边(ivex, jvex的值可随意交换)
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="right" /><col class="right" /><col class="left" /><col class="right" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="right">index</th><th scope="col" class="right">ivex</th><th scope="col" class="left">ilink</th><th scope="col" class="right">jvex</th><th scope="col" class="left">jlink</th></tr>
+</thead>
+<tbody>
+<tr><td class="right">0</td><td class="right">0</td><td class="left"></td><td class="right">1</td><td class="left"></td></tr>
+<tr><td class="right">1</td><td class="right">1</td><td class="left"></td><td class="right">2</td><td class="left"></td></tr>
+<tr><td class="right">2</td><td class="right">2</td><td class="left"></td><td class="right">3</td><td class="left"></td></tr>
+<tr><td class="right">3</td><td class="right">3</td><td class="left"></td><td class="right">0</td><td class="left"></td></tr>
+<tr><td class="right">4</td><td class="right">0</td><td class="left"></td><td class="right">2</td><td class="left"></td></tr>
+</tbody>
+</table>
+
+
+<p>
+第二步：连线ilink指向的jvex与自身的ivex相同
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="right" /><col class="right" /><col class="left" /><col class="right" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="right">index</th><th scope="col" class="right">ivex</th><th scope="col" class="left">ilink</th><th scope="col" class="right">jvex</th><th scope="col" class="left">jlink</th></tr>
+</thead>
+<tbody>
+<tr><td class="right">0</td><td class="right">0</td><td class="left">3</td><td class="right">1</td><td class="left">^</td></tr>
+<tr><td class="right">1</td><td class="right">1</td><td class="left"></td><td class="right">2</td><td class="left"></td></tr>
+<tr><td class="right">2</td><td class="right">2</td><td class="left"></td><td class="right">3</td><td class="left"></td></tr>
+<tr><td class="right">3</td><td class="right">3</td><td class="left"></td><td class="right">0</td><td class="left">4</td></tr>
+<tr><td class="right">4</td><td class="right">0</td><td class="left"></td><td class="right">2</td><td class="left"></td></tr>
+</tbody>
+</table>
+
+
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-2-2-5" class="outline-4">
+<h4 id="sec-2-2-5"><span class="section-number-4">2.2.5</span> 总结</h4>
+<div class="outline-text-4" id="text-2-2-5">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left"></td><td class="left">邻接矩阵</td><td class="left">邻接表</td></tr>
+<tr><td class="left">空间复杂度</td><td class="left">\(O(v^2)\)</td><td class="left">\(O(v+e)\)</td></tr>
+<tr><td class="left">AddVertex</td><td class="left">\(O(v^2)\)</td><td class="left">\(O(1)\)</td></tr>
+<tr><td class="left">AddEdge</td><td class="left">\(O(1)\)</td><td class="left">\(O(1)\)</td></tr>
+<tr><td class="left">RemoveVertex</td><td class="left">\(O(v^2)\)</td><td class="left">\(O(e)\)</td></tr>
+<tr><td class="left">RemoveEdge</td><td class="left">\(O(1)\)</td><td class="left">\(O(e)\)</td></tr>
+</tbody>
+</table>
 
 </div>
 </div>

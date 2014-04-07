@@ -507,40 +507,17 @@ Parent node should be larger than any of its child.
 - Exchange: Buble, Quick
 - Merge
 
-*** Stable
-| A | B |
-|---+---|
-| 3 | 2 |
-| 5 | 3 |
-| 3 | 3 |
-| 3 | 5 |
-After sort(B)
-| A | B |
-|---+---|
-| 3 | 2 |
-| 5 | 3 |
-| 3 | 3 |
-| 3 | 5 |
-After sort(A)
-| A | B   |
-|---+-----|
-| 3 | *2* |
-| 3 | *3* |
-| 3 | *5* |
-| 5 | 3   |
-If B is still in order, then we say the sort method is stable.
-  
 *** Analysis  
-| Sort        | T-Avg        | T-Best       | T-Worst      | Space  | Stable? |
-|-------------+--------------+--------------+--------------+--------+---------|
-| Bubble      | $O(n^2)$     | $O(n)$       | $O(n^2)$     | $O(1)$ | Yes     |
-| Selection   | $O(n^2)$     | $O(n^2)$     | $O(n^2)$     | $O(1)$ | Yes     |
-| Insertion   | $O(n^2)$     | $O(n)$       | $O(n^2)$     | $O(1)$ | Yes     |
-| Shell       | ?            | $O(n^{1.3})$ | ?            | $O(1)$ | No      |
-| Heap        | $O(n\log n)$ | $O(n\log n)$ | $O(n\log n)$ | $O(1)$ | No      |
-| Merge       | $O(n\log n)$ | $O(n\log n)$ | $O(n\log n)$ | $O(n)$ | Yes     |
-| Quick       | $O(n\log n)$ | $O(n\log n)$ | $O(n^2)$     | $O(1)$ | No      |
-| 3-way Quick | $O(n\log n)$ | $O(n)$       | $O(n^2)$     | $O(1)$ | No      |
+| Sort        | T-Avg   | T-Best  | T-Worst | Space | Stable? |
+|-------------+---------+---------+---------+-------+---------|
+| Bubble      | $N^2/2$ | $N^2/2$ | $N^2/2$ |     1 | Yes     |
+| Selection   | $N^2/2$ | $N^2/2$ | $N^2/2$ |     1 | Yes     |
+| Insertion   | $N^2/4$ | N       | $N^2/2$ |     1 | Yes     |
+| Shell       | ?       | N       | ?       |     1 | No      |
+| Heap        | 2NlogN  | NlogN   | 2NlogN  |     1 | No      |
+| Merge       | NlogN   | NlogN   | NlogN   |     N | Yes     |
+| Quick       | 2NlnN   | NlogN   | $N^2/2$ |     1 | No      |
+| 3-way Quick | NlogN   | N       | $N^2/2$ |     1 | No      |
 
 *** Choice Facts
 - Stable?
@@ -584,6 +561,15 @@ j = n
 *else*
   *return* 0
 #+END_VERSE
+** Summary
+| Implementation    | T-Worst | T-Avg        |
+|-------------------+---------+--------------|
+| sequential search | N       | N/2          |
+| binary search     | logN    | logN         |
+| BST               | N       | 1.39logN     |
+| 2-3 tree          | clogN   | clogN        |
+| red-black BST     | 2logN   | almost 1logN |
+
 * Data Structure
 ** Queue
 *** API
@@ -614,7 +600,6 @@ Binary Heap (complete binary tree)
 | insert   | delMax   | max |
 |----------+----------+-----|
 | $\log N$ | $\log N$ |   1 |
-
 
 ** Symbol Table
 *** API
