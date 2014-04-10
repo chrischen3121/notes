@@ -915,6 +915,27 @@ Java中有成套的解决方案，叫做RMI。
 - 对指向实际对象的引用计数，引用计数为0时，自动释放。
 - 第一次引用时，装入内存。
 - 访问实际对象前，检查被锁定。
+
+标准库的例子：
+#+BEGIN_SRC c++
+  #include <memory>
+  using namespace std;
+  class A {};
+  void f()
+  {
+      auto_ptr<A> ptr(new A);//栈区对象，出栈时释放指针，避免多个函数出口都写释放语句
+      try
+      {
+          //delete a;
+          return;
+      }
+      catch (...)
+      {
+          //delete a;
+      }
+      //delete a;
+  }
+#+END_SRC
   
 *** 虚代理
 #+BEGIN_VERSE
