@@ -16,7 +16,6 @@
 
 ** Linux中文输入法
 #+BEGIN_VERSE
-方法一：
 执行以下操作：
 sudo add-apt-repository ppa:irie/elisp
 sudo apt-get update
@@ -30,16 +29,20 @@ emacs配置文件中加
 #+end_src
 
 * 文件编码问题
-#+BEGIN_VERSE
-(prefer-coding-system 'utf-8)
-(setq coding-system-for-read 'utf-8)
-(setq coding-system-for-write 'utf-8)
+#+BEGIN_SRC elisp
+  (set-language-environment 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-clipboard-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-buffer-file-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (modify-coding-system-alist 'process "*" 'utf-8)
+  (setq default-process-coding-system
+        '(utf-8 . utf-8))
+  (setq-default pathname-coding-system 'utf-8)
+#+END_SRC
 
-C-x <RET> f coding <RET>
-Use coding system coding to save or revisit the file in the current buffer (set-buffer-file-coding-system). 
-#+END_VERSE
-
-* 实用键盘宏
+* 键盘宏
   #+BEGIN_VERSE
   C-( C-)
   C-x e 执行宏
@@ -62,18 +65,13 @@ https://github.com/jixiuf/emacs_conf
 #+ATTR_HTML: alt="Image" style="margin:0px 150px"
 #+end_src
 
-* mode详解
-** shell-mode
- #+BEGIN_VERSE
- M-x shell 进入shell mode
- M-p 上一条执行过的Shell命令
- #+END_VERSE
 * 启动调试错误位置
   #+BEGIN_VERSE
   buffer postion 
   C-x = ：获取当前位置
   M-x goto-char pos ：跳转到pos
   #+END_VERSE
+
 * 开发环境
 ** C
 *** CEDET
