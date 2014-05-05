@@ -381,13 +381,9 @@ void Observer::Update(Subject*, Aspect& interest);
   
 
 - 可以被 *继承* 扩展。
-- 也可以拓展单例为 *多个实例*
+- 可扩展单例为 *多个实例*
   
-  允许Singleton类可以管理多个实例（考虑各种池类设计）。
-
-- 比类方法(静态)更灵活
-
-  当需要拓展成多个实例时，灵活方便。而静态方法做不到。
+  允许Singleton类可以管理多个实例（池类技术）。
 
 ** 实现
 #+begin_src cpp
@@ -418,7 +414,7 @@ void Observer::Update(Subject*, Aspect& interest);
 对整个函数进行同步，如果函数体内内容较多且外部调用很频繁，
 开销会很大。
 
-应该只同步创建实例的区块：
+应该只同步创建实例的区块(java示例)：
 #+END_VERSE
 #+begin_src java
   public class Singleton
@@ -463,7 +459,7 @@ void Observer::Update(Subject*, Aspect& interest);
 - 静态类更多的用于与特定实例无关的 *全局* 属性和 *全局* 方法的分类(起到命名空间的作用)。
 - 而单件的概念是确实需要一个实例，而且实例只能有一个。比如：注册表对象，线程池对象。
 
-*** 创建的时机
+*** 创建的时间
 - 静态类在编译时创建
 - 单件模式的类在运行时创建(创建的时机在一定程度上可选)
 
@@ -487,138 +483,191 @@ void Observer::Update(Subject*, Aspect& interest);
 - [[Builder]]
 - [[Prototype]]
   
-* 工厂模式
+* 工厂模式                                                           :创建型:对象:
 #<<Factory>>
-** 简单工厂
+** 简单工厂方法
 #<<SimpleFactory>>
 *** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/SimpleFactory.png]]
-*** 代码示例
-#+BEGIN_SRC cpp
-  public class SimplePizzaFactory
-  {
-  public:
-      Pizza Create(string type);
-      virtual ~SimplePizzaFactory();
-  };
-  
-   public Pizza* SimplePizzaFactory::Create(string type)
-   {
-       Pizza* pizza = null;
-       switch (type)
-       {
-       case "cheese":
-           pizza = new CheesePizza();
-       case "pepperoni":
-           pizza = new Pepperoni();
-       default:
-           pizza = null;
-       }
-       return pizza;
-   }
-  
-  int main()
-  {
-      SimplePizzaFactory* pFactory = new SimplePizzaFactory();
-      Pizza* pPizza = pFactory->Create("cheese");
-      return 0;
+#+BEGIN_SRC plantuml :file ../resources/OO/SimpleFactory.png :cmdline -charset UTF-8
+  scale 350 width
+  skinparam classAttributeIconSize 0
+  class SimpleFactory{
+      + Product Create(type)
   }
+  abstract class Product
+  class ConcreteProduct
+  
+  SimpleFactory .> Product
+  Product <|-- ConcreteProduct
 #+END_SRC
-** 工厂方法
+
+#+results:
+[[file:../resources/OO/SimpleFactory.png]]
+
+** 工厂方法                                                        
 #<<Factory Method>>
 *** 概述
-定义一个用于创建对象的接口，让子类决定实例化哪个类。
-*** 适用性
-- 当一个类不知道它所必须创建的对象的时候。
-- 当一个类希望由它的子类来指定所要创建对象的时候。
-- 当类将创建的职责委托给多个子类中的一个，并且希望将指定代理类的过程局部化的时候。 
+定义一个用于创建对象的接口，让子类决定实例化哪个产品。
+
 *** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/FactoryMethod.png]]
-*** 拓展
-- 为子类提供hook
-#+BEGIN_VERSE
-用工厂方法在一个类的内部创建对象。提供缺省实现创建。
-#+END_VERSE
+#+BEGIN_SRC plantuml :file ../resources/OO/FactoryMethod.png :cmdline -charset UTF-8
+  scale 420 width
+  skinparam classAttributeIconSize 0
+  
+  abstract class Creator{
+      + {abstract}Product FactoryMethod()
+  }
+  
+  class ConcreteCreator{
+      + Product FactoryMethod() 
+  }
+  
+  abstract class Product
+  class ConcreteProduct
+  
+  Creator <|-- ConcreteCreator
+  Product <|-- ConcreteProduct
+  ConcreteProduct <. ConcreteCreator
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/FactoryMethod.png]]
+
 *** 实现
-- 两种情况
-  1) Creator是一个抽象类，且不提供工厂方法的实现。避免了不得不实例化不可预见的类的问题。
-  2) Creator是一个具体类，为工厂方法提供一个缺省的实现。遵循的原则“有一个独立的操作创建对象，子类能重新定义”，保证了灵活性。
-- 参数化工厂方法
-- 使用模板以避免创建子类
+- 避免子类化
   #+BEGIN_VERSE
   工厂方法一个潜在的问题是它们可能仅为了创建适当的Product对象
-  而迫使你创建Creator子类，C++中可以提供一个模板子类。
+  而迫使你创建Creator子类，C++中可以提供使用模板避免子类化。
   #+END_VERSE
   #+BEGIN_SRC cpp
     class Creator
     {
     public:
-        virtual Product* CreateProduct() = 0;
+        virtual Product* Create() = 0;
     };
     
-    template <class TheProduct>
+    template <class T>
     class StandardCreator : public Creator
     {
     public:
-        virtual Product* CreateProduct();
+        virtual Product* Create();
     };
     
-    template <class TheProduct>
-    Product* StandardCreator<TheProduct>::CreateProduct()
+    template <class T>
+    Product* StandardCreator<T>::Create()
     {
-        return new TheProduct;
+        return new T;
     }
   #+END_SRC
-  客户代码：
-  #+BEGIN_SRC cpp
-    StandardCreator<MyProduct> myCreator = new StandardCreator<MyProduct>();
-    Product* myProduct = myCreator.CreateProduct();
-  #+END_SRC
+
 *** 相关模式
 - [[Abstract Factory]]经常使用工厂方法来实现。
-- 工厂方法通常在[[Template Methods]]中被调用。模板方法指定一系列的具体步骤，而创建对象的一步委托给工厂方法，以应对变化。
-- [[Prototypes]]不需要创建Creator的子类。但会要求一个针对Product类的Initialize操作。Creator使用Initialize来初始化对象。
+- 工厂方法通常在[[Template Methods]]中被调用。
+
+  模板方法指定一系列的具体步骤，而创建对象的一步委托给工厂方法。
+
+- [[Prototypes]]不需要创建Creator的子类。
+
+  但会要求一个针对Product类的Initialize操作。Creator使用Initialize来初始化对象。
+
+- 与简单工厂方法的比较
+  #+BEGIN_VERSE
+  简单工厂在SimpleFactory的create方法中，使用类似Switch语句来根据参数制造产品。
+  缺点在于，switch不容易扩展，并且SimpleFactory需要知道所有的产品类，耦合紧密。
+  #+END_VERSE
+  
 ** 抽象工厂
 #<<Abstract Factory>>
 *** 概述
-提供创建一系列相关或相互依赖对象的接口，而无需指定它们的具体类。
-*** 适用性
-- 一个系统要独立于它的产品创建、组合和表示时。
-- 一个系统要由多个产品系列中的一个来配置时。
-- 当你要强调一系列相关的产品对象的设计以便进行联合使用时。
-- 当你提供一个产品类库，而只想显示它们的接口而不是实现。
+提供创建一系列产品族的接口，而无需指定各产品的具体类。
+
+*** 角色
+- ConcreteFactory
+  
+  负责创建各产品对象，每一个具体工厂类都代表一种产品之间的组合。
+
 *** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center" width="90%" height="90%"
-   [[file:../resources/OO/img/AbstractFactory.png]]
+#+BEGIN_SRC plantuml :file ../resources/OO/AbstractFactory.png :cmdline -charset UTF-8
+  scale 1000 width
+  skinparam classAttributeIconSize 0
+  class Client
+  abstract class AbstractFactory{
+      + {abstract} AbstractProductA CreateProductA()
+      + {abstract} AbstractProductB CreateProductB()
+  }
+  
+  class ConcreteFactory1{
+      + AbstractProductA CreateProductA()
+      + AbstractProductB CreateProductB()
+  }
+  
+  class ConcreteFactory2{
+      + AbstractProductA CreateProductA()
+      + AbstractProductB CreateProductB()
+  }
+  
+  abstract class AbstractProductA
+  class ProductA1
+  class ProductA2
+  abstract class AbstractProductB
+  class ProductB1
+  class ProductB2
+  
+  Client --> AbstractFactory
+  Client --> AbstractProductA
+  Client --> AbstractProductB
+  
+  AbstractFactory <|-- ConcreteFactory1
+  AbstractFactory <|-- ConcreteFactory2
+  
+  AbstractProductA <|-- ProductA1
+  AbstractProductA <|-- ProductA2
+  
+  AbstractProductB <|-- ProductB1
+  AbstractProductB <|-- ProductB2
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/AbstractFactory.png]]
+
 *** 优点
-- *通过接口隔离了具体工厂类。* 客户代码依赖于抽象工厂接口。产品的类名也在具体工厂的实现中被分离，不出现在客户代码中。
-- *使得易于交换产品系列。* 通过替换具体的工厂类，来改变产品系列。
-- *有利于产品的一致性。* 当一系列产品被设计成一起工作时，抽象工厂可以保证一个应用一次只能使用同一系列的对象。
+- *使得易于交换产品系列*
+
+  通过替换具体的工厂类，来改变产品系列。
+
+- *有利于产品的一致性*
+  
+  当一系列产品被设计成一起工作时，抽象工厂可以保证一个应用一次只能使用同一系列的对象。
+
 *** 缺点
-- *难以支持新种类的产品。* AbstractFactory接口定义了可以被创建的产品集合。支持新的种类，就需要扩展接口，还涉及到所有子类的改变。[[extendable concrete factory][解决办法]]
+- *难以支持新种类的产品*
+  #+BEGIN_VERSE
+  AbstractFactory接口定义了可以被创建的产品集合。支持新的产品种类，
+  就需要扩展接口，还涉及到所有子类的改变。[[extendable concrete factory][解决办法]]
+  #+END_VERSE
+
 *** 实现
-- 将工厂作为单件。一般每个产品系列只需一个ConcreteFactory的实例。
+- 将具体工厂作为单件
+
+  一般每个产品系列只需一个ConcreteFactory的实例。
+
 - 创建产品。
   #+BEGIN_VERSE
-  AbstractFactory只声明创建产品的接口。由子类实现，一般子类实现时，
-  使用[[工厂方法][Factory Method]]模式。如果有多个可能的产品系列，具体工厂也可以
-  使用[[Prototype]]模式来实现。具体工厂使用产品系列中每一个产品的原型实
-  例来初始化，且它通过复制它的原型来创建新的产品。基于原型的好处：不
-  是每个新的产品系列都需要一个新的具体工厂类。[fn:5]
+  AbstractFactory只声明创建产品的接口。
+  如果有多个可能的产品系列，具体工厂也可以使用[[Prototype]]模式来实现。
+  具体工厂使用产品系列中每一个产品的原型实例来初始化，
+  且它通过复制它的原型来创建新的产品。
+
+  基于原型的好处：不是每个新的产品系列都需要一个新的具体工厂类。[fn:5]
   #+END_VERSE
+
 #<<extendable concrete factory>>
 - 定义可扩展的工厂
   #+BEGIN_VERSE
   加入新产品需要扩展接口，影响子类。
   一个更灵活但不太安全的设计是给创建对象的操作增加一个参数。
-  该参数指定了将被创建的对象的类型。(可以是类标识符、字符串等)
-  AbstractFactory只需要一个Create操作，用参数指定要创建的产品
-  类型。更适合于动态类型语言。
+  AbstractFactory只提供一个Create操作，用参数指定要创建的产品。
+  由于产品种类各不相同，此方法只适用于动态类型语言。
 
   当所有对象都有相同的基类，且产品对象可以安全的强转成正确的
   类型时。才能在C++这样的静态类型语言中使用。
@@ -627,7 +676,7 @@ void Observer::Update(Subject*, Aspect& interest);
   或对一个产品类别进行安全的假定。需要dynamic_cast去转换，这种
   自上向下类型的转换并不总是安全的。
   
-  总结：这是一个典型的高度灵活和可扩展接口的权衡问题。
+  总结：这是一个典型的高度灵活和更高安全性的权衡问题。
   #+END_VERSE
 
 *** 相关模式
@@ -883,7 +932,7 @@ Button控件，对控件设计者来说，只知道Button按下应该会发生
   
   定义RealSubject与Proxy的共用接口。
 ** 实现细节
-*** C++重载->,*运算符
+*** C++通过重载->,*运算符实现
 #+BEGIN_SRC c++
   Image* ImageProxy::operator-> ()
   {
@@ -944,13 +993,16 @@ Java中有成套的解决方案，叫做RMI。
 #+END_VERSE
 
 ** 相关模式
-#+BEGIN_VERSE
-[[Adapter]]模式：主要用于转换接口；而代理模式一般情况下不改变接口，意图不一样。
+- [[Adapter]]模式：
 
-[[Decorator]]模式：两者结构类似，但意图不同。
-装饰者模式支持多层装饰；而代理通常只会添加一层访问控制。
-代理模式通常与实际对象接口保持一致。装饰者通常需要增加接口以达到扩展功能的目的。
-#+END_VERSE
+  主要用于转换接口；而代理模式一般情况下不改变接口，意图不一样。
+
+- [[Decorator]]模式：两者结构类似，但意图不同。
+  #+BEGIN_VERSE
+  装饰者模式支持多层装饰；而代理通常只会添加一层访问控制。
+  代理模式通常与实际对象接口保持一致。装饰者通常需要增加接口以达到扩展功能的目的。
+  #+END_VERSE
+
 * 外观模式                                                              :结构型:
 #<<Facade>>
 ** 概述
