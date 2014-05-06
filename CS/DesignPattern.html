@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="设计模式"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-05-05T15:56+0800"/>
+<meta name="generated" content="2014-05-06T14:11+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="design pattern"/>
@@ -202,8 +202,9 @@ for the JavaScript code in this tag.
 <h3 id="sec-2-1"><span class="section-number-3">2.1</span> 概述</h3>
 <div class="outline-text-3" id="text-2-1">
 
-<p>定义了算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。
-</p></div>
+<p>定义一系列算法，分别封装起来，使它们之间可以相互替换。
+</p>
+</div>
 
 </div>
 
@@ -212,15 +213,14 @@ for the JavaScript code in this tag.
 <div class="outline-text-3" id="text-2-2">
 
 <ul>
-<li>许多 <b>相关</b> 的类仅仅是行为有异
-</li>
-<li>需要使用一个算法的不同变体
+<li>一些 <b>相关</b> 的类接口一致，仅仅是行为有异
 </li>
 <li>使算法使用的数据结构不暴露于客户
 </li>
 <li>一个类定义了多种行为，且这些行为在类中是以多个条件语句的形式出现的
 </li>
 </ul>
+
 
 </div>
 
@@ -231,146 +231,147 @@ for the JavaScript code in this tag.
 <div class="outline-text-3" id="text-2-3">
 
 
-<div class="figure">
-<p><img src="../resources/OO/img/Strategy.png" align="center" alt="../resources/OO/img/Strategy.png" /></p>
 
-</div>
+<p>
+<img src="../resources/OO/Strategy.png"  alt="../resources/OO/Strategy.png" />
+</p>
 </div>
 
 </div>
 
 <div id="outline-container-2-4" class="outline-3">
-<h3 id="sec-2-4"><span class="section-number-3">2.4</span> 优点</h3>
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> 角色</h3>
 <div class="outline-text-3" id="text-2-4">
 
 <ul>
-<li>定义了一组可供重用的算法，继承自Strategy基类，有助于将共同内容放置于基类
-</li>
-<li>替代继承实现方法，不用硬编码至Context中
-</li>
-<li>消除了一些条件语句
-</li>
-<li>客户代码可以动态的选择具体算法
+<li>Context
+
+<p class="verse">
+维护一个Strategy对象的引用<br/>
+可开放接口，让Strategy访问其数据<br/>
+</p>
+
+
 </li>
 </ul>
+
 
 </div>
 
 </div>
 
 <div id="outline-container-2-5" class="outline-3">
-<h3 id="sec-2-5"><span class="section-number-3">2.5</span> 缺点</h3>
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> 优点</h3>
 <div class="outline-text-3" id="text-2-5">
 
 <ul>
-<li>客户代码必须了解到具体算法之间的区别（增加耦合）
-<ul>
-<li>Gof建议：仅当不同行为变体是与客户相关的行为时，才需要使用Strategy模式
+<li>定义一组可供重用的算法（共通内容可放置于基类）
+</li>
+<li>替代继承使用组合，更灵活，不用硬编码至Context中
+</li>
+<li>消除条件语句
+</li>
+<li>客户代码可以动态的选择具体算法
 </li>
 </ul>
 
-</li>
-<li>Strategy和Context之间的通信开销
-<ul>
-<li>各具体算法所需要的参数不一样，但是接口共享。会导致需要额外增加两边接口，导致这两个类更紧密的耦合
-</li>
-</ul>
-
-</li>
-<li>增加了对象的数目
-<ul>
-<li>参考<a href="#Flyweight">Flyweight</a>模式
-</li>
-</ul>
-
-</li>
-</ul>
 
 </div>
 
 </div>
 
 <div id="outline-container-2-6" class="outline-3">
-<h3 id="sec-2-6"><span class="section-number-3">2.6</span> 实现</h3>
+<h3 id="sec-2-6"><span class="section-number-3">2.6</span> 缺点</h3>
 <div class="outline-text-3" id="text-2-6">
 
-
-</div>
-
-<div id="outline-container-2-6-1" class="outline-4">
-<h4 id="sec-2-6-1"><span class="section-number-4">2.6.1</span> 定义Context和Strategy的接口</h4>
-<div class="outline-text-4" id="text-2-6-1">
-
 <ul>
-<li id="sec-2-6-1-1">必须使得ConcreteStrategy和Context类能够获取对方的任何数据<br/>
-<ul>
-<li id="sec-2-6-1-1-1">方法1：Context将各算法需要的参数传递给Strategy<br/>
+<li>客户代码必须了解到具体算法之间的区别（增加耦合）
 
-<p class="verse">
-好处：Strategy对Context解耦(Strategy不需要知道Context的存在)<br/>
-缺点：Context可能发送一些具体算法不需要的冗余数据<br/>
+<p>
+  Gof建议：仅当不同行为是与客户相关的行为有关时，才使用Strategy模式
 </p>
-
-
 </li>
-</ul>
-<ul>
-<li id="sec-2-6-1-1-2">方法2：Context自身作为一个参数传递给Strategy，由Strateg去显式调用Get获取数据<br/>
+<li>Strategy和Context之间的通信开销
 
-<p class="verse">
-缺点：Context必须更精确的定义和分出多个Get接口，Strategy跟Context之间耦合更紧密。(修改时，会同时需要修改这两个类)<br/>
+<p>
+  各具体算法所需要的参数不一样，但是接口共享。导致需要额外增加两边接口，导致这两个类更紧密的耦合
 </p>
-
-
 </li>
-</ul>
-</li>
-</ul>
-</div>
+<li>增加了对象的数目
 
-</div>
-
-<div id="outline-container-2-6-2" class="outline-4">
-<h4 id="sec-2-6-2"><span class="section-number-4">2.6.2</span> 将Strategy作为模板参数</h4>
-<div class="outline-text-4" id="text-2-6-2">
-
-<ul>
-<li id="sec-2-6-2-1">优点：<br/>
-<ul>
-<li>不再需要Stratgy抽象基类
-</li>
-<li>将Strategy实例和模板方法进行了静态绑定，提高了运行效率
-</li>
+<p>
+  参考<a href="#Flyweight">Flyweight</a>模式
+</p></li>
 </ul>
 
-</li>
-</ul>
-<ul>
-<li id="sec-2-6-2-2">缺点：<br/>
-<ul>
-<li>不能在运行时改变行为
-</li>
-</ul>
 
-</li>
-</ul>
-</div>
-
-</div>
-
-<div id="outline-container-2-6-3" class="outline-4">
-<h4 id="sec-2-6-3"><span class="section-number-4">2.6.3</span> 使Strategy成为可选的</h4>
-<div class="outline-text-4" id="text-2-6-3">
-
-<p>Context执行缺省行为，只有当用户不喜欢缺省行为时，才选择可选的Strategy。
-</p></div>
 </div>
 
 </div>
 
 <div id="outline-container-2-7" class="outline-3">
-<h3 id="sec-2-7"><span class="section-number-3">2.7</span> 相关模式</h3>
+<h3 id="sec-2-7"><span class="section-number-3">2.7</span> 实现</h3>
 <div class="outline-text-3" id="text-2-7">
+
+
+</div>
+
+<div id="outline-container-2-7-1" class="outline-4">
+<h4 id="sec-2-7-1"><span class="section-number-4">2.7.1</span> 需定义Context和Strategy之间数据交换的接口</h4>
+<div class="outline-text-4" id="text-2-7-1">
+
+<ul>
+<li>方法一 Push：将数据作为参数放在Strategy的接口AlgorithmInterface()中。
+
+<p>
+  缺点：Context可能发送一些Strategy不需要的数据。
+</p>
+</li>
+<li>方法二 Pull：Context将自身作为参数传递给Strategy，Strategy再调用Get获取数据。
+
+<p>
+  缺点：Context必须为Strategy定义一堆更精细的Get接口。（C++中可使用友元）
+</p></li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-7-2" class="outline-4">
+<h4 id="sec-2-7-2"><span class="section-number-4">2.7.2</span> 将Strategy作为C++模板参数</h4>
+<div class="outline-text-4" id="text-2-7-2">
+
+
+
+
+<pre class="src src-cpp"><span style="color: #1e90ff; font-weight: bold;">template</span> &lt;<span style="color: #1e90ff; font-weight: bold;">typename</span> <span style="color: #daa520;">Strategy</span>&gt;
+<span style="color: #1e90ff; font-weight: bold;">class</span> <span style="color: #daa520;">Context</span>
+{
+<span style="color: #1e90ff; font-weight: bold;">private</span>:
+    <span style="color: #daa520;">Strategy</span> <span style="color: #008b8b;">theStrategy</span>;
+<span style="color: #1e90ff; font-weight: bold;">public</span>:
+    <span style="color: #daa520;">void</span> <span style="color: #00008b; font-weight: bold;">ContextInterface</span>() {theStrategy.AlgorithmInterface()}
+};
+</pre>
+
+<ul>
+<li>不再需要Strategy抽象基类。
+</li>
+<li>避免多态，使用模板在编译时就绑定Strategy和Context，提高运行效率，牺牲了动态绑定的灵活性。
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-8" class="outline-3">
+<h3 id="sec-2-8"><span class="section-number-3">2.8</span> 相关模式</h3>
+<div class="outline-text-3" id="text-2-8">
 
 <p><a href="#sec-3">State</a> <a href="#sec-3-7-1">两者区别</a>、<a href="#sec-5">Template Method</a>
 </p></div>

@@ -8,52 +8,94 @@
 ** 依赖倒置原则
 ** 子类替换原则
 ** 接口隔离原则
-* 策略模式
+* 策略模式                                                           :行为型:对象:
 #<<Strategy>>
 ** 概述
-定义了算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。
+定义一系列算法，分别封装起来，使它们之间可以相互替换。
+
 ** 适用性
-- 许多 *相关* 的类仅仅是行为有异
-- 需要使用一个算法的不同变体
+- 一些 *相关* 的类接口一致，仅仅是行为有异
 - 使算法使用的数据结构不暴露于客户
 - 一个类定义了多种行为，且这些行为在类中是以多个条件语句的形式出现的
+
 ** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/Strategy.png]]
+#+BEGIN_SRC plantuml :file ../resources/OO/Strategy.png :cmdline -charset UTF-8
+  scale 450 width
+  skinparam classAttributeIconSize 0
+  abstract class Strategy{
+      + {abstract} AlgorithmInterface()
+  }
+  
+  class Context{
+      + ContextInterface()
+  }
+  
+  class ConcreteStrategyA{
+      + AlgorithmInterface()
+  }
+  
+  class ConcreteStrategyB{
+      + AlgorithmInterface()
+  }
+  
+  Context o- Strategy
+  Strategy <|-- ConcreteStrategyA
+  Strategy <|-- ConcreteStrategyB
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Strategy.png]]
+
+** 角色
+- Context
+  #+BEGIN_VERSE
+  维护一个Strategy对象的引用
+  可开放接口，让Strategy访问其数据
+  #+END_VERSE
+  
 ** 优点
-   - 定义了一组可供重用的算法，继承自Strategy基类，有助于将共同内容放置于基类
-   - 替代继承实现方法，不用硬编码至Context中
-   - 消除了一些条件语句
-   - 客户代码可以动态的选择具体算法
-#+END_VERSE
+- 定义一组可供重用的算法（共通内容可放置于基类）
+- 替代继承使用组合，更灵活，不用硬编码至Context中
+- 消除条件语句
+- 客户代码可以动态的选择具体算法
+
 ** 缺点
 - 客户代码必须了解到具体算法之间的区别（增加耦合）
-   - Gof建议：仅当不同行为变体是与客户相关的行为时，才需要使用Strategy模式
+
+  Gof建议：仅当不同行为是与客户相关的行为有关时，才使用Strategy模式
+
 - Strategy和Context之间的通信开销
-   - 各具体算法所需要的参数不一样，但是接口共享。会导致需要额外增加两边接口，导致这两个类更紧密的耦合
+
+  各具体算法所需要的参数不一样，但是接口共享。导致需要额外增加两边接口，导致这两个类更紧密的耦合
+
 - 增加了对象的数目
-   - 参考[[Flyweight]]模式
+
+  参考[[Flyweight]]模式
+
 ** 实现
-*** 定义Context和Strategy的接口
-**** 必须使得ConcreteStrategy和Context类能够获取对方的任何数据
-***** 方法1：Context将各算法需要的参数传递给Strategy
-#+BEGIN_VERSE
-好处：Strategy对Context解耦(Strategy不需要知道Context的存在)
-缺点：Context可能发送一些具体算法不需要的冗余数据
-#+END_VERSE
-***** 方法2：Context自身作为一个参数传递给Strategy，由Strateg去显式调用Get获取数据
-#+BEGIN_VERSE
-缺点：Context必须更精确的定义和分出多个Get接口，Strategy跟Context之间耦合更紧密。(修改时，会同时需要修改这两个类)
-#+END_VERSE
-*** 将Strategy作为模板参数
-**** 优点：
-- 不再需要Stratgy抽象基类
-- 将Strategy实例和模板方法进行了静态绑定，提高了运行效率
-**** 缺点：
-- 不能在运行时改变行为
-*** 使Strategy成为可选的
-Context执行缺省行为，只有当用户不喜欢缺省行为时，才选择可选的Strategy。
+*** 需定义Context和Strategy之间数据交换的接口
+- 方法一 Push：将数据作为参数放在Strategy的接口AlgorithmInterface()中。
+
+  缺点：Context可能发送一些Strategy不需要的数据。
+
+- 方法二 Pull：Context将自身作为参数传递给Strategy，Strategy再调用Get获取数据。
+
+  缺点：Context必须为Strategy定义一堆更精细的Get接口。（C++中可使用友元）
+
+*** 将Strategy作为C++模板参数
+#+BEGIN_SRC cpp
+  template <typename Strategy>
+  class Context
+  {
+  private:
+      Strategy theStrategy;
+  public:
+      void ContextInterface() {theStrategy.AlgorithmInterface()}
+  };
+#+END_SRC
+- 不再需要Strategy抽象基类。
+- 避免多态，使用模板在编译时就绑定Strategy和Context，提高运行效率，牺牲了动态绑定的灵活性。
+
 ** 相关模式
 [[State]] [[diff between strategy and state][两者区别]]、[[Template Method]]
 * 状态模式
