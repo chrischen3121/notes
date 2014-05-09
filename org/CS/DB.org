@@ -298,8 +298,8 @@ MVD is a *tuple-generating* dependency.
   If $(\bar A\twoheadrightarrow \bar B) \land (\bar B\twoheadrightarrow \bar C)$ ,
   then $\bar A\twoheadrightarrow \bar C - \bar B$ .
 
-** Normalization 
-*** 1NF
+* Normalization 
+** 1NF
 #+BEGIN_VERSE
 Data in your column is atomic if it's been broken
 down into the smallest pieces that you need.
@@ -325,29 +325,29 @@ down into the smallest pieces that you need.
   |---------+----------+----------|
   | Ms.Mary | Joe      | Ron      |
 
-*** 2NF
+** 2NF
 - Rule 1: Be in 1NF
 - Rule 2: Have no partial functional dependencies.
 
-*** 3NF
+** 3NF
 - Rule 1: Be in 2NF
 - Rule 2: Have no transitive dependencies.
 
-*** Boyce-Codd Normal Form(BCNF, 3.5NF)
+** Boyce-Codd Normal Form(BCNF, 3.5NF)
 FD leads to the BCNF.
 - Definition
   #+BEGIN_VERSE
   Relation R with FDs is in BCNF if:
   For each  nontrivial $\bar A\to B$, $\bar A$ is a key.
   #+END_VERSE
-**** Validation Example
+*** Validation Example
 #+BEGIN_VERSE
 R(A, B, C, D)
 FDs: $AC\to D,\ D\to A,\ D\to C,\ D\to B$
 For every $\bar{left}$ can determine all the attributes.
 #+END_VERSE
 
-*** 4NF
+** 4NF
 - Definition
   #+BEGIN_VERSE
   Relation R with MVDs is in 4NF if:
@@ -355,12 +355,12 @@ For every $\bar{left}$ can determine all the attributes.
   #+END_VERSE
 4NF is in BCNF. 
 
-** Subclasses
-*** Complete vs. Incomplete(Partial)
+* Subclasses
+** Complete vs. Incomplete(Partial)
 Complete: Every object is in at least one subclass.
-*** Overlapping vs. Disjoint(Exclusive)
+** Overlapping vs. Disjoint(Exclusive)
 Overlapping: One object is in two+ subclasses.
-*** How to design?
+** How to design?
 3 choices:
 1) Subclass relations contain superclass key + specialized attrs
 2) Subclass relations contain all attributes
@@ -397,6 +397,26 @@ C
 1) S(_K_, A), S1(_K_, B), S2(_K_, C)
 2) S(_K_, A), S1(_K_, A, B), S2(_K_, A, C)
 3) S(_K_, A, B, C)
+* Constraints
+** Motivation
+Constrain allowable database states.(static)
+
+** Syntax
+Major keywords: PK, FK, UNIQUE, CHECK
+
+
+- Examples:
+#+BEGIN_SRC sql
+Create ...
+{
+    columnName type CHECK (columnName IN ('value1', 'value2'));
+}
+
+ADD CONSTRAINT CHECK columnName > 1;
+
+CHECK 'A' = SUBSTRING(columnName, 1, 1);
+#+END_SRC
+
 ** Foreign Key
 *** Facts
 1) A FK can have different name than the parent key.
@@ -416,51 +436,80 @@ C
 #+END_SRC
 You can name constraint_name and foreign_key_name whatever you like.
 
-** Constraints
-PK, FK, UNIQUE, CHECK
-- CHECK
 
-Some Examples:
-#+BEGIN_SRC sql
-Create ...
-{
-    columnName type CHECK (columnName IN ('value1', 'value2'));
-}
+* Triggers
+** Motivation
+- To enforce constraints(Dynamic)
+- Move logic from apps into DBMS
 
-ADD CONSTRAINT CHECK columnName > 1;
+** Usage
+- Event-Condition-Action Rules
 
-CHECK 'A' = SUBSTRING(columnName, 1, 1);
-#+END_SRC
+  When *event* occurs, check *condition*; if true, do *action*.
 
-** Indexes
-*** Usage
+- Syntax
+  #+BEGIN_VERSE
+  Create Trigger *name*
+  Before|After|Instead of *events*
+  *[referencing-variables]*
+  [For Each Row]
+  [when (*condition*)]
+  *action*
+  #+END_VERSE
+  - events
+    #+BEGIN_VERSE
+    insert on T
+    delete on T
+    update [of C1,...,Cn] on T
+    #+END_VERSE
+
+  - [For Each Row]
+    
+    Determines whether the trigger is row-level or statement-level
+
+  - referencing-variables
+    #+BEGIN_VERSE
+    Depends on [For Each Row]
+    old row as *var*
+    new row as *var*
+    old table as *var*
+    new table as *var*
+    #+END_VERSE
+
+  - condition
+    
+    In /when/ or /where/ clause depends on the SQL Implementation.
+  
+
+* Indexes
+** Usage
 Different between full table scans and immediate location of tuples.
-*** Underlying Data Structures
+** Underlying Data Structures
 - Balanced trees (B tree, B+ tree)
   
   When uses ">, <, >=, <=" in query.
 - Hashtable
   
   When uses "=" in query.
-*** SQL Syntax
+** SQL Syntax
 #+BEGIN_SRC sql
   CREATE INDEX IndexName ON T(A1,A2...)
   CREATE UNIQUE INDEX ...
   DROP INDEX IndexName
 #+END_SRC
-*** Downsides
+** Downsides
 - Extra space
 - Index creation
 - Index maintenance(Important)
   
   When updates database, indexes will also be updated.
-*** Upsides
+** Upsides
 Benefits depends on:
 
 - Data distributions
 - Query vs. update load
 - Size of table(and possibly layout)
-*** Physical Design Advisors
+** Physical Design Advisors
 - Input (database statistics and workload)
 - Output (recommended indexes)
 
