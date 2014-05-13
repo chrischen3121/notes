@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="设计模式"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-05-06T14:11+0800"/>
+<meta name="generated" content="2014-05-13T15:16+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="design pattern"/>
@@ -192,7 +192,7 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2"><a name="Strategy" id="Strategy"></a><span class="section-number-2">2</span> 策略模式</h2>
+<h2 id="sec-2"><a name="Strategy" id="Strategy"></a><span class="section-number-2">2</span> 策略模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">行为型</span>&nbsp;<span class="__">对象</span></span></h2>
 <div class="outline-text-2" id="text-2">
 
 
@@ -373,7 +373,7 @@ for the JavaScript code in this tag.
 <h3 id="sec-2-8"><span class="section-number-3">2.8</span> 相关模式</h3>
 <div class="outline-text-3" id="text-2-8">
 
-<p><a href="#sec-3">State</a> <a href="#sec-3-7-1">两者区别</a>、<a href="#sec-5">Template Method</a>
+<p><a href="#sec-3">State</a> <a href="#sec-3-6-1">两者区别</a>、<a href="#sec-5">Template Method</a>
 </p></div>
 </div>
 
@@ -390,8 +390,9 @@ for the JavaScript code in this tag.
 <h3 id="sec-3-1"><span class="section-number-3">3.1</span> 概述</h3>
 <div class="outline-text-3" id="text-3-1">
 
-<p>允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。
-</p></div>
+<p>对象的行为随着内部状态的改变而改变。
+</p>
+</div>
 
 </div>
 
@@ -402,9 +403,10 @@ for the JavaScript code in this tag.
 <ul>
 <li>一个对象的行为取决于它的状态，并且需要在 <b>运行时</b> 根据它的状态改变它的行为
 </li>
-<li>一个操作中含有 <b>庞大</b> 的分支条件语句，且这些分支依赖于该对象的状态
+<li>大量的依赖于对象状态的分支 <b>条件语句</b> 是一个信号，通常可以用State模式进行改造。
 </li>
 </ul>
+
 
 </div>
 
@@ -415,10 +417,10 @@ for the JavaScript code in this tag.
 <div class="outline-text-3" id="text-3-3">
 
 
-<div class="figure">
-<p><img src="../resources/OO/img/State.png" align="center" alt="../resources/OO/img/State.png" /></p>
 
-</div>
+<p>
+<img src="../resources/OO/State.png"  alt="../resources/OO/State.png" />
+</p>
 </div>
 
 </div>
@@ -428,27 +430,16 @@ for the JavaScript code in this tag.
 <div class="outline-text-3" id="text-3-4">
 
 <ul>
-<li>将与特定状态相关的行为局部化，把不同状态的行为分割开来
+<li>易扩展新的状态，只需定义新的子类
 </li>
-<li>通过定义新的子类，很容易增加新的状态和转化
-</li>
-<li>它使得状态转换显式化
-<ol>
-<li>当一个对象某个成员变量来定义状态时，其状态仅表现为对变量赋值，不够明确。
-</li>
-<li>从Context的角度看，状态转换是原子的——只需重新绑定一个State对象变量。
-</li>
-</ol>
-
-</li>
-<li>State对象可以被多个Context对象共享()
-<ul>
-<li>条件：状态 <b>对象</b> 不能持有自己的状态实例。需要将状态实例指定到一个静态变量中(即实现单件模式)
-</li>
-<li>如果状态需要利用Context中的数据或方法，必须在每个接口方法内传入Context的引用
+<li>State对象可以被多个Context对象共享
 
 <p class="verse">
-这样可实现没有内部状态，只有行为的轻量级对象<sup><a class="footref" name="fnr-.1" href="#fn-.1">1</a></sup><br/>
+条件：状态 <b>对象</b> 不能持有自己的状态实例。需要将状态实例指定到一个静态变量中(可用单件模式实现)<br/>
+<br/>
+如果状态需要利用Context中的数据或方法，可在Handle()方法传入Context的引用。<br/>
+<br/>
+这种实现不再需要State类保存自身的引用，可实现没有内部状态只有行为的轻量级对象。<br/>
 </p>
 
 
@@ -461,116 +452,109 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-3-5" class="outline-3">
-<h3 id="sec-3-5"><span class="section-number-3">3.5</span> 缺点</h3>
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> 实现</h3>
 <div class="outline-text-3" id="text-3-5">
 
-<ul>
-<li>类的数目增加了，看起来不够紧凑
+
+</div>
+
+<div id="outline-container-3-5-1" class="outline-4">
+<h4 id="sec-3-5-1"><span class="section-number-4">3.5.1</span> 谁定义状态转换</h4>
+<div class="outline-text-4" id="text-3-5-1">
+
+<ol>
+<li>可由Context全权负责状态转移
+</li>
+<li>通常由State具体类自身指定它们的后继状态更方便灵活
 
 <p class="verse">
-真正重要的是暴露给客户的类数目。如果状态有很多，这样分布更好，否则需要庞大的条件语句。<br/>
+可以给Context增加一个接口，让State子类对象显式地设定Context的内部状态。<br/>
+由State子类来指定状态转移的缺点是，增加了子类之间的依赖。<br/>
 </p>
 
 
 </li>
+</ol>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-5-2" class="outline-4">
+<h4 id="sec-3-5-2"><span class="section-number-4">3.5.2</span> 可使用表驱动法</h4>
+<div class="outline-text-4" id="text-3-5-2">
+
+<ul>
+<li>State模式主要对状态相关的行为进行建模
+</li>
+<li>而表驱动着重于定义状态的转换，通常表的key表示某一状态，Value为它的后继状态。
+</li>
 </ul>
 
+
+</div>
+
+</div>
+
+<div id="outline-container-3-5-3" class="outline-4">
+<h4 id="sec-3-5-3"><span class="section-number-4">3.5.3</span> 创建和销毁State对象</h4>
+<div class="outline-text-4" id="text-3-5-3">
+
+<ul>
+<li id="sec-3-5-3-1">面临权衡：(1)需要时创建；(2)提前创建所有的State子类对象<br/>
+<ol>
+<li>将要进入的状态在运行时是不可知的，且上下文不经常改变状态时，选择(1)。
+</li>
+<li>另外，当State对象存储大量的信息时，使用(1)。
+</li>
+<li>当状态频繁变化时，第(2)种方法更好。Context对象需保存所有State子类对象的引用(不宜扩展)。
+</li>
+</ol>
+
+
+</li>
+</ul>
+</div>
 </div>
 
 </div>
 
 <div id="outline-container-3-6" class="outline-3">
-<h3 id="sec-3-6"><span class="section-number-3">3.6</span> 实现</h3>
+<h3 id="sec-3-6"><span class="section-number-3">3.6</span> 相关模式</h3>
 <div class="outline-text-3" id="text-3-6">
-
-
-</div>
-
-<div id="outline-container-3-6-1" class="outline-4">
-<h4 id="sec-3-6-1"><span class="section-number-4">3.6.1</span> 谁定义状态转换</h4>
-<div class="outline-text-4" id="text-3-6-1">
-
-<ul>
-<li id="sec-3-6-1-1">State模式不指定哪个参与者定义状态转换准则。如果该准则固定，可在Context中完全实现。<br/>
-</li>
-</ul>
-<ul>
-<li id="sec-3-6-1-2">如果让State子类自身指定他们的后继状态以及何时进行转换，通常更灵活更合适<br/>
-
-<p class="verse">
-这需要Context增加一个接口，让State子类对象显示地设定Context当前状态<br/>
-缺点：产生了子类之间的实现依赖<br/>
-</p>
-
-
-</li>
-</ul>
-</div>
-
-</div>
-
-<div id="outline-container-3-6-2" class="outline-4">
-<h4 id="sec-3-6-2"><span class="section-number-4">3.6.2</span> 使用表驱动方法替代</h4>
-<div class="outline-text-4" id="text-3-6-2">
-
-<p>将条件代码(State模式下的虚函数)映射为一张查找表。
-</p><ul>
-<li>缺点：对表的查找通常不如(虚)函数调用效率高。
-</li>
-</ul>
-
-<p>总结：表驱动着重于定义状态转换；State模式则是针对状态相关的行为进行建模。
-</p>
-</div>
-
-</div>
-
-<div id="outline-container-3-6-3" class="outline-4">
-<h4 id="sec-3-6-3"><span class="section-number-4">3.6.3</span> 创建和销毁State对象</h4>
-<div class="outline-text-4" id="text-3-6-3">
-
-<ul>
-<li id="sec-3-6-3-1">面临权衡：(1)需要时创建；(2)始终置于内存<br/>
-<ol>
-<li>将要进入的状态，在运行时是不可知的，且上下文不经常改变状态时，选择1。
-</li>
-<li>另外，当State对象存储大量的信息时，使用1
-</li>
-<li>当状态频繁变化时，第2种方法更好。Context必须保存对所有可能会进入的那些状态的引用。
-</li>
-</ol>
-
-</li>
-</ul>
-</div>
-</div>
-
-</div>
-
-<div id="outline-container-3-7" class="outline-3">
-<h3 id="sec-3-7"><span class="section-number-3">3.7</span> 相关模式</h3>
-<div class="outline-text-3" id="text-3-7">
 
 <p><a href="#sec-2">Strategy</a>、<a href="#sec-5">Template Method</a>
 </p>
 </div>
 
-<div id="outline-container-3-7-1" class="outline-4">
-<h4 id="sec-3-7-1"><a name="diff-between-strategy-and-state" id="diff-between-strategy-and-state"></a><span class="section-number-4">3.7.1</span> 与Strategy模式的区别</h4>
-<div class="outline-text-4" id="text-3-7-1">
+<div id="outline-container-3-6-1" class="outline-4">
+<h4 id="sec-3-6-1"><a name="diff-between-strategy-and-state" id="diff-between-strategy-and-state"></a><span class="section-number-4">3.6.1</span> 与Strategy模式的区别</h4>
+<div class="outline-text-4" id="text-3-6-1">
 
+<p>意图：
+</p><ul>
+<li>Strategy定义的是一组平行的算法，这些算法有着共同的目标。
+</li>
+<li>State模式更关注根据内在状态的不同，执行不同的行为，这些行为可能目的完全不同。
+</li>
+</ul>
 
-<p class="verse">
-定义上讲：<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Strategy定义的是一组平行的算法，这些算法有着共同的目标。<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - State模式更关注根据内在状态的不同，执行不同的行为，这些行为可能目的完全不同。<br/>
-客户角度：<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - State模式：一般的用法，状态通常跟着Context的行为而改变，对客户来说，浑然不知。封装了状态的转换规则。<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Strategy模式：通常是由客户来选择具体的行为策略。<br/>
-总结：<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Strategy模式提供了一个继承之外更具弹性的替换方案。<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - State模式更多的用来避免Context中过多的分支语句。<br/>
-</p>
+<p>客户角度：
+</p><ul>
+<li>State模式：通常的用法，状态通常跟着Context的行为而改变，对客户来说状态转换规则是不可见的。
+</li>
+<li>Strategy模式：为了灵活，通常是由客户来指定具体的策略。
+</li>
+</ul>
+
+<p>总结：
+</p><ul>
+<li>Strategy模式提供了一个继承之外更具弹性的替换方案。
+</li>
+<li>State模式更多的用来避免Context中过多的分支语句。
+</li>
+</ul>
 
 
 </div>
@@ -1017,7 +1001,7 @@ for the JavaScript code in this tag.
 <div class="outline-text-3" id="text-5-4">
 
 <ul>
-<li>提供了反向的控制结构。即"好莱坞法则<sup><a class="footref" name="fnr-.2" href="#fn-.2">2</a></sup>"："别找我们，我们找你。"——高层组件调用低层组件，低层组件不能调用高层组件。
+<li>提供了反向的控制结构。即"好莱坞法则<sup><a class="footref" name="fnr-.1" href="#fn-.1">1</a></sup>"："别找我们，我们找你。"——高层组件调用低层组件，低层组件不能调用高层组件。
 </li>
 <li>一个模板方法整合了一些原语操作，从而减少了原语操作的数目，简化客户程序调用。
 </li>
@@ -1043,7 +1027,7 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#sec-8-2">Factory Method</a>
 </li>
-<li>hook operations 提供缺省<sup><a class="footref" name="fnr-.3" href="#fn-.3">3</a></sup>的行为，子类在必要时拓展。
+<li>hook operations 提供缺省<sup><a class="footref" name="fnr-.2" href="#fn-.2">2</a></sup>的行为，子类在必要时拓展。
 </li>
 </ul>
 
@@ -1129,7 +1113,7 @@ for the JavaScript code in this tag.
 <h3 id="sec-6-1"><span class="section-number-3">6.1</span> 概述</h3>
 <div class="outline-text-3" id="text-6-1">
 
-<p>动态地给一个对象添加一些额外的职责。提供了比继承更大的灵活<sup><a class="footref" name="fnr-.4" href="#fn-.4">4</a></sup>。
+<p>动态地给一个对象添加一些额外的职责。提供了比继承更大的灵活<sup><a class="footref" name="fnr-.3" href="#fn-.3">3</a></sup>。
 </p>
 </div>
 
@@ -1801,7 +1785,7 @@ AbstractFactory只声明创建产品的接口。<br/>
 具体工厂使用产品系列中每一个产品的原型实例来初始化，<br/>
 且它通过复制它的原型来创建新的产品。<br/>
 <br/>
-基于原型的好处：不是每个新的产品系列都需要一个新的具体工厂类。<sup><a class="footref" name="fnr-.5" href="#fn-.5">5</a></sup><br/>
+基于原型的好处：不是每个新的产品系列都需要一个新的具体工厂类。<sup><a class="footref" name="fnr-.4" href="#fn-.4">4</a></sup><br/>
 </p>
 
 
@@ -2483,7 +2467,7 @@ Java中有成套的解决方案，叫做RMI。<br/>
 <ul>
 <li><a href="#sec-8-3">Abstract Factory</a>模式可与Facade模式一起使用以提供一个单独的创建产品簇的接口。
 </li>
-<li><a href="#Mediator">Mediator</a>模式与Facade模式的相似之处：都抽象了一些已有的类的功能。但<a href="#Mediator">Mediator</a>的目的是对同级之间的任意通讯进行抽象。<sup><a class="footref" name="fnr-.6" href="#fn-.6">6</a></sup>
+<li><a href="#Mediator">Mediator</a>模式与Facade模式的相似之处：都抽象了一些已有的类的功能。但<a href="#Mediator">Mediator</a>的目的是对同级之间的任意通讯进行抽象。<sup><a class="footref" name="fnr-.5" href="#fn-.5">5</a></sup>
 </li>
 <li>通常来说仅需要一个Facade对象，所以Facade类定义成<a href="#sec-7">Singleton</a>类。
 </li>
@@ -2625,7 +2609,7 @@ Java中有成套的解决方案，叫做RMI。<br/>
 
 <p class="verse">
 使用内部迭代器时，客户只需指定一个操作，迭代器保证对集合<br/>
-中的每一个元素执行该操作。<sup><a class="footref" name="fnr-.7" href="#fn-.7">7</a></sup><br/>
+中的每一个元素执行该操作。<sup><a class="footref" name="fnr-.6" href="#fn-.6">6</a></sup><br/>
 如何指定操作？支持匿名函数和闭包的语言很容易实现。<br/>
 C++中通常有两种方法可以选择<br/>
 </p>
@@ -2636,7 +2620,7 @@ C++中通常有两种方法可以选择<br/>
     劣势在于如果需要更新某种状态，则需要使用全局变量。
 </li>
 <li>子类生成
-    需要定义额外的类来达到目的。<sup><a class="footref" name="fnr-.8" href="#fn-.8">8</a></sup>
+    需要定义额外的类来达到目的。<sup><a class="footref" name="fnr-.7" href="#fn-.7">7</a></sup>
 
 </li>
 </ul>
@@ -2809,7 +2793,7 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </div>
 
 <div id="outline-container-13-6-6" class="outline-4">
-<h4 id="sec-13-6-6"><span class="section-number-4">13.6.6</span> 与<a href="#Composite">Composite</a>模式的协作<sup><a class="footref" name="fnr-.9" href="#fn-.9">9</a></sup></h4>
+<h4 id="sec-13-6-6"><span class="section-number-4">13.6.6</span> 与<a href="#Composite">Composite</a>模式的协作<sup><a class="footref" name="fnr-.8" href="#fn-.8">8</a></sup></h4>
 <div class="outline-text-4" id="text-13-6-6">
 
 </div>
@@ -2891,39 +2875,35 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
-<p class="footnote"><sup><a class="footnum" name="fn-.1" href="#fnr-.1">1</a></sup> 动手做一下这个实现。
+<p class="footnote"><sup><a class="footnum" name="fn-.1" href="#fnr-.1">1</a></sup> 并非低层组件一定不能调用高层组件，最重要的是避免让高层组件和低层组件之间有明显的环状依赖。
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.2" href="#fnr-.2">2</a></sup> 并非低层组件一定不能调用高层组件，最重要的是避免让高层组件和低层组件之间有明显的环状依赖。
+<p class="footnote"><sup><a class="footnum" name="fn-.2" href="#fnr-.2">2</a></sup> hook操作缺省经常是一个空操作。空操作的意义：某些子类可能需要一些"特别"的操作，而大部分子类不需要。
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.3" href="#fnr-.3">3</a></sup> hook操作缺省经常是一个空操作。空操作的意义：某些子类可能需要一些"特别"的操作，而大部分子类不需要。
+<p class="footnote"><sup><a class="footnum" name="fn-.3" href="#fnr-.3">3</a></sup> 继承方式是在编译时静态扩展父类的职责，装饰者模式是动态的添加职责。
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.4" href="#fnr-.4">4</a></sup> 继承方式是在编译时静态扩展父类的职责，装饰者模式是动态的添加职责。
+<p class="footnote"><sup><a class="footnum" name="fn-.4" href="#fnr-.4">4</a></sup> 学完原型模式，回过头来再看这段。
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.5" href="#fnr-.5">5</a></sup> 学完原型模式，回过头来再看这段。
+<p class="footnote"><sup><a class="footnum" name="fn-.5" href="#fnr-.5">5</a></sup> 看到<a href="#Mediator">Mediator</a>的时候再理解这段话。
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.6" href="#fnr-.6">6</a></sup> 看到<a href="#Mediator">Mediator</a>的时候再理解这段话。
+<p class="footnote"><sup><a class="footnum" name="fn-.6" href="#fnr-.6">6</a></sup> 实现MapReduce中"Map"的一种方式。
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.7" href="#fnr-.7">7</a></sup> 实现MapReduce中"Map"的一种方式。
+<p class="footnote"><sup><a class="footnum" name="fn-.7" href="#fnr-.7">7</a></sup> 具体代码示例参照《Gof设计模式》5.4 10
 </p>
 
 
-<p class="footnote"><sup><a class="footnum" name="fn-.8" href="#fnr-.8">8</a></sup> 具体代码示例参照《Gof设计模式》5.4 10
-</p>
-
-
-<p class="footnote"><sup><a class="footnum" name="fn-.9" href="#fnr-.9">9</a></sup> 待学完组合模式再补充完
+<p class="footnote"><sup><a class="footnum" name="fn-.8" href="#fnr-.8">8</a></sup> 待学完组合模式再补充完
 </p>
 
 
