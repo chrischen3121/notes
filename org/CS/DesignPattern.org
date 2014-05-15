@@ -3,11 +3,13 @@
 #+OPTIONS: H:3 toc:1 num:3 ^:nil
 #+SETUPFILE: ../configOrg/level1.org
 * OO基本原则
-** 单一职责原则(SRP)
-** 开放封闭原则
-** 依赖倒置原则
-** 子类替换原则
-** 接口隔离原则
+S.O.L.I.D
+- 单一职责原则
+- 开放封闭原则
+- 子类替换原则
+- 接口隔离原则
+- 依赖倒置原则
+
 * 策略模式                                                           :行为型:对象:
 #<<Strategy>>
 ** 概述
@@ -307,7 +309,7 @@ void Observer::Update(Subject*, Aspect& interest);
   - ChangeManager是一个[[Mediator]]模式的实例
   - 通常只有一个ChangeManager，可用[[Singleton]]模式
 
-* 模板方法
+* 模板方法                                                            :行为型:类:
 #<<Template Method>>
 ** 概述
 #+BEGIN_VERSE
@@ -316,102 +318,148 @@ void Observer::Update(Subject*, Aspect& interest);
 使子类可以不改变一个算法的结构，而重定义算法的某些特定步骤。
 #+END_VERSE
 ** 适用性
-- 一次性实现一个算法的不变的部分，将可变行为留给子类去实现。
 - 多个子类中存在一些公共行为，需要提取出来，做法如下：
   1) 识别代码中不同部分
   2) 提取出新的函数
   3) 用一个新的模板方法替换原算法(公共部分放于其中)
 - 控制子类扩展，模板方法只在特定点调用子类方法
 ** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/TemplateMethod.png]]
-- ConcreteClass实现算法中与特定子类相关的步骤
-** 优点
-- 提供了反向的控制结构。即"好莱坞法则[fn:1]"："别找我们，我们找你。"——高层组件调用低层组件，低层组件不能调用高层组件。
-- 一个模板方法整合了一些原语操作，从而减少了原语操作的数目，简化客户程序调用。
-- 客户代码只依赖于模板方法基类，不依赖于具体类，减少整个系统的 *依赖* 。
-** 实现
-模板方法调用下列类型的操作：
-- 具体的操作(ConcreteClass或客户类)
-- 具体的AbstractClass的操作
-- 抽象操作(必须被重定义)
-- [[Factory Method]]
-- hook operations 提供缺省[fn:2]的行为，子类在必要时拓展。
-#+BEGIN_VERSE
-*重要* ：模板方法应该指明哪些操作是钩子(可被重定义)，哪些操作是抽象操作(必须被重定义)。
-#+END_VERSE
-*细节注意* ：
-1) C++细节
-   - 模板方法调用的原语操作(PrimitiveOperation1等)声明为protect
-   - 抽象操作定义为纯虚函数。
-   - 模板方法一般就是一个普通的非虚成员函数
-   - 钩子使用Virtual方法
-2) 命名约定。可给应被重定义的操作上加一个前缀"Do"，例如："DoCreateDocument"
-3) 模板方法可以声明为"Sealed"、"final"
-*钩子使用* 
-钩子实现算法中可选部分
-#+begin_src c++
-  void AbstractClass::TemplateMethod()
-  {
-    Operation1();
-    Operation2();
-    Hook1();
-    if (HookFileExisted())
-      {
-        Operation3();
-      }
+#+BEGIN_SRC plantuml :file ../resources/OO/TemplateMethod.png :cmdline -charset UTF-8
+  scale 180 width
+  skinparam classAttributeIconSize 0
+  abstract class AbstractClass {
+      + TemplateMethod()
+      + {abstract} PrimitiveOperation1()
+      + {abstract} PrimitiveOperation2()
   }
   
-  bool AbstractClass::HookFileExisted()
-  {
-    return true;
-  }  
-#+end_src
+  class ConcreteClass {
+      + PrimitiveOperation1()
+      + PrimitiveOperation2()
+  }
+  
+  AbstractClass <|-- ConcreteClass
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/TemplateMethod.png]]
+
+** 优点
+- 提供了反向的控制结构。即"好莱坞法则"："别找我们，我们找你。"。
+  #+BEGIN_VERSE
+  即高层组件调用低层组件，低层组件不能调用高层组件。
+  但并非低层组件一定不能调用高层组件，最重要的是避免让
+  高层组件和低层组件之间有明显的环状依赖。
+  #+END_VERSE
+- 一个模板方法整合了一系列操作，从而减少了需要客户程序调用的接口数。
+- 客户代码只依赖于模板方法基类，不依赖于具体类，减少整个系统的 *依赖* 。
+
+** 实现
+- hook operations
+  提供缺省[fn:1]的行为，子类在必要时拓展。例如：
+  #+begin_src c++
+    void AbstractClass::TemplateMethod()
+    {
+      Operation1();
+      Operation2();
+      Hook1();
+      if (HookFileExisted())
+        {
+          Operation3();
+        }
+    }
+    
+    bool AbstractClass::HookFileExisted()
+    {
+      return true;
+    }  
+  #+end_src
+  #+BEGIN_VERSE
+  *重要* ：模板方法应该指明哪些操作是钩子(可被重定义)，哪些操作是抽象操作(必须被重定义)。
+  可以做一个命名约定
+  需被重定义的操作加上前缀"Do"
+  钩子方法加上前缀"Hook"
+  #+END_VERSE
+
 ** 相关模式
 - [[Factory Method]]常被模板方法调用。
 - [[Strategy]]使用委托来改变整个算法，模板方法使用继承来改变算法的一部分。
 
-* 装饰者模式
+* 装饰者模式                                                         :行为型:对象:
 #<<Decorator>>
 ** 概述
-动态地给一个对象添加一些额外的职责。提供了比继承更大的灵活[fn:3]。
+动态地给一个对象添加一些额外的职责。提供了比继承更大的灵活[fn:2]。
 
-** 适用性
-- 以动态、透明的方式给单个对象添加职责。
-- 处理那些可以撤销的职责。
-- 不能采用继承进行拓展时。
-  #+BEGIN_VERSE
-  一种情况：有大量独立的拓展，仅因为这些拓展的组合不同而使得子类数目爆炸性增长。
-  另一种情况：类定义被隐藏，或者类不可被继承。
-  #+END_VERSE
 ** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/Decorator.png]]
-   此处的继承为了达到类型匹配的目的，使用户在使用Decorator对象时，与使用Component一样。
+#+BEGIN_SRC plantuml :file ../resources/OO/Decorator.png :cmdline -charset UTF-8
+  scale 650 width
+  skinparam classAttributeIconSize 0
+  abstract class Component {
+      + {abstract} Operation()
+  }
+  
+  class ConcreteComponent {
+      + Operation()
+  }
+  
+  note "optional" as N1
+  note "component->Operation()" as N2
+  abstract class Decorator {
+      + {abstract} Operation()
+  }
+  
+  class ConcreteDecoratorA {
+      + addedState
+      + Operation()
+  }
+  
+  class ConcreteDecoratorB {
+      + Operation()
+      + AddedBehavior()
+  }
+  
+  Component <|-- ConcreteComponent
+  Component <|-- Decorator
+  Decorator <|-- ConcreteDecoratorA
+  Decorator <|-- ConcreteDecoratorB
+  N1 .. Decorator
+  Decorator . N2
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Decorator.png]]
+
+- 使用继承的目的是为了达到类型匹配，使用户在使用Decorator对象时，与使用Component一样。
+
 ** 优点
 - 比静态继承更灵活，在运行时添加职责。
 - 继承在添加一些共通职责时，容易产生类爆炸。Decorator添加的职责大多数情况下能重用。
-- 使结构层次较高的类更简洁。不依赖于现有已拓展的Decorator类，定义新类型的Decorator很容易。
+- 使结构层次较高的类更简洁。不依赖于现有已扩展的Decorator类，定义新类型的Decorator很容易。
+  
 ** 缺点
 - 使用装饰时不应该依赖于对象标识。被装饰了的组件与这个组件本身就对象标识而言，是有区别的。
 - 产生很多小对象。对于不了解系统的人，难以学习，排错也比较困难。
+
 ** 实现
 1) 接口一致性。所有的Component和Decorator必须有一个公共的父类。
-2) 省略抽象的Decorator类。仅需添加一个职责时，没必要抽象Decorator类。
-3) 保持Component类的简单性。公共父类仅定义接口，尽量避免添加子类并不需要的职责。
+2) 抽象的Decorator基类是可选的。仅需添加一个职责时，无需Decorator基类。
+3) 保持Component类的简单性。公共父类仅定义接口，尽量避免加入子类并不需要的职责。
+
 ** 相关模式
 *** 与[[Strategy]]的比较：
 - Decorator可看做一个对象的 *外壳* 。
 - Strategy则是改变对象的内核。
-当Component基类很 *庞大* 时，使用Decorator代价太高，Strategy模式更好一些。
-#+begin_example
-比如，绘制边框的职责，既可以使用Decorator模式包一层外壳，
-也可以使用Border对象专门负责，再组合进Context。
-#+end_example
+  #+BEGIN_VERSE
+  当Component基类很 *庞大* 时，使用Decorator代价太高，Strategy模式更好一些。
+  比如，绘制边框的职责，既可以使用Decorator模式包一层外壳，
+  也可以使用Border对象专门负责，再组合进Context。
+  #+END_VERSE
+
 *** [[Composite]]模式
-可以将装饰视为一个退化的、仅有一个组件的组合。另外，它的目的在于添加职责，而Composite目的在于对象聚集。
+#+BEGIN_VERSE
+可以将装饰视为一个退化的、仅有一个组件的组合。
+另外，它的目的在于添加职责，而Composite目的在于对象聚合。
+#+END_VERSE
 
 * 单件模式                                                           :创建型:对象:
 #<<Singleton>>
@@ -1184,14 +1232,14 @@ Java中有成套的解决方案，叫做RMI。
 - 内部迭代器
   #+BEGIN_VERSE
   使用内部迭代器时，客户只需指定一个操作，迭代器保证对集合
-  中的每一个元素执行该操作。[fn:4]
+  中的每一个元素执行该操作。[fn:3]
   如何指定操作？支持匿名函数和闭包的语言很容易实现。
   C++中通常有两种方法可以选择
   #+END_VERSE
   - 函数指针
     劣势在于如果需要更新某种状态，则需要使用全局变量。
   - 子类生成
-    需要定义额外的类来达到目的。[fn:5]
+    需要定义额外的类来达到目的。[fn:4]
 
 - 权衡
   #+BEGIN_VERSE
@@ -1318,15 +1366,12 @@ C++中迭代器可作为它的集合类的一个友元，
 
 * Footnotes
 
-[fn:1] 并非低层组件一定不能调用高层组件，最重要的是避免让高层组件和低层组件之间有明显的环状依赖。
+[fn:1] hook操作缺省经常是一个空操作。空操作的意义：某些子类可能需要一些"特别"的操作，而大部分子类不需要。
 
-[fn:2] hook操作缺省经常是一个空操作。空操作的意义：某些子类可能需要一些"特别"的操作，而大部分子类不需要。
+[fn:2] 继承是在编译时静态扩展父类的职责，装饰者模式是动态的添加职责。
 
-[fn:3] 继承方式是在编译时静态扩展父类的职责，装饰者模式是动态的添加职责。
+[fn:3] 实现MapReduce中"Map"的一种方式。
 
-[fn:4] 实现MapReduce中"Map"的一种方式。
-
-[fn:5] 具体代码示例参照《Gof设计模式》5.4 10
-
+[fn:4] 具体代码示例参照《Gof设计模式》5.4 10
 
 

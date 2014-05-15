@@ -327,9 +327,13 @@ $k-1\le\log n < k$
 
 #+results:
 [[file:../resources/TreeAndGraph/OrgTreeToBinTree.png]]
+*** 平衡树
+斜树的检索效率很差，如果能维持树的平衡，则会显著提升检索效率。
+- 解决手段：B Tree, 2-3 Tree, Red-Black Tree 
+
 ** 赫夫曼树
 *赫夫曼树是：带权路径长度WPL最小的二叉树。*
-*** 如何得到赫夫曼树？
+*** 赫夫曼树定义
 #+BEGIN_VERSE
 1 根据给定的权值{$w_1,w_2,\cdots,w_n$ }构成的n棵二叉树集合F
 {$T_1,T_2,\cdot, T_3$ }，$T_i$ 为带权为$W_i$ 根结点，左右子树为空。
@@ -363,16 +367,19 @@ $k-1\le\log n < k$
 *** 赫夫曼编码
 数据压缩算法
 - 例：假设字母出现的频率A27, B8, C15, D15, E30, F5
+  1) 排序 F5, B8, C15, D15, A27, E30
+  2) 最小的两项相加构成N1结点，频率为13
+  3) 继续找出N2, N3, N4
   #+BEGIN_SRC dot :file ../resources/TreeAndGraph/HuffmanCode1.png :cmdline -Kdot -Tpng		
     graph HuffmanCode1{
         size="3.5, 3.5";
         graph [ordering="out"];
-        "T" -- "N4" [label=42];
-        "N4" -- "D" [label=15];
-        "N4" -- "A" [label=27];
-        "T" -- "N3" [label=58];
-        "N3" -- "N2" [label=28];
-        "N3" -- "E" [label=30];
+        "T" -- "N3" [label=42];
+        "N3" -- "D" [label=15];
+        "N3" -- "A" [label=27];
+        "T" -- "N4" [label=58];
+        "N4" -- "N2" [label=28];
+        "N4" -- "E" [label=30];
         "N2" -- "N1" [label=13];
         "N2" -- "C" [label=15];
         "N1" -- "F" [label=5];
@@ -389,12 +396,12 @@ $k-1\le\log n < k$
     graph HuffmanCode2{
         size="3.5, 3.5";
         graph [ordering="out"];
-        "T" -- "N4" [label=0];
-        "N4" -- "D" [label=0];
-        "N4" -- "A" [label=1];
-        "T" -- "N3" [label=1];
-        "N3" -- "N2" [label=0];
-        "N3" -- "E" [label=1];
+        "T" -- "N3" [label=0];
+        "N3" -- "D" [label=0];
+        "N3" -- "A" [label=1];
+        "T" -- "N4" [label=1];
+        "N4" -- "N2" [label=0];
+        "N4" -- "E" [label=1];
         "N2" -- "N1" [label=0];
         "N2" -- "C" [label=1];
         "N1" -- "F" [label=0];
@@ -406,6 +413,7 @@ $k-1\le\log n < k$
   [[file:../resources/TreeAndGraph/HuffmanCode2.png]]
 
   - 编码
+
     |  A |    B |   C |  D |  E |    F |
     | 01 | 1001 | 101 | 00 | 11 | 1000 |
     #+BEGIN_VERSE
@@ -413,6 +421,7 @@ $k-1\le\log n < k$
     二进制需要30个字符。
     #+END_VERSE
       
+
 * 图
 ** 定义
 #+BEGIN_VERSE
@@ -612,7 +621,6 @@ headlink指向下一条headvex与当前边一致的边。
 |     3 |    3 |       |    0 | 4     |
 |     4 |    0 |       |    2 |       |
 
-
 *** 总结
 |              | 邻接矩阵 | 邻接表   |
 | 空间复杂度   | $O(v^2)$ | $O(v+e)$ |
@@ -620,5 +628,73 @@ headlink指向下一条headvex与当前边一致的边。
 | AddEdge      | $O(1)$   | $O(1)$   |
 | RemoveVertex | $O(v^2)$ | $O(e)$   |
 | RemoveEdge   | $O(1)$   | $O(e)$   |
-| DFS          | $O(v^2)$ | $O(v+e)$ |
-| BFS          |          |          |
+
+** DFS和BFS
+DFS使用栈结构进行遍历，BFS使用队列。
+
+** MST
+核心是贪心算法，连接两个连通图时，选择权值最小的Path。
+*** Prim
+从一点出发，不断选择通向外界的最小路径，纳入MST连通分量。
+- 通向外界的路径列表可以使用优先队列保存。
+
+*** Kruskal
+将所有边存入优先队列，每次都取出最小的边，组成MST连通分量。
+- 需注意避免出现环：运用UnionFind算法，判断两点是否已经连通以避免出现环
+- 循环何时结束？
+  1) 整个边队列全部处理完则结束
+  2) 每次组成新的MST连通分量的时候，使用UnionFind判断是否所有的点都已连接上
+
+** SPT
+*** Dijkstra
+求无负权图一个点到另一个点的最短路径。
+
+- 核心Relax方法伪代码
+  #+BEGIN_VERSE
+  *RELAX(EDGE)*
+  *if* distanceTo[edge.src] + edge.weight < distanceTo[edge.dest]
+    distanceTo[edge.dest] = distanceTo[edge.src] + edge.weight
+  #+END_VERSE
+  关键点：初始化时，distanceTo[起点]=0，distanceTo[其他点]=infinity
+
+- 具体算法
+  #+BEGIN_VERSE
+  1) 起点加入待处理点队列
+  2) 选出队列中离起点最近的点(贪心)
+  3) 对选出的点，Relax其所有邻边(有向图为出度)
+  4) 将该点的邻接点加入待处理点队列
+  5) 重复2-4
+  #+END_VERSE
+  - 使用优先队列存储未处理的点。
+  
+- 算法效率
+  #+BEGIN_VERSE
+  Fibonacci Heap $O(V\log V + E)$
+  Binary Heap $O(E\log V)$
+  #+END_VERSE  
+
+*** Floyd
+求有负权图所有点到其他点的最短距离。
+- 算法原理：动态规划
+- 算法效率
+  - 时间复杂度 $O(v^3)$
+  - 空间复杂度 $O(v^2)$
+
+*** Bellman-Ford
+$O(ve)$
+
+** 拓扑排序
+#+BEGIN_VERSE
+主要针对有向图，判断是否存在环。
+如果经过拓扑排序，全部顶点被输出，则说明该图是无环的AOE图(Activity On Vertex)
+#+END_VERSE
+1) 找到入度为0的顶点。O(v)
+2) 移除其所有出度。邻接表为O(1)
+3) 重复1-2
+
+** 欧拉回路
+- 前提条件：连通图
+- 存在性
+  - 无向图：除了起点和终点，其余点的度为偶数
+  - 有向图：起点的出度比入度大1，终点的入度比出度大1，其余点的出度与入度相等
+
