@@ -186,68 +186,116 @@ S.O.L.I.D
     - Strategy模式提供了一个继承之外更具弹性的替换方案。
     - State模式更多的用来避免Context中过多的分支语句。
 
-* 观察者模式
+* 观察者模式                                                         :行为型:对象:
 #<<Observer>>
 ** 概述
-定义对象之间一种一对多的依赖，当一个对象状态发生变化时，所有依赖于它的对象都得到通知。
-** 适用性
-以下任一情况可使用Observer模式
-- 当一个抽象模型有两个方面，一个方面依赖于另一方面，将两者独立封装起来以便修改和复用。
-- 当一个对象的改变需要同时改变其他对象，而不知道具体有多少对象有待改变。
-- 当一个对象必须通知其他对象，而又不能知道其他对象是谁的情况下。（即不希望是紧耦合）
+定义对象之间一对多的依赖，当一个对象状态发生变化时，所有依赖于它的对象都得到通知。
+
 ** 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/Observer.png]]
-   流程图
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/ObsSeq.png]]
+#+BEGIN_SRC plantuml :file ../resources/OO/Observer.png :cmdline -charset UTF-8
+  scale 720 width
+  skinparam classAttributeIconSize 0
+  abstract class Subject {
+      + {abstract}Attach(observer)
+      + {abstract}Detach(observer)
+      + Notify()
+  }
+  
+  abstract class Observer {
+      + {abstract}Update()
+  }
+  
+  class ConcreteSubject {
+      - subjectState
+      + GetState()
+      + SetState()
+  }
+  
+  class ConcreteObserver {
+      - observerState
+      + Update()
+  }
+  
+  note "In Update():\nobserverState = subject->GetState()" as N1
+  
+  Subject "1..*" o- Observer
+  Subject <|.. ConcreteSubject
+  Observer <|.. ConcreteObserver
+  ConcreteSubject <- ConcreteObserver
+  ConcreteObserver . N1
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Observer.png]]
+
+当一个观察者接收到改变指示后，流程图如下所示：
+
+#+BEGIN_SRC plantuml :file ../resources/OO/ObserverSeq.png :cmdline -charset UTF-8
+  scale 500 width
+  aConcreteSubject <- aConcreteObserver : SetState()
+  activate aConcreteSubject
+  
+  aConcreteSubject <- aConcreteSubject : Notify()
+  activate aConcreteSubject
+
+  aConcreteSubject -> aConcreteObserver : Update()
+  activate aConcreteObserver
+  aConcreteSubject <- aConcreteObserver : GetState()
+  deactivate aConcreteObserver
+  aConcreteSubject -> anotherConcreteObserver : Update()
+  activate anotherConcreteObserver
+  aConcreteSubject <- anotherConcreteObserver : GetState()
+  deactivate anotherConcreteObserver
+  
+  deactivate aConcreteSubject
+  deactivate aConcreteSubject
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/ObserverSeq.png]]
+
 ** 优点
-- Subject和Observer间的抽象耦合(都只了解对方的接口)
-#+BEGIN_VERSE
-因为是非紧密耦合的，Subject和Observer可以来自于系统中的不同的抽象层次
-低层次Subject一样可以通知高层次Observer，使用该模式不会破坏系统层次
-这就是抽象Subject和Observer的作用。
-#+END_VERSE
-- 支持广播通信
-#+BEGIN_VERSE
-是否要加入广播列表取决于观察者
-#+END_VERSE
+- Subject和Observer间是抽象耦合
+  #+BEGIN_VERSE
+  因为是非紧密耦合，Subject和Observer可以来自于系统中的不同的抽象层次
+  低层次Subject一样可以通知高层次Observer，使用该模式不会破坏系统层次
+  这就是抽象Subject和Observer的作用。
+  #+END_VERSE
+
 ** 缺点
 - 来自某一观察者的意外更新
-#+BEGIN_VERSE
-某个观察者更新了主题的状态，导致其他观察者也发生了改变。
-如果更新准则定义或维护不当，常常会引起错误的更新。
-#+END_VERSE
+  #+BEGIN_VERSE
+  某个观察者更新了主题的状态，导致其他观察者也发生了改变。
+  如果更新准则定义或维护不当，常常会引起错误的更新。
+  #+END_VERSE
+
 ** 实现
-*** 创建主题与其观察者之间的映射
+*** 主题与观察者的关联方式
 - 主题跟踪观察者最简单的方式是保存观察者们的引用
-- 当主题很多，观察者较少时，以上方法空间代价可能很高(不是太大的问题)
-#+BEGIN_VERSE
-解决方案，拿时间换空间，维护一份主题和观察者之间的映射表。
-该方案增加了访问观察者的开销(每次访问都需要读映射表)。
-#+END_VERSE
+- 另一种方式是维护一份主题与观察者之间的映射表
+
 *** 观察多个主题
 #+BEGIN_VERSE
 某些情况下，观察多个主题是有意义的，例如：一个表格对象依赖于多个数据源。
-需要拓展Update接口使观察者知道是哪一个主题送来的。
+需要扩展Update接口使观察者知道是哪一个主题送来的。
 主题可以简单的将自己作为观察者Update接口的参数，让观察者知道应去检查哪一个目标。
 #+END_VERSE
+
 *** 谁触发更新
 Notify谁来调用？
+
 - 由主题对象的状态设定操作自动调用。
   - 优点：客户不需要调用Notify。
   - 缺点：多个连续的设定操作会产生多次连续更新，可能效率较低。(关键还是要看需求：在更新状态的时候是否需要通知)
+
 - 客户负责调用Notify
   - 优点：客户可以在一系列状态设定操作之后一次性通知更新。
   - 缺点：给客户增加了触发更新的责任。客户忘记的话，容易出错。
-*** 避免悬挂引用
-#+BEGIN_VERSE
-当删除一个主题时，应注意不要在其观察者中遗留对该目标的悬挂引用。
-方法：删除时，通知观察者将对该主题的引用复位(=NULL)
-#+END_VERSE
-*** 在发出通知前，确保主题的状态自身是一致的(很重要)
+
+*** 主题删除时，应通知观察者置空主题引用
+
+*** 在发出通知前，确保主题的状态自身是一致的
+反例如下：
 #+begin_src c++
   void MySubject::Operation (int newValue)
   {
@@ -255,59 +303,93 @@ Notify谁来调用？
     _myInstVar += newValue;//后修改自身状态
   }
 #+end_src
-可以使用[[Template Method][模板方法]]发送通知来避免这种错误。(模板方法定死修改状态和触发通知的顺序)
+可以使用[[Template Method][模板方法]]发送通知来避免这种错误。(模板方法规定好修改状态和触发通知的顺序)
+
 *** 推拉模型的取舍
 - 推模型(大多数情况使用它)
-  - Update参数传入信息可能极大，并不是所有观察者都需要。
-  - 假定了主题知道一些观察者所需要的信息。可能导致观察者接口难以复用，主题对观察者所需要的信息的假定，并不总是正确。
+  - Update参数传入的信息可能有很多，并非是所有观察者都需要的。
+  - 主题对观察者所需要的信息的假定并不总是正确。
+
 - 拉模型
+  - Update传入主题的引用。
   - 观察者自己向主题获取信息。
-  - 强调主题并不知道它的观察者。
-  - 缺点：可能效率较差，因为观察者有时需要自己去确认什么改变了。
-  - 缺点2：可能需要调用多个接口以搜集全观察者自己需要的状态，比较麻烦。(耦合度增高)
+  - 缺点：可能需要调用多个接口以搜集全观察者自己需要的状态。(耦合度增加)
+
 *** 只关注感兴趣的改变
-#+BEGIN_VERSE
-拓展主题的注册接口，加入interest参数
-#+END_VERSE
+扩展主题的注册接口，加入interest参数
 #+begin_src c++
 //主题
 void Subject::Attach(Observer*, Aspect& interest);
 //观察者
 void Observer::Update(Subject*, Aspect& interest);
 #+end_src
+
 *** 封装复杂的更新语义(ChangeManager)
 #+BEGIN_VERSE
-当主题与观察者之间的依赖关系特别复杂时，需要一个对象来维护这些关系。
-这样的对象成为ChangeManager。
+当主题与观察者之间的依赖关系特别复杂时，
+需要一个ChangeManager对象来维护这些关系。
+
 目的：尽量减少观察者反映其主题的状态变化所需的工作量。
 例子：如果一操作涉及到几个主题，就必须保证所有的主题都更改完了，再
 一并通知它们的观察者。
 #+END_VERSE
-*三个责任* ：
+
+该对象主要有 *三个职责* ：
 - 管理主题与观察者之间的映射表，提供接口来维护这个映射表。
-- 它定义一个特定的更新策略。
+- 定义一个特定的更新策略。
 - 根据一个主题的请求，更新所有它的观察者。
 详细参考：[[ChangeManager Observer][基于ChangeManager的Observer模式]]
-*** 结合主题类和观察者类（针对不支持多重继承语言）
-#+BEGIN_VERSE
-对不支持多重继承或接口的语言(SmallTalk)，不单独定义Subject和Observer。
-而将他们的接口结合到一个类中。
-#+END_VERSE
-** 拓展
+
+** 扩展
 #<<ChangeManager Observer>>
-#+BEGIN_VERSE
 基于ChangeManager的Observer模式
-#+END_VERSE
-- 结构
-   #+CAPTION: 
-   #+ATTR_HTML: align="center"
-   [[file:../resources/OO/img/ChangeManagerObserver.png]]
-- 说明
-  - SimpleChangeManager总是更新每一个主题的所有观察者(简单)
-  - DAGChangeManager实现多个主题变更时，只更新观察者一次
+#+BEGIN_SRC plantuml :file ../resources/OO/ObserverWithChangeManager.png :cmdline -charset UTF-8
+  scale 800 width
+  skinparam classAttributeIconSize 0
+  abstract class Subject {
+      + {abstract}Attach(observer)
+      + {abstract}Detach(observer)
+      + Notify()
+  }
+  
+  abstract class ChangeManager {
+      - SubjectObserverMap
+      + {abstract}Register(Subject, Observer)
+      + {abstract}Unregister(Subject, Observer)
+      + {abstract}Notify()
+  }
+  
+  class SimpleChangeManager
+  class DAGChangeManager
+  
+  abstract class Observer {
+      + {abstract}Update(subject)
+  }
+  
+  note "chman->Notify()" as N1
+  note "foreach s in subjects\n  foreach o in s.objects\n    o->Update(s)" as N2
+  note "Step1: mark all observers to update\n update all marked observers" as N3
+  
+  Subject -o "1..*" ChangeManager
+  Subject "chman" -> ChangeManager
+  N1 . Subject
+  ChangeManager "1..*" o- Observer
+  ChangeManager <|.. SimpleChangeManager
+  ChangeManager <|.. DAGChangeManager
+  SimpleChangeManager .. N2
+  DAGChangeManager .. N3
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/ObserverWithChangeManager.png]]
+
+具体更新策略由具体的ChangeManager来决定：
+- SimpleChangeManager总是更新每一个主题的所有观察者
+- DAGChangeManager实现多个主题变更时，只更新观察者一次
+
 ** 相关模式
-  - ChangeManager是一个[[Mediator]]模式的实例
-  - 通常只有一个ChangeManager，可用[[Singleton]]模式
+- ChangeManager是一个[[Mediator]]模式的实例
+- ChangeManager通常是[[Singleton]]模式
 
 * 模板方法                                                            :行为型:类:
 #<<Template Method>>
@@ -701,7 +783,7 @@ void Observer::Update(Subject*, Aspect& interest);
 
 *** 结构
 #+BEGIN_SRC plantuml :file ../resources/OO/AbstractFactory.png :cmdline -charset UTF-8
-  scale 1000 width
+  scale 900 width
   skinparam classAttributeIconSize 0
   class Client
   abstract class AbstractFactory{
