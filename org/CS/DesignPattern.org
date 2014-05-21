@@ -1425,6 +1425,68 @@ C++中迭代器可作为它的集合类的一个友元，
 - 多态迭代器可以通过[[Factory Method]]模式来实例化迭代器子类。
 - 迭代器可使用一个[[memento]]来捕获一个迭代状态，即迭代器内部存储[[memento]]。
 
+* 桥接模式
+#<<Bridge>>
+** 概述
+分离抽象部分与实现部分，使得抽象部分也能被改变。
+** 适用性
+- 多用于需要跨多个平台的GUI部分。
+** 结构
+#+BEGIN_SRC plantuml :file ../resources/OO/Bridge.png :cmdline -charset UTF-8
+  scale 800 width
+  skinparam classAttributeIconSize 0
+  
+  class Client
+  abstract class Abstraction {
+      + Operation()
+  }
+  class RefinedAbstraction
+  abstract class Implementor {
+      + {abstract} OperationImp()
+  }
+  class ConcreteImplementorA {
+      + OperationImp()
+  }
+  class ConcreteImplementorB {
+      + OperationImp()
+  }
+  
+  
+  note "imp->OperationImp()" as N1
+  
+  Client --> Abstraction
+  Abstraction <|-- RefinedAbstraction
+  N1 . Abstraction 
+  Abstraction o- Implementor
+  Implementor <|-- ConcreteImplementorA
+  Implementor <|-- ConcreteImplementorB
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Bridge.png]]
+
+** 优缺点
+*** 优点
+- 将实现解耦，不再与界面(接口)绑定死。
+- 接口也可独立扩展。
+- 对接口扩展也不会影响到现有客户。
+*** 缺点
+- 增加架构复杂度
+** 实现细节
+*** Implementor具体对象的创建
+- 可由Abstraction的构造方法的参数，在构造中确定创建哪个对象。
+- 可提供缺省的创建，根据需要改变具体对象。
+- 代理给其他对象，由其他对象来决定。
+  #+BEGIN_VERSE
+  比如，由一些factory对象来决定，可以使Abstraction
+  和Implementor对象彻底解耦。
+  #+END_VERSE
+** 相关模式
+#+BEGIN_VERSE
+[[Adapter]] 通常在系统设计完成后才会被使用， Bridge则在系统设计开始
+时就被使用，它使得抽象与实现可以独立的进行改变。
+#+END_VERSE
+
 * 一些OO提示
 ** 活用空对象来避免null值检查
 #+begin_src cpp

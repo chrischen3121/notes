@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="设计模式"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-05-16T16:33+0800"/>
+<meta name="generated" content="2014-05-21T16:14+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="design pattern"/>
@@ -138,7 +138,8 @@ for the JavaScript code in this tag.
 <li><a href="#sec-11">11 代理模式</a></li>
 <li><a href="#sec-12">12 外观模式</a></li>
 <li><a href="#sec-13">13 迭代器模式</a></li>
-<li><a href="#sec-14">14 一些OO提示</a></li>
+<li><a href="#sec-14">14 桥接模式</a></li>
+<li><a href="#sec-15">15 一些OO提示</a></li>
 </ul>
 </div>
 </div>
@@ -2040,7 +2041,7 @@ Excute()在实施操作前记录状态，Undo()利用该记录状态取消之前
 <div class="outline-text-3" id="text-10-5">
 
 <ul>
-<li><a href="#Bridge">Bridge</a>模式的结构与其有些相似，但意图不同。<a href="#Bridge">Bridge</a>的目的是将接口部分与实现部分分离。
+<li><a href="#sec-14">Bridge</a>模式的结构与其有些相似，但意图不同。<a href="#sec-14">Bridge</a>的目的是将接口部分与实现部分分离。
 </li>
 <li><a href="#sec-6">Decorator</a>模式为类增加职责，不改变 <b>原先</b> 的接口。透明性比<a href="#sec-10">Adapter</a>好，并支持递归组合。
 </li>
@@ -2722,15 +2723,143 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </div>
 
 <div id="outline-container-14" class="outline-2">
-<h2 id="sec-14"><span class="section-number-2">14</span> 一些OO提示</h2>
+<h2 id="sec-14"><a name="Bridge" id="Bridge"></a><span class="section-number-2">14</span> 桥接模式</h2>
 <div class="outline-text-2" id="text-14">
 
 
 </div>
 
 <div id="outline-container-14-1" class="outline-3">
-<h3 id="sec-14-1"><span class="section-number-3">14.1</span> 活用空对象来避免null值检查</h3>
+<h3 id="sec-14-1"><span class="section-number-3">14.1</span> 概述</h3>
 <div class="outline-text-3" id="text-14-1">
+
+<p>分离抽象部分与实现部分，使得抽象部分也能被改变。
+</p></div>
+
+</div>
+
+<div id="outline-container-14-2" class="outline-3">
+<h3 id="sec-14-2"><span class="section-number-3">14.2</span> 适用性</h3>
+<div class="outline-text-3" id="text-14-2">
+
+<ul>
+<li>多用于需要跨多个平台的GUI部分。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-14-3" class="outline-3">
+<h3 id="sec-14-3"><span class="section-number-3">14.3</span> 结构</h3>
+<div class="outline-text-3" id="text-14-3">
+
+
+
+<p>
+<img src="../resources/OO/Bridge.png"  alt="../resources/OO/Bridge.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-14-4" class="outline-3">
+<h3 id="sec-14-4"><span class="section-number-3">14.4</span> 优缺点</h3>
+<div class="outline-text-3" id="text-14-4">
+
+
+</div>
+
+<div id="outline-container-14-4-1" class="outline-4">
+<h4 id="sec-14-4-1"><span class="section-number-4">14.4.1</span> 优点</h4>
+<div class="outline-text-4" id="text-14-4-1">
+
+<ul>
+<li>将实现解耦，不再与界面(接口)绑定死。
+</li>
+<li>接口也可独立扩展。
+</li>
+<li>对接口扩展也不会影响到现有客户。
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-14-4-2" class="outline-4">
+<h4 id="sec-14-4-2"><span class="section-number-4">14.4.2</span> 缺点</h4>
+<div class="outline-text-4" id="text-14-4-2">
+
+<ul>
+<li>增加架构复杂度
+</li>
+</ul>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-14-5" class="outline-3">
+<h3 id="sec-14-5"><span class="section-number-3">14.5</span> 实现细节</h3>
+<div class="outline-text-3" id="text-14-5">
+
+
+</div>
+
+<div id="outline-container-14-5-1" class="outline-4">
+<h4 id="sec-14-5-1"><span class="section-number-4">14.5.1</span> Implementor具体对象的创建</h4>
+<div class="outline-text-4" id="text-14-5-1">
+
+<ul>
+<li>可由Abstraction的构造方法的参数，在构造中确定创建哪个对象。
+</li>
+<li>可提供缺省的创建，根据需要改变具体对象。
+</li>
+<li>代理给其他对象，由其他对象来决定。
+
+<p class="verse">
+比如，由一些factory对象来决定，可以使Abstraction<br/>
+和Implementor对象彻底解耦。<br/>
+</p>
+
+
+</li>
+</ul>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-14-6" class="outline-3">
+<h3 id="sec-14-6"><span class="section-number-3">14.6</span> 相关模式</h3>
+<div class="outline-text-3" id="text-14-6">
+
+
+<p class="verse">
+<a href="#sec-10">Adapter</a> 通常在系统设计完成后才会被使用， Bridge则在系统设计开始<br/>
+时就被使用，它使得抽象与实现可以独立的进行改变。<br/>
+</p>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-15" class="outline-2">
+<h2 id="sec-15"><span class="section-number-2">15</span> 一些OO提示</h2>
+<div class="outline-text-2" id="text-15">
+
+
+</div>
+
+<div id="outline-container-15-1" class="outline-3">
+<h3 id="sec-15-1"><span class="section-number-3">15.1</span> 活用空对象来避免null值检查</h3>
+<div class="outline-text-3" id="text-15-1">
 
 
 
