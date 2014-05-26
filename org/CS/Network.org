@@ -184,40 +184,39 @@ eg: 10011010 is $x^7+x^4+x^3+x^1$
 Both the high- and low-order bits of the generator must be 1
 #+END_VERSE
 
-- Sending
+- Sending 
+
+  1) Extend the n data bits with k zeros
+  2) Divide by the generator value C
+  3) Keep remainder, ignore quotient
+  4) Adjust k check bits by remainder
+  #+BEGIN_EXAMPLE
+  Frame: 1101011011
+  Generator: 10011
+  K: 4 bits
+  11010110110000 devided by 10011
+  Reminder: 0010
+  #+END_EXAMPLE
+
+  #+BEGIN_VERSE
+  Note that: There are no carries for addition or borrows 
+  for subtraction. Both addition and subtraction are 
+  identical to exclusive OR.
+  #+END_VERSE
 
 
-1) Extend the n data bits with k zeros
-2) Divide by the generator value C
-3) Keep remainder, ignore quotient
-4) Adjust k check bits by remainder
-#+BEGIN_EXAMPLE
-Frame: 1101011011
-Generator: 10011
-K: 4 bits
-11010111110000 devided by 10011
-Reminder: 0010
-#+END_EXAMPLE
-
-#+BEGIN_VERSE
-Note that: There are no carries for addition or borrows 
-for subtraction. Both addition and subtraction are 
-identical to exclusive OR.
-#+END_VERSE
-
-- Reveiving
-
-
-1) Divide and check for zero remainder
+- Receiving
+  
+  1) Divide and check for zero remainder
 
 
 - Conclusion
-#+BEGIN_VERSE
-Protection depends on generator.
-Standard CRC-32 is: 1 0000 0100 1100 0001 0001 1101 1011 0111
-Distance: 4
-Detect 3 errors
-#+END_VERSE
+  #+BEGIN_VERSE
+  Protection depends on generator.
+  Standard CRC-32 is: 1 0000 0100 1100 0001 0001 1101 1011 0111
+  Distance: 4
+  Detect 3 errors
+  #+END_VERSE
 
 *** In Practice
 CRCs are widely used on links
