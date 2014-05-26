@@ -1079,7 +1079,7 @@ Button控件，对控件设计者来说，只知道Button按下应该会发生
 - [[Decorator]]模式为类增加职责，不改变 *原先* 的接口。透明性比[[Adapter]]好，并支持递归组合。
 - [[Proxy]]模式在不改变其接口的条件下，为另一个对象定义了一个代理。
 - [[Facade]]模式将一个或多个不同对象的复杂接口进行简化。
-* 代理模式                                                              :结构型:
+* 代理模式                                                           :对象:结构型:
 #<<Proxy>>
 ** 概述
 控制和管理访问
@@ -1198,7 +1198,7 @@ Java中有成套的解决方案，叫做RMI。
   代理模式通常与实际对象接口保持一致。装饰者通常需要增加接口以达到扩展功能的目的。
   #+END_VERSE
 
-* 外观模式                                                              :结构型:
+* 外观模式                                                           :对象:结构型:
 #<<Facade>>
 ** 概述
 为子系统中的一组接口进行简化，提供一组高级接口，使得子系统更加容易使用。
@@ -1236,7 +1236,7 @@ Java中有成套的解决方案，叫做RMI。
 - [[Abstract Factory]]模式可与Facade模式一起使用以提供一个单独的创建产品簇的接口。
 - [[Mediator]]模式与Facade模式的相似之处：都抽象了一些已有的类的功能。但[[Mediator]]的目的是对同级之间的任意通讯进行抽象。
 - 通常来说仅需要一个Facade对象，所以Facade类定义成[[Singleton]]类。
-* 迭代器模式                                                            :结构型:
+* 迭代器模式                                                         :对象:结构型:
 #<<Iterator>>
 ** 概述
 提供遍历集合对象中各元素的方法，并且不将集合具体的数据结构暴露给用户。
@@ -1425,7 +1425,7 @@ C++中迭代器可作为它的集合类的一个友元，
 - 多态迭代器可以通过[[Factory Method]]模式来实例化迭代器子类。
 - 迭代器可使用一个[[memento]]来捕获一个迭代状态，即迭代器内部存储[[memento]]。
 
-* 桥接模式
+* 桥接模式                                                           :对象:结构型:
 #<<Bridge>>
 ** 概述
 分离抽象部分与实现部分，使得抽象部分也能被改变。
@@ -1486,6 +1486,98 @@ C++中迭代器可作为它的集合类的一个友元，
 [[Adapter]] 通常在系统设计完成后才会被使用， Bridge则在系统设计开始
 时就被使用，它使得抽象与实现可以独立的进行改变。
 #+END_VERSE
+
+* 生成器模式                                                         :创建型:对象:
+#<<Builder>>
+** 概述
+将一个复杂对象的创建过程封装起来，提供接口创建复杂对象的各部件。
+** 结构
+#+BEGIN_SRC plantuml :file ../resources/OO/Builder.png :cmdline -charset UTF-8
+  scale 450 width
+  skinparam classAttributeIconSize 0
+  class Director {
+      + Construct()
+  }
+  
+  abstract class Builder {
+      + {abstract} BuildPartA()
+      + {abstract} BuildPartB()
+  }
+  
+  class ConcreteBuilder {
+      + BuildPartA()
+      + BuildPartB()
+      + GetResult()
+  }
+  
+  class Product
+  
+  Director o- Builder
+  Builder <|-- ConcreteBuilder
+  ConcreteBuilder .> Product
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Builder.png]]
+
+** 角色
+- Builder
+
+  为创建一个Product对象的各个部件指定抽象接口。
+
+- ConcreteBuilder
+  - 实现Builder的接口以构造和装配该产品的各个部件
+  - 定义产品的内部表示，及其各部件的装配过程
+  - 提供一个检索产品的接口GetResult
+
+- Director
+  
+  构造一个使用Builder接口的对象
+
+** 流程图
+#+BEGIN_SRC plantuml :file ../resources/OO/BuilderSeq.png :cmdline -charset UTF-8
+  scale 340 width
+  activate aClient
+  aClient --> aDirector : new()
+  activate aDirector
+  deactivate aDirector
+  aClient --> aConcreteBuilder : new()
+  activate aConcreteBuilder
+  deactivate aConcreteBuilder
+  aClient -> aDirector : Construct()
+  activate aDirector
+  aDirector -> aConcreteBuilder : BuildPartA()
+  activate aConcreteBuilder
+  deactivate aConcreteBuilder
+  aDirector -> aConcreteBuilder : BuildPartB()
+  activate aConcreteBuilder
+  deactivate aConcreteBuilder
+  aDirector -> aConcreteBuilder : BuildPartC()
+  activate aConcreteBuilder
+  deactivate aConcreteBuilder
+  deactivate aDirector
+  aClient -> aConcreteBuilder : GetResult()
+  activate aConcreteBuilder
+  deactivate aConcreteBuilder
+  deactivate aClient
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/BuilderSeq.png]]
+
+** 效果
+- 只需定义一个新的生成器就可以改变产品内部表示
+- 创建与表示分开，客户无需知道产品内部的部件类
+** 实现
+- 产品不是抽象类？
+
+  通常具体生成器生成的产品之间相差很大，不太可能有公有接口。
+
+- 通常缺省BuildPart方法什么也不做，但非纯虚方法
+
+** 相关模式
+- [[Abstract Factory]]着重于多个系列产品对象，生成器专注于创建复杂对象，最后一步才返回产品。
+- [[Composite]]通常是用Builder生成的。
 
 * 一些OO提示
 ** 活用空对象来避免null值检查

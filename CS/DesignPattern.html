@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="设计模式"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-05-21T16:14+0800"/>
+<meta name="generated" content="2014-05-23T11:30+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="design pattern"/>
@@ -139,7 +139,8 @@ for the JavaScript code in this tag.
 <li><a href="#sec-12">12 外观模式</a></li>
 <li><a href="#sec-13">13 迭代器模式</a></li>
 <li><a href="#sec-14">14 桥接模式</a></li>
-<li><a href="#sec-15">15 一些OO提示</a></li>
+<li><a href="#sec-15">15 生成器模式</a></li>
+<li><a href="#sec-16">16 一些OO提示</a></li>
 </ul>
 </div>
 </div>
@@ -1409,7 +1410,7 @@ for the JavaScript code in this tag.
 </p><ul>
 <li><a href="#sec-8-3">Abstract Factory</a>
 </li>
-<li><a href="#Builder">Builder</a>
+<li><a href="#sec-15">Builder</a>
 </li>
 <li><a href="#Prototype">Prototype</a>
 </li>
@@ -2057,7 +2058,7 @@ Excute()在实施操作前记录状态，Undo()利用该记录状态取消之前
 </div>
 
 <div id="outline-container-11" class="outline-2">
-<h2 id="sec-11"><a name="Proxy" id="Proxy"></a><span class="section-number-2">11</span> 代理模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">结构型</span></span></h2>
+<h2 id="sec-11"><a name="Proxy" id="Proxy"></a><span class="section-number-2">11</span> 代理模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="__">对象</span>&nbsp;<span class="___">结构型</span></span></h2>
 <div class="outline-text-2" id="text-11">
 
 
@@ -2269,7 +2270,7 @@ Java中有成套的解决方案，叫做RMI。<br/>
 </div>
 
 <div id="outline-container-12" class="outline-2">
-<h2 id="sec-12"><a name="Facade" id="Facade"></a><span class="section-number-2">12</span> 外观模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">结构型</span></span></h2>
+<h2 id="sec-12"><a name="Facade" id="Facade"></a><span class="section-number-2">12</span> 外观模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="__">对象</span>&nbsp;<span class="___">结构型</span></span></h2>
 <div class="outline-text-2" id="text-12">
 
 
@@ -2362,7 +2363,7 @@ Java中有成套的解决方案，叫做RMI。<br/>
 </div>
 
 <div id="outline-container-13" class="outline-2">
-<h2 id="sec-13"><a name="Iterator" id="Iterator"></a><span class="section-number-2">13</span> 迭代器模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">结构型</span></span></h2>
+<h2 id="sec-13"><a name="Iterator" id="Iterator"></a><span class="section-number-2">13</span> 迭代器模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="__">对象</span>&nbsp;<span class="___">结构型</span></span></h2>
 <div class="outline-text-2" id="text-13">
 
 
@@ -2723,7 +2724,7 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </div>
 
 <div id="outline-container-14" class="outline-2">
-<h2 id="sec-14"><a name="Bridge" id="Bridge"></a><span class="section-number-2">14</span> 桥接模式</h2>
+<h2 id="sec-14"><a name="Bridge" id="Bridge"></a><span class="section-number-2">14</span> 桥接模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="__">对象</span>&nbsp;<span class="___">结构型</span></span></h2>
 <div class="outline-text-2" id="text-14">
 
 
@@ -2851,15 +2852,144 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </div>
 
 <div id="outline-container-15" class="outline-2">
-<h2 id="sec-15"><span class="section-number-2">15</span> 一些OO提示</h2>
+<h2 id="sec-15"><a name="Builder" id="Builder"></a><span class="section-number-2">15</span> 生成器模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">创建型</span>&nbsp;<span class="__">对象</span></span></h2>
 <div class="outline-text-2" id="text-15">
 
 
 </div>
 
 <div id="outline-container-15-1" class="outline-3">
-<h3 id="sec-15-1"><span class="section-number-3">15.1</span> 活用空对象来避免null值检查</h3>
+<h3 id="sec-15-1"><span class="section-number-3">15.1</span> 概述</h3>
 <div class="outline-text-3" id="text-15-1">
+
+<p>将一个复杂对象的创建过程封装起来，提供接口创建复杂对象的各部件。
+</p></div>
+
+</div>
+
+<div id="outline-container-15-2" class="outline-3">
+<h3 id="sec-15-2"><span class="section-number-3">15.2</span> 结构</h3>
+<div class="outline-text-3" id="text-15-2">
+
+
+
+<p>
+<img src="../resources/OO/Builder.png"  alt="../resources/OO/Builder.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-15-3" class="outline-3">
+<h3 id="sec-15-3"><span class="section-number-3">15.3</span> 角色</h3>
+<div class="outline-text-3" id="text-15-3">
+
+<ul>
+<li>Builder
+
+<p>
+  为创建一个Product对象的各个部件指定抽象接口。
+</p>
+</li>
+<li>ConcreteBuilder
+<ul>
+<li>实现Builder的接口以构造和装配该产品的各个部件
+</li>
+<li>定义产品的内部表示，及其各部件的装配过程
+</li>
+<li>提供一个检索产品的接口GetResult
+
+</li>
+</ul>
+
+</li>
+<li>Director
+
+<p>  
+  构造一个使用Builder接口的对象
+</p></li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-15-4" class="outline-3">
+<h3 id="sec-15-4"><span class="section-number-3">15.4</span> 流程图</h3>
+<div class="outline-text-3" id="text-15-4">
+
+
+
+<p>
+<img src="../resources/OO/BuilderSeq.png"  alt="../resources/OO/BuilderSeq.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-15-5" class="outline-3">
+<h3 id="sec-15-5"><span class="section-number-3">15.5</span> 效果</h3>
+<div class="outline-text-3" id="text-15-5">
+
+<ul>
+<li>只需定义一个新的生成器就可以改变产品内部表示
+</li>
+<li>创建与表示分开，客户无需知道产品内部的部件类
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-15-6" class="outline-3">
+<h3 id="sec-15-6"><span class="section-number-3">15.6</span> 实现</h3>
+<div class="outline-text-3" id="text-15-6">
+
+<ul>
+<li>产品不是抽象类？
+
+<p>
+  通常具体生成器生成的产品之间相差很大，不太可能有公有接口。
+</p>
+</li>
+<li>通常缺省BuildPart方法什么也不做，但非纯虚方法
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-15-7" class="outline-3">
+<h3 id="sec-15-7"><span class="section-number-3">15.7</span> 相关模式</h3>
+<div class="outline-text-3" id="text-15-7">
+
+<ul>
+<li><a href="#sec-8-3">Abstract Factory</a>着重于多个系列产品对象，生成器专注于创建复杂对象，最后一步才返回产品。
+</li>
+<li><a href="#Composite">Composite</a>通常是用Builder生成的。
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-16" class="outline-2">
+<h2 id="sec-16"><span class="section-number-2">16</span> 一些OO提示</h2>
+<div class="outline-text-2" id="text-16">
+
+
+</div>
+
+<div id="outline-container-16-1" class="outline-3">
+<h3 id="sec-16-1"><span class="section-number-3">16.1</span> 活用空对象来避免null值检查</h3>
+<div class="outline-text-3" id="text-16-1">
 
 
 
