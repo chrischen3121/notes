@@ -514,17 +514,60 @@ Benefits depends on:
 #+ATTR_HTML: align="center"
 [[file:../resources/data/QueryOptimizer.png]]
 
-  
 * Transaction
 ** Motivation
 - Concurrent database access
 - Resilience to system failures
 ** Properties
 - A(Atomicity)
+
+  Each transaction is "all-or-nothing", never left half done.
+
 - C(Consistency)
+  #+BEGIN_VERSE
+  Can assume all constrants hold when transaction begins.
+  Must guarantee all constraints hold when transaction ends.
+  Serializability -> constraints always hold
+  #+END_VERSE
 - I(Isolation)
   #+BEGIN_VERSE
   Serializability: Execution must be equivalent to some
-  sequential(serial) order of all transactions
+  sequential(serial) order of all transactions.(e.g. T9, T1, T2, T3, ...)
   #+END_VERSE
 - D(Durability)
+  #+BEGIN_VERSE
+  If system crashes after transaction commits,
+  all effects of transaction remain in database.
+  #+END_VERSE
+** Isolation levels
+- dirty data: written by an uncommitted transaction
+- nonrepeatable reads: an item read multiple times cannot change values
+  #+BEGIN_EXAMPLE
+  T1:    Update Student Set GPA=(1.1)*GPA
+  T2.S1: Select AVG(GPA) From Student
+  T2.S2: Select MAX(GPA) From Student
+  #+END_EXAMPLE
+  #+BEGIN_VERSE
+  T2.S1 may excute before T1, T2.S2 may excute after T1.
+  The GPAs in S1 and S2 are different, leads to a nonrepatable reads violation.
+  #+END_VERSE
+- phantoms
+  #+BEGIN_EXAMPLE
+  T1:    Insert Into Student [100 new tuples]
+  T2.S1: Select AVG(GPA) From Student
+  T2.S2: Select MAX(GPA) From Student
+  #+END_EXAMPLE
+  #+BEGIN_VERSE
+  T2.S1 may excute before T1, T2.S2 may excute after T1.
+  [100 new tuples] are known as the phantoms tuples.
+  #+END_VERSE
+
+| levels           | dirty reads | nonrepeatable reads | phantoms |
+|------------------+-------------+---------------------+----------|
+| Read Uncommitted | Y           | Y                   | Y        |
+| Read Committed   | N           | Y                   | Y        |
+| Repeatable Read  | N           | N                   | Y        |
+| Serializable     | N           | N                   | N        | 
+
+- Standard default: *Serializable*
+- Some systems have default *Repeatable Read*
