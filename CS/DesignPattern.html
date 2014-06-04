@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="设计模式"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-05-23T11:30+0800"/>
+<meta name="generated" content="2014-06-04T11:47+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="design pattern"/>
@@ -140,7 +140,8 @@ for the JavaScript code in this tag.
 <li><a href="#sec-13">13 迭代器模式</a></li>
 <li><a href="#sec-14">14 桥接模式</a></li>
 <li><a href="#sec-15">15 生成器模式</a></li>
-<li><a href="#sec-16">16 一些OO提示</a></li>
+<li><a href="#sec-16">16 组合模式</a></li>
+<li><a href="#sec-17">17 一些OO提示</a></li>
 </ul>
 </div>
 </div>
@@ -1117,7 +1118,7 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-6-6-2" class="outline-4">
-<h4 id="sec-6-6-2"><span class="section-number-4">6.6.2</span> <a href="#Composite">Composite</a>模式</h4>
+<h4 id="sec-6-6-2"><span class="section-number-4">6.6.2</span> <a href="#sec-16">Composite</a>模式</h4>
 <div class="outline-text-4" id="text-6-6-2">
 
 
@@ -1898,7 +1899,7 @@ Excute()在实施操作前记录状态，Undo()利用该记录状态取消之前
 <div class="outline-text-3" id="text-9-7">
 
 <ul>
-<li><a href="#Composite">Composite</a>可被用来实现宏命令。
+<li><a href="#sec-16">Composite</a>可被用来实现宏命令。
 </li>
 <li><a href="#Memento">Memento</a>模式可用来保持一个状态，命令对象用该状态来取消之前执行效果。
 </li>
@@ -2677,7 +2678,7 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </div>
 
 <div id="outline-container-13-6-6" class="outline-4">
-<h4 id="sec-13-6-6"><span class="section-number-4">13.6.6</span> 与<a href="#Composite">Composite</a>模式的协作</h4>
+<h4 id="sec-13-6-6"><span class="section-number-4">13.6.6</span> 与<a href="#sec-16">Composite</a>模式的协作</h4>
 <div class="outline-text-4" id="text-13-6-6">
 
 </div>
@@ -2695,7 +2696,7 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 <br/>
 提示：<br/>
 空迭代器更多的用于处理树形结构的集合。<br/>
-叶节点通常需要一个NullIterator。<br/>
+叶结点通常需要一个NullIterator。<br/>
 </p>
 
 
@@ -2709,7 +2710,7 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 <div class="outline-text-3" id="text-13-7">
 
 <ul>
-<li>迭代器可在<a href="#Composite">Composite</a>模式这样的递归结构上使用。
+<li>迭代器可在<a href="#sec-16">Composite</a>模式这样的递归结构上使用。
 </li>
 <li>多态迭代器可以通过<a href="#sec-8-2">Factory Method</a>模式来实例化迭代器子类。
 </li>
@@ -2970,7 +2971,7 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 <ul>
 <li><a href="#sec-8-3">Abstract Factory</a>着重于多个系列产品对象，生成器专注于创建复杂对象，最后一步才返回产品。
 </li>
-<li><a href="#Composite">Composite</a>通常是用Builder生成的。
+<li><a href="#sec-16">Composite</a>通常是用Builder生成的。
 </li>
 </ul>
 
@@ -2981,15 +2982,178 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 </div>
 
 <div id="outline-container-16" class="outline-2">
-<h2 id="sec-16"><span class="section-number-2">16</span> 一些OO提示</h2>
+<h2 id="sec-16"><a name="Composite" id="Composite"></a><span class="section-number-2">16</span> 组合模式 &nbsp;&nbsp;&nbsp;<span class="tag"><span class="___">结构型</span>&nbsp;<span class="__">对象</span></span></h2>
 <div class="outline-text-2" id="text-16">
 
 
 </div>
 
 <div id="outline-container-16-1" class="outline-3">
-<h3 id="sec-16-1"><span class="section-number-3">16.1</span> 活用空对象来避免null值检查</h3>
+<h3 id="sec-16-1"><span class="section-number-3">16.1</span> 概述</h3>
 <div class="outline-text-3" id="text-16-1">
+
+
+<p class="verse">
+将对象组合成树形结构，表现出“整体/部分”的层次。<br/>
+用户对于单个对象的使用和组合对象的使用具有一致性。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-16-2" class="outline-3">
+<h3 id="sec-16-2"><span class="section-number-3">16.2</span> 结构</h3>
+<div class="outline-text-3" id="text-16-2">
+
+
+
+<p>
+<img src="../resources/OO/Composite.png"  alt="../resources/OO/Composite.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-16-3" class="outline-3">
+<h3 id="sec-16-3"><span class="section-number-3">16.3</span> 角色</h3>
+<div class="outline-text-3" id="text-16-3">
+
+<ul>
+<li>Component
+<ul>
+<li>声明组合和叶对象的一致操作Operation。
+</li>
+<li>在适当情况下，实现所有类的默认行为。
+</li>
+<li>声明用于访问和管理Component子部件的接口。
+</li>
+</ul>
+
+</li>
+<li>Composite
+<ul>
+<li>实现有子部件的Operation行为。
+</li>
+<li>存储子部件。
+</li>
+<li>实现访问和管理子部件的接口。
+</li>
+</ul>
+
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-16-4" class="outline-3">
+<h3 id="sec-16-4"><span class="section-number-3">16.4</span> 优点</h3>
+<div class="outline-text-3" id="text-16-4">
+
+<ul>
+<li>简化客户代码，客户可以一致的使用组合对象和叶对象。
+
+<p class="verse">
+用户不关心是何种对象，也就不需要写一些选择语句。  <br/>
+</p>
+
+
+</li>
+<li>容易增加新类型的组件。
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-16-5" class="outline-3">
+<h3 id="sec-16-5"><span class="section-number-3">16.5</span> 实现</h3>
+<div class="outline-text-3" id="text-16-5">
+
+<ul>
+<li>子部件可保存父部件的引用。
+
+<p class="verse">
+父部件引用也支持<a href="#Chain-of-Responsibility">Chain of Responsibility</a>。<br/>
+父部件引用一般定义在Component类中。<br/>
+</p>
+
+
+</li>
+<li>共享组件，可减少对存储的需求。
+
+</li>
+<li>透明性与安全性的权衡
+
+<p class="verse">
+如需更多的透明性，将操作子部件的Add操作和Remove操作在Component类中定义。<br/>
+如需更高的安全性，将这些操作在Composite类中定义。安全性会需要用到类型转换。<br/>
+</p>
+
+
+</li>
+<li>存储子结点的引用集合
+
+<p class="verse">
+对于叶结点而言，会有一定的空间浪费，需考虑。<br/>
+</p>
+
+
+</li>
+<li>子部件顺序问题
+
+<p class="verse">
+有时候子结点的顺序可能是有意义的。比如语法分析树。<br/>
+这时候需要仔细设计对子结点的访问和管理接口，可使用Iterator模式。<br/>
+</p>
+
+
+</li>
+<li>Composite存储子结点的数据结构是可选的
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-16-6" class="outline-3">
+<h3 id="sec-16-6"><span class="section-number-3">16.6</span> 相关模式</h3>
+<div class="outline-text-3" id="text-16-6">
+
+<ul>
+<li>部件到父部件的连接使用<a href="#Chain-of-Responsibility">Chain of Responsibility</a>
+</li>
+<li><a href="#sec-6">Decorator</a>与Composite模式很像，事实上他们经常可以一起使用。
+</li>
+<li><a href="#Flyweight">Flyweight</a>可以帮助实现共享组件。
+</li>
+<li><a href="#sec-13">Iterator</a>可用来遍历Composite子部件。
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-17" class="outline-2">
+<h2 id="sec-17"><span class="section-number-2">17</span> 一些OO提示</h2>
+<div class="outline-text-2" id="text-17">
+
+
+</div>
+
+<div id="outline-container-17-1" class="outline-3">
+<h3 id="sec-17-1"><span class="section-number-3">17.1</span> 活用空对象来避免null值检查</h3>
+<div class="outline-text-3" id="text-17-1">
 
 
 

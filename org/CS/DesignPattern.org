@@ -1418,7 +1418,7 @@ C++中迭代器可作为它的集合类的一个友元，
 
 提示：
 空迭代器更多的用于处理树形结构的集合。
-叶节点通常需要一个NullIterator。
+叶结点通常需要一个NullIterator。
 #+END_VERSE
 ** 相关模式
 - 迭代器可在[[Composite]]模式这样的递归结构上使用。
@@ -1578,6 +1578,99 @@ C++中迭代器可作为它的集合类的一个友元，
 ** 相关模式
 - [[Abstract Factory]]着重于多个系列产品对象，生成器专注于创建复杂对象，最后一步才返回产品。
 - [[Composite]]通常是用Builder生成的。
+
+* 组合模式                                                           :结构型:对象:
+#<<Composite>>
+** 概述
+#+BEGIN_VERSE
+将对象组合成树形结构，表现出“整体/部分”的层次。
+用户对于单个对象的使用和组合对象的使用具有一致性。
+#+END_VERSE
+
+** 结构
+#+BEGIN_SRC plantuml :file ../resources/OO/Composite.png :cmdline -charset UTF-8
+  scale 400 width
+  skinparam classAttributeIconSize 0
+  
+  class Client
+  abstract class Component {
+      + {abstract}Operation()
+      + Add(Component)
+      + Remove(Component)
+      + GetChild(int)
+  }
+  
+  class Leaf {
+      + Operation()
+  }
+  
+  class Composite {
+      + Operation()
+      + Add(Component)
+      + Remove(Component)
+      + GetChild(int)
+  }
+
+  Note "forall c in children\n    c.Operation();" as N1
+  
+  Client -> Component
+
+  Component <|-- Leaf
+  Component <|-- Composite
+  Composite .. N1
+  Component --o "children" Composite  
+
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/Composite.png]]
+
+** 角色
+- Component
+  - 声明组合和叶对象的一致操作Operation。
+  - 在适当情况下，实现所有类的默认行为。
+  - 声明用于访问和管理Component子部件的接口。
+- Composite
+  - 实现有子部件的Operation行为。
+  - 存储子部件。
+  - 实现访问和管理子部件的接口。
+** 优点
+- 简化客户代码，客户可以一致的使用组合对象和叶对象。
+  #+BEGIN_VERSE
+  用户不关心是何种对象，也就不需要写一些选择语句。  
+  #+END_VERSE
+- 容易增加新类型的组件。
+
+** 实现
+- 子部件可保存父部件的引用。
+  #+BEGIN_VERSE
+  父部件引用也支持[[Chain of Responsibility]]。
+  父部件引用一般定义在Component类中。
+  #+END_VERSE
+
+- 共享组件，可减少对存储的需求。
+
+- 透明性与安全性的权衡
+  #+BEGIN_VERSE
+  如需更多的透明性，将操作子部件的Add操作和Remove操作在Component类中定义。
+  如需更高的安全性，将这些操作在Composite类中定义。安全性会需要用到类型转换。
+  #+END_VERSE
+- 存储子结点的引用集合
+  #+BEGIN_VERSE
+  对于叶结点而言，会有一定的空间浪费，需考虑。
+  #+END_VERSE
+- 子部件顺序问题
+  #+BEGIN_VERSE
+  有时候子结点的顺序可能是有意义的。比如语法分析树。
+  这时候需要仔细设计对子结点的访问和管理接口，可使用Iterator模式。
+  #+END_VERSE
+- Composite存储子结点的数据结构是可选的
+
+** 相关模式
+- 部件到父部件的连接使用[[Chain of Responsibility]]
+- [[Decorator]]与Composite模式很像，事实上他们经常可以一起使用。
+- [[Flyweight]]可以帮助实现共享组件。
+- [[Iterator]]可用来遍历Composite子部件。
 
 * 一些OO提示
 ** 活用空对象来避免null值检查
