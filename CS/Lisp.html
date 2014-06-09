@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Common Lisp</title>
+<meta http-equiv="Content-Type" content="text/html;charset=gb2312"/>
+<meta name="title" content="Common Lisp"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2014-06-09T17:10+0800"/>
+<meta name="author" content="ChrisChen"/>
+<meta name="description" content=""/>
+<meta name="keywords" content="Common Lisp"/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" href="../css/stylesheet.css" type="text/css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="../index.html"> UP </a>
+ |
+ <a accesskey="H" href="../index.html"> HOME </a>
+</div>
+
+
+<div id="content">
+<h1 class="title">Common Lisp</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 安装</a></li>
+<li><a href="#sec-2">2 函数</a>
+<ul>
+<li><a href="#sec-2-1">2.1 参数</a></li>
+<li><a href="#sec-2-2">2.2 返回值</a></li>
+<li><a href="#sec-2-3">2.3 函数对象</a></li>
+<li><a href="#sec-2-4">2.4 lambda</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 变量</a>
+<ul>
+<li><a href="#sec-3-1">3.1 词法(lexical)变量</a></li>
+<li><a href="#sec-3-2">3.2 动态(dynamic)变量</a></li>
+<li><a href="#sec-3-3">3.3 常量</a></li>
+<li><a href="#sec-3-4">3.4 SETF</a></li>
+<li><a href="#sec-3-5">3.5 其他常用操作</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 安装</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>Install Slime, SBCL
+</p><ul>
+<li>windows下定义环境变量SBCL_Home
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 函数</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 参数</h3>
+<div class="outline-text-3" id="text-2-1">
+
+<p>参数四种类型按解析顺序列出：必要形参，optional形参，rest形参，keyword形参。
+</p>
+</div>
+
+<div id="outline-container-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> 注意点</h4>
+<div class="outline-text-4" id="text-2-1-1">
+
+
+<p class="verse">
+避免&amp;optional与&amp;key混合使用，为保持更好的扩展性，应使用&amp;key。<br/>
+&amp;rest与&amp;key一同使用时，两者都会解析。例如：<br/>
+</p>
+
+
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">defun</span> <span style="color: #00008b; font-weight: bold;">foo</span> (<span style="color: #daa520;">&amp;rest</span> values <span style="color: #daa520;">&amp;key</span> a b)
+  (list rest a b)
+
+(foo <span style="color: #0000ff; text-decoration: underline;">:a</span> 1 <span style="color: #0000ff; text-decoration: underline;">:b</span> 2) -&gt; ((<span style="color: #0000ff; text-decoration: underline;">:A</span> 1 <span style="color: #0000ff; text-decoration: underline;">:B</span> 2) 1 2)
+</pre>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> 返回值</h3>
+<div class="outline-text-3" id="text-2-2">
+
+<p>使用RETURN-FROM从函数中间返回，需传入函数名。
+</p>
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">return-from</span> foo return-value)
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> 函数对象</h3>
+<div class="outline-text-3" id="text-2-3">
+
+<p>以下两种形式都返回函数对象
+</p>
+
+
+<pre class="src src-lisp">#'foo
+(function foo)
+</pre>
+
+<p>
+调用函数对象，通过FUNCALL和APPLY
+</p>
+
+
+<pre class="src src-lisp">(foo 1 2 3)
+=
+(funcall #'foo 1 2 3)
+</pre>
+
+
+
+</div>
+
+<div id="outline-container-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> 函数作为参数</h4>
+<div class="outline-text-4" id="text-2-3-1">
+
+<ul>
+<li>funcall
+
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">defun</span> <span style="color: #00008b; font-weight: bold;">double-v</span> (x) (* 2 x))
+
+(<span style="color: #1e90ff; font-weight: bold;">defun</span> <span style="color: #00008b; font-weight: bold;">mapp</span> (fn <span style="color: #daa520;">&amp;rest</span> values)
+  (list (<span style="color: #1e90ff; font-weight: bold;">dolist</span> (x values) (print (funcall fn x)))))
+
+(mapp #'(<span style="color: #1e90ff; font-weight: bold;">lambda</span> (x) (+ x 1)) 1 2 3)
+(mapp (<span style="color: #1e90ff; font-weight: bold;">lambda</span> (x) (+ x 1)) 1 2 3) 
+(mapp #'double-v 1 2 3)
+</pre>
+
+
+</li>
+<li>apply
+
+<p>  
+  apply第二个参数接受列表参数
+</p>
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">defun</span> <span style="color: #00008b; font-weight: bold;">foo</span> (fn arg1 arg2 arg3)
+  ...)
+
+(apply #'foo args)
+(apply #'foo #'fn args)
+</pre>
+
+
+<p class="verse">
+apply允许像第二种方式那样，“孤立”头几个参数，<br/>
+最后传入一个包含所有剩余参数的列表。<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> lambda</h3>
+<div class="outline-text-3" id="text-2-4">
+
+
+</div>
+
+<div id="outline-container-2-4-1" class="outline-4">
+<h4 id="sec-2-4-1"><span class="section-number-4">2.4.1</span> funcall调用</h4>
+<div class="outline-text-4" id="text-2-4-1">
+
+
+
+
+<pre class="src src-lisp">(funcall #'(<span style="color: #1e90ff; font-weight: bold;">lambda</span> (x y) (+ x y)) 2 3) -&gt; 5
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-4-2" class="outline-4">
+<h4 id="sec-2-4-2"><span class="section-number-4">2.4.2</span> lambda作为函数名调用</h4>
+<div class="outline-text-4" id="text-2-4-2">
+
+
+
+
+<pre class="src src-lisp">((<span style="color: #1e90ff; font-weight: bold;">lambda</span> (x y) (+ x y)) 2 3) -&gt; 5
+</pre>
+
+
+<p class="verse">
+说明lambda表达式用在任何一个正常函数名可以出现的地方，<br/>
+都是合法的。<br/>
+实际不会如上述例子这么做。<br/>
+</p>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 变量</h2>
+<div class="outline-text-2" id="text-3">
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> 词法(lexical)变量</h3>
+<div class="outline-text-3" id="text-3-1">
+
+
+</div>
+
+<div id="outline-container-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> Let</h4>
+<div class="outline-text-4" id="text-3-1-1">
+
+<p>形式：(let (variable*) body-form*)
+</p>
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">let</span> ((x 10) (y 20) z)
+  ...)
+</pre>
+
+
+<ul>
+<li>let声明的变量，作用域仅是let语句内。
+</li>
+<li>body中最后一个表达式返回的值，将作为let表达式的值返回。
+</li>
+</ul>
+
+<ul>
+<li id="sec-3-1-1-1">let*<br/>
+let*允许变量引用变量列表中早先引入的变量
+
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">let*</span> ((x 1)
+       (y (+ x 1)))
+  (list x y))
+</pre>
+
+<p>
+等同于嵌套的let
+</p>
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">let</span> ((x 1))
+  (<span style="color: #1e90ff; font-weight: bold;">let</span> ((y (+ x 10)))
+    (list x y))
+</pre>
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> 闭包</h4>
+<div class="outline-text-4" id="text-3-1-2">
+
+
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">let</span> ((count 0) #'(<span style="color: #1e90ff; font-weight: bold;">lambda</span> () (setf count (1+ count)))))
+</pre>
+
+<p>
+其中的匿名函数被称为一个闭包
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> 动态(dynamic)变量</h3>
+<div class="outline-text-3" id="text-3-2">
+
+
+<p class="verse">
+有时被称为特殊(special)变量。通常用作全局变量。<br/>
+其特殊是因为其作用域是动态作用域，运行时决定。<br/>
+<br/>
+每个动态变量都会对应一个全局绑定关系栈，遇到局部重名定义或者新绑定时，<br/>
+将新的关系压入栈，离开该作用时出栈。<br/>
+<br/>
+声明有 <b>defvar</b> 和 <b>defparameter</b> 两种方式。<br/>
+前者在发现变量已被定义时，不进行赋值。后者总是进行赋值。<br/>
+<br/>
+<b>defvar</b> 还可以不使用初始值。这样的变量称为未绑定的(unbound)。<br/>
+<br/>
+局部变量也可以声明为动态变量，使用 <b>declare</b> ，一般不常用。<br/>
+</p>
+
+
+<ul>
+<li>defvar
+
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">defvar</span> <span style="color: #008b8b;">*count*</span> 0
+  <span style="color: #9400d3;">"Count of ..."</span>)
+</pre>
+
+
+</li>
+<li>defparameter
+
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">defparameter</span> <span style="color: #008b8b;">*gap*</span> 0.001
+  <span style="color: #9400d3;">"Gaps of ..."</span>)
+</pre>
+
+</li>
+</ul>
+
+
+
+</div>
+
+<div id="outline-container-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> 注意点</h4>
+<div class="outline-text-4" id="text-3-2-1">
+
+<p>将全局对象的改变限定在函数体内，可使用 <b>let</b> 对全局对象进行重新绑定。
+</p>
+
+
+<pre class="src src-lisp">(<span style="color: #1e90ff; font-weight: bold;">defvar</span> <span style="color: #008b8b;">*x*</span> 10)
+(<span style="color: #1e90ff; font-weight: bold;">defun</span> <span style="color: #00008b; font-weight: bold;">foo</span> () (print *x*))
+(<span style="color: #1e90ff; font-weight: bold;">defun</span> <span style="color: #00008b; font-weight: bold;">bar</span> ()
+  (<span style="color: #1e90ff; font-weight: bold;">let</span> (*x* 20) (foo))
+  (foo))
+
+(bar)
+-&gt;
+20
+10
+</pre>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> 常量</h3>
+<div class="outline-text-3" id="text-3-3">
+
+<p>形式：(defconstant name initial-value [document-string])
+</p><ul>
+<li>可在名字后面加上“+”约定常量
+
+<p>  
+  并没有*全局变量*这么通用。
+</p></li>
+</ul>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> SETF</h3>
+<div class="outline-text-3" id="text-3-4">
+
+
+<p class="verse">
+形式：(setf place value)<br/>
+setf是一个宏，赋值前先检查place的形式，并分析成适当的<br/>
+底层操作来修改那个位置。<br/>
+<br/>
+当该位置是变量时，展开成一个对特殊操作符setq的调用，<br/>
+setq可以访问到词法和动态绑定。守旧的lisp程序员仍然使用setq进行赋值。<br/>
+<br/>
+多值赋值：<br/>
+(setf x 1 y 2)<br/>
+<br/>
+setf返回最后一个被赋值的值<br/>
+(setf x (setf y (random 10) z 3))<br/>
+-&gt; x == z == 3<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-5" class="outline-3">
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> 其他常用操作</h3>
+<div class="outline-text-3" id="text-3-5">
+
+<p>假设x=20, y=5, z=15
+</p>
+</div>
+
+<div id="outline-container-3-5-1" class="outline-4">
+<h4 id="sec-3-5-1"><span class="section-number-4">3.5.1</span> ROTATEF</h4>
+<div class="outline-text-4" id="text-3-5-1">
+
+<p>两两交换
+</p>
+
+
+<pre class="src src-lisp">(rotatef x y z)
+-&gt;
+x=5, y=15, z=20
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-5-2" class="outline-4">
+<h4 id="sec-3-5-2"><span class="section-number-4">3.5.2</span> SHIFTF</h4>
+<div class="outline-text-4" id="text-3-5-2">
+
+
+
+
+<pre class="src src-lisp">(shiftf x y z)
+-&gt;
+x=5, y=15, z=15
+</pre>
+
+<p>
+z之后没有元素了，保持原值。
+</p></div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

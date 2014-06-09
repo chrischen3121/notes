@@ -1672,6 +1672,43 @@ C++中迭代器可作为它的集合类的一个友元，
 - [[Flyweight]]可以帮助实现共享组件。
 - [[Iterator]]可用来遍历Composite子部件。
 
+* 责任链模式
+#<<Chain of Responsibility>>
+** 概述
+#+BEGIN_VERSE
+使多个对象都有机会处理请求，将这些对象连成一条链，沿着该链传递该请求，
+直到有对象处理该请求为止。
+#+END_VERSE
+
+** 结构
+#+BEGIN_SRC plantuml :file ../resources/OO/ChainOfResponsibility.png :cmdline -charset UTF-8
+  scale 400 width
+  skinparam classAttributeIconSize 0
+  
+  class Client
+  
+  abstract class Handler {
+      + {abstract} HandleRequest()
+  }
+  
+  class ConcreteHandler1 {
+      + HandleRequest()
+  }
+  
+  class ConcreteHandler2 {
+      + HandleRequest()
+  }
+  
+  Client -> Handler
+  Handler <|-- ConcreteHandler1
+  Handler <|-- ConcreteHandler2
+  Handler -> "successor" Handler
+#+END_SRC
+
+#+results:
+[[file:../resources/OO/ChainOfResponsibility.png]]
+
+
 * 一些OO提示
 ** 活用空对象来避免null值检查
 #+begin_src cpp
