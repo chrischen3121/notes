@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="设计模式"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-06-09T16:52+0800"/>
+<meta name="generated" content="2014-06-10T15:14+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="design pattern"/>
@@ -3160,6 +3160,7 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 <p class="verse">
 使多个对象都有机会处理请求，将这些对象连成一条链，沿着该链传递该请求，<br/>
 直到有对象处理该请求为止。<br/>
+通俗点讲，每个处理对象能处理请求就处理掉，否则就扔给下一个处理对象。<br/>
 </p>
 
 
@@ -3176,6 +3177,134 @@ C++中迭代器可作为它的集合类的一个友元，<br/>
 <p>
 <img src="../resources/OO/ChainOfResponsibility.png"  alt="../resources/OO/ChainOfResponsibility.png" />
 </p>
+</div>
+
+</div>
+
+<div id="outline-container-17-3" class="outline-3">
+<h3 id="sec-17-3"><span class="section-number-3">17.3</span> 适用性</h3>
+<div class="outline-text-3" id="text-17-3">
+
+<ul>
+<li>经常被用来处理鼠标键盘事件。
+</li>
+<li>过滤器的实现可参考责任链模式。
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-17-4" class="outline-3">
+<h3 id="sec-17-4"><span class="section-number-3">17.4</span> 优点</h3>
+<div class="outline-text-3" id="text-17-4">
+
+<ul>
+<li>降低耦合度
+
+<p>
+  请求者不关心谁处理了请求。责任链中对象也无需知道链结构。
+</p>
+</li>
+<li>可以动态地增加修改Handler对象
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-17-5" class="outline-3">
+<h3 id="sec-17-5"><span class="section-number-3">17.5</span> 缺点</h3>
+<div class="outline-text-3" id="text-17-5">
+
+<ul>
+<li>不保证请求一定会被处理。
+</li>
+<li>不容易观察运行时特征，不利于除错。
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-17-6" class="outline-3">
+<h3 id="sec-17-6"><span class="section-number-3">17.6</span> 实现</h3>
+<div class="outline-text-3" id="text-17-6">
+
+
+</div>
+
+<div id="outline-container-17-6-1" class="outline-4">
+<h4 id="sec-17-6-1"><span class="section-number-4">17.6.1</span> 后继者实现</h4>
+<div class="outline-text-4" id="text-17-6-1">
+
+
+<p class="verse">
+通常Handler类维护后继者链接，并提供默认实现向后继者转发请求。<br/>
+如果ConcreteHandler类对该请求不感兴趣，它只需要用到默认实现转发请求即可。<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-17-6-2" class="outline-4">
+<h4 id="sec-17-6-2"><span class="section-number-4">17.6.2</span> 请求的表示</h4>
+<div class="outline-text-4" id="text-17-6-2">
+
+<ul>
+<li>单一类型请求
+
+<p>  
+  通过一个hard-coded操作调用，这种方式方便安全。
+</p>
+</li>
+<li>多个类型的一组请求
+
+<p>
+  处理函数参数需要一个请求码，用条件语句区分请求码以分派请求。
+</p>
+</li>
+<li>使用独立的请求对象
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-17-6-3" class="outline-4">
+<h4 id="sec-17-6-3"><span class="section-number-4">17.6.3</span> 终极Handler</h4>
+<div class="outline-text-4" id="text-17-6-3">
+
+<p>责任链不保证请求一定会被处理，可以在最后加个终极处理器处理这种情况。
+</p>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-17-7" class="outline-3">
+<h3 id="sec-17-7"><span class="section-number-3">17.7</span> 相关模式</h3>
+<div class="outline-text-3" id="text-17-7">
+
+
+<p class="verse">
+责任链通常与<a href="#sec-16">Composite</a>一起使用。一个部件的后继者可以是它的父部件。<br/>
+子部件能处理则处理，不能处理则一层层交由父部件处理。<br/>
+</p>
+
+
 
 </div>
 </div>
