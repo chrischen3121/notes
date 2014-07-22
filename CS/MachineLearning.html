@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="title" content="Machine Learning"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-07-21 12:49:56 中国标准时间"/>
+<meta name="generated" content="2014-07-22T22:01+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Machine Learning"/>
@@ -62,6 +62,30 @@
 </style>
 <link rel="stylesheet" href="../css/stylesheet.css" type="text/css"/>
 <script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
 <!--/*--><![CDATA[/*><!--*/
  function CodeHighlightOn(elem, id)
  {
@@ -84,6 +108,56 @@
 /*]]>*///-->
 </script>
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js">
+/**
+ *
+ * @source: http://cdn.mathjax.org/mathjax/latest/MathJax.js
+ *
+ * @licstart  The following is the entire license notice for the
+ *  JavaScript code in http://cdn.mathjax.org/mathjax/latest/MathJax.js.
+ *
+ * Copyright (C) 2012-2013  MathJax
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @licend  The above is the entire license notice
+ * for the JavaScript code in http://cdn.mathjax.org/mathjax/latest/MathJax.js.
+ *
+ */
+
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code below.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code below is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code below.
+*/
 <!--/*--><![CDATA[/*><!--*/
     MathJax.Hub.Config({
         // Only one of the two following lines, depending on user settings
@@ -145,9 +219,12 @@
 <li><a href="#sec-2">2 Linear Regression</a>
 <ul>
 <li><a href="#sec-2-1">2.1 Gradient Descent</a></li>
+<li><a href="#sec-2-2">2.2 Normal Equation</a></li>
 </ul>
 </li>
-<li><a href="#sec-3">3 Octave Usage</a></li>
+<li><a href="#sec-3">3 Logistic Regression</a></li>
+<li><a href="#sec-4">4 Regularization</a></li>
+<li><a href="#sec-5">5 Octave Usage</a></li>
 </ul>
 </div>
 </div>
@@ -241,16 +318,108 @@ $$\theta_1 := temp1$$
 </ul>
 </div>
 </div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Normal Equation</h3>
+<div class="outline-text-3" id="text-2-2">
+
+
+$$\theta = (X^TX)^{-1}X^Ty$$
+
+</div>
+
+<div id="outline-container-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> Inverse in Octave</h4>
+<div class="outline-text-4" id="text-2-2-1">
+
+
+<p class="verse">
+pinv vs. inv<br/>
+pinv is a pseudo-inverse, always make correct result even the matrix is non-invertable.<br/>
+</p>
+
+
+<ul>
+<li>Why non-invertable?
+<ul>
+<li>Redundant features(linearly dependant).
+</li>
+<li>Too many features
+
+<p class="verse">
+Delete some features, or use <a href="#sec-4">regularization</a><br/>
+</p>
+
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> vs. Gradient Descent</h4>
+<div class="outline-text-4" id="text-2-2-2">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Gradient Descent</th><th scope="col" class="left">Normal Equation</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">Need to choose \(\alpha\)</td><td class="left">No need to choose \(\alpha\)</td></tr>
+<tr><td class="left">Needs more iterations</td><td class="left">Don't need to iterate</td></tr>
+<tr><td class="left">Works well with many features</td><td class="left">n features, \((X^TX)^{-1}\), takes \(O(n^3)\)</td></tr>
+</tbody>
+</table>
+
+Number of features n &gt; 10000, use gradient descent.
+
+
+</div>
+</div>
 </div>
 
 </div>
 
 <div id="outline-container-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> Octave Usage</h2>
+<h2 id="sec-3"><span class="section-number-2">3</span> Logistic Regression</h2>
 <div class="outline-text-2" id="text-3">
 
+<ul>
+<li>Hypothesis
+  $$h_\theta(x)=g(\theta^T x) = \frac{1}{1+e^{-\theta^T x}}$$
+  Note that, funtion g(x) is called logistic function or sigmoid function.
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><a name="regularization" id="regularization"></a><span class="section-number-2">4</span> Regularization</h2>
+<div class="outline-text-2" id="text-4">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Octave Usage</h2>
+<div class="outline-text-2" id="text-5">
+
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>

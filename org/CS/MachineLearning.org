@@ -42,10 +42,36 @@ $$temp1 := \theta_1 - \alpha\frac{\partial}{\partial \theta_1}J(\theta_0, \theta
 $$\theta_0 := temp0$$
 $$\theta_1 := temp1$$
 
+** Normal Equation
+$$\theta = (X^TX)^{-1}X^Ty$$
+*** Inverse in Octave
+#+BEGIN_VERSE
+pinv vs. inv
+pinv is a pseudo-inverse, always make correct result even the matrix is non-invertable.
+#+END_VERSE
+- Why non-invertable?
+  - Redundant features(linearly dependant).
+  - Too many features
+    #+BEGIN_VERSE
+    Delete some features, or use [[regularization]]
+    #+END_VERSE
+
+*** vs. Gradient Descent
+| Gradient Descent              | Normal Equation                           |
+|-------------------------------+-------------------------------------------|
+| Need to choose $\alpha$       | No need to choose $\alpha$                |
+| Needs more iterations         | Don't need to iterate                     |
+| Works well with many features | n features, $(X^TX)^{-1}$, takes $O(n^3)$ |
+Number of features n > 10000, use gradient descent.
+
+
 * Logistic Regression
 - Hypothesis
   $$h_\theta(x)=g(\theta^T x) = \frac{1}{1+e^{-\theta^T x}}$$
   Note that, funtion g(x) is called logistic function or sigmoid function.
+
+* Regularization
+#<<regularization>>
 
 * Octave Usage
 | Function | Description     |
