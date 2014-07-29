@@ -926,7 +926,74 @@ External\to Internal: changes the dest IP:Port.
     
   - Doesn't work so well with UDP
   - Unwisely expose their IP addresses(FTP)?
-    
+
+* Routing
+** Distance Vector Routing
+#+ATTR_HTML: align="center"
+[[file:../resources/network/DVExample.png]]
+
+- Initial Status
+  | To | A        | B        | C        | D        |
+  |----+----------+----------+----------+----------|
+  | A  | 0        | $\infty$ | $\infty$ | $\infty$ |
+  | B  | $\infty$ | 0        | $\infty$ | $\infty$ |
+  | C  | $\infty$ | $\infty$ | 0        | $\infty$ |
+  | D  | $\infty$ | $\infty$ | $\infty$ | 0        |
+
+- 1st Exchange
+  #+BEGIN_VERSE
+  AC: A Cost
+  AN: A NextTo
+  #+END_VERSE
+  | To |       AC | AN | BC | BN |       CC | CN | DC | DN |
+  |----+----------+----+----+----+----------+----+----+----|
+  | A  |        0 | -- |  3 | A  | $\infty$ | -- |  7 | A  |
+  | B  |        3 | B  |  0 | -- |        6 | B  |  3 | B  |
+  | C  | $\infty$ | -- |  6 | C  |        0 | -- |  2 | C  |
+  | D  |        7 | D  |  3 | D  |        2 | D  |  0 | -- |
+
+- 2nd Exchange
+  | To | AC | AN | BC | BN | CC | CN | DC | DN |
+  |----+----+----+----+----+----+----+----+----|
+  | A  |  0 | -- |  3 | A  |  9 | B  |  6 | B  |
+  | B  |  3 | B  |  0 | -- |  5 | D  |  3 | B  |
+  | C  |  9 | D  |  5 | D  |  0 | -- |  2 | C  |
+  | D  |  6 | B  |  3 | D  |  2 | D  |  0 | -- |
+
+- final
+  | To | AC | AN | BC | BN | CC | CN | DC | DN |
+  |----+----+----+----+----+----+----+----+----|
+  | A  |  0 | -- |  3 | A  |  8 | D  |  6 | B  |
+  | B  |  3 | B  |  0 | -- |  5 | D  |  3 | B  |
+  | C  |  8 | B  |  5 | D  |  0 | -- |  2 | C  |
+  | D  |  6 | B  |  3 | D  |  2 | D  |  0 | -- |
+
+*** Dynamics
+- Adding routes: one hop per exchange
+- Removing routes: no more exchanges
+- Partitions are a problem: "Count to infinity" scenario
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/CountToInfty.png]]
+
+  #+BEGIN_VERSE
+  Some way to address: Split horizon, poison reverse.
+  (Don't send route back to where you learned it from)
+
+  There's no very effective way to solve this problem.
+  And now link state favored in practice.
+  #+END_VERSE
+
+*** RIP(Routing Information Protocal)
+- DV protocal with hop count as metric
+  - Infinity is 16 hops; limits network size.
+  - Include split horizon, poison reverse.
+
+- Routers send vectors every 30 secs
+  - Runs on top of UDP.
+  - Timeout in 180 secs to detect failures.
+
+
 * Application Layer
 ** DHCP(Dynamic Host Configuration Protocol)
 Provide the following information to Node:

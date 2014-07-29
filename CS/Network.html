@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="title" content="Network"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-05-25T15:31+0800"/>
+<meta name="generated" content="2014-07-29T22:05+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Network"/>
@@ -325,11 +325,20 @@ for the JavaScript code below.
 <li><a href="#sec-4-4">4.4 NAT(Network Address Translation)</a></li>
 </ul>
 </li>
-<li><a href="#sec-5">5 Application Layer</a>
+<li><a href="#sec-5">5 Routing</a>
 <ul>
-<li><a href="#sec-5-1">5.1 DHCP(Dynamic Host Configuration Protocol)</a>
+<li><a href="#sec-5-1">5.1 Distance Vector Routing</a>
 <ul>
-<li><a href="#sec-5-1-1">5.1.1 How does node find DHCP server?</a></li>
+<li><a href="#sec-5-1-1">5.1.1 Dynamics</a></li>
+<li><a href="#sec-5-1-2">5.1.2 RIP(Routing Information Protocal)</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-6">6 Application Layer</a>
+<ul>
+<li><a href="#sec-6-1">6.1 DHCP(Dynamic Host Configuration Protocol)</a>
+<ul>
+<li><a href="#sec-6-1-1">6.1.1 How does node find DHCP server?</a></li>
 </ul>
 </li>
 </ul>
@@ -2369,15 +2378,175 @@ Difficult to run servers or peer-to-peer apps(Skype) at home.<br/>
 </div>
 
 <div id="outline-container-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> Application Layer</h2>
+<h2 id="sec-5"><span class="section-number-2">5</span> Routing</h2>
 <div class="outline-text-2" id="text-5">
 
 
 </div>
 
 <div id="outline-container-5-1" class="outline-3">
-<h3 id="sec-5-1"><span class="section-number-3">5.1</span> DHCP(Dynamic Host Configuration Protocol)</h3>
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> Distance Vector Routing</h3>
 <div class="outline-text-3" id="text-5-1">
+
+<p><img src="../resources/network/DVExample.png" align="center" alt="../resources/network/DVExample.png" />
+</p>
+<ul>
+<li>Initial Status
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">To</th><th scope="col" class="left">A</th><th scope="col" class="left">B</th><th scope="col" class="left">C</th><th scope="col" class="left">D</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">A</td><td class="left">0</td><td class="left">\(\infty\)</td><td class="left">\(\infty\)</td><td class="left">\(\infty\)</td></tr>
+<tr><td class="left">B</td><td class="left">\(\infty\)</td><td class="left">0</td><td class="left">\(\infty\)</td><td class="left">\(\infty\)</td></tr>
+<tr><td class="left">C</td><td class="left">\(\infty\)</td><td class="left">\(\infty\)</td><td class="left">0</td><td class="left">\(\infty\)</td></tr>
+<tr><td class="left">D</td><td class="left">\(\infty\)</td><td class="left">\(\infty\)</td><td class="left">\(\infty\)</td><td class="left">0</td></tr>
+</tbody>
+</table>
+
+
+</li>
+<li>1st Exchange
+
+<p class="verse">
+AC: A Cost<br/>
+AN: A NextTo<br/>
+</p>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">To</th><th scope="col" class="right">AC</th><th scope="col" class="left">AN</th><th scope="col" class="right">BC</th><th scope="col" class="left">BN</th><th scope="col" class="right">CC</th><th scope="col" class="left">CN</th><th scope="col" class="right">DC</th><th scope="col" class="left">DN</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">A</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">3</td><td class="left">A</td><td class="right">\(\infty\)</td><td class="left">&ndash;</td><td class="right">7</td><td class="left">A</td></tr>
+<tr><td class="left">B</td><td class="right">3</td><td class="left">B</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">6</td><td class="left">B</td><td class="right">3</td><td class="left">B</td></tr>
+<tr><td class="left">C</td><td class="right">\(\infty\)</td><td class="left">&ndash;</td><td class="right">6</td><td class="left">C</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">2</td><td class="left">C</td></tr>
+<tr><td class="left">D</td><td class="right">7</td><td class="left">D</td><td class="right">3</td><td class="left">D</td><td class="right">2</td><td class="left">D</td><td class="right">0</td><td class="left">&ndash;</td></tr>
+</tbody>
+</table>
+
+
+</li>
+<li>2nd Exchange
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">To</th><th scope="col" class="right">AC</th><th scope="col" class="left">AN</th><th scope="col" class="right">BC</th><th scope="col" class="left">BN</th><th scope="col" class="right">CC</th><th scope="col" class="left">CN</th><th scope="col" class="right">DC</th><th scope="col" class="left">DN</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">A</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">3</td><td class="left">A</td><td class="right">9</td><td class="left">B</td><td class="right">6</td><td class="left">B</td></tr>
+<tr><td class="left">B</td><td class="right">3</td><td class="left">B</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">5</td><td class="left">D</td><td class="right">3</td><td class="left">B</td></tr>
+<tr><td class="left">C</td><td class="right">9</td><td class="left">D</td><td class="right">5</td><td class="left">D</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">2</td><td class="left">C</td></tr>
+<tr><td class="left">D</td><td class="right">6</td><td class="left">B</td><td class="right">3</td><td class="left">D</td><td class="right">2</td><td class="left">D</td><td class="right">0</td><td class="left">&ndash;</td></tr>
+</tbody>
+</table>
+
+
+</li>
+<li>final
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" /><col class="right" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">To</th><th scope="col" class="right">AC</th><th scope="col" class="left">AN</th><th scope="col" class="right">BC</th><th scope="col" class="left">BN</th><th scope="col" class="right">CC</th><th scope="col" class="left">CN</th><th scope="col" class="right">DC</th><th scope="col" class="left">DN</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">A</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">3</td><td class="left">A</td><td class="right">8</td><td class="left">D</td><td class="right">6</td><td class="left">B</td></tr>
+<tr><td class="left">B</td><td class="right">3</td><td class="left">B</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">5</td><td class="left">D</td><td class="right">3</td><td class="left">B</td></tr>
+<tr><td class="left">C</td><td class="right">8</td><td class="left">B</td><td class="right">5</td><td class="left">D</td><td class="right">0</td><td class="left">&ndash;</td><td class="right">2</td><td class="left">C</td></tr>
+<tr><td class="left">D</td><td class="right">6</td><td class="left">B</td><td class="right">3</td><td class="left">D</td><td class="right">2</td><td class="left">D</td><td class="right">0</td><td class="left">&ndash;</td></tr>
+</tbody>
+</table>
+
+</li>
+</ul>
+
+
+
+</div>
+
+<div id="outline-container-5-1-1" class="outline-4">
+<h4 id="sec-5-1-1"><span class="section-number-4">5.1.1</span> Dynamics</h4>
+<div class="outline-text-4" id="text-5-1-1">
+
+<ul>
+<li>Adding routes: one hop per exchange
+</li>
+<li>Removing routes: no more exchanges
+</li>
+<li>Partitions are a problem: "Count to infinity" scenario
+
+<p>
+  <img src="../resources/network/CountToInfty.png" align="center" alt="../resources/network/CountToInfty.png" />
+</p>
+
+<p class="verse">
+Some way to address: Split horizon, poison reverse.<br/>
+(Don't send route back to where you learned it from)<br/>
+<br/>
+There's no very effective way to solve this problem.<br/>
+And now link state favored in practice.<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-1-2" class="outline-4">
+<h4 id="sec-5-1-2"><span class="section-number-4">5.1.2</span> RIP(Routing Information Protocal)</h4>
+<div class="outline-text-4" id="text-5-1-2">
+
+<ul>
+<li>DV protocal with hop count as metric
+<ul>
+<li>Infinity is 16 hops; limits network size.
+</li>
+<li>Include split horizon, poison reverse.
+
+</li>
+</ul>
+
+</li>
+<li>Routers send vectors every 30 secs
+<ul>
+<li>Runs on top of UDP.
+</li>
+<li>Timeout in 180 secs to detect failures.
+</li>
+</ul>
+
+</li>
+</ul>
+
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Application Layer</h2>
+<div class="outline-text-2" id="text-6">
+
+
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> DHCP(Dynamic Host Configuration Protocol)</h3>
+<div class="outline-text-3" id="text-6-1">
 
 <p>Provide the following information to Node:
 </p><ul>
@@ -2409,9 +2578,9 @@ DHCP uses UDP ports 67,68
 
 </div>
 
-<div id="outline-container-5-1-1" class="outline-4">
-<h4 id="sec-5-1-1"><span class="section-number-4">5.1.1</span> How does node find DHCP server?</h4>
-<div class="outline-text-4" id="text-5-1-1">
+<div id="outline-container-6-1-1" class="outline-4">
+<h4 id="sec-6-1-1"><span class="section-number-4">6.1.1</span> How does node find DHCP server?</h4>
+<div class="outline-text-4" id="text-6-1-1">
 
 
 <p class="verse">
