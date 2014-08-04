@@ -381,3 +381,48 @@ tail -f output appended data as the file grows[Important]
 #+BEGIN_SRC sh
   sed -i "s/old/new/g" `grep old -rl ./`
 #+END_SRC
+* Shell编程
+** 特殊变量
+$#: 脚本参数个数 $0不算在内
+$*: 保存所有的参数，也不包括$0
+$?: 上次执行的命令的退出状态
+
+** 本地变量
+函数内局部变量用local声明
+
+** 比较运算符
+| 字符串 | 数值    |
+|--------+---------|
+| x=y    | x -eq y |
+| x!=y   | x -ne y |
+| x<y    | x -lt y |
+| x<=y   | x -le y |
+| x>y    | x -gt y |
+| x>=y   | x -ge y |
+| -n x   | --      |
+| -z x   | --      |
+
+ -n、-z分别是“不为空”、为空
+*** 文件比较
+ | 运算符          | true if              |
+ | -d file         | file存在且是目录     |
+ | -e file         | file存在             |
+ | -f file         | file存在且为普通文件 |
+ | -r file         | 用户有file的读权限   |
+ | -s file         | file存在且不为空     |
+ | -w file         | 用户有file的写权限   |
+ | file1 -nt file2 | newer than           |
+ | file1 -ot file2 | older than           | 
+  
+** 丑小鸭
+*((expr))强制进行数值运算
+** 数组
+#+BEGIN_SRC sh
+example=(aa 'bb cc' dd)
+#+END_SRC 
+#+BEGIN_VERSE
+访问：${array_name[subscript]} 
+下标从0开始，下标*和@表示整个数组
+${#array_name[*]}表示元素个数
+#+END_VERSE
+
