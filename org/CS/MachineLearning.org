@@ -10,6 +10,7 @@ with respect to some task /T/ and some performance measure /P/ ,
 if its performance on /T/ , as measured by P, improves with 
 experience E.
 #+END_VERSE
+
 * Linear Regression
 - Hypothesis
   $$h_\theta(x)=\theta^T x$$
@@ -28,7 +29,7 @@ experience E.
 *** Algorithm
 #+BEGIN_VERSE
 repeat until convergence {
-    $$\theta_j := \theta_j - \alpha\frac{\partial}{\partial \theta_j}J(\theta)$$ 
+    $\theta_j := \theta_j - \alpha\frac{\partial}{\partial \theta_j}J(\theta)$
 }
 $\alpha$ is called learning rate. 
 After derivative,
@@ -42,8 +43,42 @@ $$temp1 := \theta_1 - \alpha\frac{\partial}{\partial \theta_1}J(\theta_0, \theta
 $$\theta_0 := temp0$$
 $$\theta_1 := temp1$$
 
+*** Feature Scaling
+- Idea: to make contour map not shape.
+  #+BEGIN_VERSE
+  Because $x_0=1$, scale $-1<x_i<1$
+  -3 to 3, $-\frac{1}{3}$ to $\frac{1}{3}$ are also good.
+  #+END_VERSE
+- Mean normalization
+$$x_i = \frac{x_i - \mu_i}{range}$$
+$$-0.5\le x_i \le 0.5$$
+*** Learning Rate
+- Correctness
+
+  $J(\theta)$ should decrease after every iteration.
+#+BEGIN_VERSE
+One way:
+Run an automatic convergence test.
+Declare convergence if $j(\theta)$ decreases by less than $10^{-3}$ 
+in one iteration.
+
+or check the $iterations-J(\theta)$  plot
+
+if gradient decent not working, using smaller $\alpha$
+But if $\alpha is too small, gradient descent can be slow to converge$
+
+To choose $\alpha$, try:
+..., 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1,....
+#+END_VERSE
+
+
 ** Normal Equation
+- Idea: to compute $\frac{\partial}{\partial\theta_j}j(\theta_j) = 0$
 $$\theta = (X^TX)^{-1}X^Ty$$
+Octave version: 
+#+begin_src octave
+pinv(X'*X)*X'*y
+#+end_src
 *** Inverse in Octave
 #+BEGIN_VERSE
 pinv vs. inv
@@ -62,8 +97,18 @@ pinv is a pseudo-inverse, always make correct result even the matrix is non-inve
 | Need to choose $\alpha$       | No need to choose $\alpha$                |
 | Needs more iterations         | Don't need to iterate                     |
 | Works well with many features | n features, $(X^TX)^{-1}$, takes $O(n^3)$ |
-Number of features n > 10000, use gradient descent.
+| Support various module        | Only support linear regression module     |
 
+Number of features n > 10000, using gradient descent.
+
+
+** Polynormial Regression
+#+BEGIN_VERSE
+With one feature, the hypothesis looks like:
+$h_\theta(x)=\theta_0+\theta_1x^2+\theta_2x^3$ 
+Let $x_2=x^2$ , $x_3=x^3$ , now it's a linear regression problem.
+Note that, in this case feature scaling is necessary.
+#+END_VERSE
 
 * Logistic Regression
 - Hypothesis
