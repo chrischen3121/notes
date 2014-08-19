@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Linux基础"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-05-04T14:00+0800"/>
+<meta name="generated" content="2014-08-18 13:50:01 中国标准时间"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Linux, 基础"/>
@@ -62,30 +62,6 @@
 </style>
 <link rel="stylesheet" href="../css/stylesheet.css" type="text/css"/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2013 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
 <!--/*--><![CDATA[/*><!--*/
  function CodeHighlightOn(elem, id)
  {
@@ -110,7 +86,7 @@ for the JavaScript code in this tag.
 
 </head>
 <body>
-<div id="org-div-home-and-up" style="text-align:right;font-size:100%;white-space:nowrap;">
+<div id="org-div-home-and-up">
  <a accesskey="h" href="../index.html"> UP </a>
  |
  <a accesskey="H" href="../index.html"> HOME </a>
@@ -176,6 +152,14 @@ for the JavaScript code in this tag.
 <li><a href="#sec-8-7">8.7 三剑客</a></li>
 </ul>
 </li>
+<li><a href="#sec-9">9 Shell编程</a>
+<ul>
+<li><a href="#sec-9-1">9.1 特殊变量</a></li>
+<li><a href="#sec-9-2">9.2 本地变量</a></li>
+<li><a href="#sec-9-3">9.3 比较运算符</a></li>
+<li><a href="#sec-9-4">9.4 丑小鸭</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -186,6 +170,7 @@ for the JavaScript code in this tag.
 
 <p>切换方式： sudo init 0
 </p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="right" /><col class="left" />
 </colgroup>
 <thead>
@@ -290,6 +275,7 @@ for the JavaScript code in this tag.
 
 <p>   eg: DATE(1)
 </p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="right" /><col class="left" />
 </colgroup>
 <thead>
@@ -318,6 +304,7 @@ for the JavaScript code in this tag.
 <div class="outline-text-4" id="text-2-2-2">
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>
@@ -340,6 +327,7 @@ for the JavaScript code in this tag.
 <div class="outline-text-4" id="text-2-2-3">
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>
@@ -412,6 +400,7 @@ man 7 man <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#
 <div class="outline-text-3" id="text-2-3">
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>
@@ -451,6 +440,7 @@ man 7 man <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#
 <div class="outline-text-3" id="text-2-4">
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <tbody>
@@ -554,6 +544,7 @@ man 7 man <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#
 
 <p>根目录 /dev
 </p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>
@@ -586,6 +577,7 @@ man 7 man <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#
 
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" /><col class="left" />
 </colgroup>
 <tbody>
@@ -624,8 +616,6 @@ man 7 man <span style="color: #8b8989;">#</span><span style="color: #8b8989;">&#
 </p>
 
 
-
-<hr/>
 </div>
 </div>
 
@@ -705,26 +695,38 @@ chmod: 改变文件的权限<br/>
 <p class="verse">
 数字方式：<br/>
 权限数字对照表如下：<br/>
-</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-<colgroup><col class="left" /><col class="right" /><col class="left" />
+</p>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col class="left" /><col class="right" />
 </colgroup>
 <tbody>
-<tr><td class="left">r</td><td class="right">4</td><td class="left">\\</td></tr>
-<tr><td class="left">w</td><td class="right">2</td><td class="left">\\</td></tr>
-<tr><td class="left">x</td><td class="right">1</td><td class="left">\\</td></tr>
+<tr><td class="left">r</td><td class="right">4</td></tr>
+<tr><td class="left">w</td><td class="right">2</td></tr>
+<tr><td class="left">x</td><td class="right">1</td></tr>
 </tbody>
 </table>
 
+
+<p class="verse">
 例：chmod 644 test.txt 对应 -rw-r&ndash;r&ndash;<br/>
 符号方式：<br/>
+</p>
+
+
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+<caption></caption>
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" /><col class="left" />
 </colgroup>
 <tbody>
-<tr><td class="left">chmod</td><td class="left">ugoa</td><td class="left">+-=</td><td class="left">rwx</td><td class="left">file or folder path</td><td class="left">\\</td></tr>
+<tr><td class="left">chmod</td><td class="left">ugoa</td><td class="left">+-=</td><td class="left">rwx</td><td class="left">file or folder path</td></tr>
 </tbody>
 </table>
 
+
+<p class="verse">
 例：chmod u=rwx,go=rx test.txt<br/>
 chmod a+w test.txt (所有账户都赋予写权限)<br/>
 </p>
@@ -899,6 +901,7 @@ ubuntu: /etc/default/locale<br/>
 <div class="outline-text-3" id="text-8-1">
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>
@@ -972,6 +975,7 @@ ubuntu: /etc/default/locale<br/>
 
 <p> <span class="timestamp-wrapper"><span class="timestamp-kwd">CLOSED: </span> <span class="timestamp">2014-02-07 周五 11:47</span></span><br/>
 </p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>
@@ -1075,6 +1079,7 @@ find -newer  例子：find [folder] -newer [file] 找出比file的修改时间�
 <div class="outline-text-3" id="text-8-5">
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>
@@ -1169,6 +1174,7 @@ head -n -20 skip the last 20 lines<br/>
 <div class="outline-text-3" id="text-8-6">
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <thead>
@@ -1219,6 +1225,115 @@ head -n -20 skip the last 20 lines<br/>
 </pre>
 
 </div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Shell编程</h2>
+<div class="outline-text-2" id="text-9">
+
+
+</div>
+
+<div id="outline-container-9-1" class="outline-3">
+<h3 id="sec-9-1"><span class="section-number-3">9.1</span> 特殊变量</h3>
+<div class="outline-text-3" id="text-9-1">
+
+<p>$#: 脚本参数个数 $0不算在内
+$*: 保存所有的参数，也不包括$0
+$?: 上次执行的命令的退出状态
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-9-2" class="outline-3">
+<h3 id="sec-9-2"><span class="section-number-3">9.2</span> 本地变量</h3>
+<div class="outline-text-3" id="text-9-2">
+
+<p>函数内局部变量用local声明
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-9-3" class="outline-3">
+<h3 id="sec-9-3"><span class="section-number-3">9.3</span> 比较运算符</h3>
+<div class="outline-text-3" id="text-9-3">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">字符串</th><th scope="col" class="left">数值</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">x=y</td><td class="left">x -eq y</td></tr>
+<tr><td class="left">x!=y</td><td class="left">x -ne y</td></tr>
+<tr><td class="left">x&lt;y</td><td class="left">x -lt y</td></tr>
+<tr><td class="left">x&lt;=y</td><td class="left">x -le y</td></tr>
+<tr><td class="left">x&gt;y</td><td class="left">x -gt y</td></tr>
+<tr><td class="left">x&gt;=y</td><td class="left">x -ge y</td></tr>
+<tr><td class="left">-n x</td><td class="left">&ndash;</td></tr>
+<tr><td class="left">-z x</td><td class="left">&ndash;</td></tr>
+</tbody>
+</table>
+
+
+<p>
+ -n、-z分别是“不为空”、为空
+</p>
+</div>
+
+<div id="outline-container-9-3-1" class="outline-4">
+<h4 id="sec-9-3-1"><span class="section-number-4">9.3.1</span> 文件比较</h4>
+<div class="outline-text-4" id="text-9-3-1">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">运算符</td><td class="left">true if</td></tr>
+<tr><td class="left">-d file</td><td class="left">file存在且是目录</td></tr>
+<tr><td class="left">-e file</td><td class="left">file存在</td></tr>
+<tr><td class="left">-f file</td><td class="left">file存在且为普通文件</td></tr>
+<tr><td class="left">-r file</td><td class="left">用户有file的读权限</td></tr>
+<tr><td class="left">-s file</td><td class="left">file存在且不为空</td></tr>
+<tr><td class="left">-w file</td><td class="left">用户有file的写权限</td></tr>
+<tr><td class="left">file1 -nt file2</td><td class="left">newer than</td></tr>
+<tr><td class="left">file1 -ot file2</td><td class="left">older than</td></tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-9-4" class="outline-3">
+<h3 id="sec-9-4"><span class="section-number-3">9.4</span> 丑小鸭</h3>
+<div class="outline-text-3" id="text-9-4">
+
+<p><b>((expr))强制进行数值运算 *</b>  数组 
+</p>
+
+
+<pre class="src src-sh"><span style="color: #008b8b;">example</span>=(aa <span style="color: #9400d3;">'bb cc'</span> dd)
+</pre>
+
+
+<p class="verse">
+访问：${array_name[subscript]} <br/>
+下标从0开始，下标*和@表示整个数组<br/>
+${#array_name[*]}表示元素个数<br/>
+</p>
+
+
 </div>
 </div>
 </div>
