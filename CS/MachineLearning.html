@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Machine Learning"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-08-08 12:30:14 中国标准时间"/>
+<meta name="generated" content="2014-08-25 17:12:28 中国标准时间"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Machine Learning"/>
@@ -149,7 +149,11 @@
 <li><a href="#sec-2-3">2.3 Polynormial Regression</a></li>
 </ul>
 </li>
-<li><a href="#sec-3">3 Logistic Regression</a></li>
+<li><a href="#sec-3">3 Logistic Regression</a>
+<ul>
+<li><a href="#sec-3-1">3.1 Gradient Descent</a></li>
+</ul>
+</li>
 <li><a href="#sec-4">4 Regularization</a></li>
 <li><a href="#sec-5">5 Octave Usage</a></li>
 </ul>
@@ -235,11 +239,17 @@ simultaneously updata \(\theta_j\) for all j<br/>
 
 
 <ul>
-<li id="sec-2-1-2-1">Simultaneous updata:<br/>
+<li id="sec-2-1-2-1">Simultaneous Update<br/>
 $$temp0 := \theta_0 - \alpha\frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1)$$
 $$temp1 := \theta_1 - \alpha\frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1)$$
 $$\theta_0 := temp0$$
 $$\theta_1 := temp1$$
+
+</li>
+</ul>
+<ul>
+<li id="sec-2-1-2-2">Vectorized Vesion<br/>
+$$\theta = \theta - \alpha\frac{1}{m}\sum_{i=1}^m(\theta^{T}x-y^{(i)})x^{(i)}$$
 
 </li>
 </ul>
@@ -400,7 +410,7 @@ Number of features n &gt; 10000, using gradient descent.
 <p class="verse">
 With one feature, the hypothesis looks like:<br/>
 \(h_\theta(x)=\theta_0+\theta_1x^2+\theta_2x^3\) <br/>
-Let \(x_2=x^2\) , \(x_3=x^3\) , now it's a linear regression problem.<br/>
+Let \(x_1=x^2\) , \(x_2=x^3\) , now it's a linear regression problem.<br/>
 Note that, in this case feature scaling is necessary.<br/>
 </p>
 
@@ -417,6 +427,7 @@ Note that, in this case feature scaling is necessary.<br/>
 <ul>
 <li>Logistic Function(sigmoid function)
   $$g(x) = \frac{1}{1+e^-x}$$
+  if \(x\ge 0\), \(g(x) \ge 0.5\).
 
 </li>
 <li>Hypothesis
@@ -429,11 +440,30 @@ Note that, in this case feature scaling is necessary.<br/>
   -log(1-h_\theta(x)), & \mbox{if } y=0 \\
   \end{cases}$$
   Simplification:
-  $$Cost(h_\theta(x), y) = -y log(h_\theta(x)) - (1-y)log(1-h\theta(x))$$
+  $$Cost(h_\theta(x), y) = -y log(h_\theta(x)) - (1-y)log(1-h_\theta(x))$$
 </li>
 </ul>
 
 
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Gradient Descent</h3>
+<div class="outline-text-3" id="text-3-1">
+
+
+$$\theta_j=\theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(\frac{1}{1+e^{-\theta^Tx^{(i)}}}-y^{(i)})x_j^{(i)}$$
+<p>
+(simultaneously update for all j)
+</p><ul>
+<li>Vectorized Version
+  $$\theta=\theta-\alpha\frac{1}{m}\sum_{i=1}^m(\frac{1}{1+e^{-\theta^Tx^{(i)}}}-y^{(i)})x^{(i)}$$
+</li>
+</ul>
+
+
+</div>
 </div>
 
 </div>
