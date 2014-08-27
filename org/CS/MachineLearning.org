@@ -25,7 +25,7 @@ experience E.
 
 - Cost Function
   $$J(\theta) = \frac{1}{2m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})^2$$
-  [Octave] $J(\theta) = \frac{1}{2m}sum((h_\theta(X) - y). \widehat{} 2)$
+  [Vectorized] $J(\theta) = \frac{1}{2m}sum((h_\theta(X) - y). \widehat{} 2)$
 
 - Goal
   $$minimize J(\theta_0, \theta_1)$$
@@ -52,9 +52,8 @@ $\alpha$ is called learning rate.
 After derivative,
 $$\theta_j := \theta_j - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}$$
 simultaneously updata $\theta_j$ for all j
+[Vectorized] $\theta = \theta - \alpha\frac{1}{m}\cdot X^T \cdot (h_\theta(X) - y)$
 #+END_VERSE
-- Vectorized Vesion
-$$\theta = \theta - \alpha\frac{1}{m}\sum_{i=1}^m(\theta^{T}x-y^{(i)})x^{(i)}$$
 
 *** Feature Scaling
 - Idea: to make contour map not shape.
@@ -143,10 +142,11 @@ Note that, in this case feature scaling is necessary.
   $$J(\theta) = \frac{1}{m}\sum_{i=1}^{m}Cost(h_\theta(x^{(i)}, y^{(i)}))$$
 
 ** Gradient Descent
+#+BEGIN_VERSE
 $$\theta_j=\theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(\frac{1}{1+e^{-\theta^Tx^{(i)}}}-y^{(i)})x_j^{(i)}$$
 (simultaneously update for all j)
-- Vectorized Version
-  $$\theta=\theta-\alpha\frac{1}{m}X^T(h_\theta(X)-y)$$
+[Vectorized] $\theta=\theta-\alpha\frac{1}{m}X^T(h_\theta(X)-y)$
+#+END_VERSE
 
 ** Other Method to Compute minJ
 Conjugate Gradient, BFGS, LBFGS
@@ -164,8 +164,7 @@ initialTheta = zeros(2,1);
 #+end_src
 *** gradient
 $$\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}$$
-- Vectorized Version
-  $$\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}X^T(h_\theta(X)-y)$$
+[Vectorized] $\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}X^T(h_\theta(X)-y)$
 
 * Regularization
 #<<regularization>>

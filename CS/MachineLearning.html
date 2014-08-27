@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Machine Learning"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-08-26 11:33:22 中国标准时间"/>
+<meta name="generated" content="2014-08-27 17:02:08 中国标准时间"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Machine Learning"/>
@@ -202,7 +202,7 @@ experience E.<br/>
 </li>
 <li>Cost Function
   $$J(\theta) = \frac{1}{2m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})^2$$
-  [Octave] \(J(\theta) = \frac{1}{2m}sum((h_\theta(X) - y). \widehat{} 2)\)
+  [Vectorized] \(J(\theta) = \frac{1}{2m}sum((h_\theta(X) - y). \widehat{} 2)\)
 
 </li>
 <li>Goal
@@ -265,16 +265,9 @@ repeat until convergence {<br/>
 After derivative,<br/>
 $$\theta_j := \theta_j - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}$$
 simultaneously updata \(\theta_j\) for all j<br/>
+[Vectorized] \(\theta = \theta - \alpha\frac{1}{m}\cdot X^T \cdot (h_\theta(X) - y)\)<br/>
 </p>
 
-
-<ul>
-<li>Vectorized Vesion
-</li>
-</ul>
-
-
-$$\theta = \theta - \alpha\frac{1}{m}\sum_{i=1}^m(\theta^{T}x-y^{(i)})x^{(i)}$$
 
 </div>
 
@@ -480,14 +473,11 @@ Note that, in this case feature scaling is necessary.<br/>
 <div class="outline-text-3" id="text-3-1">
 
 
+<p class="verse">
 $$\theta_j=\theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(\frac{1}{1+e^{-\theta^Tx^{(i)}}}-y^{(i)})x_j^{(i)}$$
-<p>
-(simultaneously update for all j)
-</p><ul>
-<li>Vectorized Version
-  $$\theta=\theta-\alpha\frac{1}{m}X^T(h_\theta(X)-y)$$
-</li>
-</ul>
+(simultaneously update for all j)<br/>
+[Vectorized] \(\theta=\theta-\alpha\frac{1}{m}X^T(h_\theta(X)-y)\)<br/>
+</p>
 
 
 </div>
@@ -530,13 +520,9 @@ initialTheta = zeros(2,1);
 
 
 $$\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}$$
-<ul>
-<li>Vectorized Version
-  $$\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}X^T(h_\theta(X)-y)$$
-</li>
-</ul>
-
-
+<p>
+[Vectorized] \(\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}X^T(h_\theta(X)-y)\)
+</p>
 </div>
 </div>
 </div>
