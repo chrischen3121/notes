@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Machine Learning"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-08-25 17:12:28 中国标准时间"/>
+<meta name="generated" content="2014-08-26 11:33:22 中国标准时间"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Machine Learning"/>
@@ -152,6 +152,8 @@
 <li><a href="#sec-3">3 Logistic Regression</a>
 <ul>
 <li><a href="#sec-3-1">3.1 Gradient Descent</a></li>
+<li><a href="#sec-3-2">3.2 Other Method to Compute minJ</a></li>
+<li><a href="#sec-3-3">3.3 fminunc</a></li>
 </ul>
 </li>
 <li><a href="#sec-4">4 Regularization</a></li>
@@ -182,12 +184,25 @@ experience E.<br/>
 <div class="outline-text-2" id="text-2">
 
 <ul>
+<li>Dimension
+
+<p class="verse">
+\(X: m\times(n+1)\) <br/>
+\(x^{(i)}: (n+1)\times1\) <br/>
+\(\theta: (n+1)\times1\) <br/>
+\(y: m\times1\) <br/>
+</p>
+
+
+</li>
 <li>Hypothesis
-  $$h_\theta(x)=\theta^T x$$
+  $$h_\theta(x^{(i)})=\theta^T x^{(i)}$$
+  [Matrix] \(h_\theta(X)=X\cdot\theta\)
 
 </li>
 <li>Cost Function
   $$J(\theta) = \frac{1}{2m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})^2$$
+  [Octave] \(J(\theta) = \frac{1}{2m}sum((h_\theta(X) - y). \widehat{} 2)\)
 
 </li>
 <li>Goal
@@ -232,6 +247,21 @@ repeat until convergence {<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \(\theta_j := \theta_j - \alpha\frac{\partial}{\partial \theta_j}J(\theta)\)<br/>
 }<br/>
 \(\alpha\) is called learning rate. <br/>
+</p>
+
+
+<ul>
+<li>Simultaneous Update
+  $$temp0 := \theta_0 - \alpha\frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1)$$
+  $$temp1 := \theta_1 - \alpha\frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1)$$
+  $$\theta_0 := temp0$$
+  $$\theta_1 := temp1$$
+</li>
+</ul>
+
+
+
+<p class="verse">
 After derivative,<br/>
 $$\theta_j := \theta_j - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}$$
 simultaneously updata \(\theta_j\) for all j<br/>
@@ -239,20 +269,13 @@ simultaneously updata \(\theta_j\) for all j<br/>
 
 
 <ul>
-<li id="sec-2-1-2-1">Simultaneous Update<br/>
-$$temp0 := \theta_0 - \alpha\frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1)$$
-$$temp1 := \theta_1 - \alpha\frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1)$$
-$$\theta_0 := temp0$$
-$$\theta_1 := temp1$$
-
+<li>Vectorized Vesion
 </li>
 </ul>
-<ul>
-<li id="sec-2-1-2-2">Vectorized Vesion<br/>
+
+
 $$\theta = \theta - \alpha\frac{1}{m}\sum_{i=1}^m(\theta^{T}x-y^{(i)})x^{(i)}$$
 
-</li>
-</ul>
 </div>
 
 </div>
@@ -441,6 +464,10 @@ Note that, in this case feature scaling is necessary.<br/>
   \end{cases}$$
   Simplification:
   $$Cost(h_\theta(x), y) = -y log(h_\theta(x)) - (1-y)log(1-h_\theta(x))$$
+
+</li>
+<li>\(J(\theta)\)
+  $$J(\theta) = \frac{1}{m}\sum_{i=1}^{m}Cost(h_\theta(x^{(i)}, y^{(i)}))$$
 </li>
 </ul>
 
@@ -458,11 +485,59 @@ $$\theta_j=\theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(\frac{1}{1+e^{-\theta^Tx^{(i)}
 (simultaneously update for all j)
 </p><ul>
 <li>Vectorized Version
-  $$\theta=\theta-\alpha\frac{1}{m}\sum_{i=1}^m(\frac{1}{1+e^{-\theta^Tx^{(i)}}}-y^{(i)})x^{(i)}$$
+  $$\theta=\theta-\alpha\frac{1}{m}X^T(h_\theta(X)-y)$$
 </li>
 </ul>
 
 
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Other Method to Compute minJ</h3>
+<div class="outline-text-3" id="text-3-2">
+
+<p>Conjugate Gradient, BFGS, LBFGS
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> fminunc</h3>
+<div class="outline-text-3" id="text-3-3">
+
+
+
+
+<pre class="src src-octave"><span style="color: #1e90ff; font-weight: bold;">function</span> [jVal, gradient] = <span style="color: #00008b; font-weight: bold;">costFunction</span>(theta)
+jVal = [...code to compute <span style="color: #008b8b;">J</span>(theta)...];
+gradient = [...code to compute derivative of <span style="color: #008b8b;">J</span>(theta)...];
+<span style="color: #1e90ff; font-weight: bold;">end</span>
+
+options = optimset(<span style="color: #9400d3;">'GradObj'</span>, <span style="color: #9400d3;">'on'</span>, <span style="color: #9400d3;">'MaxIter'</span>, <span style="color: #9400d3;">'100'</span>);
+initialTheta = zeros(2,1);
+[optTheta, functionVal, exitFlag] = fminunc(@costFunction, initialTheta, options);
+</pre>
+
+
+</div>
+
+<div id="outline-container-3-3-1" class="outline-4">
+<h4 id="sec-3-3-1"><span class="section-number-4">3.3.1</span> gradient</h4>
+<div class="outline-text-4" id="text-3-3-1">
+
+
+$$\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}$$
+<ul>
+<li>Vectorized Version
+  $$\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}X^T(h_\theta(X)-y)$$
+</li>
+</ul>
+
+
+</div>
 </div>
 </div>
 
