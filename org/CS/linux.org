@@ -20,7 +20,7 @@
 #+END_VERSE
 *** 命令格式说明
 #+begin_example
-command [-options] parameter1 parameter2 ... 
+command [-options] parameter1 parameter2 ...
 命令     选项      参数(1)    参数(2)
 #+end_example
 说明：
@@ -48,7 +48,7 @@ LANG=en_US #改变语言变量为英语
    |    8 | 系统管理员可用的管理命令                             |
    |    9 | 跟kernel有关的文件                                   |
 1、5、8特别重要。
-*** 命令各部分说明 
+*** 命令各部分说明
 | 代号        | 内容说明                             |
 |-------------+--------------------------------------|
 | DESCRIPTION | 完整的说明                           |
@@ -67,7 +67,7 @@ LANG=en_US #改变语言变量为英语
 | n,N             | 搜索时向下、向上         |
 | q               | 结束man                  |
 *** MAN内容文件位置
-- 通常放在/usr/share/man与/usr/local/man。ubuntu：/etc/manpath.conf 
+- 通常放在/usr/share/man与/usr/local/man。ubuntu：/etc/manpath.conf
 - [man man]一样可以查询
 - man -f [CAMMAND] 查找与CAMMAND有关的说明文件；等同命令 whatis [CAMMAND]，需先安装makewhatis
 #+begin_src sh
@@ -141,7 +141,7 @@ SUID=4, SGID=2, SBIT=1
 | 鼠标              | /usb/mouse[0-15]   |
 | CDROM             | /cdrom             |
 | 当前鼠标          | /mouse             |
-| 磁带机            | IDE:/ht0 SCSI:/st0 | 
+| 磁带机            | IDE:/ht0 SCSI:/st0 |
 *** IDE接口
 #+BEGIN_VERSE
 一个IDE接口可以有两条排线，可连接两个IDE设备。
@@ -250,8 +250,8 @@ red hat: /etc/sysconfig/i18n
 ubuntu: /etc/default/locale
 #+END_VERSE
 ** sunpinyin config
-/usr/lib/ibus-sunpinyin/ibus-setup-sunpinyin 
-* Commands
+/usr/lib/ibus-sunpinyin/ibus-setup-sunpinyin
+* 命令拾遗
 ** 常用命令行列表
 |---------+--------------------------------------------------------------|
 | 命令    | 说明                                                         |
@@ -263,7 +263,6 @@ ubuntu: /etc/default/locale
 | netstat | 查看网络状态。常用："-a"                                     |
 | ps      | 查看运行进程。常用："-aux"                                   |
 | fsck    | 文件系统检查                                                 |
-| sync    | 将内存中的当前用户数据同步写入磁盘                           |
 | cp      | 复制文件。                                                   |
 | uname   | 打印系统信息。                                               |
 ** bc
@@ -275,37 +274,22 @@ ubuntu: /etc/default/locale
   #+BEGIN_SRC sh
   echo "obase=16;10" | bc #out: A
   #+END_SRC
-- 退出quit
 ** sync
 将内存中数据同步写入磁盘
 - 一般账户使用时，仅同步自己的数据
-     
 ** 目录操作
 CLOSED: [2014-02-07 周五 11:47]
 |----------+-------------------------------------------------------------------------------|
 | 命令     | 说明                                                                          |
 |----------+-------------------------------------------------------------------------------|
-| cd       | 变换目录                                                                      |
-| pwd      | 显示当前目录全路径                                                            |
-| mkdir    | 创建新目录                                                                    |
-| rmdir    | 删除空目录                                                                    |
-| rm       | 删除目录或文件                                                                |
-| cp       | 复制文件或目录；文件更名；创建快捷方式                                        |
-| ls       | 遍历该目录。常用："-a" "-l"                                                   |
-| mv       | 移动目录或文件                                                                |
 | chattr   | 配置隐藏属性                                                                  |
 | lsattr   | 查看隐藏属性                                                                  |
 | umask    | 查看配置创建目录或文件时的默认权限                                            |
 | whereis  | 从文件系统DB中查找指定文件                                                    |
 | locate   | 从/var/lib/mlocate/mlocate.db中查找指定文件                                   |
 | updatedb | 根据 /etc/updatedb.conf 的配置去遍历文件系统，更新/var/lib/mlocate/mlocate.db |
-| find     | 直接从文件系统中查找                                                          |
-*** rm
-rm -r romove folder recursively
-\rm -r suspend the prompt
-*** ls 
-	 ls -F append indicator
-*** cp 
+
+*** cp
 #+BEGIN_VERSE
 cp -l hard link
 cp -s symbolic link(shortcut)
@@ -316,43 +300,27 @@ cp -d [symbolic link] [destination] copy link
 #+END_VERSE
 *** chattr
 #+BEGIN_VERSE
-chattr +i  file can not be changed -i cancel
-chattr +a can not modify and remove content but can append new text.(always us 
+chattr +i file can not be changed -i cancel
+chattr +a can not modify and remove content but can append new text.(always us
 #+END_VERSE
 
 *** find
-find -mtime 3 查找3天前24小时内修改过的文件，也可加上+-号。+4 -4的例子：
-#+CAPTION: 
-#+ATTR_HTML: align="center"
-[[file:../resources/linux/find_time.gif]]
-find -newer  例子：find [folder] -newer [file] 找出比file的修改时间更新的其他文件。
+- find -mtime 3
+  查找3天前24小时内修改过的文件。
 
-** 浏览文件内容
+- find -newer  例子：find [folder] -newer [file] 找出比file的修改时间更新的其他文件。
+
+** 查看文件内容
 |------+--------------------------|
 | 命令 | 说明                     |
 |------+--------------------------|
 | cat  | 从第一行开始显示文件内容 |
-| tac  | 从最后一行开始显示       |
 | nl   | 显示并输出行号           |
-| more | 一页一页显示             |
 | less | 与more类似，可往前翻页   |
 | head | 只看头几行               |
 | tail | 只看最后几行             |
-| od   | 以二进制方式显示！       |
+| od   | 以二进制方式显示         |
 | file | 查看文件的类型           |
-*** less
-#+BEGIN_VERSE
-man command used less to show the help doc
-less常用快捷键一览：
-空白键    ：向下翻动一页；
-[pagedown]：向下翻动一页；
-[pageup]  ：向上翻动一页；
-/字串     ：向下搜寻『字串』的功能；
-?字串     ：向上搜寻『字串』的功能；
-n         ：重复前一个搜寻 (与 / 或 ? 有关！)
-N         ：反向的重复前一个搜寻 (与 / 或 ? 有关！)
-q         ：离开 less 这个程序；
-#+END_VERSE
 *** head
 #+BEGIN_VERSE
 head -n 20 show the first 20 lines
@@ -371,7 +339,7 @@ tail -f output appended data as the file grows[Important]
       x[size] ：利用十六进位(hexadecimal)来输出数据，每个整数占用 size bytes ；
 #+END_VERSE
 
-** 文件系统操作
+** 文件系统相关
 | 命令 | 说明                                      |
 |------+-------------------------------------------|
 | df   | 查看文件系统容量使用情况，常用参数iah     |
@@ -384,8 +352,30 @@ tail -f output appended data as the file grows[Important]
 #+BEGIN_SRC sh
   sed -i "s/old/new/g" `grep old -rl ./`
 #+END_SRC
+** 性能工具
+*** top
+  #+BEGIN_VERSE
+  'h' for help
+  top -u [username] "Display Specific User Process"
+  top -n [iterations] "Quit after numbers of iteration"
+  #+END_VERSE
+*** sysstat
+
+** 用户组权限
+|----------+------|
+| 命令     | 说明 |
+|----------+------|
+| chmod    |      |
+| addusr   |      |
+| delusr   |      |
+| passwd   |      |
+| addgroup |      |
+| delgroup |      |
+| useradd  |      |
+
 * Shell编程
 ** 特殊变量
+$0: 完整命令
 $#: 脚本参数个数 $0不算在内
 $*: 保存所有的参数，也不包括$0
 $?: 上次执行的命令的退出状态
@@ -404,8 +394,8 @@ $?: 上次执行的命令的退出状态
 | x>=y   | x -ge y |
 | -n x   | --      |
 | -z x   | --      |
-
  -n、-z分别是“不为空”、为空
+
 *** 文件比较
  | 运算符          | true if              |
  | -d file         | file存在且是目录     |
@@ -415,17 +405,17 @@ $?: 上次执行的命令的退出状态
  | -s file         | file存在且不为空     |
  | -w file         | 用户有file的写权限   |
  | file1 -nt file2 | newer than           |
- | file1 -ot file2 | older than           | 
-  
+ | file1 -ot file2 | older than           |
+
 ** 丑小鸭
 *((expr))强制进行数值运算
+
 ** 数组
 #+BEGIN_SRC sh
 example=(aa 'bb cc' dd)
-#+END_SRC 
+#+END_SRC
 #+BEGIN_VERSE
-访问：${array_name[subscript]} 
+访问：${array_name[subscript]}
 下标从0开始，下标*和@表示整个数组
 ${#array_name[*]}表示元素个数
 #+END_VERSE
-
