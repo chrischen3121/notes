@@ -1,0 +1,61 @@
+#+TITLE: 高性能Python
+#+KEYWORDS: python
+#+OPTIONS: H:2 toc:2 num:3 ^:nil
+#+SETUPFILE: ../configOrg/level1.org
+* Profiling
+** CPU
+- simple /time/ module
+  #+BEGIN_SRC python
+    import time
+    start_time = time.time()
+    fn()
+    end_time = time.time()
+    print end_time - start_time #seconds
+  #+END_SRC
+- decorator
+  #+BEGIN_SRC python
+    from functools import wraps
+    def timefn(fn):
+        @wraps(fn)
+        def measure_time(*args, **kwargs):
+            t1 = time.time()
+            result = fn(*args, **kwargs)
+            t2 = time.time()
+            print t2 - t1
+            return result
+        return measure_time
+
+    @timefn
+    def measure_fn(arg1, arg2):
+        ...
+  #+END_SRC
+- %timeit in IPython
+- unix /time/ command
+  might be useful if you start lots of fresh processes.
+  #+BEGIN_SRC sh
+    /usr/bin/time -p python xxx.py
+    /usr/bin/time --verbose python xxx.py
+  #+END_SRC
+
+- cProfile
+  #+BEGIN_SRC sh
+    python -m cProfile -s cumulative xxx.py
+  #+END_SRC
+  #+BEGIN_VERSE
+  -s cumulative: sort by cumulative time spent
+  record profiling:
+  #+END_VERSE
+  #+BEGIN_SRC sh
+    python -m cProfile -o profile.stats xxx.py
+  #+END_SRC
+  #+BEGIN_SRC python
+    import pstats
+    p = pstats.Stats("profile.stats")
+    p.sort_stats("cumulative")
+    p.print_stats()
+  #+END_SRC
+- line_profiler
+** memory
+- heapy
+- dowser
+- memory_profiler
