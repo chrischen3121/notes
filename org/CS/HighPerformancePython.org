@@ -60,6 +60,42 @@
 
 - line_profiler
 ** memory
-- heapy
-- dowser
 - memory_profiler
+  #+BEGIN_SRC sh
+    python -m memory_profiler xxx.py
+    #or
+    mprof run xxx.py
+    mprof plot
+  #+END_SRC
+- heapy
+  #+BEGIN_VERSE
+  /pip install guppy/ first.
+  Add following to your code.
+  #+END_VERSE
+  #+BEGIN_SRC python
+    from guppy import hpy; hp = hpy()
+    hp.setrelheap()#set checkpoint
+    print hp.heap()#print heap usage since last checkpoint
+  #+END_SRC
+- dowser??
+** work with UT
+Add following at the top of unittest code.
+#+BEGIN_SRC python
+  # for line_profiler
+  if '__builtin__' not in dir() or not hasattr(__builtin__, 'profile'):
+      def profile(func):
+          def inner(*args, **kwargs):
+              return func(*args, **kwargs)
+          return inner
+
+  # for memory_profiler
+  if 'profile' not in dir():
+      def profile(func):
+          def inner(*args, **kwargs):
+              return func(*args, **kwargs)
+          return inner
+
+#+END_SRC
+
+* Container
+** bisect
