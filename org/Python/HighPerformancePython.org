@@ -1,4 +1,4 @@
-#+TITLE: 高性能Python
+#+TITLE: High Performance Python
 #+KEYWORDS: python
 #+OPTIONS: H:2 toc:2 num:3 ^:nil
 #+SETUPFILE: ../configOrg/level1.org
@@ -93,7 +93,6 @@ Add following at the top of unittest code.
           def inner(*args, **kwargs):
               return func(*args, **kwargs)
           return inner
-
 #+END_SRC
 
 * Lists and tuples
@@ -123,13 +122,121 @@ print alist
 ** list vs. tuple
 *** list
 dynamic arrays, mutable and allow for resizing.
+
 - resizing
-  The growth pattern is:  0, 4, 8, 16, 25, 35, 46, 58, 72, 88, ...
-  # #+BEGIN_SRC c
-  #   new_allocated = (newsize >> 3) + (newsize < 9 ? 3 : 6);
-  #   new_allocated += newsize;
-  # #+END_SRC
+
+  The growth pattern is:
+  | new size      | 0 | 1 | 5 |  9 | 17 | 26 | 36 | 47 | ... |
+  | new allocated | 0 | 4 | 8 | 16 | 25 | 35 | 46 | 58 | ... |
+  #+BEGIN_SRC c
+    new_allocated = (newsize >> 3) + (newsize < 9 ? 3 : 6);
+    new_allocated += newsize;
+  #+END_SRC
+
+- dereference
+
+  #+BEGIN_VERSE
+  List objects (for background, see Chapter 3) have an overhead for each dereference, as
+  the objects they reference can occur anywhere in memory.
+  #+END_VERSE
 
 *** tuple
 static arrays, immutable
 - instantiating a list can be 5.1x slower than instantiating a tuple
+- tuple is a hashable type
+
+* set & dict
+** hashable key
+#+BEGIN_VERSE
+The type should implements both the __hash__ magic
+function and either __eq__ or __cmp__ .
+#+END_VERSE
+- probing function
+  #+BEGIN_SRC python
+    # pseudocode
+    # mask is always equal to bin(hashtable_size - 1)
+    def index_sequence(key, mask=0b111, PERTURB_SHIFT=5):
+        perturb = hash(key)
+        i = perturb & mask
+        yield i
+        while True:
+            i = ((i << 2) + i + perturb + 1)
+            perturb >>= PERTURB_SHIFT
+            yield i & mask
+  #+END_SRC
+- User-defined classes
+  #+BEGIN_VERSE
+  User-defined classes have default hash and comparison functions.
+  The default __hash__ function simply returns the object’s placement
+  in memory as given by the built-in id function. Similarly,
+  the __cmp__ operator compares the numerical value of the object’s
+  placement in memory.
+  #+END_VERSE
+- entropy
+  #+BEGIN_VERSE
+  “how well distributed my hash function is” is called the *entropy*
+  of the hash function:
+  #+END_VERSE
+  $$S = - \sum_i p(i)\cdot\log(p(i))$$
+  #+BEGIN_VERSE
+  where p(i) is the probability that the hash function gives hash i.
+
+  knowing up front what range of values will be used and how large
+  the dictionary will be helps in making a good selection.
+  #+END_VERSE
+
+** resizing
+#+BEGIN_VERSE
+The growth pattern is:
+8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, ...
+the number of bucket increases by 4x until we reach 50,000
+elements, after which the size is increased by 2x.
+
+resizing requires recomputing indices,
+#+END_VERSE
+** extra
+- Namespace lookups
+  #+BEGIN_SRC python
+    import math
+    from math import sin
+    def test1(x):
+        """
+        >>> %timeit test1(123456)
+        1000000 loops, best of 3: 381 ns per loop
+        """
+        return math.sin(x)
+
+    def test2(x):
+        """
+        >>> %timeit test2(123456)
+        1000000 loops, best of 3: 311 ns per loop
+        """
+        return sin(x)
+
+    def test3(x, sin=math.sin):
+        """
+        >>> %timeit test3(123456)
+        1000000 loops, best of 3: 306 ns per loop
+        """
+        return sin(x)
+  #+END_SRC
+  #+BEGIN_EXAMPLE
+  >>> dis.dis(test1)
+  0 LOAD_GLOBAL      0 (math)  # Dictionary lookup
+  3 LOAD_ATTR        1 (sin)   # Dictionary lookup
+  6 LOAD_FAST        0 (x)     # Local lookup
+  9 CALL_FUNCTION    1
+  12 RETURN_VALUE
+
+  >>> dis.dis(test2)
+  0 LOAD_GLOBAL      0 (sin)   # Dictionary lookup
+  3 LOAD_FAST        0 (x)     # Local lookup
+  6 CALL_FUNCTION    1
+  9 RETURN_VALUE
+
+  >>> dis.dis(test3)
+  0 LOAD_FAST        1 (sin)   # Local lookup
+  3 LOAD_FAST        0 (x)     # Local lookup
+  6 CALL_FUNCTION    1
+  9 RETURN_VALUE
+  #+END_EXAMPLE

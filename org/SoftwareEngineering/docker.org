@@ -1,0 +1,93 @@
+#+TITLE: Docker
+#+KEYWORDS: docker
+#+OPTIONS: H:2 toc:2 num:3 ^:nil
+#+SETUPFILE: ../configOrg/level1.org
+* Install
+** Ubuntu
+#+BEGIN_SRC sh
+  sudo apt-get install docker.io
+#+END_SRC
+- Server
+  #+BEGIN_SRC sh
+    sudo update-rc.d docker.io defaults
+    service docker.io start
+  #+END_SRC
+- Test
+  #+BEGIN_SRC sh
+    docker run --rm -ti ubuntu:latest /bin/bash
+    docker run --rm -ti fedora:latest /bin/bash
+    docker run --rm -ti centos:latest /bin/bash
+  #+END_SRC
+
+* Images
+** Filesystems
+#+BEGIN_VERSE
+Docker supported *AUFS*, *BTRFS*, *Device-mapper*, and *overlayfs*.
+Each storage backend provides a fast copy-on-write (CoW)
+system for image management.
+#+END_VERSE
+
+** Dockerfile
+#+BEGIN_VERSE
+This file describes all the steps that are required to create
+one image and would usually be contained within the root directory
+of the source code repository for your application.
+A typical dockerfile example:
+#+END_VERSE
+#+BEGIN_EXAMPLE
+FROM node:0.10
+
+MAINTAINER Anna Doe <anna@example.com>
+
+LABEL "rating"="Five Stars" "class"="First Class"
+
+USER root
+
+ENV AP /data/app
+ENV SCPATH /etc/supervisor/conf.d
+
+RUN apt-get -y update
+
+# The daemons
+RUN apt-get -y install supervisor
+RUN mkdir -p /var/log/supervisor
+
+# Supervisor Configuration
+ADD ./supervisord/conf.d/* $SCPATH/
+
+# Application Code
+ADD *.js* $AP/
+WORKDIR $AP
+RUN npm install
+CMD ["supervisord", "-n"]
+#+END_EXAMPLE
+- Add
+
+  The ADD instruction is used to copy files from the local filesystem into your image.
+
+- WORKDIR
+
+  #+BEGIN_VERSE
+  With the WORKDIR instruction, you change the working directory
+  in the image for the remaining build instructions.
+  #+END_VERSE
+
+- CMD
+  #+BEGIN_VERSE
+  CMD instruction defines the command that launches the process
+  that you want to run within the container.
+  #+END_VERSE
+
+** Building and Running
+#+BEGIN_SRC sh
+  docker build -t example/docker-node-hello:latest .
+  docker run -d -p 8080:8080 example/docker-node-hello:latest
+#+END_SRC
+#+BEGIN_VERSE
+Use DOCKER_HOST environment variable to specify docker host ip.
+Boot2Docker or Docker Machine users can use /boot2docker ip/
+or /docker-machine ip/.
+#+END_VERSE
+
+** Docker Hub
+https://hub.docker.com/explore/
