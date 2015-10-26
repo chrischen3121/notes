@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="title" content="Network"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-09-11T21:40+0800"/>
+<meta name="generated" content="2015-10-26T23:06+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="Network"/>
@@ -26,10 +26,10 @@
   .center {margin-left:auto; margin-right:auto; text-align:center;}
   p.verse { margin-left: 3% }
   pre {
-	border: 1pt solid #AEBDCC;
-	background-color: #F3F5F7;
-	padding: 5pt;
-	font-family: courier, monospace;
+        border: 1pt solid #AEBDCC;
+        background-color: #F3F5F7;
+        padding: 5pt;
+        font-family: courier, monospace;
         font-size: 90%;
         overflow:auto;
   }
@@ -339,11 +339,28 @@ for the JavaScript code below.
 </ul></li>
 </ul>
 </li>
-<li><a href="#sec-6">6 Application Layer</a>
+<li><a href="#sec-6">6 Transport Layer</a>
 <ul>
-<li><a href="#sec-6-1">6.1 DHCP(Dynamic Host Configuration Protocol)</a>
+<li><a href="#sec-6-1">6.1 TCP vs UDP</a></li>
+<li><a href="#sec-6-2">6.2 Well-known Ports</a></li>
+<li><a href="#sec-6-3">6.3 UDP socket</a>
 <ul>
-<li><a href="#sec-6-1-1">6.1.1 How does node find DHCP server?</a></li>
+<li><a href="#sec-6-3-1">6.3.1 header</a></li>
+<li><a href="#sec-6-3-2">6.3.2 sequence</a></li>
+</ul>
+</li>
+<li><a href="#sec-6-4">6.4 TCP socket</a>
+<ul>
+<li><a href="#sec-6-4-1">6.4.1 Three-way handshake</a></li>
+<li><a href="#sec-6-4-2">6.4.2 Connection Release</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-7">7 Application Layer</a>
+<ul>
+<li><a href="#sec-7-1">7.1 DHCP(Dynamic Host Configuration Protocol)</a>
+<ul>
+<li><a href="#sec-7-1-1">7.1.1 How does node find DHCP server?</a></li>
 </ul>
 </li>
 </ul>
@@ -376,7 +393,7 @@ for the JavaScript code below.
   C is the speed of light.
 
 <p class="verse">
-In wireless communication, s=c, i.e. the speed of light. <br/>
+In wireless communication, s=c, i.e. the speed of light.<br/>
 In copper wire, the speed s generally ranges from .59c to .77c<br/>
 </p>
 
@@ -589,7 +606,7 @@ S/N in db unit \(=10log_{10}(S/N)\)<br/>
 
 
 <p class="verse">
-Use power of 10 for rates, 2 for storage. <br/>
+Use power of 10 for rates, 2 for storage.<br/>
 \(Mbps=1,000,000bps, 1KB = 2^{10}bytes\)
 "B" is for bytes, "b" is for bits<br/>
 </p>
@@ -694,7 +711,7 @@ The number of bit positions in which two codewords differ is called the Hamming 
 
 
 <ul>
-<li>To correct <b>d</b> errors, we need <b>2d+1</b> distance. 
+<li>To correct <b>d</b> errors, we need <b>2d+1</b> distance.
 </li>
 </ul>
 
@@ -724,7 +741,7 @@ if three errors happen(0000000011), this code doesn't work.
 
 <p class="verse">
 Take D data bits, add 1 check bit.<br/>
-Check bit is the sum of the D bits module 2.(diff by even sum or odd) <br/>
+Check bit is the sum of the D bits module 2.(diff by even sum or odd)<br/>
 Distance: 2<br/>
 Detect 1 error<br/>
 </p>
@@ -817,7 +834,7 @@ Detect 1 error<br/>
 
 
 <p class="verse">
-Given n data bits, generate k check bits such that the n+k bits are evenly <br/>
+Given n data bits, generate k check bits such that the n+k bits are evenly<br/>
 divisible by a generator C.<br/>
 C(x) use the polynomial code:<br/>
 eg: 10011010 is \(x^7+x^4+x^3+x^1\)<br/>
@@ -826,7 +843,7 @@ Both the high- and low-order bits of the generator must be 1<br/>
 
 
 <ul>
-<li>Sending 
+<li>Sending
 
 <ol>
 <li>Extend the n data bits with k zeros
@@ -849,8 +866,8 @@ Reminder: 0010
 
 
 <p class="verse">
-Note that: There are no carries for addition or borrows <br/>
-for subtraction. Both addition and subtraction are <br/>
+Note that: There are no carries for addition or borrows<br/>
+for subtraction. Both addition and subtraction are<br/>
 identical to exclusive OR.<br/>
 </p>
 
@@ -1077,7 +1094,7 @@ Two non-trivial issues: <b>Timeouts</b> and <b>Duplicates</b>
 <h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> Timeouts</h4>
 <div class="outline-text-4" id="text-3-1-1">
 
-<p>Should be 
+<p>Should be
 </p><ul>
 <li>Not too long (link goes idle)
 </li>
@@ -1117,7 +1134,7 @@ Add a single bit to distinguish the current frame from the next one(in the head 
 <li>Limitation of Stop-and-Wait
 
 <p class="verse">
-Stop-and-Wait allows only one frame to <br/>
+Stop-and-Wait allows only one frame to<br/>
 be outstanding from the sender at a time.<br/>
 Not good with high BD networks.<br/>
 </p>
@@ -1178,7 +1195,7 @@ Generalization of Stop-and-Wait
 <li>Statically divide a resource
 
 <p class="verse">
-Suited for continuous traffic, fixed <br/>
+Suited for continuous traffic, fixed<br/>
 number of users<br/>
 </p>
 
@@ -1217,8 +1234,8 @@ GSM (2G cellular): TDM within FDM<br/>
 <li id="sec-3-3-1-1">ALOHA<br/>
 
 <p class="verse">
-Simple idea: <br/>
-If there was a collision(no ACK received) then wait <br/>
+Simple idea:<br/>
+If there was a collision(no ACK received) then wait<br/>
 a random time and resend.<br/>
 </p>
 
@@ -1248,17 +1265,15 @@ A node listens to the channel before transmitting.<br/>
 </p>
 
 
-
 </li>
 <li><b>collision detection</b> (CSMA/CD)
 
 
 <p class="verse">
 A transmitting node listens to the channel while it is transmitting.<br/>
-If it detects that another node is transmitting an interfering frame, <br/>
+If it detects that another node is transmitting an interfering frame,<br/>
 it stops transmitting and wait a random amount time before repeating.<br/>
 </p>
-
 
 
 <ul>
@@ -1273,23 +1288,21 @@ Note that: Ethernet minimum frame is 64bytes.<br/>
 </p>
 
 
-
 </li>
 <li>Persistence
 
 
 <p class="verse">
-Multiple waiting nodes will queue up then collide. <br/>
+Multiple waiting nodes will queue up then collide.<br/>
 Espacially on high load network.<br/>
 <br/>
 Idea to solve: N queued senders, each send probability 1/N. How to estimate?<br/>
 <br/>
 In practice: BEB(Binary Exponential Backoff)<br/>
-Clever estimates the probability: <br/>
+Clever estimates the probability:<br/>
 1st collision, wait 0 to 1 frame times; 2nd, 0 to 3; 3rd, 0 to 7;<br/>
 BEB doubles interval for each successive collision.<br/>
 </p>
-
 
 
 </li>
@@ -1389,7 +1402,7 @@ Wireless can't work with CSMA/CD
 <ul>
 <li>Nodes can't hear while sending
 
-<p>  
+<p>
   Detecting collisions wasted much time with wireless.
 </p></li>
 </ul>
@@ -1414,13 +1427,13 @@ Uses a short handshake instead of CSMA
 <ul>
 <li>Solution For Hidden Terminals
 
-<p>  
+<p>
   <img src="../resources/network/MACAHiddenTerminal.png" align="center" alt="../resources/network/MACAHiddenTerminal.png" />
 </p>
 </li>
 <li>Solution For Exposed Terminals
 
-<p>  
+<p>
   <img src="../resources/network/MACAExposedTerminal.png" align="center" alt="../resources/network/MACAExposedTerminal.png" />
 </p>
 </li>
@@ -1497,7 +1510,7 @@ E.g Token Ring, node addresses<br/>
 <ul>
 <li>Token Ring
 
-<p>  
+<p>
   Arrange nodes in a ring. Token rotates permission to send to each node in turn.
   <img src="../resources/network/TokenRing.png" align="center" alt="../resources/network/TokenRing.png" />
 </p></li>
@@ -1585,22 +1598,22 @@ may overload, and lead to frame loss.<br/>
 </li>
 <li>Problem - forwarding loops
 
-<p>  
+<p>
   <img src="../resources/network/RedundantLinks.png" align="center" alt="../resources/network/RedundantLinks.png" />
 </p>
 <p>
   Redundancy in case of failures. But loops occurs:
 </p>
 <ol>
-<li>\(A\to C\to B, D-left, D-right\) 
+<li>\(A\to C\to B, D-left, D-right\)
 </li>
-<li>\(D-left\to C-right, E, F\) 
+<li>\(D-left\to C-right, E, F\)
 </li>
-<li>\(D-right\to C-left, E, F\) 
+<li>\(D-right\to C-left, E, F\)
 </li>
-<li>\(C-right\to D-left, A, B\) 
+<li>\(C-right\to D-left, A, B\)
 </li>
-<li>\(C-left\to D-right, A, B\) 
+<li>\(C-left\to D-right, A, B\)
 </li>
 <li>&hellip;
 </li>
@@ -1663,7 +1676,7 @@ Hi, I'm <b>C</b>, the root is <b>A</b>, it's <b>2</b> hops away. (C, A, 2)<br/>
 <ul>
 <li>At the beginning
 
-<p>    
+<p>
     <img src="../resources/network/STExample1.png" align="center" alt="../resources/network/STExample1.png" />
 </p>
 </li>
@@ -1729,13 +1742,12 @@ Turn off forwarding that is not on spanning tree<br/>
 </p>
 
 
-
 </li>
 <li>Continus to run
 
 <p class="verse">
 Adapts by timeing out information<br/>
-E.g: If A fails, other nodes forget it, and B will become the new root  <br/>
+E.g: If A fails, other nodes forget it, and B will become the new root<br/>
 </p>
 
 
@@ -2021,7 +2033,7 @@ B: 192.24.12~15.0~255<br/>
 <li>Flexibility
 
 <p class="verse">
-provide default behavior, with less specific prefixes. <br/>
+provide default behavior, with less specific prefixes.<br/>
 E.g. send traffic going outside an organization to a border router.<br/>
 <br/>
 special case behavior, with more specific prefixes.<br/>
@@ -2067,7 +2079,7 @@ E.g. For performance, economics, security<br/>
 
 
 <p class="verse">
-Different networks have different maximum packet sizes. <br/>
+Different networks have different maximum packet sizes.<br/>
 Also known MTU(Maximum Transmission Unit)<br/>
 Two solutions:<br/>
 </p>
@@ -2192,8 +2204,7 @@ Each message is carried in an IP packet<br/>
 </p>
 
 
-
-<p>  
+<p>
   <img src="../resources/network/ICMPMessage.png" align="center" alt="../resources/network/ICMPMessage.png" />
 </p>
 <p>
@@ -2213,7 +2224,7 @@ Each message is carried in an IP packet<br/>
 </table>
 
 
-<p>  
+<p>
   The last two are used for testing.
 </p></li>
 </ul>
@@ -2271,7 +2282,7 @@ Solutions:<br/>
 </li>
 <li>Tunnels (carry IPv6 on IPv4)
 
-<p>    
+<p>
     <img src="../resources/network/IPv6Tunneling.png" align="center" alt="../resources/network/IPv6Tunneling.png" />
 </p></li>
 </ul>
@@ -2315,7 +2326,7 @@ Traceroute sends probe packets increasing TTL starting from 1.<br/>
 <p class="verse">
 NAT is one type of the <b>middle box</b>.<br/>
 <b>Middle box</b> provides new functionality(NAT, firewall, Intrusion Detection).<br/>
-NAT holds a table, map internal IP:Port with External IP:Port. <br/>
+NAT holds a table, map internal IP:Port with External IP:Port.<br/>
 May look like the following table:<br/>
 </p>
 
@@ -2363,7 +2374,6 @@ External&rarr; Internal: changes the dest IP:Port.<br/>
 Can only send packets after outgoing connection is set up.<br/>
 Difficult to run servers or peer-to-peer apps(Skype) at home.<br/>
 </p>
-
 
 
 </li>
@@ -2556,7 +2566,7 @@ And now link state favored in practice.<br/>
 </li>
 <li>Remember the message so that it is only flood once
 
-<p>  
+<p>
   Using source and sequence number
 </p></li>
 </ul>
@@ -2569,15 +2579,163 @@ And now link state favored in practice.<br/>
 </div>
 
 <div id="outline-container-6" class="outline-2">
-<h2 id="sec-6"><span class="section-number-2">6</span> Application Layer</h2>
+<h2 id="sec-6"><span class="section-number-2">6</span> Transport Layer</h2>
 <div class="outline-text-2" id="text-6">
 
 
 </div>
 
 <div id="outline-container-6-1" class="outline-3">
-<h3 id="sec-6-1"><span class="section-number-3">6.1</span> DHCP(Dynamic Host Configuration Protocol)</h3>
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> TCP vs UDP</h3>
 <div class="outline-text-3" id="text-6-1">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">TCP(Streams)</th><th scope="col" class="left">UDP(Datagrams)</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">Connections</td><td class="left">Datagrams</td></tr>
+<tr><td class="left">Reliably, and in order</td><td class="left">reordered, duplicated, msg may be lost</td></tr>
+<tr><td class="left">Arbitrary length content</td><td class="left">Limited message size</td></tr>
+<tr><td class="left">Flow control</td><td class="left">Can send regardless of receiver state</td></tr>
+<tr><td class="left">Congestion control</td><td class="left">Can send regardless of network state</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> Well-known Ports</h3>
+<div class="outline-text-3" id="text-6-2">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="right" /><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="right">Port</td><td class="left">Protocol</td><td class="left">Use</td></tr>
+<tr><td class="right">20, 21</td><td class="left">FTP</td><td class="left">File transfer</td></tr>
+<tr><td class="right">22</td><td class="left">SSH</td><td class="left">Remote login</td></tr>
+<tr><td class="right">25</td><td class="left">SMTP</td><td class="left">Email</td></tr>
+<tr><td class="right">80</td><td class="left">HTTP</td><td class="left">World Wide Web</td></tr>
+<tr><td class="right">110</td><td class="left">POP-3</td><td class="left">Remote email access</td></tr>
+<tr><td class="right">143</td><td class="left">IMAP</td><td class="left">Remote email access</td></tr>
+<tr><td class="right">443</td><td class="left">HTTPS</td><td class="left">Secure Web (HTTP over SSL/TLS)</td></tr>
+<tr><td class="right">543</td><td class="left">RTSP</td><td class="left">Media player control</td></tr>
+<tr><td class="right">631</td><td class="left">IPP</td><td class="left">Printer sharing</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-6-3" class="outline-3">
+<h3 id="sec-6-3"><span class="section-number-3">6.3</span> UDP socket</h3>
+<div class="outline-text-3" id="text-6-3">
+
+
+</div>
+
+<div id="outline-container-6-3-1" class="outline-4">
+<h4 id="sec-6-3-1"><span class="section-number-4">6.3.1</span> header</h4>
+<div class="outline-text-4" id="text-6-3-1">
+
+<ul>
+<li>Datagram length up to 64K
+</li>
+<li>Checksum(16 bits) for reliability
+</li>
+</ul>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Source port</td><td class="left">Destination</td></tr>
+<tr><td class="left">UDP length</td><td class="left">UDP checksum</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-6-3-2" class="outline-4">
+<h4 id="sec-6-3-2"><span class="section-number-4">6.3.2</span> sequence</h4>
+<div class="outline-text-4" id="text-6-3-2">
+
+<p><img src="../resources/network/DatagramSockets.png" align="center" alt="../resources/network/DatagramSockets.png" />
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6-4" class="outline-3">
+<h3 id="sec-6-4"><span class="section-number-3">6.4</span> TCP socket</h3>
+<div class="outline-text-3" id="text-6-4">
+
+
+</div>
+
+<div id="outline-container-6-4-1" class="outline-4">
+<h4 id="sec-6-4-1"><span class="section-number-4">6.4.1</span> Three-way handshake</h4>
+<div class="outline-text-4" id="text-6-4-1">
+
+<p><img src="../resources/network/ThreeWayHandshake.png" align="center" alt="../resources/network/ThreeWayHandshake.png" />
+</p>
+<ul>
+<li>state machine
+
+<p>
+  <img src="../resources/network/ThreeWayHandshake_SM.png" align="center" alt="../resources/network/ThreeWayHandshake_SM.png" />
+</p></li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-6-4-2" class="outline-4">
+<h4 id="sec-6-4-2"><span class="section-number-4">6.4.2</span> Connection Release</h4>
+<div class="outline-text-4" id="text-6-4-2">
+
+<p><img src="../resources/network/TCPConnectionRelease.png" align="center" alt="../resources/network/TCPConnectionRelease.png" />
+</p>
+<ul>
+<li>state machine
+
+<p>
+  <img src="../resources/network/TCPConnectionRelease_SM.png" align="center" alt="../resources/network/TCPConnectionRelease_SM.png" />
+</p></li>
+</ul>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Application Layer</h2>
+<div class="outline-text-2" id="text-7">
+
+
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> DHCP(Dynamic Host Configuration Protocol)</h3>
+<div class="outline-text-3" id="text-7-1">
 
 <p>Provide the following information to Node:
 </p><ul>
@@ -2609,9 +2767,9 @@ DHCP uses UDP ports 67,68
 
 </div>
 
-<div id="outline-container-6-1-1" class="outline-4">
-<h4 id="sec-6-1-1"><span class="section-number-4">6.1.1</span> How does node find DHCP server?</h4>
-<div class="outline-text-4" id="text-6-1-1">
+<div id="outline-container-7-1-1" class="outline-4">
+<h4 id="sec-7-1-1"><span class="section-number-4">7.1.1</span> How does node find DHCP server?</h4>
+<div class="outline-text-4" id="text-7-1-1">
 
 
 <p class="verse">
@@ -2623,8 +2781,7 @@ broadcast address is all 1s.<br/>
 
 <p>
 <img src="../resources/network/DHCPSeq.png" align="center" alt="../resources/network/DHCPSeq.png" />
-</p>
-</div>
+</p></div>
 </div>
 </div>
 </div>
