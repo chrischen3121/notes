@@ -1,0 +1,68 @@
+#+TITLE: Python数据分析
+#+KEYWORDS: python, data analysis
+#+OPTIONS: H:2 toc:2 num:3 ^:nil
+#+SETUPFILE: ../configOrg/level1.org
+* numpy
+** ndarray
+#+BEGIN_SRC python
+      import numpy as np
+      py_array = [1, 2, 3, 4, 5]
+      np_array = np.array(py_array)
+      np_array.shape #=> (5,)
+      np_array.dtype #=> dtype('int64')
+
+      py_array = [[1, 2, 3, 4], [5, 6, 7, 8]]
+      np_array = np.array(py_array)
+      np_array.shape #=> (2, 4)
+      np_array.ndim #=> 2
+
+      np.zeros(10)
+      #=> array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.])
+      np.ones((2, 3))
+      #=> array([[ 1.,  1.,  1.], [ 1.,  1.,  1.]])
+      np.empty((2, 3, 2))
+      #=>
+      # array([[[ 0.,  0.],
+      #         [ 0.,  0.],
+      #         [ 0.,  0.]],
+
+      #        [[ 0.,  0.],
+      #         [ 0.,  0.],
+      #         [ 0.,  0.]]])
+
+      np.arange(5)
+      #=> array([0, 1, 2, 3, 4])
+      np.random.randn(2, 3)
+
+      np_array = np.array([1, 2, 3], dtype=np.int32)
+      np_array = np_array.astype(np.float64)
+      np_array.dtype #=> dtype('float64')
+
+#+END_SRC
+- Creation
+| Function          | Description                                                                                                                                                                   |
+|-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| array             | Convert input data (list, tuple, array, or other sequence type) to an ndarray either by inferring a dtype or explicitly specifying a dtype. Copies the input data by default. |
+| asarray           | Convert input to ndarray, but do not copy if the input is already an ndarray                                                                                                  |
+| arange            | Like the built-in range but returns an ndarray instead of a list                                                                                                              |
+| ones, ones_like   | Produce an array of all 1’s with the given shape and dtype, ones_like takes another array and produces a ones array of the same shape and dtype.                              |
+| zeros, zeros_like | Like ones and ones_like but producing arrays of 0’s instead                                                                                                                   |
+| empty, empty_like | Create new arrays by allocating new memory, but do not populate with any values like ones and zeros                                                                           |
+| eye, identity     | Create a square N x N identity matrix (1’s on the diagonal and 0’s elsewhere)                                                                                                 |
+
+- Supported dtype
+  #+BEGIN_VERSE
+  int8, uint8, int16, uint16, int32, uint32, int64, uint64,
+  float16, float32, float64, float128
+  complex64, complex128, complex256
+  bool
+  object
+  string_
+  unicode_
+  #+END_VERSE
+*** Indexing
+- fancy indexing
+  #+BEGIN_VERSE
+  Fancy indexing is a term adopted by NumPy to describe indexing using *integer arrays* .
+  Unlike slicing, always copies the data into a new array.
+  #+END_VERSE
