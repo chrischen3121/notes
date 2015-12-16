@@ -60,9 +60,86 @@
   string_
   unicode_
   #+END_VERSE
+
 *** Indexing
+- basic indexing
+  #+BEGIN_SRC python
+    arr = np.array(range(12)).reshape(3,4)
+    # array([[ 0,  1,  2,  3],
+    #        [ 4,  5,  6,  7],
+    #        [ 8,  9, 10, 11]])
+
+    arr[1:, :3]
+    # array([[ 4,  5,  6],
+    #        [ 8,  9, 10]])
+
+  #+END_SRC
+- boolean indexing
+  #+BEGIN_SRC python
+    flags = np.array([1, 2, 3, 2, 2, 1])
+    data = np.random.randn(6,2)
+    # array([[ 2.11684529,  1.24861544],
+    #        [-0.34817586, -0.59905366],
+    #        [-0.84976431,  0.11840417],
+    #        [ 1.36648373,  1.33416664],
+    #        [ 0.37616856, -0.0032112 ],
+    #        [-0.7749904 , -0.60457688]])
+    flags ==2
+    # array([False,  True, False,  True,  True, False], dtype=bool)
+    data[flags == 2]
+    # array([[-0.34817586, -0.59905366],
+    #        [ 1.36648373,  1.33416664],
+    #        [ 0.37616856, -0.0032112 ]])
+    data[(flags == 3) | (flags == 1), 1:]
+    # array([[ 1.24861544],
+    #        [ 0.11840417],
+    #        [-0.60457688]])
+    data[data<0] = 0
+    # array([[ 2.11684529,  1.24861544],
+    #        [ 0.        ,  0.        ],
+    #        [ 0.        ,  0.11840417],
+    #        [ 1.36648373,  1.33416664],
+    #        [ 0.37616856,  0.        ],
+    #        [ 0.        ,  0.        ]])
+  #+END_SRC
 - fancy indexing
   #+BEGIN_VERSE
   Fancy indexing is a term adopted by NumPy to describe indexing using *integer arrays* .
   Unlike slicing, always copies the data into a new array.
   #+END_VERSE
+  #+BEGIN_SRC python
+    arr
+    # array([[ 0.,  0.,  0.,  0.],
+    #        [ 1.,  1.,  1.,  1.],
+    #        [ 2.,  2.,  2.,  2.]])
+    arr[[2, 1]]
+    # array([[ 2.,  2.,  2.,  2.],
+    #        [ 1.,  1.,  1.,  1.]])
+    arr = np.array(range(12)).reshape(3,4)
+    # array([[ 0,  1,  2,  3],
+    #        [ 4,  5,  6,  7],
+    #        [ 8,  9, 10, 11]])
+    arr[[1,2], [2,3]]
+    # array([ 6, 11]) # choose location (1, 2) (2, 3)
+
+    arr[[1,2]][:, [2,3]]
+    # array([[ 6,  7],
+    #        [10, 11]])
+    arr[np.ix_([1,2], [2,3])] # same effect
+    # array([[ 6,  7],
+    #        [10, 11]])
+  #+END_SRC
+** Conditional Logic
+#+BEGIN_VERSE
+The *numpy.where* function is a vectorized version of the ternary expression x if
+condition else y. *numpy.where* is quicker than list comprehension.
+#+END_VERSE
+#+BEGIN_SRC python
+  xarr = np.array([1,1,1,1,1])
+  yarr = np.array([2,2,2,2,2])
+  cond = np.array([True, False, True, False, False])
+  np.where(cond, xarr, yarr)
+  # array([1, 2, 1, 2, 2])
+  np.where(cond, 4, 3)
+  # array([4, 3, 4, 3, 3])
+#+END_SRC
