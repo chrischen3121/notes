@@ -3,14 +3,14 @@
                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>level1</title>
+<title>Docker</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
-<meta name="title" content="level1"/>
+<meta name="title" content="Docker"/>
 <meta name="generator" content="Org-mode"/>
 <meta name="generated" content="2016-01-04T10:59+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
-<meta name="keywords" content=""/>
+<meta name="keywords" content="docker"/>
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   html { font-family: Times, serif; font-size: 12pt; }
@@ -118,8 +118,204 @@ for the JavaScript code in this tag.
 
 
 <div id="content">
-<h1 class="title">level1</h1>
+<h1 class="title">Docker</h1>
 
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Install</a>
+<ul>
+<li><a href="#sec-1-1">1.1 Ubuntu</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 Images</a>
+<ul>
+<li><a href="#sec-2-1">2.1 Filesystems</a></li>
+<li><a href="#sec-2-2">2.2 Dockerfile</a></li>
+<li><a href="#sec-2-3">2.3 Building and Running</a></li>
+<li><a href="#sec-2-4">2.4 Docker Hub</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Install</h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Ubuntu</h3>
+<div class="outline-text-3" id="text-1-1">
+
+
+
+
+<pre class="src src-sh">sudo apt-get install docker.io
+</pre>
+
+<ul>
+<li>Server
+
+
+
+<pre class="src src-sh">sudo update-rc.d docker.io defaults
+service docker.io start
+</pre>
+
+</li>
+<li>Test
+
+
+
+<pre class="src src-sh">docker run --rm -ti ubuntu:latest /bin/bash
+docker run --rm -ti fedora:latest /bin/bash
+docker run --rm -ti centos:latest /bin/bash
+</pre>
+
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Images</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Filesystems</h3>
+<div class="outline-text-3" id="text-2-1">
+
+
+<p class="verse">
+Docker supported <b>AUFS</b>, <b>BTRFS</b>, <b>Device-mapper</b>, and <b>overlayfs</b>.<br/>
+Each storage backend provides a fast copy-on-write (CoW)<br/>
+system for image management.<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Dockerfile</h3>
+<div class="outline-text-3" id="text-2-2">
+
+
+<p class="verse">
+This file describes all the steps that are required to create<br/>
+one image and would usually be contained within the root directory<br/>
+of the source code repository for your application.<br/>
+A typical dockerfile example:<br/>
+</p>
+
+
+
+
+<pre class="example">FROM node:0.10
+
+MAINTAINER Anna Doe &lt;anna@example.com&gt;
+
+LABEL "rating"="Five Stars" "class"="First Class"
+
+USER root
+
+ENV AP /data/app
+ENV SCPATH /etc/supervisor/conf.d
+
+RUN apt-get -y update
+
+# The daemons
+RUN apt-get -y install supervisor
+RUN mkdir -p /var/log/supervisor
+
+# Supervisor Configuration
+ADD ./supervisord/conf.d/* $SCPATH/
+
+# Application Code
+ADD *.js* $AP/
+WORKDIR $AP
+RUN npm install
+CMD ["supervisord", "-n"]
+</pre>
+
+<ul>
+<li>Add
+
+<p>
+  The ADD instruction is used to copy files from the local filesystem into your image.
+</p>
+</li>
+<li>WORKDIR
+
+
+<p class="verse">
+With the WORKDIR instruction, you change the working directory<br/>
+in the image for the remaining build instructions.<br/>
+</p>
+
+
+</li>
+<li>CMD
+
+<p class="verse">
+CMD instruction defines the command that launches the process<br/>
+that you want to run within the container.<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> Building and Running</h3>
+<div class="outline-text-3" id="text-2-3">
+
+
+
+
+<pre class="src src-sh">docker build -t example/docker-node-hello:latest .
+docker run -d -p 8080:8080 example/docker-node-hello:latest
+</pre>
+
+
+<p class="verse">
+Use DOCKER_HOST environment variable to specify docker host ip.<br/>
+Boot2Docker or Docker Machine users can use <i>boot2docker ip</i><br/>
+or <i>docker-machine ip</i>.<br/>
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> Docker Hub</h3>
+<div class="outline-text-3" id="text-2-4">
+
+<p><a href="https://hub.docker.com/explore/">https://hub.docker.com/explore/</a>
+</p></div>
+</div>
+</div>
 </div>
 
 </body>

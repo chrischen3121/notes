@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>Mathematical Methods for Quantitative Finance</title>
-<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
-<meta name="title" content="Mathematical Methods for Quantitative Finance"/>
+<title>Statistic</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="Statistic"/>
 <meta name="generator" content="Org-mode"/>
 <meta name="generated" content="2016-01-04T10:59+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
-<meta name="keywords" content="Math, Finance"/>
+<meta name="keywords" content="math, statistic"/>
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   html { font-family: Times, serif; font-size: 12pt; }
@@ -208,23 +208,24 @@ for the JavaScript code below.
 
 
 <div id="content">
-<h1 class="title">Mathematical Methods for Quantitative Finance</h1>
+<h1 class="title">Statistic</h1>
 
 
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1 Interest</a>
+<li><a href="#sec-1">1 概率</a>
 <ul>
-<li><a href="#sec-1-1">1.1 Simple Interest</a></li>
-<li><a href="#sec-1-2">1.2 Compound Interest</a></li>
-<li><a href="#sec-1-3">1.3 Present &amp; Future Value</a></li>
+<li><a href="#sec-1-1">1.1 Probability Axioms</a></li>
+<li><a href="#sec-1-2">1.2 Probability Laws</a></li>
+<li><a href="#sec-1-3">1.3 Binomial Theorem</a></li>
 </ul>
 </li>
-<li><a href="#sec-2">2 Annuities</a>
+<li><a href="#sec-2">2 统计</a>
 <ul>
-<li><a href="#sec-2-1">2.1 Perpetual Annuity</a></li>
+<li><a href="#sec-2-1">2.1 central tendency</a></li>
+<li><a href="#sec-2-2">2.2 variability</a></li>
 </ul>
 </li>
 </ul>
@@ -232,75 +233,151 @@ for the JavaScript code below.
 </div>
 
 <div id="outline-container-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> Interest</h2>
+<h2 id="sec-1"><span class="section-number-2">1</span> 概率</h2>
 <div class="outline-text-2" id="text-1">
 
-
-$$A_0=Principal, r=rate, n=\#years, m=periods/year, k=\#periods$$
 
 </div>
 
 <div id="outline-container-1-1" class="outline-3">
-<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Simple Interest</h3>
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Probability Axioms</h3>
 <div class="outline-text-3" id="text-1-1">
 
 
-$$V=(1+rn)A_0$$
+</div>
 
+<div id="outline-container-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> Nonnegativity</h4>
+<div class="outline-text-4" id="text-1-1-1">
+
+<p>For every event A, \(P(A) \ge 0\).
+</p></div>
+
+</div>
+
+<div id="outline-container-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> Additivity</h4>
+<div class="outline-text-4" id="text-1-1-2">
+
+
+$$P(A \cup B) = P(A)+P(B)$$
+$$P(A_1 \cup A_2 \cup ...) = P(A_1) + P(A_2) + ...$$
+</div>
+
+</div>
+
+<div id="outline-container-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> Normalization</h4>
+<div class="outline-text-4" id="text-1-1-3">
+
+
+$$P(\Omega) = 1$$
+</div>
 </div>
 
 </div>
 
 <div id="outline-container-1-2" class="outline-3">
-<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Compound Interest</h3>
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Probability Laws</h3>
 <div class="outline-text-3" id="text-1-2">
 
 <ul>
-<li>Interest is paid regularly
-  $$V = (1+r)^nA_0$$
+<li>If \(A\subset B\), then \(P(A)\le P(B)\)
 </li>
-<li>Interest rate r is yearly, interest is paid monthly
-  $$V = [1+(r/m)]^kA_0$$
+<li>\(P(A \cup B) = P(A) + P(B) - P(A \cap B)\)
+</li>
+<li>\(P(A\cup B) \le P(A)+P(B)\)
+</li>
+<li>\(P(A\cup B\cup C) = P(A) + P(A^c\cap B) + P(A^c\cap B^c\cap C)\)
+</li>
+<li>if \(P(A \cap B)\) equals to 0, this stuation is called mutually exclusive
 </li>
 </ul>
 
 
 </div>
 
+<div id="outline-container-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> 独立事件的组合概率</h4>
+<div class="outline-text-4" id="text-1-2-1">
+
+<p>if \(A_1\) and \(A_2\) are independent events.
+$$P(A_1|A_2)=P(A_1)\times P(A_2)$$
+
+</p></div>
+</div>
+
 </div>
 
 <div id="outline-container-1-3" class="outline-3">
-<h3 id="sec-1-3"><span class="section-number-3">1.3</span> Present &amp; Future Value</h3>
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> Binomial Theorem</h3>
 <div class="outline-text-3" id="text-1-3">
 
 
-$$FV = (1+r)PV$$
-$$PV = \frac{1}{1+r}FV = d_1FV$$
-<p>
-where \(d_1\) is the 1-year <span style="text-decoration:underline;">discount factor</span>
-$$d_k = \frac{1}{[1+(r/m)]^k}$$
+$$(x+y)^n = \sum_{k=0}^{n} \dbinom{n}{k}x^{n-k}y^{k}$$
 
-</p></div>
+</div>
 </div>
 
 </div>
 
 <div id="outline-container-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> Annuities</h2>
+<h2 id="sec-2"><span class="section-number-2">2</span> 统计</h2>
 <div class="outline-text-2" id="text-2">
 
-<p>An <span style="text-decoration:underline;">annuity</span> is a contract that pays money regularly over a period of time.
-$$V=\frac{A}{r}[1-\frac{1}{(1+r)^n}]$$
-</p>
+
 </div>
 
 <div id="outline-container-2-1" class="outline-3">
-<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Perpetual Annuity</h3>
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> central tendency</h3>
 <div class="outline-text-3" id="text-2-1">
 
-<p>A <span style="text-decoration:underline;">perpetual annuity</span> pays a fixed amount periodically <i>forever</i>
-$$V=\frac{A}{r}$$
-</p></div>
+<ul>
+<li>mode
+</li>
+<li>median
+<ul>
+<li><b>even</b> \(\frac{x_\frac{n}{2} + x_{\frac{n}{2}+1}}{2}\)
+</li>
+<li><b>odd</b> \(x_\frac{n+1}{2}\)
+
+</li>
+</ul>
+
+</li>
+<li>mean
+</li>
+</ul>
+
+
+$$\mu = \sum_{i=1}^{N}p_i\cdot x_i$$
+
+<ul>
+<li>\(\sigma\)
+</li>
+</ul>
+
+
+$$\sigma^2 = \frac{\sum_{i=1}^N(x_i-\mu)^2}{N}$$
+$$\sigma^2 = \frac{\sum_{i=1}^Nx_i^2}{N} - \mu^2$$
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> variability</h3>
+<div class="outline-text-3" id="text-2-2">
+
+<ul>
+<li>range
+
+<p>
+  cut off the upper 25% and lower 25% tails of the distribution
+</p></li>
+</ul>
+
+</div>
 </div>
 </div>
 </div>

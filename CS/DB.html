@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="title" content="Database concept"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2014-05-28T08:54+0800"/>
+<meta name="generated" content="2016-01-04T10:59+0800"/>
 <meta name="author" content="ChrisChen"/>
 <meta name="description" content=""/>
 <meta name="keywords" content="database"/>
@@ -26,10 +26,10 @@
   .center {margin-left:auto; margin-right:auto; text-align:center;}
   p.verse { margin-left: 3% }
   pre {
-	border: 1pt solid #AEBDCC;
-	background-color: #F3F5F7;
-	padding: 5pt;
-	font-family: courier, monospace;
+        border: 1pt solid #AEBDCC;
+        background-color: #F3F5F7;
+        padding: 5pt;
+        font-family: courier, monospace;
         font-size: 90%;
         overflow:auto;
   }
@@ -281,6 +281,7 @@ for the JavaScript code below.
 <ul>
 <li><a href="#sec-9-1">9.1 Motivation</a></li>
 <li><a href="#sec-9-2">9.2 Properties</a></li>
+<li><a href="#sec-9-3">9.3 Isolation levels</a></li>
 </ul>
 </li>
 </ul>
@@ -433,19 +434,19 @@ for the JavaScript code below.
 
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">CREATE</span> <span style="color: #1e90ff; font-weight: bold;">DATABASE</span> dbname;
-<span style="color: #1e90ff; font-weight: bold;">USE</span> <span style="color: #1e90ff; font-weight: bold;">DATABASE</span> dbname;
-<span style="color: #1e90ff; font-weight: bold;">CREATE</span> <span style="color: #1e90ff; font-weight: bold;">TABLE</span> <span style="color: #1e90ff; font-weight: bold;">table_name</span> (<span style="color: #1e90ff; font-weight: bold;">column_name</span> <span style="color: #1e90ff; font-weight: bold;">TYPE</span> Constrains, ... );
-<span style="color: #1e90ff; font-weight: bold;">DESC</span> <span style="color: #1e90ff; font-weight: bold;">table_name</span>;
-<span style="color: #1e90ff; font-weight: bold;">DROP</span> <span style="color: #1e90ff; font-weight: bold;">TABLE</span>;
-<span style="color: #1e90ff; font-weight: bold;">ALTER</span> <span style="color: #1e90ff; font-weight: bold;">TABLE</span> <span style="color: #1e90ff; font-weight: bold;">table_name</span> 
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">CREATE</span> <span style="color: #F0DFAF; font-weight: bold;">DATABASE</span> dbname;
+<span style="color: #F0DFAF; font-weight: bold;">USE</span> <span style="color: #F0DFAF; font-weight: bold;">DATABASE</span> dbname;
+<span style="color: #F0DFAF; font-weight: bold;">CREATE</span> <span style="color: #F0DFAF; font-weight: bold;">TABLE</span> <span style="color: #F0DFAF; font-weight: bold;">table_name</span> (<span style="color: #F0DFAF; font-weight: bold;">column_name</span> <span style="color: #F0DFAF; font-weight: bold;">TYPE</span> Constrains, ... );
+<span style="color: #F0DFAF; font-weight: bold;">DESC</span> <span style="color: #F0DFAF; font-weight: bold;">table_name</span>;
+<span style="color: #F0DFAF; font-weight: bold;">DROP</span> <span style="color: #F0DFAF; font-weight: bold;">TABLE</span>;
+<span style="color: #F0DFAF; font-weight: bold;">ALTER</span> <span style="color: #F0DFAF; font-weight: bold;">TABLE</span> <span style="color: #F0DFAF; font-weight: bold;">table_name</span>
 
-<span style="color: #1e90ff; font-weight: bold;">ADD</span> <span style="color: #1e90ff; font-weight: bold;">COLUMN</span> columnName ...
-<span style="color: #1e90ff; font-weight: bold;">ADD</span> <span style="color: #1e90ff; font-weight: bold;">PRIMARY</span> <span style="color: #1e90ff; font-weight: bold;">KEY</span> (columnName)
-<span style="color: #1e90ff; font-weight: bold;">RENAME</span> <span style="color: #1e90ff; font-weight: bold;">TO</span> tableNewName
-<span style="color: #1e90ff; font-weight: bold;">CHANGE</span> <span style="color: #1e90ff; font-weight: bold;">COLUMN</span> columnOldName columnNewName <span style="color: #1e90ff; font-weight: bold;">TYPE</span> ...
-<span style="color: #1e90ff; font-weight: bold;">MODIFY</span> <span style="color: #1e90ff; font-weight: bold;">COLUMN</span> columnName <span style="color: #1e90ff; font-weight: bold;">TYPE</span>...
-<span style="color: #1e90ff; font-weight: bold;">DROP</span> <span style="color: #1e90ff; font-weight: bold;">COLUMN</span> columnName
+<span style="color: #F0DFAF; font-weight: bold;">ADD</span> <span style="color: #F0DFAF; font-weight: bold;">COLUMN</span> columnName ...
+<span style="color: #F0DFAF; font-weight: bold;">ADD</span> <span style="color: #F0DFAF; font-weight: bold;">PRIMARY</span> <span style="color: #F0DFAF; font-weight: bold;">KEY</span> (columnName)
+<span style="color: #F0DFAF; font-weight: bold;">RENAME</span> <span style="color: #F0DFAF; font-weight: bold;">TO</span> tableNewName
+<span style="color: #F0DFAF; font-weight: bold;">CHANGE</span> <span style="color: #F0DFAF; font-weight: bold;">COLUMN</span> columnOldName columnNewName <span style="color: #F0DFAF; font-weight: bold;">TYPE</span> ...
+<span style="color: #F0DFAF; font-weight: bold;">MODIFY</span> <span style="color: #F0DFAF; font-weight: bold;">COLUMN</span> columnName <span style="color: #F0DFAF; font-weight: bold;">TYPE</span>...
+<span style="color: #F0DFAF; font-weight: bold;">DROP</span> <span style="color: #F0DFAF; font-weight: bold;">COLUMN</span> columnName
 </pre>
 
 </div>
@@ -459,9 +460,9 @@ for the JavaScript code below.
 
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">INSERT</span> <span style="color: #1e90ff; font-weight: bold;">INTO</span> tableName [(columnName1, columnName2, ...)] <span style="color: #1e90ff; font-weight: bold;">VALUES</span> (<span style="color: #9400d3;">'value1'</span>, <span style="color: #9400d3;">'value2'</span>, ...);
-<span style="color: #1e90ff; font-weight: bold;">UPDATE</span> tableName <span style="color: #1e90ff; font-weight: bold;">SET</span> columnName1 = <span style="color: #9400d3;">'value1'</span>, columnName2 = <span style="color: #9400d3;">'value2'</span> <span style="color: #1e90ff; font-weight: bold;">WHERE</span> expr;
-<span style="color: #1e90ff; font-weight: bold;">DELETE</span> <span style="color: #0000ff; text-decoration: underline;">FROM</span> tableName <span style="color: #1e90ff; font-weight: bold;">WHERE</span> expr;
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">INSERT</span> <span style="color: #F0DFAF; font-weight: bold;">INTO</span> tableName [(columnName1, columnName2, ...)] <span style="color: #F0DFAF; font-weight: bold;">VALUES</span> (<span style="color: #CC9393;">'value1'</span>, <span style="color: #CC9393;">'value2'</span>, ...);
+<span style="color: #F0DFAF; font-weight: bold;">UPDATE</span> tableName <span style="color: #F0DFAF; font-weight: bold;">SET</span> columnName1 = <span style="color: #CC9393;">'value1'</span>, columnName2 = <span style="color: #CC9393;">'value2'</span> <span style="color: #F0DFAF; font-weight: bold;">WHERE</span> expr;
+<span style="color: #F0DFAF; font-weight: bold;">DELETE</span> <span style="color: #DCDCCC; font-weight: bold;">FROM</span> tableName <span style="color: #F0DFAF; font-weight: bold;">WHERE</span> expr;
 </pre>
 
 
@@ -474,13 +475,13 @@ for the JavaScript code below.
 <div class="outline-text-4" id="text-2-1-3">
 
 <ul>
-<li>REGEXP pattern 
+<li>REGEXP pattern
 </li>
 <li>IN ('value1', 'value2', &hellip;)
 </li>
 <li>columnName BETWEEN value1 and value2
 
-<p>  
+<p>
   Equivalent to "columnName &gt; value1 and columnName &lt; value2"
 </p>
 </li>
@@ -497,10 +498,10 @@ When 'NOT' use with 'BETWEEN' and 'LIKE', 'NOT' must follow with 'WHERE' or 'AND
 
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">SHOW</span> <span style="color: #1e90ff; font-weight: bold;">CREATE</span> <span style="color: #1e90ff; font-weight: bold;">TABLE</span> tableName;
-<span style="color: #1e90ff; font-weight: bold;">SHOW</span> <span style="color: #1e90ff; font-weight: bold;">COLUMNS</span> <span style="color: #0000ff; text-decoration: underline;">FROM</span> tableName;
-<span style="color: #1e90ff; font-weight: bold;">SHOW</span> <span style="color: #1e90ff; font-weight: bold;">INDEX</span> <span style="color: #0000ff; text-decoration: underline;">FROM</span> tableName;
-<span style="color: #1e90ff; font-weight: bold;">SHOW</span> WARNINGS;
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">SHOW</span> <span style="color: #F0DFAF; font-weight: bold;">CREATE</span> <span style="color: #F0DFAF; font-weight: bold;">TABLE</span> tableName;
+<span style="color: #F0DFAF; font-weight: bold;">SHOW</span> <span style="color: #F0DFAF; font-weight: bold;">COLUMNS</span> <span style="color: #DCDCCC; font-weight: bold;">FROM</span> tableName;
+<span style="color: #F0DFAF; font-weight: bold;">SHOW</span> <span style="color: #F0DFAF; font-weight: bold;">INDEX</span> <span style="color: #DCDCCC; font-weight: bold;">FROM</span> tableName;
+<span style="color: #F0DFAF; font-weight: bold;">SHOW</span> WARNINGS;
 </pre>
 
 </li>
@@ -516,10 +517,10 @@ When 'NOT' use with 'BETWEEN' and 'LIKE', 'NOT' must follow with 'WHERE' or 'AND
 
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">UPDATE</span> tableName <span style="color: #1e90ff; font-weight: bold;">SET</span> columnName = 
-<span style="color: #1e90ff; font-weight: bold;">CASE</span>
-  <span style="color: #1e90ff; font-weight: bold;">WHEN</span> column_1 = somevalue1
-    <span style="color: #1e90ff; font-weight: bold;">THEN</span> newValue;
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">UPDATE</span> tableName <span style="color: #F0DFAF; font-weight: bold;">SET</span> columnName =
+<span style="color: #F0DFAF; font-weight: bold;">CASE</span>
+  <span style="color: #F0DFAF; font-weight: bold;">WHEN</span> column_1 = somevalue1
+    <span style="color: #F0DFAF; font-weight: bold;">THEN</span> newValue;
 </pre>
 
 
@@ -581,11 +582,11 @@ When 'NOT' use with 'BETWEEN' and 'LIKE', 'NOT' must follow with 'WHERE' or 'AND
 </p>
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">WITH</span> temp_view_name(columnName...) <span style="color: #1e90ff; font-weight: bold;">as</span>
-     <span style="color: #1e90ff; font-weight: bold;">select</span> <span style="color: #1e90ff; font-weight: bold;">statement</span>
-<span style="color: #1e90ff; font-weight: bold;">SELECT</span> ...
-<span style="color: #0000ff; text-decoration: underline;">FROM</span> temp_view_name
-<span style="color: #1e90ff; font-weight: bold;">WHERE</span> ...
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">WITH</span> temp_view_name(columnName...) <span style="color: #F0DFAF; font-weight: bold;">as</span>
+     <span style="color: #F0DFAF; font-weight: bold;">select</span> <span style="color: #F0DFAF; font-weight: bold;">statement</span>
+<span style="color: #F0DFAF; font-weight: bold;">SELECT</span> ...
+<span style="color: #DCDCCC; font-weight: bold;">FROM</span> temp_view_name
+<span style="color: #F0DFAF; font-weight: bold;">WHERE</span> ...
 </pre>
 
 
@@ -598,16 +599,16 @@ When 'NOT' use with 'BETWEEN' and 'LIKE', 'NOT' must follow with 'WHERE' or 'AND
 
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">WITH</span> <span style="color: #1e90ff; font-weight: bold;">RECURSIVE</span> empl(employee_name, manager_name) <span style="color: #1e90ff; font-weight: bold;">as</span> (
-     <span style="color: #1e90ff; font-weight: bold;">SELECT</span> employee_name, manager_name
-     <span style="color: #0000ff; text-decoration: underline;">FROM</span> manager
-    <span style="color: #1e90ff; font-weight: bold;">UNION</span>
-     <span style="color: #1e90ff; font-weight: bold;">SELECT</span> manager.employee_name,empl.manager_name
-     <span style="color: #0000ff; text-decoration: underline;">FROM</span> manager, empl
-     <span style="color: #1e90ff; font-weight: bold;">WHERE</span> manager.manager_name = empl.employee_name
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">WITH</span> <span style="color: #F0DFAF; font-weight: bold;">RECURSIVE</span> empl(employee_name, manager_name) <span style="color: #F0DFAF; font-weight: bold;">as</span> (
+     <span style="color: #F0DFAF; font-weight: bold;">SELECT</span> employee_name, manager_name
+     <span style="color: #DCDCCC; font-weight: bold;">FROM</span> manager
+    <span style="color: #F0DFAF; font-weight: bold;">UNION</span>
+     <span style="color: #F0DFAF; font-weight: bold;">SELECT</span> manager.employee_name,empl.manager_name
+     <span style="color: #DCDCCC; font-weight: bold;">FROM</span> manager, empl
+     <span style="color: #F0DFAF; font-weight: bold;">WHERE</span> manager.manager_name = empl.employee_name
 )
-<span style="color: #1e90ff; font-weight: bold;">SELECT</span> *
-<span style="color: #0000ff; text-decoration: underline;">FROM</span> empl
+<span style="color: #F0DFAF; font-weight: bold;">SELECT</span> *
+<span style="color: #DCDCCC; font-weight: bold;">FROM</span> empl
 </pre>
 
 
@@ -856,8 +857,8 @@ When any non-key column is dependent on any of the other non-key columns.
 <ul>
 <li>Splitting rule
 
-<p>  
-  If \(\bar A \to B_1, B_2\) , then \(\bar A \to B_1\ \bar A \to B_2\) 
+<p>
+  If \(\bar A \to B_1, B_2\) , then \(\bar A \to B_1\ \bar A \to B_2\)
 </p>
 </li>
 <li>Combining rule
@@ -868,7 +869,7 @@ When any non-key column is dependent on any of the other non-key columns.
 </li>
 <li>Transitive rule
 
-<p>  
+<p>
   If \(\bar A \to \bar B\) and \(\bar B \to \bar C\), then \(\bar A \to \bar C\)
 </p></li>
 </ul>
@@ -961,7 +962,7 @@ E.g. for first case, Consider \(\bar{AB} \twoheadrightarrow \bar B\).<br/>
 </li>
 <li>Nontrivial
 
-<p>  
+<p>
   otherwise.
 </p></li>
 </ul>
@@ -983,14 +984,14 @@ MVD is a <b>tuple-generating</b> dependency.
 </li>
 <li>Intersection rule
 
-<p>  
+<p>
   If \((\bar A\twoheadrightarrow \bar B) \land (\bar A\twoheadrightarrow \bar C)\) ,
   then \(\bar A\twoheadrightarrow \bar B\cap \bar C\) .
 </p>
 </li>
 <li>Transitive rule
 
-<p>  
+<p>
   If \((\bar A\twoheadrightarrow \bar B) \land (\bar B\twoheadrightarrow \bar C)\) ,
   then \(\bar A\twoheadrightarrow \bar C - \bar B\) .
 </p></li>
@@ -1157,7 +1158,7 @@ For each nontrivial \(\bar A\twoheadrightarrow \bar B\), A is a key.<br/>
 </li>
 </ul>
 
-<p>4NF is in BCNF. 
+<p>4NF is in BCNF.
 </p>
 </div>
 </div>
@@ -1264,14 +1265,14 @@ Examples:
 
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">Create</span> ...
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">Create</span> ...
 {
-    columnName <span style="color: #1e90ff; font-weight: bold;">type</span> <span style="color: #1e90ff; font-weight: bold;">CHECK</span> (columnName <span style="color: #1e90ff; font-weight: bold;">IN</span> (<span style="color: #9400d3;">'value1'</span>, <span style="color: #9400d3;">'value2'</span>));
+    columnName <span style="color: #F0DFAF; font-weight: bold;">type</span> <span style="color: #F0DFAF; font-weight: bold;">CHECK</span> (columnName <span style="color: #F0DFAF; font-weight: bold;">IN</span> (<span style="color: #CC9393;">'value1'</span>, <span style="color: #CC9393;">'value2'</span>));
 }
 
-<span style="color: #1e90ff; font-weight: bold;">ADD</span> <span style="color: #1e90ff; font-weight: bold;">CONSTRAINT</span> <span style="color: #1e90ff; font-weight: bold;">CHECK</span> columnName &gt; 1;
+<span style="color: #F0DFAF; font-weight: bold;">ADD</span> <span style="color: #F0DFAF; font-weight: bold;">CONSTRAINT</span> <span style="color: #F0DFAF; font-weight: bold;">CHECK</span> columnName &gt; 1;
 
-<span style="color: #1e90ff; font-weight: bold;">CHECK</span> <span style="color: #9400d3;">'A'</span> = <span style="color: #0000ff; text-decoration: underline;">SUBSTRING</span>(columnName, 1, 1);
+<span style="color: #F0DFAF; font-weight: bold;">CHECK</span> <span style="color: #CC9393;">'A'</span> = <span style="color: #DCDCCC; font-weight: bold;">SUBSTRING</span>(columnName, 1, 1);
 </pre>
 
 
@@ -1312,13 +1313,13 @@ Examples:
 
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">CREATE</span> <span style="color: #1e90ff; font-weight: bold;">TABLE</span> <span style="color: #00008b; font-weight: bold;">tableName</span>
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">CREATE</span> <span style="color: #F0DFAF; font-weight: bold;">TABLE</span> <span style="color: #93E0E3;">tableName</span>
 (
     ...
-    columnName <span style="color: #1e90ff; font-weight: bold;">TYPE</span> <span style="color: #1e90ff; font-weight: bold;">NOT</span> <span style="color: #1e90ff; font-weight: bold;">NULL</span>,
-    [<span style="color: #1e90ff; font-weight: bold;">CONSTRAINT</span> <span style="color: #1e90ff; font-weight: bold;">constraint_name</span>,]
-    <span style="color: #1e90ff; font-weight: bold;">FOREIGN</span> <span style="color: #1e90ff; font-weight: bold;">KEY</span> (foreign_key_name)
-    <span style="color: #1e90ff; font-weight: bold;">REFERENCES</span> parent_tableName (parent_columnName)
+    columnName <span style="color: #F0DFAF; font-weight: bold;">TYPE</span> <span style="color: #F0DFAF; font-weight: bold;">NOT</span> <span style="color: #F0DFAF; font-weight: bold;">NULL</span>,
+    [<span style="color: #F0DFAF; font-weight: bold;">CONSTRAINT</span> <span style="color: #F0DFAF; font-weight: bold;">constraint_name</span>,]
+    <span style="color: #F0DFAF; font-weight: bold;">FOREIGN</span> <span style="color: #F0DFAF; font-weight: bold;">KEY</span> (foreign_key_name)
+    <span style="color: #F0DFAF; font-weight: bold;">REFERENCES</span> parent_tableName (parent_columnName)
 )
 </pre>
 
@@ -1390,7 +1391,7 @@ update [of C1,&hellip;,Cn] on T<br/>
 </li>
 <li>[For Each Row]
 
-<p>    
+<p>
     Determines whether the trigger is row-level or statement-level
 </p>
 </li>
@@ -1408,7 +1409,7 @@ new table as <b>var</b><br/>
 </li>
 <li>condition
 
-<p>    
+<p>
     In <i>when</i> or <i>where</i> clause depends on the SQL Implementation.
 </p></li>
 </ul>
@@ -1445,12 +1446,12 @@ new table as <b>var</b><br/>
 <ul>
 <li>Balanced trees (B tree, B+ tree)
 
-<p>  
+<p>
   When uses "&gt;, &lt;, &gt;=, &lt;=" in query.
 </p></li>
 <li>Hashtable
 
-<p>  
+<p>
   When uses "=" in query.
 </p></li>
 </ul>
@@ -1466,9 +1467,9 @@ new table as <b>var</b><br/>
 
 
 
-<pre class="src src-sql"><span style="color: #1e90ff; font-weight: bold;">CREATE</span> <span style="color: #1e90ff; font-weight: bold;">INDEX</span> IndexName <span style="color: #1e90ff; font-weight: bold;">ON</span> T(A1,A2...)
-<span style="color: #1e90ff; font-weight: bold;">CREATE</span> <span style="color: #1e90ff; font-weight: bold;">UNIQUE</span> <span style="color: #1e90ff; font-weight: bold;">INDEX</span> ...
-<span style="color: #1e90ff; font-weight: bold;">DROP</span> <span style="color: #1e90ff; font-weight: bold;">INDEX</span> IndexName
+<pre class="src src-sql"><span style="color: #F0DFAF; font-weight: bold;">CREATE</span> <span style="color: #F0DFAF; font-weight: bold;">INDEX</span> IndexName <span style="color: #F0DFAF; font-weight: bold;">ON</span> T(A1,A2...)
+<span style="color: #F0DFAF; font-weight: bold;">CREATE</span> <span style="color: #F0DFAF; font-weight: bold;">UNIQUE</span> <span style="color: #F0DFAF; font-weight: bold;">INDEX</span> ...
+<span style="color: #F0DFAF; font-weight: bold;">DROP</span> <span style="color: #F0DFAF; font-weight: bold;">INDEX</span> IndexName
 </pre>
 
 </div>
@@ -1486,7 +1487,7 @@ new table as <b>var</b><br/>
 </li>
 <li>Index maintenance(Important)
 
-<p>  
+<p>
   When updates database, indexes will also be updated.
 </p></li>
 </ul>
@@ -1581,7 +1582,7 @@ Serializability -&gt; constraints always hold<br/>
 
 <p class="verse">
 Serializability: Execution must be equivalent to some<br/>
-sequential(serial) order of all transactions<br/>
+sequential(serial) order of all transactions.(e.g. T9, T1, T2, T3, &hellip;)<br/>
 </p>
 
 
@@ -1594,6 +1595,76 @@ all effects of transaction remain in database.<br/>
 </p>
 
 
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-9-3" class="outline-3">
+<h3 id="sec-9-3"><span class="section-number-3">9.3</span> Isolation levels</h3>
+<div class="outline-text-3" id="text-9-3">
+
+<ul>
+<li>dirty data: written by an uncommitted transaction
+</li>
+<li>nonrepeatable reads: an item read multiple times cannot change values
+
+
+
+<pre class="example">T1:    Update Student Set GPA=(1.1)*GPA
+T2.S1: Select AVG(GPA) From Student
+T2.S2: Select MAX(GPA) From Student
+</pre>
+
+
+<p class="verse">
+T2.S1 may excute before T1, T2.S2 may excute after T1.<br/>
+The GPAs in S1 and S2 are different, leads to a nonrepatable reads violation.<br/>
+</p>
+
+
+</li>
+<li>phantoms
+
+
+
+<pre class="example">T1:    Insert Into Student [100 new tuples]
+T2.S1: Select AVG(GPA) From Student
+T2.S2: Select MAX(GPA) From Student
+</pre>
+
+
+<p class="verse">
+T2.S1 may excute before T1, T2.S2 may excute after T1.<br/>
+[100 new tuples] are known as the phantoms tuples.<br/>
+</p>
+
+
+</li>
+</ul>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">levels</th><th scope="col" class="left">dirty reads</th><th scope="col" class="left">nonrepeatable reads</th><th scope="col" class="left">phantoms</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">Read Uncommitted</td><td class="left">Y</td><td class="left">Y</td><td class="left">Y</td></tr>
+<tr><td class="left">Read Committed</td><td class="left">N</td><td class="left">Y</td><td class="left">Y</td></tr>
+<tr><td class="left">Repeatable Read</td><td class="left">N</td><td class="left">N</td><td class="left">Y</td></tr>
+<tr><td class="left">Serializable</td><td class="left">N</td><td class="left">N</td><td class="left">N</td></tr>
+</tbody>
+</table>
+
+
+<ul>
+<li>Standard default: <b>Serializable</b>
+</li>
+<li>Some systems have default <b>Repeatable Read</b>
 </li>
 </ul>
 
