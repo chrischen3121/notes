@@ -5,39 +5,38 @@
 * numpy
 ** ndarray
 #+BEGIN_SRC python
-      import numpy as np
-      py_array = [1, 2, 3, 4, 5]
-      np_array = np.array(py_array)
-      np_array.shape #=> (5,)
-      np_array.dtype #=> dtype('int64')
+  import numpy as np
+  py_array = [1, 2, 3, 4, 5]
+  np_array = np.array(py_array)
+  np_array.shape #=> (5,)
+  np_array.dtype #=> dtype('int64')
 
-      py_array = [[1, 2, 3, 4], [5, 6, 7, 8]]
-      np_array = np.array(py_array)
-      np_array.shape #=> (2, 4)
-      np_array.ndim #=> 2
+  py_array = [[1, 2, 3, 4], [5, 6, 7, 8]]
+  np_array = np.array(py_array)
+  np_array.shape #=> (2, 4)
+  np_array.ndim #=> 2
 
-      np.zeros(10)
-      #=> array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.])
-      np.ones((2, 3))
-      #=> array([[ 1.,  1.,  1.], [ 1.,  1.,  1.]])
-      np.empty((2, 3, 2))
-      #=>
-      # array([[[ 0.,  0.],
-      #         [ 0.,  0.],
-      #         [ 0.,  0.]],
+  np.zeros(10)
+  #=> array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.])
+  np.ones((2, 3))
+  #=> array([[ 1.,  1.,  1.], [ 1.,  1.,  1.]])
+  np.empty((2, 3, 2))
+  #=>
+  # array([[[ 0.,  0.],
+  #         [ 0.,  0.],
+  #         [ 0.,  0.]],
 
-      #        [[ 0.,  0.],
-      #         [ 0.,  0.],
-      #         [ 0.,  0.]]])
+  #        [[ 0.,  0.],
+  #         [ 0.,  0.],
+  #         [ 0.,  0.]]])
 
-      np.arange(5)
-      #=> array([0, 1, 2, 3, 4])
-      np.random.randn(2, 3)
+  np.arange(5)
+  #=> array([0, 1, 2, 3, 4])
+  np.random.randn(2, 3)
 
-      np_array = np.array([1, 2, 3], dtype=np.int32)
-      np_array = np_array.astype(np.float64)
-      np_array.dtype #=> dtype('float64')
-
+  np_array = np.array([1, 2, 3], dtype=np.int32)
+  np_array = np_array.astype(np.float64)
+  np_array.dtype #=> dtype('float64')
 #+END_SRC
 - Creation
 | Function          | Description                                                                                                                                                                   |
@@ -72,6 +71,7 @@
 | empty, empty_like | Create new arrays by allocating new memory                                    |
 | eye, identity     | Create a square N x N identity matrix (1’s on the diagonal and 0’s elsewhere) |
 *** Indexing
+#<<numpy indexing>>
 - basic indexing
   #+BEGIN_SRC python
     arr = np.array(range(12)).reshape(3,4)
@@ -140,7 +140,6 @@
     #        [10, 11]])
   #+END_SRC
 ** Conditional Logic
-
 #+BEGIN_VERSE
 The *numpy.where* function is a vectorized version of the ternary expression x if
 condition else y. *numpy.where* is quicker than list comprehension.
@@ -212,4 +211,117 @@ condition else y. *numpy.where* is quicker than list comprehension.
   # r1   0   1
   # r2   2   3
 
+  df.T
+  #     r1  r2  r3  r4
+  # c1   0   2   4   6
+  # c2   1   3   5   7
+
+  del df['c2']
+
+  df.columns
+  # Index([u'c1'], dtype='object')
 #+END_SRC
+** Index
+#+BEGIN_VERSE
+Index objects are immutable, main type: Index, Int64Index, MultiIndex,
+DatetimeIndex, PeriodIndex
+#+END_VERSE
+| Method       | Description                                                                               |
+|--------------+-------------------------------------------------------------------------------------------|
+| append       | Concatenate with additional Index objects, producing a new Index                          |
+| diff         | Compute set difference as an Index                                                        |
+| intersection | Compute set intersection                                                                  |
+| union        | Compute set union                                                                         |
+| isin         | Compute boolean array indicating whether each value is contained in the passed collection |
+| delete       | Compute new Index with element at index i deleted                                         |
+| drop         | Compute new index by deleting passed values                                               |
+| insert       | Compute new Index by inserting element at index i                                         |
+| is_monotonic | Returns True if each element is greater than or equal to the previous element             |
+| is_unique    | Returns True if the Index has no duplicate values                                         |
+| unique       | Compute the array of unique values in the Index                                           |
+** Functionality
+*** Reindexing
+Example:
+#+BEGIN_SRC python
+  frame.reindex(index=['a', 'b', 'c', 'd'], method='ffill', columns=['c1', 'c2'])
+  frame.ix[['a', 'b', 'c', 'd'], ['c1', 'c2']]
+#+END_SRC
+reindex args: index, method, fill_value, limit, level, copy
+*** Drop
+#+BEGIN_SRC python
+  frame.drop(['r1', 'r2'])
+  frame.drop(['c1', 'c2'], axis=1)
+#+END_SRC
+*** Selection
+See [[numpy indexing]].
+
+*** Arithmetic
+Examples: df1 + df2, df1.add(df2, fill_value=0)
+
+- Operation between Dataframe and Series
+#+BEGIN_SRC python
+  df = pd.DataFrame(np.arange(6).reshape(3,2),
+                    columns=['c1', 'c2'], index=['r1', 'r2', 'r3'])
+
+  #     c1  c2
+  # r1   0   1
+  # r2   2   3
+  # r3   4   5
+
+  s = pd.Series([4,5], index=['c1', 'c2'])
+
+  # c1    4
+  # c2    5
+  # dtype: int64
+
+  df + s
+  #     c1  c2
+  # r1   4   6
+  # r2   6   8
+  # r3   8  10
+
+
+  s2 = pd.Series([1,2,3], index=['r1', 'r2', 'r3'])
+  # r1    1
+  # r2    2
+  # r3    3
+  # dtype: int64
+
+  df.add(s2, axis=0)
+  #     c1  c2
+  # r1   1   2
+  # r2   4   5
+  # r3   7   8
+#+END_SRC
+*** Other funtions
+- apply, map, applymap
+- sort_index, order
+  #+BEGIN_SRC python
+    df.sort_index()
+    df.sort_index(by='c1')
+    df.sort_index(by=['c1', 'c2'])
+    s.order()
+  #+END_SRC
+- rank
+
+  args: 'average'(default), 'min', 'max', 'first'
+
+- statistic methods
+  #+BEGIN_VERSE
+  count, describe, min, max, argmin, argmax, idxmin, idxmax,
+  quantile, sum, mean, median, mad, var, std, skew, kurt,
+  cumsum, cummin, cummax, cumprod, diff, pct_change, corr, cov, corrwith
+  #+END_VERSE
+
+- unique, value_counts, isin
+- isnull, notnull, dropna, fillna
+
+  arg *thresh* keep only rows containing a certain number of observations.
+
+- stack, unstack, swaplevel, sortlevel
+- set_index, reset_index
+** Panel
+Panel can be thought as a 3-dimensional analogue of DataFrame.
+- swapaxes
+- to_frame, to_panel
+* plotting
