@@ -43,3 +43,49 @@ auto会忽略掉top-level const，decltype则保留
   decltype((i)) b = 5; //错误： b为int &
   decltype((i)) c = i; //正确
 #+END_SRC
+* 容器
+** 数组
+- 声明
+  #+BEGIN_SRC cpp
+    int *ptrs[10]; //指针数组，指针都指向一个int对象
+    int &refs[10]; //语法错误：不存在引用的数组
+    int (*pArray)[10]; //指向一个int数组
+    int (&rArray)[10]; //引用一个int数组
+  #+END_SRC
+- 使用数组初始化vector
+  #+BEGIN_SRC cpp
+    int array[] = {1,5,3,6,9};
+    std::vector<int> vec(std::begin(array), std::end(array));
+  #+END_SRC
+- 多维数组
+  #+BEGIN_SRC cpp
+    int array[2][3]={2,5,7,5,3,1};
+    for (auto &row: array)
+      for (auto col: row)
+          std::cout << col << std::endl;
+  #+END_SRC
+  #+BEGIN_VERSE
+  2行3列数组，使用for range时，外层循环要用引用
+  #+END_VERSE
+
+** iterator
+- C++11引入cbegin和cend，调用他们返回一个const_iterator，支持只读访问。
+- C++11引入全局函数begin和end，定义在iterator头文件中。
+  #+BEGIN_SRC cpp
+    int test[] = {1,5,6,8,3,4};
+    for (auto it = std::begin(test);
+         it != std::end(test); it++) {
+      std::cout << *it << std::endl;
+    }
+  #+END_SRC
+- 迭代器循环体内不能执行改变迭代器容量的操作，如执行会使迭代器失效。
+** C风格字符串
+常用方法strlen, strcmp, strcat, strcpy
+- c_str
+
+  string对象成员方法，返回const char*，指向其内部的内容。
+  #+BEGIN_SRC cpp
+    std::string s("hello world!");
+    auto c = s.c_str();
+    s = "hello"; // cout << c print 'hello'
+  #+END_SRC
