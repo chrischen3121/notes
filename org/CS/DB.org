@@ -20,7 +20,7 @@
   $$temp1 \leftarrow \Pi_{R-S}(r)$$
   $$temp2 \leftarrow \Pi_{R-S}((temp1\times s) - \Pi_{R-S,S}(r))$$
   $$result = temp1 - temp2$$
-  
+
   #+CAPTION: R
   | Student | Task      |
   |---------+-----------|
@@ -58,7 +58,7 @@
   CREATE TABLE table_name (column_name TYPE Constrains, ... );
   DESC table_name;
   DROP TABLE;
-  ALTER TABLE table_name 
+  ALTER TABLE table_name
 
   ADD COLUMN columnName ...
   ADD PRIMARY KEY (columnName)
@@ -75,10 +75,10 @@
 #+END_SRC
 
 *** Other Keywords
-- REGEXP pattern 
+- REGEXP pattern
 - IN ('value1', 'value2', ...)
 - columnName BETWEEN value1 and value2
-  
+
   Equivalent to "columnName > value1 and columnName < value2"
 
 - NOT
@@ -94,13 +94,13 @@
     SHOW INDEX FROM tableName;
     SHOW WARNINGS;
   #+END_SRC
-  
+
 
 - FIRST, LAST, BEFORE, AFTER, SECOND...
 
 - CASE
   #+BEGIN_SRC sql
-    UPDATE tableName SET columnName = 
+    UPDATE tableName SET columnName =
     CASE
       WHEN column_1 = somevalue1
         THEN newValue;
@@ -130,7 +130,7 @@
 
 - UNION
   - Suppress the duplicates by default. UNION ALL can keep the duplicates.
-	
+
 - WITH
 
   Define temporary view
@@ -170,7 +170,7 @@ CHAR, VARCHAR, BLOB, INT, DEC, DATE, DATETIME
 [[file:../resources/data/sqljoins.png]]
 *** Inner Join
 #+BEGIN_VERSE
-An inner join is just a cartesian join with 
+An inner join is just a cartesian join with
 some result rows removed by a condition in the query.
 #+END_VERSE
 
@@ -232,15 +232,15 @@ When any non-key column is dependent on any of the other non-key columns.
 
 *** Rules For FD
 - Splitting rule
-  
-  If $\bar A \to B_1, B_2$ , then $\bar A \to B_1\ \bar A \to B_2$ 
+
+  If $\bar A \to B_1, B_2$ , then $\bar A \to B_1\ \bar A \to B_2$
 
 - Combining rule
 
   If $\bar A \to B_1\ \bar A \to B_2$, then $\bar A \to B_1, B_2$
 
 - Transitive rule
-  
+
   If $\bar A \to \bar B$ and $\bar B \to \bar C$, then $\bar A \to \bar C$
 
 *** Closure of Attributes
@@ -253,13 +253,13 @@ Find all B such that $\bar A \to B$ .
 *** Definition
 #+BEGIN_VERSE
 $\forall t, u\in R:\ t[\bar A] = u[\bar A]$ then
-$\exists v \in R:$ 
-$v[\bar A] = t[\bar A]$ and 
-$v[\bar B] = t[\bar B]$ and 
-$v[rest] = u[rest]$ 
+$\exists v \in R:$
+$v[\bar A] = t[\bar A]$ and
+$v[\bar B] = t[\bar B]$ and
+$v[rest] = u[rest]$
 
-MVD says, If two tuples have same value for $\bar A$, 
-then we have *every* combination for $\bar B$ value and the rest. 
+MVD says, If two tuples have same value for $\bar A$,
+then we have *every* combination for $\bar B$ value and the rest.
 #+END_VERSE
 | tuple | $\bar A$ | $\bar B$   | rest       |
 |-------+----------+------------+------------|
@@ -274,14 +274,14 @@ Note that, there aslo must exist w:
 - Trivial MVDs
 
   #+BEGIN_VERSE
-  $\bar B\subseteq \bar A$ or $\bar A\cup \bar B = all\ attributes$ 
+  $\bar B\subseteq \bar A$ or $\bar A\cup \bar B = all\ attributes$
   always satisfied MVD.
 
   E.g. for first case, Consider $\bar{AB} \twoheadrightarrow \bar B$.
   #+END_VERSE
 
 - Nontrivial
-  
+
   otherwise.
 
 MVD is a *tuple-generating* dependency.
@@ -289,16 +289,16 @@ MVD is a *tuple-generating* dependency.
 *** Rules For MVD
 - FD is a MVD
 - Intersection rule
-  
+
   If $(\bar A\twoheadrightarrow \bar B) \land (\bar A\twoheadrightarrow \bar C)$ ,
   then $\bar A\twoheadrightarrow \bar B\cap \bar C$ .
 
 - Transitive rule
-  
+
   If $(\bar A\twoheadrightarrow \bar B) \land (\bar B\twoheadrightarrow \bar C)$ ,
   then $\bar A\twoheadrightarrow \bar C - \bar B$ .
 
-* Normalization 
+* Normalization
 ** 1NF
 #+BEGIN_VERSE
 Data in your column is atomic if it's been broken
@@ -353,7 +353,7 @@ For every $\bar{left}$ can determine all the attributes.
   Relation R with MVDs is in 4NF if:
   For each nontrivial $\bar A\twoheadrightarrow \bar B$, A is a key.
   #+END_VERSE
-4NF is in BCNF. 
+4NF is in BCNF.
 
 * Subclasses
 ** Complete vs. Incomplete(Partial)
@@ -463,7 +463,7 @@ You can name constraint_name and foreign_key_name whatever you like.
     #+END_VERSE
 
   - [For Each Row]
-    
+
     Determines whether the trigger is row-level or statement-level
 
   - referencing-variables
@@ -476,18 +476,18 @@ You can name constraint_name and foreign_key_name whatever you like.
     #+END_VERSE
 
   - condition
-    
+
     In /when/ or /where/ clause depends on the SQL Implementation.
-  
+
 * Indexes
 ** Usage
 Different between full table scans and immediate location of tuples.
 ** Underlying Data Structures
 - Balanced trees (B tree, B+ tree)
-  
+
   When uses ">, <, >=, <=" in query.
 - Hashtable
-  
+
   When uses "=" in query.
 ** SQL Syntax
 #+BEGIN_SRC sql
@@ -499,7 +499,7 @@ Different between full table scans and immediate location of tuples.
 - Extra space
 - Index creation
 - Index maintenance(Important)
-  
+
   When updates database, indexes will also be updated.
 ** Upsides
 Benefits depends on:
@@ -567,7 +567,7 @@ Benefits depends on:
 | Read Uncommitted | Y           | Y                   | Y        |
 | Read Committed   | N           | Y                   | Y        |
 | Repeatable Read  | N           | N                   | Y        |
-| Serializable     | N           | N                   | N        | 
+| Serializable     | N           | N                   | N        |
 
 - Standard default: *Serializable*
 - Some systems have default *Repeatable Read*

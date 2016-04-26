@@ -22,7 +22,7 @@ $$B2U_w(\overrightarrow{x})-B2T_w(\overrightarrow{x})=x_{w-1}(2^{w-1}--2^{w-1})=
 Let $\overrightarrow{x}=T2B_w(x)$ , Then：
 $$B2U_w(T2B_w(x)) = x_{w-1}2^w + B2T_w(T2B_w(x)) = x_{w-1}2^w + x=T2U_w(x)$$
 bit $x_{w-1}$ is the sign bit, giving:
-\[ T2U_w(x) = \left\{ 
+\[ T2U_w(x) = \left\{
   \begin{array}{l l}
     x+2^w & \quad x<0\\
     x & \quad x\geq0
@@ -35,7 +35,7 @@ $$U2T_w(u)=B2T_w(U2B_w(u))=-u_{w-1}2^w+u$$
     u - 2^w & \quad u\ge2^{w-1}
    \end{array} \right.\]
 **** Use in C
-***** Small size to big size 
+***** Small size to big size
 - unsigned:  zero extension(add zero on the left side)
 - signed:  sign extension(add sign value on the left side)
   $$B2T_{w+1}([x_{w-1},x_{w-1},x_{w-2},\cdots,x_0])=-x_{w-1}2^w+\sum_{i=0}^{w-1}x_i2^i$$
@@ -49,7 +49,7 @@ Truncate high bits by mod $2^k$
 $$B2U_w([x_{w-1},x_{w-2},\cdots,x_0])\mod 2^k=[\sum_{i=0}^{w-1}x_i2^i]\mod 2^k$$
 $$=[\sum_{i=0}^{k-1}x_i2^i] \mod 2^k = \sum_{i=0}^{k-1}x_i2^i$$
 $$= B2U_k([x_{k-1},x_{k-2},\cdots,x_0])$$
-Note that: 
+Note that:
 1) $2^i \mod 2^k = 0 \text{ for any }i \ge k$
 2) $\sum_{i=0}^{k-1}x_i2^i\le\sum_{i=0}^{k-1}2^i=2^k-1<2^k$
 
@@ -58,7 +58,7 @@ $$B2T_k([x_{k-1}, x_{k-2}, \cdots, x_0])=U2T_k(B2U_w([x_{w-1},x_{w-2},\cdots,x_0
 *** Summary
 - $$B2U_w(\overrightarrow{x})\doteq\sum_{i=0}^{w-1}x_i2^i$$
 - $$B2T_w(\overrightarrow{x})\doteq-x_{w-1}2^{w-1}+\sum_{i=0}^{w-2}x_i2^i$$
-- \[ T2U_w(x) = \left\{ 
+- \[ T2U_w(x) = \left\{
   \begin{array}{l l}
     x+2^w & \quad x<0\\
     x & \quad x\geq0
@@ -76,7 +76,7 @@ Consider following code:
 short sx = -12345;
 unsigned int uy = sx;//unknow result
 #+end_src
-C standards: 
+C standards:
 1) Change the size, short 2 int
 2) signed 2 unsigned
 ** Floating Point
@@ -95,7 +95,7 @@ $$V=(-1)^{s}\times{M}\times{2^E}$$
 - significand M: a fractional binary number
 - exponent E: weights the value by a power of 2
 #+BEGIN_VERSE
-Three fields represent: 1-bit s, k-bit exp(encode E), n-bit frac(encode M) 
+Three fields represent: 1-bit s, k-bit exp(encode E), n-bit frac(encode M)
 Using in C:
 float(single-precision) s=1, k=8, n=23 yielding a 32-bit representation
 double(double-precision) s=1, k=11, n=52, yielding a 64-bit representation
@@ -104,12 +104,12 @@ double(double-precision) s=1, k=11, n=52, yielding a 64-bit representation
 #+BEGIN_VERSE
 Condition: exp is not all zeros(0) & not all ones(255 for single, 2047 for double)
 
-Cal: 
+Cal:
 E=e-Bias
 e is the unsigned number having bit representation $e_{k-1}...e_1e_0$
 Bias is bias value equal to $2^{k-1}-1$ (127 for single 1023 for double)
 Hance, $-126\leq{E}\leq{+127}$ for single $-1022\leq{E}\leq{+1023}$ for double
-M=1+f 
+M=1+f
 where $0\leq{f}<1$ having binary representation $0.f_{n-1}...f_1f_0$
 so that, M is in the range $1\leq{M}<2$
 This implied leading 1 is a trick for getting an additional bit of precision for free.
@@ -130,8 +130,8 @@ Condition: exp is all ones
 - frac is nonzero: resulting value called "NaN"(Not a number)
 #+BEGIN_VERSE
 When the result can not be given as a real number or as a infinity, use NaN or inf
-eg: 
-$\sqrt{-1}:  NaN$ 
+eg:
+$\sqrt{-1}:  NaN$
 $1.0/0.0:  +\infty$
 #+END_VERSE
 
@@ -148,7 +148,7 @@ $1.0/0.0:  +\infty$
 | Infinity         | 0 1111 000 |  - |  - | -              | -             | -              | -                | $\infty$        |        - |
 
 * Manipulating Infomation
-** Integer arithmatic 
+** Integer arithmatic
 *** Unsigned Addition
 \[ x+^u_wy= \left\{
   \begin{array}{l l}
@@ -211,7 +211,7 @@ This could require as many as 2w bits to represent.
 $$ x \times ^u_wy=(x\cdot y)\ mod\ 2^w$$
 *** Two's Complement Multiplication
 #+BEGIN_VERSE
-Range: $-2^{w-1}\le x,y \le 2^{w-1}-1$ 
+Range: $-2^{w-1}\le x,y \le 2^{w-1}-1$
 Hence:
 The result of $x\cdot y$ is $-2^{w-1}\cdot (2^{w-1}-1)=-2^{2w-2}+2^{w-1}$ between $2^{2w-2}=-2^{w-1}\cdot -2^{w-1}$
 Also need 2w bits to represent.
@@ -223,7 +223,7 @@ The bit-level representation of the product operation is identical for both unsi
 #+END_VERSE
 Let :
 $$x = B2U(\overrightarrow{x})\quad y = B2U(\overrightarrow{y})\quad x' = B2T(\overrightarrow{x})\quad y' = B2T(\overrightarrow{y})$$
-Then we have : 
+Then we have :
 $$x' = x-x_{w-1}2^w\quad y' = y-y_{w-1}2^w$$
 Result:
 $$(x'\cdot y')\ mod\ 2^w = ((x - x_{w-1}2^w)\cdot (y - y_{w-1}2^w))\ mod\ 2$$
@@ -420,7 +420,7 @@ Unsigned Group:
 | jne L        | jnz           | ~ZF       |
 | js L         |               | SF        |
 | jns L        |               | ~SF       |
-Signed Group:  
+Signed Group:
 | jg L  | jnle | ~(SF^OF)&~ZF     |
 | jge L | jnl  | ~(SF^OF)         |
 | jl L  | jnge | SF^OF            |
@@ -557,7 +557,7 @@ goto vesion:
   t = test-expr;
   if (!t)
      goto done;
-  
+
   loop:
      body-statement
      update-expr;
@@ -569,7 +569,7 @@ goto vesion:
 **** Why use?
 #+BEGIN_VERSE
 Processors achieve high performance by overlapping the steps of the
-successive instructions, such as fetching one instruction while 
+successive instructions, such as fetching one instruction while
 performing the arithmetic operations for a previous instruction.
 #+END_VERSE
 **** Instructions
@@ -680,19 +680,19 @@ Because caller may need them for its future computations.
   {
       int x = *xp;
       int y = *yp;
-  
+
       ,*xp = y;
       ,*yp = x;
       return x + y;
   }
-  
+
   int caller()
   {
       int arg1 = 534;
       int arg2 = 1057;
       int sum = swap_add(&arg1, &arg2);
       int diff = arg1 - arg2;
-  
+
       return sum * diff;
   }
 #+END_SRC
@@ -713,7 +713,7 @@ Because caller may need them for its future computations.
       subl -8(%ebp), %edx
       imull %edx, %eax
       leave
-      ret 
+      ret
 #+END_SRC
 Stack Frame:
 | Saved %ebp(%ebp) |
@@ -758,7 +758,7 @@ After call:
 #+END_SRC
 ** Array Allocation
 - $$\&A[i] = x_a + i\cdot sizeof(type)$$
-- for an array declare as D[R][C], 
+- for an array declare as D[R][C],
 $$\&D[i][j] = x_d + sizeof(type)\cdot (C\cdot i + j)$$
 #+BEGIN_EXAMPLE
 s: start address  t: type size  declaration: A[R][C]
@@ -768,3 +768,11 @@ A[1]   A[1][0]    s+Ct
 A[1]   A[1][2]    s+(C+2)t
 A[3]   A[3][4]    s+(3C+4)t
 #+END_EXAMPLE
+* Storage
+** Disk
+terms: track, sector, cylinder
+
+*** Access time
+- seek time 3~9ms
+- rotational latency $T_{max}=\frac{1}{RPM}\cdot60\cdot1000 ms$
+- transfer time $T{avg}=\frac{1}{RPM}\cdot\frac{1}{avg sectors/track}\cdot60\cdot1000 ms$
