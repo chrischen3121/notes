@@ -1,0 +1,425 @@
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+TITLE: org-mode
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+LANGUAGE: zh-CN
+#+KEYWORDS: emacs, org-mode
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ~/github/notes/org-html-themes/setup/theme-readtheorg.setup
+
+* 编辑
+** 文字加强显示
+ #+BEGIN_SRC org
+   ~verbatim~, *bold*, /italic/, _underlined_, =code=, +strike-through+
+ #+END_SRC
+   实际效果： ~verbatim~ 、 *bold* 、 /italic/ 、 _underlined_ 、 =code= 、 +strike-through+
+
+** CheckBox
+ #+BEGIN_SRC org
+   标题项打入[/]或是[%] -> 会自动显示[1/2]或[50%], 要打 C-c #启动
+   C-c C-c 自动补全
+   - tasks [%]
+     - [ ] item1
+     - [X] item2
+ #+END_SRC
+   - tasks [50%]
+     - [ ] item1
+     - [X] item2
+
+** 表格
+*** 普通表格
+ #+BEGIN_SRC org
+   | a | b |
+   | 1 | 2 |
+ #+END_SRC
+   | a | b |
+   | 1 | 2 |
+ #+begin_src org
+   | Name  | Phone | Age |
+   |-------+-------+-----|
+   | Peter |  1234 |  17 |
+ #+end_src
+   | Name  | Phone | Age |
+   |-------+-------+-----|
+   | Peter |  1234 |  17 |
+*** 代标题表格
+ #+begin_src org
+ #+CAPTION: 标题区域
+ #+ATTR_HTML: border="1" rules="all" frame="border"
+      | Name  | Phone | Age |
+      |-------+-------+-----|
+      | Peter |  1234 |  17 |
+ #+end_src
+ #+CAPTION: 标题区域
+ #+ATTR_HTML: border="1" rules="all" frame="border"
+      | Name  | Phone | Age |
+      |-------+-------+-----|
+      | Peter |  1234 |  17 |
+*** 内容对齐
+ #+BEGIN_SRC org
+ #+CAPTION: Table with aligned columns
+ |          <r> | <c>          | <l>          |
+ |            1 | 2            | 3            |
+ |        Right | Center       | Left         |
+ #+END_SRC
+ #+CAPTION: Table with aligned columns
+ |          <r> | <c>          | <l>          |
+ |            1 | 2            | 3            |
+ |        Right | Center       | Left         |
+*** 自定义表格宽度
+#+BEGIN_SRC org
+  #+ATTR_HTML: :width 100%
+  | Cell in column 1, row 1 | Cell in column 2, row 1 |
+  | Cell in column 1, row 2 | Cell in column 2, row 2 |
+#+END_SRC
+#+ATTR_HTML: :width 100%
+| Cell in column 1, row 1 | Cell in column 2, row 1 |
+| Cell in column 1, row 2 | Cell in column 2, row 2 |
+
+*** 隐藏过长单元格
+#+BEGIN_SRC org
+  |   | <6>    |
+  | 1 | one    |
+  | 2 | two    |
+  | 3 | This is iureireu |
+  | 4 | four   |
+#+END_SRC
+6 为固定长度，=>表示该单元格多出的内容将隐藏，C-c ` 编辑其中内容。
+|   | <6>    |
+| 1 | one    |
+| 2 | two    |
+| 3 | This is iureireu |
+| 4 | four   |
+** 编辑块
+#+BEGIN_EXAMPLE
+s    #+begin_src ... #+end_src
+e    #+begin_example ... #+end_example  单行的例子以冒号开头
+q    #+begin_quote ... #+end_quote      通常用于引用，与默认格式相比左右都会留出缩进
+v    #+begin_verse ... #+end_verse
+c    #+begin_center ... #+end_center
+l    #+begin_latex ... #+end_latex
+L    #+latex:
+h    #+begin_html ... #+end_html
+H    #+html:
+a    #+begin_ascii ... #+end_ascii
+A    #+ascii:
+i    #+index: line
+I    #+include: line
+#+END_EXAMPLE
+#+BEGIN_EXAMPLE
+#+BEGIN_SRC lang -n -t -h 7 -w 40
+#+END_SRC
+#+END_EXAMPLE
+lang 代表语言 n 显示行号 t 清除格式 h 7 设置高度为 7 w 40 设置宽度为 40
+
+* 链接
+** 内部链接
+  :PROPERTIES:
+  :CUSTOM_ID: custom_link
+  :END:
+*** 使用属性
+#+BEGIN_SRC org
+  :PROPERTIES:
+  :CUSTOM_ID: custom_link
+  :END:
+#+END_SRC
+*** 使用锚点
+    <<anchor>>
+#+BEGIN_SRC org
+<<anchor>>
+#+END_SRC
+*** 链接
+#+BEGIN_EXAMPLE
+[[#custom_link]] 或 [[#custom_link][description]]
+[[anchor]] 或 [[anchor][description]]
+#+END_EXAMPLE
+
+- [[#custom_link][test for custom link]]
+- [[anchor][test for anchor]]
+
+** 外部链接
+#+BEGIN_EXAMPLE
+http://orgmode.org (automatic!)
+[[http://orgmode.org/][descriptio]]
+[[mailto:chrischen3121@gmail.com][email chrischen]]
+[[http://orgmode.org/][file:images/org-mode-unicorn.png]]
+#+END_EXAMPLE
+
+** 脚注
+#+BEGIN_SRC org
+  Footnote 引用处格式:
+  [1]、[fn:name]
+#+END_SRC
+text[fn:footnotes_test]
+
+[fn:footnotes_test] Example footnote
+
+* 发布
+** 项目配置
+Example:
+#+BEGIN_SRC elisp
+  (setq org-publish-project-alist
+        '(("note-org"
+           :base-directory "~/notes/org"
+           :publishing-directory  "~/notes/html"
+           :base-extension "org"
+           :recursive t
+           :publishing-function org-publish-org-to-html
+           :headline-levels 3
+           :auto-index nil
+           :link-home "index.html"
+           :section-numbers nil
+           :html-preamble nil
+           :html-postamble t
+           :auto-sitemap t                ; Generate sitemap.org automagically...
+           :sitemap-title "ChrisChen's notes"
+           :exclude "sitemap.org")
+          ("note-static"
+           :base-directory "~/Dropbox/orgProject/Notes/resources"
+           :publishing-directory "~/Dropbox/orgProject/Notes/html/resources"
+           :recursive t
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|swf\\|zip\\|gz\\|txt\\|el"
+           :publishing-function org-publish-attachment)
+          ("note"
+           :components ("note-org" "note-static")
+           :author "ChrisChen3121@gmail.com"
+           )))
+#+END_SRC
+
+** html 输出选项
+#+begin_example
+  TITLE:       the title to be shown (default is the buffer name)
+  AUTHOR:      the author (default taken from user-full-name)
+  DATE:        a date, an Org timestamp1, or a format string for format-time-string
+  EMAIL:       his/her email address (default from user-mail-address)
+  DESCRIPTION: the page description, e.g., for the XHTML meta tag
+  KEYWORDS:    the page keywords, e.g., for the XHTML meta tag
+  LANGUAGE:    language for HTML, e.g., ‘en’ (org-export-default-language)
+  TEXT:        Some descriptive text to be inserted at the beginning.
+  TEXT:        Several lines may be given.
+  OPTIONS:     H:2 num:t toc:t \n:nil @:t ::t |:t ^:t f:t TeX:t ...
+  BIND:        lisp-var lisp-val, e.g., org-export-latex-low-levels itemize
+                 You need to confirm using these, or configure org-export-allow-BIND
+  LINK_UP:     the ``up'' link of an exported page
+  LINK_HOME:   the ``home'' link of an exported page
+  LaTeX_HEADER: extra line(s) for the LaTeX header, like \usepackage{xyz}
+  EXPORT_SELECT_TAGS:   Tags that select a tree for export
+  EXPORT_EXCLUDE_TAGS:  Tags that exclude a tree from export
+  XSLT:        the XSLT stylesheet used by DocBook exporter to generate FO file
+#+end_example
+下面是 HTML OPTIONS 的附加选项
+#+begin_example
+  H:         set the number of headline levels for export
+  num:       turn on/off section-numbers
+  toc:       turn on/off table of contents, or set level limit (integer)
+  \n:        turn on/off line-break-preservation (DOES NOT WORK)
+  @:         turn on/off quoted HTML tags
+  ::         turn on/off fixed-width sections
+  |:         turn on/off tables
+  ^:         turn on/off TeX-like syntax for sub- and superscripts.  If
+             you write "^:{}", a_{b} will be interpreted, but
+             the simple a_b will be left as it is.
+  -:         turn on/off conversion of special strings.
+  f:         turn on/off footnotes like this[1].
+  todo:      turn on/off inclusion of TODO keywords into exported text
+  tasks:     turn on/off inclusion of tasks (TODO items), can be nil to remove
+             all tasks, todo to remove DONE tasks, or list of kwds to keep
+  pri:       turn on/off priority cookies
+  tags:      turn on/off inclusion of tags, may also be not-in-toc
+  <:         turn on/off inclusion of any time/date stamps like DEADLINES
+  ,*:         turn on/off emphasized text (bold, italic, underlined)
+  TeX:       turn on/off simple TeX macros in plain text
+  LaTeX:     configure export of LaTeX fragments.  Default auto
+  skip:      turn on/off skipping the text before the first heading
+  author:    turn on/off inclusion of author name/email into exported file
+  email:     turn on/off inclusion of author email into exported file
+  creator:   turn on/off inclusion of creator info into exported file
+  timestamp: turn on/off inclusion creation time into exported file
+  d:         turn on/off inclusion of drawers, or list drawers to include
+#+end_example
+
+# ** PDF 输出
+# 需要如下工具:
+# - texlive-font-recommended
+# - texlive-latex-extra
+# - latex-cjk-all
+# - texlive-xetex
+
+# *** 用法
+# #+BEGIN_SRC latex
+#   \usepackage{CJKutf8}
+#   ...
+#   \begin{document}
+#   \begin{CJK}{UTF8}{gbsn}
+#   ...
+#   \clearpage
+#   \end{CJK*}
+#   \end{document}
+# #+END_SRC
+
+* 编写 todolist
+** Agenda Buffer
+*** agenda 界面操作
+    | p/n   | 上/下                                     |
+    | L     | 另一个窗口显示 agenda，并画面居中         |
+    | TAB   | 另一个窗口显示 org 文档                   |
+    | ENTER | 进入 org 文档，并关掉 agenda              |
+    | F     | 跟随模式，移动光标，另一个 org 窗口档联动 |
+
+** 归档                                                                  :归档:
+*** 内部归档
+    内部归档是在本文件内部给特定子树打上 ACHIVED 标签或者移动到名为 ACHIVED 的子树中去并打上标签。
+    这个被认为是 ACIVED 的子树，会被移动了本级子树的最末端。
+
+    C-c C-x a 将某一个节点打上 ARCHIVE 标签
+    C-c C-x A 将当前节点归入一个名为 Archive 的子树中(推荐使用)
+    并且这个子树是位于当前级别子树的最下方
+
+*** 外部归档
+    外部归档是指把子树移动到另一个 org 文件中去。文件名可以自定义。
+    默认情况下，归档的子树会被移动到名为“当前文件名_archived“的文件中去。
+    C-c C-x C-s 把当前的节点移到 archived 文件中去。
+** 周期性 todo 项
+#+BEGIN_SRC org
+- TODO 开会
+SCHEDULED: <2009-01-22 四 +1w>
+1w 表示每周，另外 1d 表示每天，1m 表示每月。
+对于周期性的任务，C-c C-t 每次将开始日期修改为相应的下一次开始日期，并保持 TODO 状态不变。
+
+<2009-01-22 四 ++1w>
+的下一次日期一定是今天之后的第一个星期四，而
+<2009-01-22 四 .+1w>
+的下一次日期是按今天算起的下一个星期，也就是说，
+不一定是星期四；如果今天是星期二，那么下一次开始日期就是星期二。
+#+END_SRC
+
+** 每日流程
+1. Punch in
+2. Find important things to deal with
+3. Read email/news(make responses)
+4. Clock in important tasks
+5. Make journal
+6. Punch out for lunch and bunch back in after lunch
+7. Work on more tasks
+8. Refile tasks
+9. Mark habits done today as DONE
+10. Punch out at the end of the work day
+
+** 图片支持
+*** artist-mode and ditaa
+#+BEGIN_SRC ditaa :file ../resources/emacs/asciiExample.png :cmdline -r -s 0.8
+      +-----------+        +---------+
+      |    PLC    |        |         |
+      |  Network  +<------>+   PLC   +<---=---------+
+      |    cRED   |        |  c707   |              |
+      +-----------+        +----+----+              |
+                                ^                   |
+                                |                   |
+                                |  +----------------|-----------------+
+                                |  |                |                 |
+                                v  v                v                 v
+        +----------+       +----+--+--+      +-------+---+      +-----+-----+       Windows clients
+        |          |       |          |      |           |      |           |      +----+      +----+
+        | Database +<----->+  Shared  +<---->+ Executive +<-=-->+ Operator  +<---->|cYEL| . . .|cYEL|
+        |   c707   |       |  Memory  |      |   c707    |      | Server    |      |    |      |    |
+        +--+----+--+       |{d} cGRE  |      +------+----+      |   c707    |      +----+      +----+
+           ^    ^          +----------+             ^           +-------+---+
+           |    |                                   |
+           |    +--------=--------------------------+
+           v
+  +--------+--------+
+  |                 |
+  | Millwide System |            -------- Data ---------
+  | cBLU            |            --=----- Signals ---=--
+  +-----------------+
+#+END_SRC
+#+CAPTION: ditaa example
+#+RESULTS:
+[[file:../resources/emacs/asciiExample.png]]
+
+*** graphviz
+#+BEGIN_SRC dot :file ../resources/emacs/exampleTree.png :cmdline -Kdot -Tpng
+graph hmc_graph{
+ "hmc01" -- "test520"
+    "test520" -- "lpar2"
+    "test520" -- "lpar3"
+ "hmc01" -- "test570"
+    "test570" -- "aixtest01"
+    "test570" -- "aixtest02"
+    "test570" -- "aixtest03"
+ "hmc01" -- "test510"
+    "test510" -- "lpar1"
+}
+#+END_SRC
+#+CAPTION: graphviz example
+#+RESULTS:
+[[file:../resources/emacs/exampleTree.png]]
+
+*** plantuml
+#+BEGIN_SRC plantuml :file ../resources/emacs/exampleSeq.png :cmdline -charset UTF-8
+  title Example Sequence Diagram
+  activate Client
+  Client -> Server: Session Initiation
+  note right: Client requests new session
+  activate Server
+  Client <-- Server: Authorization Request
+  note left: Server requires authentication
+  Client -> Server: Authorization Response
+  note right: Client provides authentication details
+  Server --> Client: Session Token
+  note left: Session established
+  deactivate Server
+  Client -> Client: Saves token
+  deactivate Client
+#+END_SRC
+#+CAPTION: plantuml example
+#+RESULTS:
+[[file:../resources/emacs/exampleSeq.png]]
+
+* 常用快捷键
+** 树操作
+| S+Tab     | 全局展开收缩树           |
+| Tab       | 单个树展开收缩           |
+| M+←/→   | 当前节点目录层级操作     |
+| M+S+←/→ | 当前节点及子节点层级操作 |
+| M+↑/↓   | 移动当前节点(同级)       |
+** Cursor move
+| C-c C-n/p | 下/上个标题     |
+| C-c C-f/b | 下/上个同级标题 |
+| C-c C-u   | 上一级标题      |
+| C-c C-j   | goto            |
+** Table
+| M-←/→/↑/↓ | 单元格间移动 |
+| M-S-←/→     | 删除/新增列  |
+| M-S-↑/↓     | 删除/新增行  |
+| C-c C-c       | re-align     |
+** Edit
+| C-ENTER | 新增同级项 |
+| C-c C-w | refile     |
+** Link
+| C-c l       | org-store-link        |
+| C-c C-l     | org-insert-link       |
+| C-u C-c C-l | insert a link to file |
+| C-c C-o     | org-open-at-point     |
+
+** Publish
+| C-c C-e C | 提示指明一个项目，将所有文件发布 |
+| C-c C-e F | 只发布当前文件                   |
+| C-c C-e P | 发布包含当前文件的项目           |
+| C-c C-e E | 发布所有项目                     |
+** Footnote
+| C-c C-x f     | 新建脚注                 |
+| C-u C-c C-x f | 编辑脚注(排序，重编号等) |
+| C-c C-c       | 脚注跳转                 |
+** todolist 操作
+| M-S-ENTER                  | 增加新的平级 TODO 项 |
+| C-c C-c                    | 勾选 CheckBox       |
+| C-c , 或者 S-↑/↓直接调整 | 加入优先级         |
+** tag
+| C-c C-q | 编辑添加 tag |
+| C-c \   | 检索 tag     |
+** timestamp
+| C-c .   | 增加时间戳 |
+| C-c C-d | Deadline   |
+| C-c C-s | Scheduled  |

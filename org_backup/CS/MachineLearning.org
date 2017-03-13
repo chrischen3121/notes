@@ -1,0 +1,177 @@
+#+TITLE: Machine Learning
+#+KEYWORDS: Machine Learning
+#+OPTIONS: H:2 toc:2 num:3 ^:nil LaTeX:t
+#+SETUPFILE: ~/github/notes/org-html-themes/setup/theme-readtheorg.setup
+* Definition
+#+BEGIN_VERSE
+A computer program is said to learn from experience /E/
+with respect to some task /T/ and some performance measure /P/ ,
+if its performance on /T/ , as measured by P, improves with
+experience E.
+#+END_VERSE
+
+* Linear Regression
+- Dimension
+  #+BEGIN_VERSE
+  $X: m\times(n+1)$
+  $x^{(i)}: (n+1)\times1$
+  $\theta: (n+1)\times1$
+  $y: m\times1$
+  #+END_VERSE
+- Hypothesis
+  $$h_\theta(x^{(i)})=\theta^T x^{(i)}$$
+  [Matrix] $h_\theta(X)=X\cdot\theta$
+
+- Cost Function
+  $$J(\theta) = \frac{1}{2m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})^2$$
+  [Vectorized] $J(\theta) = \frac{1}{2m}sum((h_\theta(X) - y). \widehat{} 2)$
+
+- Goal
+  $$minimize J(\theta_0, \theta_1)$$
+
+** Gradient Descent
+*** Outline
+- Start with some $\theta$
+- Keep changing $\theta$ to reduce $J(\theta)$, until we hopefully end up at minimum
+
+*** Algorithm
+#+BEGIN_VERSE
+repeat until convergence {
+    $\theta_j := \theta_j - \alpha\frac{\partial}{\partial \theta_j}J(\theta)$
+}
+$\alpha$ is called learning rate.
+#+END_VERSE
+- Simultaneous Update
+  $$temp0 := \theta_0 - \alpha\frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1)$$
+  $$temp1 := \theta_1 - \alpha\frac{\partial}{\partial \theta_1}J(\theta_0, \theta_1)$$
+  $$\theta_0 := temp0$$
+  $$\theta_1 := temp1$$
+
+#+BEGIN_VERSE
+After derivative,
+$$\theta_j := \theta_j - \alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}$$
+simultaneously updata $\theta_j$ for all j
+[Vectorized] $\theta = \theta - \alpha\frac{1}{m}\cdot X^T \cdot (h_\theta(X) - y)$
+#+END_VERSE
+
+*** Feature Scaling
+- Idea: to make contour map not shape.
+  #+BEGIN_VERSE
+  Because $x_0=1$, scale $-1<x_i<1$
+  -3 to 3, $-\frac{1}{3}$ to $\frac{1}{3}$ are also good.
+  #+END_VERSE
+- Mean normalization
+$$x_i = \frac{x_i - \mu_i}{range}$$
+$$-0.5\le x_i \le 0.5$$
+*** Learning Rate
+- Correctness
+
+  $J(\theta)$ should decrease after every iteration.
+#+BEGIN_VERSE
+One way:
+Run an automatic convergence test.
+Declare convergence if $j(\theta)$ decreases by less than $10^{-3}$
+in one iteration.
+
+or check the $iterations-J(\theta)$  plot
+
+if gradient decent not working, using smaller $\alpha$
+But if $\alpha is too small, gradient descent can be slow to converge$
+
+To choose $\alpha$, try:
+..., 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1,....
+#+END_VERSE
+
+
+** Normal Equation
+- Idea: to compute $\frac{\partial}{\partial\theta_j}j(\theta_j) = 0$
+$$\theta = (X^TX)^{-1}X^Ty$$
+Octave version:
+#+begin_src octave
+pinv(X'*X)*X'*y
+#+end_src
+*** Inverse in Octave
+#+BEGIN_VERSE
+pinv vs. inv
+pinv is a pseudo-inverse, always make correct result even the matrix is non-invertable.
+#+END_VERSE
+- Why non-invertable?
+  - Redundant features(linearly dependant).
+  - Too many features
+    #+BEGIN_VERSE
+    Delete some features, or use [[regularization]]
+    #+END_VERSE
+
+*** vs. Gradient Descent
+| Gradient Descent              | Normal Equation                           |
+|-------------------------------+-------------------------------------------|
+| Need to choose $\alpha$       | No need to choose $\alpha$                |
+| Needs more iterations         | Don't need to iterate                     |
+| Works well with many features | n features, $(X^TX)^{-1}$, takes $O(n^3)$ |
+| Support various module        | Only support linear regression module     |
+
+Number of features n > 10000, using gradient descent.
+
+
+** Polynormial Regression
+#+BEGIN_VERSE
+With one feature, the hypothesis looks like:
+$h_\theta(x)=\theta_0+\theta_1x^2+\theta_2x^3$
+Let $x_1=x^2$ , $x_2=x^3$ , now it's a linear regression problem.
+Note that, in this case feature scaling is necessary.
+#+END_VERSE
+
+* Logistic Regression
+- Logistic Function(sigmoid function)
+  $$g(x) = \frac{1}{1+e^-x}$$
+  if $x\ge 0$, $g(x) \ge 0.5$.
+
+- Hypothesis
+  $$h_\theta(x)=g(\theta^T x) = \frac{1}{1+e^{-\theta^T x}}$$
+
+- Cost function
+  $$Cost(h_\theta(x), y) = \begin{cases}
+  -log(h_\theta(x)),  & \mbox{if } y=1 \\
+  -log(1-h_\theta(x)), & \mbox{if } y=0 \\
+  \end{cases}$$
+  Simplification:
+  $$Cost(h_\theta(x), y) = -y log(h_\theta(x)) - (1-y)log(1-h_\theta(x))$$
+
+- $J(\theta)$
+  $$J(\theta) = \frac{1}{m}\sum_{i=1}^{m}Cost(h_\theta(x^{(i)}, y^{(i)}))$$
+
+** Gradient Descent
+#+BEGIN_VERSE
+$$\theta_j=\theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(\frac{1}{1+e^{-\theta^Tx^{(i)}}}-y^{(i)})x_j^{(i)}$$
+(simultaneously update for all j)
+[Vectorized] $\theta=\theta-\alpha\frac{1}{m}X^T(h_\theta(X)-y)$
+#+END_VERSE
+
+** Other Method to Compute minJ
+Conjugate Gradient, BFGS, LBFGS
+
+** fminunc
+#+begin_src octave
+function [jVal, gradient] = costFunction(theta)
+jVal = [...code to compute J(theta)...];
+gradient = [...code to compute derivative of J(theta)...];
+end
+
+options = optimset('GradObj', 'on', 'MaxIter', '100');
+initialTheta = zeros(2,1);
+[optTheta, functionVal, exitFlag] = fminunc(@costFunction, initialTheta, options);
+#+end_src
+*** gradient
+$$\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)}) - y^{(i)})x_j^{(i)}$$
+[Vectorized] $\frac{\partial J(\theta)}{\partial\theta}=\frac{1}{m}X^T(h_\theta(X)-y)$
+
+* Regularization
+#<<regularization>>
+** Idea
+Penalize parameter to solve the overfitting problem.
+
+* Octave Usage
+| Function | Description     |
+|----------+-----------------|
+| eye()    | identity matrix |
+| plot()   | generate graph  |
