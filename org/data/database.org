@@ -1,15 +1,14 @@
 #+TITLE: Database Concept
 #+KEYWORDS: database
-#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+OPTIONS: H:4 toc:2 num:3 ^:nil
 #+LaTeX: t
 #+HTML_MATHJAX: align: left tagside: left
-#+LANGUAGE: en-US
+#+LANGUAGE: en
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../styles/style.css"/>
-# #+SETUPFILE: ../../org-templates/level-1.org
+#+SETUPFILE: ../../org-templates/level-1.org
 * Rational Algebra
 ** Basic
    - select $\sigma_{P}(r)$
@@ -43,11 +42,13 @@
      | Mary    | Database1 |
      | Mary    | Comipler1 |
 
+
      #+CAPTION: S
      | Task      |
      |-----------|
      | Database1 |
      | Database2 |
+
 
      #+CAPTION: R\div S
      | Student |
@@ -247,11 +248,11 @@
 
 ** Multivalued Dependency
 *** Definition
-    $\forall t, u\in R:\ t[\bar A] = u[\bar A]$ then
-    $\exists v \in R:$
-    $v[\bar A] = t[\bar A]$ and
-    $v[\bar B] = t[\bar B]$ and
-    $v[rest] = u[rest]$
+    $$\forall t, u\in R:\ t[\bar A] = u[\bar A]$$ then
+    $$\exists v \in R:$$
+    $$v[\bar A] = t[\bar A]$$ and
+    $$v[\bar B] = t[\bar B]$$ and
+    $$v[rest] = u[rest]$$
 
     MVD says, If two tuples have same value for $\bar A$,
     then we have *every* combination for $\bar B$ value and the rest.
@@ -426,12 +427,12 @@
      When *event* occurs, check *condition*; if true, do *action*.
 **** syntax
      #+BEGIN_SRC sql
-       CREATE TRIGGER *name*
-       [BEFORE|AFTER|INSTEAD] OF *events*
-       ,*[referencing-variables]*
+       CREATE TRIGGER trigger_name
+       [BEFORE|AFTER|INSTEAD OF] events
+       ,[referencing-variables]
        [For Each Row]
-       [when (*condition*)]
-       ,*action*
+       [when (condition)]
+       ,action
      #+END_SRC
 **** events
      #+BEGIN_SRC sql
@@ -444,10 +445,10 @@
      - referencing-variables
        #+BEGIN_SRC sql
          DEPENDS ON [For Each Row]
-         OLD row AS *var*
-         NEW row AS *var*
-         OLD table AS *var*
-         NEW table AS *var*
+         OLD row AS var
+         NEW row AS var
+         OLD table AS var
+         NEW table AS var
        #+END_SRC
 
      - condition
@@ -537,6 +538,7 @@
      [100 new tuples] are known as the phantoms tuples.
 *** Standard default: *Serializable*
 *** Some systems have default *Repeatable Read*
+    #+CAPTION: Summry
      | levels           | dirty reads | nonrepeatable reads | phantoms |
      |------------------+-------------+---------------------+----------|
      | Read Uncommitted | Y           | Y                   | Y        |
