@@ -121,7 +121,7 @@
 **** fancy indexing
   #+BEGIN_VERSE
   Fancy indexing is a term adopted by NumPy to describe indexing using *integer arrays* .
-  Unlike slicing, always copies the data into a new array.
+  Unlike slicing, =always copies the data into a new array= .
   #+END_VERSE
   #+BEGIN_SRC python
     arr
@@ -146,9 +146,10 @@
     #        [10, 11]])
   #+END_SRC
 ** Conditional Logic
-The *numpy.where* function is a vectorized version of the ternary expression x if
-condition else y. *numpy.where* is quicker than list comprehension.
-
+*** any and all
+*** numpy.where
+    The *numpy.where* function is a vectorized version of the ternary expression x if
+    condition else y. *numpy.where* is quicker than list comprehension.
 #+BEGIN_SRC python
   xarr = np.array([1,1,1,1,1])
   yarr = np.array([2,2,2,2,2])
@@ -159,23 +160,28 @@ condition else y. *numpy.where* is quicker than list comprehension.
   # array([4, 3, 4, 3, 3])
 #+END_SRC
 
+** Transpose
+   Simple transposing with =.T= is just a special case of =swapaxes=
+
 ** Useful functions
 *** Math
-
-    | Method         | Description                                                                                 |
-    |----------------+---------------------------------------------------------------------------------------------|
-    | sum            | Sum of all the elements in the array or along an axis. Zero-length arrays have sum 0.       |
-    | mean           | Arithmetic mean. Zero-length arrays have NaN mean.                                          |
-    | std, var       | Standard deviation and variance, respectively, with optional degrees of freedom adjustment. |
-    | min, max       | Minimum and maximum.                                                                        |
-    | argmin, argmax | Indices of minimum and maximum elements, respectively.                                      |
-    | cumsum         | Cumulative sum of elements starting from 0                                                  |
-    | cumprod        | Cumulative product of elements starting from 1                                              |
+    | Method         | Description                                                                                |
+    |----------------+--------------------------------------------------------------------------------------------|
+    | sum            | Sum of all the elements in the array or along an axis. Zero-length arrays have sum 0       |
+    | mean           | Arithmetic mean. Zero-length arrays have NaN mean                                          |
+    | std, var       | Standard deviation and variance, respectively, with optional degrees of freedom adjustment |
+    | min, max       | Minimum and maximum                                                                        |
+    | argmin, argmax | Indices of minimum and maximum elements, respectively                                      |
+    | cumsum         | Cumulative sum of elements starting from 0                                                 |
+    | cumprod        | Cumulative product of elements starting from 1                                             |
+    | abs, fabs      | Use *fabs* as a faster alternative for non-complex-valued data                             |
+    | modf           | Return factional and integral parts of array as separate array                             |
+    | rint           | Round elements to the nearest integer, preserving the dtype                                |
 *** Linear Algebra
     | Function | Description                                                         |
     |----------+---------------------------------------------------------------------|
     | diag     | Return the diagonal (or off-diagonal) elements of a square matrix   |
-    | dot      | Matrix multiplication                                               |
+    | dot      | *Matrix multiplication*                                             |
     | trace    | Compute the sum of the diagonal elements                            |
     | det      | Compute the matrix determinant                                      |
     | eig      | Compute the eigenvalues and eigenvectors of a square matrix         |
@@ -200,8 +206,18 @@ condition else y. *numpy.where* is quicker than list comprehension.
     | chisquare   | Draw samples from a chi-square distribution                                                          |
     | gamma       | Draw samples from a gamma distribution                                                               |
     | uniform     | Draw samples from a uniform [0, 1) distribution                                                      |
-
+*** Set operations
+    | Function          | Description                                                                        |
+    |-------------------+------------------------------------------------------------------------------------|
+    | unique(x)         | Compute the sorted, unique elements in x                                           |
+    | intersect1d(x, y) | Compute the sorted, common elements in x and y                                     |
+    | union1d(x, y)     | Compute the sorted union of elements                                               |
+    | in1d(x, y)        | Compute a boolean array indicating whether element of x is in y                    |
+    | setdiff1d(x, y)   | Set difference, elements in x that are not in y                                    |
+    | setxor1d(x, y)    | Set symmetric differences; elements that are in either of the arrays, but not both |
 * pandas
+** Series
+   Series is a fixed-length *ordered dict*
 ** DataFrame
 #+BEGIN_SRC python
   df = pd.DataFrame(np.arange(8).reshape(4,2),
