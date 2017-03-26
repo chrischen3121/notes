@@ -1,0 +1,1021 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2017-03-26 Sun 15:34 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DataAnalysis For Python</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="python, data analysis" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="../styles/demo/css/demo.css"/>
+<link href="https://fonts.proxy.ustclug.org/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">DataAnalysis For Python</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5822ca0">1. numpy</a>
+<ul>
+<li><a href="#orgdbf4acc">1.1. ndarray</a></li>
+<li><a href="#org4436eca">1.2. Conditional Logic</a></li>
+<li><a href="#org910c558">1.3. Useful functions</a></li>
+</ul>
+</li>
+<li><a href="#orgc4b030f">2. pandas</a>
+<ul>
+<li><a href="#orga3abf94">2.1. DataFrame</a></li>
+<li><a href="#orgdb1275f">2.2. Index</a></li>
+<li><a href="#org3ac7169">2.3. Functionality</a></li>
+<li><a href="#orga5daa45">2.4. Panel</a></li>
+</ul>
+</li>
+<li><a href="#org0db8796">3. plotting</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org5822ca0" class="outline-2">
+<h2 id="org5822ca0"><span class="section-number-2">1</span> numpy</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-orgdbf4acc" class="outline-3">
+<h3 id="orgdbf4acc"><span class="section-number-3">1.1</span> ndarray</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+<span style="color: #715ab1;">py_array</span> = <span style="color: #3a81c3;">[</span><span style="color: #4e3163;">1</span>, <span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span>, <span style="color: #4e3163;">4</span>, <span style="color: #4e3163;">5</span><span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">np_array</span> = np.array<span style="color: #3a81c3;">(</span>py_array<span style="color: #3a81c3;">)</span>
+np_array.shape <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; (5,)</span>
+np_array.dtype <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; dtype('int64')</span>
+
+<span style="color: #715ab1;">py_array</span> = <span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">1</span>, <span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span>, <span style="color: #4e3163;">4</span><span style="color: #6c3163;">]</span>, <span style="color: #6c3163;">[</span><span style="color: #4e3163;">5</span>, <span style="color: #4e3163;">6</span>, <span style="color: #4e3163;">7</span>, <span style="color: #4e3163;">8</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">np_array</span> = np.array<span style="color: #3a81c3;">(</span>py_array<span style="color: #3a81c3;">)</span>
+np_array.shape <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; (2, 4)</span>
+np_array.ndim <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 2</span>
+
+np.zeros<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">10</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.])</span>
+np.ones<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([[ 1.,  1.,  1.], [ 1.,  1.,  1.]])</span>
+np.empty<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span>, <span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[[ 0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.]],</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[[ 0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.]]])</span>
+
+np.arange<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">5</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([0, 1, 2, 3, 4])</span>
+np.random.randn<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">np_array</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">1</span>, <span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span><span style="color: #6c3163;">]</span>, dtype=np.int32<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">np_array</span> = np_array.astype<span style="color: #3a81c3;">(</span>np.float64<span style="color: #3a81c3;">)</span>
+np_array.dtype <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; dtype('float64')</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+Creation
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">array</td>
+<td class="org-left">Convert input data (list, tuple, array, or other sequence type) to an ndarray either by inferring a dtype or explicitly specifying a dtype. Copies the input data by default.</td>
+</tr>
+
+<tr>
+<td class="org-left">asarray</td>
+<td class="org-left">Convert input to ndarray, but do not copy if the input is already an ndarray</td>
+</tr>
+
+<tr>
+<td class="org-left">arange</td>
+<td class="org-left">Like the built-in range but returns an ndarray instead of a list</td>
+</tr>
+
+<tr>
+<td class="org-left">ones, ones_like</td>
+<td class="org-left">Produce an array of all 1’s with the given shape and dtype, ones_like takes another array and produces a ones array of the same shape and dtype.</td>
+</tr>
+
+<tr>
+<td class="org-left">zeros, zeros_like</td>
+<td class="org-left">Like ones and ones_like but producing arrays of 0’s instead</td>
+</tr>
+
+<tr>
+<td class="org-left">empty, empty_like</td>
+<td class="org-left">Create new arrays by allocating new memory, but do not populate with any values like ones and zeros</td>
+</tr>
+
+<tr>
+<td class="org-left">eye, identity</td>
+<td class="org-left">Create a square N x N identity matrix (1’s on the diagonal and 0’s elsewhere)</td>
+</tr>
+</tbody>
+</table></li>
+
+<li><p>
+Supported dtype
+</p>
+
+<p>
+int8, uint8, int16, uint16, int32, uint32, int64, uint64,
+float16, float32, float64, float128
+complex64, complex128, complex256
+bool
+object
+string_
+unicode_
+</p></li>
+</ul>
+</div>
+
+<div id="outline-container-org9d1f6fc" class="outline-4">
+<h4 id="org9d1f6fc"><span class="section-number-4">1.1.1</span> Creating</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">array</td>
+<td class="org-left">Convert input data (list, tuple, array, or other sequence type) to an ndarray</td>
+</tr>
+
+<tr>
+<td class="org-left">asarray</td>
+<td class="org-left">Convert input to ndarray, but do not copy if the input is already an ndarray</td>
+</tr>
+
+<tr>
+<td class="org-left">arange</td>
+<td class="org-left">Like the built-in range but returns an ndarray instead of a list.</td>
+</tr>
+
+<tr>
+<td class="org-left">ones, ones_like</td>
+<td class="org-left">Produce an array of all 1’s with the given shape and dtype.</td>
+</tr>
+
+<tr>
+<td class="org-left">zeros, zeros_like</td>
+<td class="org-left">Produce an array of all 0’s with the given shape and dtype.</td>
+</tr>
+
+<tr>
+<td class="org-left">empty, empty_like</td>
+<td class="org-left">Create new arrays by allocating new memory</td>
+</tr>
+
+<tr>
+<td class="org-left">eye, identity</td>
+<td class="org-left">Create a square N x N identity matrix (1’s on the diagonal and 0’s elsewhere)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org43817b4" class="outline-4">
+<h4 id="org43817b4"><span class="section-number-4">1.1.2</span> Indexing</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+<a id="org3526504"></a>
+</p>
+</div>
+<div id="outline-container-org4b3d192" class="outline-5">
+<h5 id="org4b3d192">basic indexing</h5>
+<div class="outline-text-5" id="text-org4b3d192">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">arr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">12</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>.reshape<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">3</span>,<span style="color: #4e3163;">4</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 0,  1,  2,  3],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 4,  5,  6,  7],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 8,  9, 10, 11]])</span>
+
+arr<span style="color: #3a81c3;">[</span><span style="color: #4e3163;">1</span>:, :<span style="color: #4e3163;">3</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 4,  5,  6],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 8,  9, 10]])</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org31bcb55" class="outline-5">
+<h5 id="org31bcb55">boolean indexing</h5>
+<div class="outline-text-5" id="text-org31bcb55">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">flags</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">1</span>, <span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span>, <span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">1</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">data</span> = np.random.randn<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">6</span>,<span style="color: #4e3163;">2</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 2.11684529,  1.24861544],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[-0.34817586, -0.59905366],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[-0.84976431,  0.11840417],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.36648373,  1.33416664],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.37616856, -0.0032112 ],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[-0.7749904 , -0.60457688]])</span>
+flags ==<span style="color: #4e3163;">2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([False,  True, False,  True,  True, False], dtype=bool)</span>
+data<span style="color: #3a81c3;">[</span>flags == <span style="color: #4e3163;">2</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[-0.34817586, -0.59905366],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.36648373,  1.33416664],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.37616856, -0.0032112 ]])</span>
+data<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">(</span>flags == <span style="color: #4e3163;">3</span><span style="color: #6c3163;">)</span> | <span style="color: #6c3163;">(</span>flags == <span style="color: #4e3163;">1</span><span style="color: #6c3163;">)</span>, <span style="color: #4e3163;">1</span>:<span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 1.24861544],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.11840417],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[-0.60457688]])</span>
+<span style="color: #715ab1;">data</span><span style="color: #3a81c3;">[</span>data&lt;<span style="color: #4e3163;">0</span><span style="color: #3a81c3;">]</span> = <span style="color: #4e3163;">0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 2.11684529,  1.24861544],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.        ,  0.        ],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.        ,  0.11840417],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.36648373,  1.33416664],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.37616856,  0.        ],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.        ,  0.        ]])</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orge5fe79c" class="outline-5">
+<h5 id="orge5fe79c">fancy indexing</h5>
+<div class="outline-text-5" id="text-orge5fe79c">
+<p class="verse">
+Fancy indexing is a term adopted by NumPy to describe indexing using <b>integer arrays</b> .
+Unlike slicing, always copies the data into a new array.
+</p>
+<div class="org-src-container">
+<pre class="src src-python">arr
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 0.,  0.,  0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.,  1.,  1.,  1.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 2.,  2.,  2.,  2.]])</span>
+arr<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">1</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 2.,  2.,  2.,  2.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.,  1.,  1.,  1.]])</span>
+<span style="color: #715ab1;">arr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">12</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>.reshape<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">3</span>,<span style="color: #4e3163;">4</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 0,  1,  2,  3],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 4,  5,  6,  7],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 8,  9, 10, 11]])</span>
+arr<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">1</span>,<span style="color: #4e3163;">2</span><span style="color: #6c3163;">]</span>, <span style="color: #6c3163;">[</span><span style="color: #4e3163;">2</span>,<span style="color: #4e3163;">3</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([ 6, 11]) # choose location (1, 2) (2, 3)</span>
+
+arr<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">1</span>,<span style="color: #4e3163;">2</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">][</span>:, <span style="color: #6c3163;">[</span><span style="color: #4e3163;">2</span>,<span style="color: #4e3163;">3</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 6,  7],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[10, 11]])</span>
+arr<span style="color: #3a81c3;">[</span>np.ix_<span style="color: #6c3163;">(</span><span style="color: #2d9574;">[</span><span style="color: #4e3163;">1</span>,<span style="color: #4e3163;">2</span><span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span><span style="color: #4e3163;">2</span>,<span style="color: #4e3163;">3</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same effect</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 6,  7],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[10, 11]])</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4436eca" class="outline-3">
+<h3 id="org4436eca"><span class="section-number-3">1.2</span> Conditional Logic</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+The <b>numpy.where</b> function is a vectorized version of the ternary expression x if
+condition else y. <b>numpy.where</b> is quicker than list comprehension.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">xarr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">1</span>,<span style="color: #4e3163;">1</span>,<span style="color: #4e3163;">1</span>,<span style="color: #4e3163;">1</span>,<span style="color: #4e3163;">1</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">yarr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">2</span>,<span style="color: #4e3163;">2</span>,<span style="color: #4e3163;">2</span>,<span style="color: #4e3163;">2</span>,<span style="color: #4e3163;">2</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">cond</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">True</span>, <span style="color: #4e3163;">False</span>, <span style="color: #4e3163;">True</span>, <span style="color: #4e3163;">False</span>, <span style="color: #4e3163;">False</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+np.where<span style="color: #3a81c3;">(</span>cond, xarr, yarr<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([1, 2, 1, 2, 2])</span>
+np.where<span style="color: #3a81c3;">(</span>cond, <span style="color: #4e3163;">4</span>, <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([4, 3, 4, 3, 3])</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org910c558" class="outline-3">
+<h3 id="org910c558"><span class="section-number-3">1.3</span> Useful functions</h3>
+<div class="outline-text-3" id="text-1-3">
+</div><div id="outline-container-orgffc2092" class="outline-4">
+<h4 id="orgffc2092"><span class="section-number-4">1.3.1</span> Math</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Method</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">sum</td>
+<td class="org-left">Sum of all the elements in the array or along an axis. Zero-length arrays have sum 0.</td>
+</tr>
+
+<tr>
+<td class="org-left">mean</td>
+<td class="org-left">Arithmetic mean. Zero-length arrays have NaN mean.</td>
+</tr>
+
+<tr>
+<td class="org-left">std, var</td>
+<td class="org-left">Standard deviation and variance, respectively, with optional degrees of freedom adjustment.</td>
+</tr>
+
+<tr>
+<td class="org-left">min, max</td>
+<td class="org-left">Minimum and maximum.</td>
+</tr>
+
+<tr>
+<td class="org-left">argmin, argmax</td>
+<td class="org-left">Indices of minimum and maximum elements, respectively.</td>
+</tr>
+
+<tr>
+<td class="org-left">cumsum</td>
+<td class="org-left">Cumulative sum of elements starting from 0</td>
+</tr>
+
+<tr>
+<td class="org-left">cumprod</td>
+<td class="org-left">Cumulative product of elements starting from 1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orge320674" class="outline-4">
+<h4 id="orge320674"><span class="section-number-4">1.3.2</span> Linear Algebra</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">diag</td>
+<td class="org-left">Return the diagonal (or off-diagonal) elements of a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">dot</td>
+<td class="org-left">Matrix multiplication</td>
+</tr>
+
+<tr>
+<td class="org-left">trace</td>
+<td class="org-left">Compute the sum of the diagonal elements</td>
+</tr>
+
+<tr>
+<td class="org-left">det</td>
+<td class="org-left">Compute the matrix determinant</td>
+</tr>
+
+<tr>
+<td class="org-left">eig</td>
+<td class="org-left">Compute the eigenvalues and eigenvectors of a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">inv</td>
+<td class="org-left">Compute the inverse of a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">pinv</td>
+<td class="org-left">Compute the Moore-Penrose pseudo-inverse inverse of a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">qr</td>
+<td class="org-left">Compute the QR decomposition</td>
+</tr>
+
+<tr>
+<td class="org-left">svd</td>
+<td class="org-left">Compute the singular value decomposition (SVD)</td>
+</tr>
+
+<tr>
+<td class="org-left">solve</td>
+<td class="org-left">Solve the linear system Ax = b for x, where A is a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">lstsq</td>
+<td class="org-left">Compute the least-squares solution to y = Xb</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgebccc76" class="outline-4">
+<h4 id="orgebccc76"><span class="section-number-4">1.3.3</span> Random Number Generation</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">seed</td>
+<td class="org-left">Seed the random number generator</td>
+</tr>
+
+<tr>
+<td class="org-left">permutation</td>
+<td class="org-left">Return a random permutation of a sequence, or return a permuted range</td>
+</tr>
+
+<tr>
+<td class="org-left">shuffle</td>
+<td class="org-left">Randomly permute a sequence in place</td>
+</tr>
+
+<tr>
+<td class="org-left">rand</td>
+<td class="org-left">Draw samples from a uniform distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">randint</td>
+<td class="org-left">Draw random integers from a given low-to-high range</td>
+</tr>
+
+<tr>
+<td class="org-left">randn</td>
+<td class="org-left">Draw samples from a normal distribution with mean 0 and standard deviation 1 (MATLAB-like interface)</td>
+</tr>
+
+<tr>
+<td class="org-left">binomial</td>
+<td class="org-left">Draw samples a binomial distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">normal</td>
+<td class="org-left">Draw samples from a normal (Gaussian) distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">beta</td>
+<td class="org-left">Draw samples from a beta distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">chisquare</td>
+<td class="org-left">Draw samples from a chi-square distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">gamma</td>
+<td class="org-left">Draw samples from a gamma distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">uniform</td>
+<td class="org-left">Draw samples from a uniform [0, 1) distribution</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc4b030f" class="outline-2">
+<h2 id="orgc4b030f"><span class="section-number-2">2</span> pandas</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-orga3abf94" class="outline-3">
+<h3 id="orga3abf94"><span class="section-number-3">2.1</span> DataFrame</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span><span style="color: #4e3163;">8</span><span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span><span style="color: #4e3163;">4</span>,<span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span>,
+                  columns=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>, <span style="color: #2d9574;">'r2'</span>, <span style="color: #2d9574;">'r3'</span>, <span style="color: #2d9574;">'r4'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+df.ix<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'r1'</span><span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">retrieve row</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1    0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c2    1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Name: r1, dtype: int64</span>
+
+df.ix<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>,<span style="color: #2d9574;">'r2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   0   1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   2   3</span>
+
+df.T
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1  r2  r3  r4</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1   0   2   4   6</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c2   1   3   5   7</span>
+
+<span style="color: #3a81c3; font-weight: bold;">del</span> df<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'c2'</span><span style="color: #3a81c3;">]</span>
+
+df.columns
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Index([u'c1'], dtype='object')</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdb1275f" class="outline-3">
+<h3 id="orgdb1275f"><span class="section-number-3">2.2</span> Index</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Index objects are immutable, main type: Index, Int64Index, MultiIndex, DatetimeIndex, PeriodIndex
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Method</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">append</td>
+<td class="org-left">Concatenate with additional Index objects, producing a new Index</td>
+</tr>
+
+<tr>
+<td class="org-left">diff</td>
+<td class="org-left">Compute set difference as an Index</td>
+</tr>
+
+<tr>
+<td class="org-left">intersection</td>
+<td class="org-left">Compute set intersection</td>
+</tr>
+
+<tr>
+<td class="org-left">union</td>
+<td class="org-left">Compute set union</td>
+</tr>
+
+<tr>
+<td class="org-left">isin</td>
+<td class="org-left">Compute boolean array indicating whether each value is contained in the passed collection</td>
+</tr>
+
+<tr>
+<td class="org-left">delete</td>
+<td class="org-left">Compute new Index with element at index i deleted</td>
+</tr>
+
+<tr>
+<td class="org-left">drop</td>
+<td class="org-left">Compute new index by deleting passed values</td>
+</tr>
+
+<tr>
+<td class="org-left">insert</td>
+<td class="org-left">Compute new Index by inserting element at index i</td>
+</tr>
+
+<tr>
+<td class="org-left">is_monotonic</td>
+<td class="org-left">Returns True if each element is greater than or equal to the previous element</td>
+</tr>
+
+<tr>
+<td class="org-left">is_unique</td>
+<td class="org-left">Returns True if the Index has no duplicate values</td>
+</tr>
+
+<tr>
+<td class="org-left">unique</td>
+<td class="org-left">Compute the array of unique values in the Index</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org3ac7169" class="outline-3">
+<h3 id="org3ac7169"><span class="section-number-3">2.3</span> Functionality</h3>
+<div class="outline-text-3" id="text-2-3">
+</div><div id="outline-container-org5f69374" class="outline-4">
+<h4 id="org5f69374"><span class="section-number-4">2.3.1</span> Reindexing</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+Example:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">frame.reindex<span style="color: #3a81c3;">(</span>index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'c'</span>, <span style="color: #2d9574;">'d'</span><span style="color: #6c3163;">]</span>, method=<span style="color: #2d9574;">'ffill'</span>, columns=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+frame.ix<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'c'</span>, <span style="color: #2d9574;">'d'</span><span style="color: #6c3163;">]</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+<p>
+reindex args: index, method, fill_value, limit, level, copy
+</p>
+</div>
+</div>
+<div id="outline-container-org06ddf18" class="outline-4">
+<h4 id="org06ddf18"><span class="section-number-4">2.3.2</span> Drop</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<div class="org-src-container">
+<pre class="src src-python">frame.drop<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>, <span style="color: #2d9574;">'r2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+frame.drop<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span>, axis=<span style="color: #4e3163;">1</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org946806c" class="outline-4">
+<h4 id="org946806c"><span class="section-number-4">2.3.3</span> Selection</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+See <a href="#org3526504">1.1.2</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org665b78e" class="outline-4">
+<h4 id="org665b78e"><span class="section-number-4">2.3.4</span> Arithmetic</h4>
+<div class="outline-text-4" id="text-2-3-4">
+<p>
+Examples: df1 + df2, df1.add(df2, fill_value=0)
+</p>
+
+<ul class="org-ul">
+<li>Operation between Dataframe and Series</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span><span style="color: #4e3163;">6</span><span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span><span style="color: #4e3163;">3</span>,<span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span>,
+                  columns=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>, <span style="color: #2d9574;">'r2'</span>, <span style="color: #2d9574;">'r3'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   0   1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   2   3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   4   5</span>
+
+<span style="color: #715ab1;">s</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">4</span>,<span style="color: #4e3163;">5</span><span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1    4</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c2    5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dtype: int64</span>
+
+df + s
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   4   6</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   6   8</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   8  10</span>
+
+
+<span style="color: #715ab1;">s2</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">1</span>,<span style="color: #4e3163;">2</span>,<span style="color: #4e3163;">3</span><span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>, <span style="color: #2d9574;">'r2'</span>, <span style="color: #2d9574;">'r3'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1    1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2    2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3    3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dtype: int64</span>
+
+df.add<span style="color: #3a81c3;">(</span>s2, axis=<span style="color: #4e3163;">0</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   1   2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   4   5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   7   8</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgccee892" class="outline-4">
+<h4 id="orgccee892"><span class="section-number-4">2.3.5</span> Other funtions</h4>
+<div class="outline-text-4" id="text-2-3-5">
+<ul class="org-ul">
+<li>apply, map, applymap</li>
+<li><p>
+sort_index, order
+</p>
+<div class="org-src-container">
+<pre class="src src-python">df.sort_index<span style="color: #3a81c3;">()</span>
+df.sort_index<span style="color: #3a81c3;">(</span>by=<span style="color: #2d9574;">'c1'</span><span style="color: #3a81c3;">)</span>
+df.sort_index<span style="color: #3a81c3;">(</span>by=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+s.order<span style="color: #3a81c3;">()</span>
+</pre>
+</div></li>
+<li><p>
+rank
+</p>
+
+<p>
+args: 'average'(default), 'min', 'max', 'first'
+</p></li>
+
+<li><p>
+statistic methods
+</p>
+
+<p>
+count, describe, min, max, argmin, argmax, idxmin, idxmax,
+quantile, sum, mean, median, mad, var, std, skew, kurt,
+cumsum, cummin, cummax, cumprod, diff, pct_change, corr, cov, corrwith
+</p></li>
+
+<li>unique, value_counts, isin</li>
+<li><p>
+isnull, notnull, dropna, fillna
+</p>
+
+<p>
+arg <b>thresh</b> keep only rows containing a certain number of observations.
+</p></li>
+
+<li>stack, unstack, swaplevel, sortlevel</li>
+<li>set_index, reset_index</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orga5daa45" class="outline-3">
+<h3 id="orga5daa45"><span class="section-number-3">2.4</span> Panel</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Panel can be thought as a 3-dimensional analogue of DataFrame.
+</p>
+<ul class="org-ul">
+<li>swapaxes</li>
+<li>to_frame, to_panel</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org0db8796" class="outline-2">
+<h2 id="org0db8796"><span class="section-number-2">3</span> plotting</h2>
+</div>
+</div>
+</body>
+</html>
