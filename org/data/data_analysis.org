@@ -1,4 +1,4 @@
-#+TITLE: DataAnalysis For Python
+f#+TITLE: DataAnalysis For Python
 #+KEYWORDS: python, data analysis
 #+OPTIONS: H:4 toc:2 num:3 ^:nil
 #+LaTeX: t
@@ -243,8 +243,26 @@
   df.columns
   # Index([u'c1'], dtype='object')
 #+END_SRC
+** Indexing Options
+   - Common use: =obj[val], obj.ix[val], obj.ix[:, val], obj.ix[val1, val2], reindex=
+   - Others:
+
+     | Type                  | Notes                                                                      |
+     |-----------------------+----------------------------------------------------------------------------|
+     | xs                    | Select single row or column as a Series by label                           |
+     | icol, irow, iloc, iat | Select single column or row, respectively, as a Series by integer location |
+     | get_value, set_value  | Select single value by row and column label                                |
+*** difference
+    - loc: only work on index
+    - iloc: work on position
+    - ix: can get data from dataframe without it being in the index
+    - at: get scalar values. It's a very fast loc
+    - iat: get scalar values. It's a very fast iloc
+
 ** Index
-   Index objects are immutable, main type: Index, Int64Index, MultiIndex, DatetimeIndex, PeriodIndex
+   Index objects are immutable, functions as a fixed-size set.
+   - main type: =Index, Int64Index, MultiIndex, DatetimeIndex, PeriodIndex=
+
    | Method       | Description                                                                               |
    |--------------+-------------------------------------------------------------------------------------------|
    | append       | Concatenate with additional Index objects, producing a new Index                          |
@@ -262,8 +280,9 @@
 *** Reindexing
 Example:
 #+BEGIN_SRC python
+  frame.reindex(columns=['c1', 'c2'])
   frame.reindex(index=['a', 'b', 'c', 'd'], method='ffill', columns=['c1', 'c2'])
-  frame.ix[['a', 'b', 'c', 'd'], ['c1', 'c2']]
+  # is similar to frame.ix[['a', 'b', 'c', 'd'], ['c1', 'c2']]
 #+END_SRC
 reindex args: index, method, fill_value, limit, level, copy
 *** Drop
@@ -275,7 +294,8 @@ reindex args: index, method, fill_value, limit, level, copy
 See [[numpy indexing]].
 
 *** Arithmetic
-Examples: df1 + df2, df1.add(df2, fill_value=0)
+    - Basic df1 + df2,
+    - use add method to fill na values: df1.add(df2, fill_value=0)
 
 - Operation between Dataframe and Series
 #+BEGIN_SRC python
@@ -312,34 +332,173 @@ Examples: df1 + df2, df1.add(df2, fill_value=0)
   # r2   4   5
   # r3   7   8
 #+END_SRC
-*** Other funtions
-- apply, map, applymap
-- sort_index, order
+*** Broadcasting
+    #+BEGIN_SRC python
+      frame=pd.DataFrame(np.arange(12).reshape((4,3)), columns=list('bde'), index=list('1234'))
+      series = frame.ix[0]
+      frame - series
+      #=>
+      #    b  d  e
+      # 1  0  0  0
+      # 2  3  3  3
+      # 3  6  6  6
+      # 4  9  9  9
+
+      series2 = pd.Series(range(3), index=list('bef'))
+      frame + series2
+      #=>
+      #      b   d     e   f
+      # 1  0.0 NaN   3.0 NaN
+      # 2  3.0 NaN   6.0 NaN
+      # 3  6.0 NaN   9.0 NaN
+      # 4  9.0 NaN  12.0 NaN
+    #+END_SRC
+*** Apply
+    #+BEGIN_SRC python
+      f = lambda x: x.max()
+      frame.apply(f)
+      frame.apply(f, axis=1)
+    #+END_SRC
+    *apply* can also return a series
+    #+BEGIN_SRC python
+      def f(x):
+          return pd.Series([x.min(), x.max()], index=['min', 'max'])
+      frame.apply(f)
+      #=>    a   b
+      # min xxx xxx
+      # max xxx xxx
+    #+END_SRC
+*** Sort
   #+BEGIN_SRC python
     df.sort_index()
+
+    # by column(s)
     df.sort_index(by='c1')
     df.sort_index(by=['c1', 'c2'])
-    s.order()
   #+END_SRC
-- rank
+*** Rank
+    args: 'average'(default), 'min', 'max', 'first'
+    #+BEGIN_SRC python
+      obj = pd.Series([7, -5, 7, 4, 2, 0, 4, 7])
+      obj.rank()
+      #=>
+      # 0    7.0
+      # 1    1.0
+      # 2    7.0
+      # 3    4.5
+      # 4    3.0
+      # 5    2.0
+      # 6    4.5
+      # 7    7.0
+      obj.rank(method='first')
+      #=>
+      # 0    6.0
+      # 1    1.0
+      # 2    7.0
+      # 3    4.0
+      # 4    3.0
+      # 5    2.0
+      # 6    5.0
+      # 7    8.0
+    #+END_SRC
 
-  args: 'average'(default), 'min', 'max', 'first'
-
-- statistic methods
-
-  count, describe, min, max, argmin, argmax, idxmin, idxmax,
-  quantile, sum, mean, median, mad, var, std, skew, kurt,
-  cumsum, cummin, cummax, cumprod, diff, pct_change, corr, cov, corrwith
-
-- unique, value_counts, isin
+*** Other funtions
+- numpy *ufancs* works fine with pandas objects
+- applymap(element-wise), map(series element-wise)
+- order(for series sorting): s.order()
 - isnull, notnull, dropna, fillna
-
-  arg *thresh* keep only rows containing a certain number of observations.
-
 - stack, unstack, swaplevel, sortlevel
 - set_index, reset_index
+- unique(series based), value_counts(series based), isin(element-wise)
+** Statistic methods
+   Basic:
+   count, describe, min, max, quantile, sum, pct_change, diff, corr, cov, corrwith
+
+*** mean, median, mad, var, std
+*** argmin, argmax, idxmin, idxmax
+
+    argmin/argmax: compute index locations (integers) at which minimum or maximum value obtained, respectively
+
+*** cumsum, cummin, cummax, cumprod
+*** skew
+
+    Sample skewness (3rd moment) of values
+
+*** kurt
+
+    Sample kurtosis (4th moment) of values
+
+*** diff
+
+    Compute 1st arithmetic difference (useful for time series)
+
+*** corr, cov, corrwith
+    #+BEGIN_SRC python
+      import pandas_datareader as pdr
+
+      all_data = {}
+      for ticker in ['AAPL', 'IBM', 'MSFT', 'GOOG']:
+          all_data[ticker] = pdr.get_data_yahoo(ticker, '1/1/2000', '1/1/2010')
+
+      price = pd.DataFrame({tic: data['Adj Close'] for tic, data in all_data.iteritems()})
+      returns = price.pct_change()
+
+      returns.MSFT.corr(returns.IBM)
+      returns.MSFT.cov(returns.IBM)
+
+      returns.corr()
+      returns.corrwith(returns.IBM)
+    #+END_SRC
+
+*** args
+     | Method | Description                                                                |
+     |--------+----------------------------------------------------------------------------|
+     | axis   | Axis to reduce over. 0 for DataFrame’s rows and 1 for columns             |
+     | skipna | Exclude missing values, True by default                                    |
+     | level  | Reduce grouped by level if the axis is hierarchically-indexed (MultiIndex) |
+
+     *skipna* option:
+     - True(default): NA values are excluded unless the entire slice (row or column in this case) is NA
+     - False: if any value is *NA*, then return *NA*
+** Hierarchical Indexing
+*** Indexing
+    #+BEGIN_SRC example
+      data[index_level1]
+      data[index_level1 : index_level1]
+      data[[index_level1, index_level1]]
+
+      select by inner level:
+      data[:, index_level2]
+    #+END_SRC
+*** stack, unstack
+*** swaplevel, sortlevel
 ** Panel
    Panel can be thought as a 3-dimensional analogue of DataFrame.
-   - swapaxes
-   - to_frame, to_panel
+   Although hierarchical indexing makes using truly N-dimensional arrays unnecessary in a lot of cases
+   #+BEGIN_SRC python
+     pdata = pd.Panel({stk: pdr.get_data_yahoo(stk, '1/1/2009', '6/1/2012')
+                       for stk in ['AAPL', 'GOOG']})
+
+   #+END_SRC
+*** Useful functions
+    - ix
+      #+BEGIN_SRC python
+        pdata.ix[:, '6/1/2012', :]
+      #+END_SRC
+    - swapaxes
+      #+BEGIN_SRC python
+        pdata.swapaxes('items', 'minor')['Adj Close']
+      #+END_SRC
+    - to_frame
+
+      index will be the *[major, minor]* axis, *items* will be the columns
+      #+BEGIN_SRC python
+        stacked = pdata.to_frame()
+      #+END_SRC
+
+    - to_panel
+      #+BEGIN_SRC python
+        stacked.to_panel()
+      #+END_SRC
+
 * plotting
