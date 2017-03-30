@@ -1,4 +1,4 @@
-f#+TITLE: DataAnalysis For Python
+ff#+TITLE: DataAnalysis For Python
 #+KEYWORDS: python, data analysis
 #+OPTIONS: H:4 toc:2 num:3 ^:nil
 #+LaTeX: t
@@ -146,7 +146,7 @@ f#+TITLE: DataAnalysis For Python
     #        [10, 11]])
   #+END_SRC
 ** Conditional Logic
-*** any and all
+*** any, all
 *** numpy.where
     The *numpy.where* function is a vectorized version of the ternary expression x if
     condition else y. *numpy.where* is quicker than list comprehension.
@@ -167,6 +167,7 @@ f#+TITLE: DataAnalysis For Python
 *** Math
     | Method         | Description                                                                                |
     |----------------+--------------------------------------------------------------------------------------------|
+    | sign           | Returns on array of 1 and -1 depending on the sign of the values                           |
     | sum            | Sum of all the elements in the array or along an axis. Zero-length arrays have sum 0       |
     | mean           | Arithmetic mean. Zero-length arrays have NaN mean                                          |
     | std, var       | Standard deviation and variance, respectively, with optional degrees of freedom adjustment |
@@ -291,7 +292,7 @@ reindex args: index, method, fill_value, limit, level, copy
   frame.drop(['c1', 'c2'], axis=1)
 #+END_SRC
 *** Selection
-See [[numpy indexing]].
+    See [[numpy indexing]].
 
 *** Arithmetic
     - Basic df1 + df2,
@@ -410,6 +411,10 @@ See [[numpy indexing]].
 - stack, unstack, swaplevel, sortlevel
 - set_index, reset_index
 - unique(series based), value_counts(series based), isin(element-wise)
+- all, any
+- replace
+- cut, qcut
+
 ** Statistic methods
    Basic:
    count, describe, min, max, quantile, sum, pct_change, diff, corr, cov, corrwith
@@ -460,6 +465,7 @@ See [[numpy indexing]].
      *skipna* option:
      - True(default): NA values are excluded unless the entire slice (row or column in this case) is NA
      - False: if any value is *NA*, then return *NA*
+
 ** Hierarchical Indexing
 *** Indexing
     #+BEGIN_SRC example
@@ -501,4 +507,146 @@ See [[numpy indexing]].
         stacked.to_panel()
       #+END_SRC
 
+* wrangling
+** Data Input/Output
+*** Reading option categories
+**** Indexing
+     Can treat one or more columns as the returned DataFrame, and whether
+     to get column names from the file, the user, or not at all.
+**** Type inference and data conversion
+     This includes the user-defined value conversions and custom list of
+     missing value markers.
+**** Datetime parsing
+     Includes combining capability, including combining date and time information
+     spread over multiple columns into a single column in the result.
+**** Iterating
+     Support for iterating over chunks of very large files.
+**** Unclean data issues
+     Skipping rows or a footer, comments, or other minor things like numeric data
+     with thousands separated by commas.
+
+*** Hints
+   - *from_csv*: a convenience method simpler than read_csv
+   - pickle related: *load*, *save*
+** Concatenation
+   - *pd.merge*, *merge* method
+   - *join* method: performs a left join on the join keys
+   - *pd.concat*
+   - *combine_first*: patching missing data with arg object
+*** concat args
+    | Argument         | Description                                                                                                           |
+    |------------------+-----------------------------------------------------------------------------------------------------------------------|
+    | objs             | List or *dict* of pandas objects to be concatenated. The only required argument                                       |
+    | axis             | Axis to concatenate along; defaults to 0                                                                              |
+    | join             | One of 'inner', 'outer' , defaulting to 'outer'                                                                       |
+    | join_axes        | Specific indexes to use for the other n-1 axes instead of performing union/intersection logic                         |
+    | keys             | Values to associate with objects being concatenated, forming a hierarchical index along the concatenation axis        |
+    | levels           | Specific indexes to use as hierarchical index level or levels if keys passed                                          |
+    | names            | Names for created hierarchical levels if keys and / or levels passed                                                  |
+    | verify_integrity | Check new axis in concatenated object for duplicates and raise exception if so. By default( False ) allows duplicates |
+    | ignore_index     | Do not preserve indexes along concatenation axis , instead producing a new range(total_length) index                  |
+
+** Reshaping and Pivoting
+*** stack
+    Pivots from the columns in the data to the rows.
+    Stacking filters out missing data by default.
+    #+BEGIN_SRC python
+      data = DataFrame(np.arange(6).reshape((2, 3)), columns=['a', 'b', 'c'])
+      data
+      #=>
+      #    a  b  c
+      # 0  0  1  2
+      # 1  3  4  5
+      data.stack()
+      #=>
+      # 0  a    0
+      #    b    1
+      #    c    2
+      # 1  a    3
+      #    b    4
+      #    c    5
+      # dtype: int64
+    #+END_SRC
+
+*** unstack
+    Pivots from the rows into the columns
+    #+BEGIN_SRC python
+      data.stack().unstack()
+      #=>
+      #    a  b  c
+      # 0  0  1  2
+      # 1  3  4  5
+
+      # can specific level number or name
+      data.stack().unstack(0)
+      #=>
+      #    0  1
+      # a  0  3
+      # b  1  4
+      # c  2  5
+    #+END_SRC
+
+*** pivot
+    *pivot* is a shortcut for creating a hierarchical index using *set_index* and reshaping with *unstack*
+    #+BEGIN_SRC python
+      quotes.head()
+      #=>
+      #                   Open        High         Low       Close    Volume  \
+      # Date
+      # 2010-01-04  626.951088  629.511067  624.241073  626.751061   3927000
+      # 2010-01-05  627.181073  627.841071  621.541045  623.991055   6031900
+      # 2010-01-06  625.861078  625.861078  606.361042  608.261023   7987100
+      # 2010-01-07  609.401025  610.001045  592.651008  594.101005  12876600
+      # 2010-01-08  592.000997  603.251034  589.110988  602.021036   9483900
+
+      #              Adj Close symbol
+      # Date
+      # 2010-01-04  313.062468   GOOG
+      # 2010-01-05  311.683844   GOOG
+      # 2010-01-06  303.826685   GOOG
+      # 2010-01-07  296.753749   GOOG
+      # 2010-01-08  300.709808   GOOG
+      quotes.pivot(columns='symbol', values='Close')
+      #=>
+      # symbol            AAPL        GOOG         IBM       MSFT
+      # Date
+      # 2010-01-04  214.009998  626.751061  132.449997  30.950001
+      # 2010-01-05  214.379993  623.991055  130.850006  30.959999
+      # 2010-01-06  210.969995  608.261023  130.000000  30.770000
+      # 2010-01-07  210.580000  594.101005  129.550003  30.450001
+      # 2010-01-08  211.980005  602.021036  130.850006  30.660000
+    #+END_SRC
+
+** Permutation(randomly reordering)
+   #+BEGIN_SRC python
+     df = DataFrame(np.arange(5 * 4).reshape(5, 4))
+     df
+     #=>
+     #     0   1   2   3
+     # 0   0   1   2   3
+     # 1   4   5   6   7
+     # 2   8   9  10  11
+     # 3  12  13  14  15
+     # 4  16  17  18  19
+     sampler = np.random.permutation(5)
+     sampler
+     #=> array([1,0,2,3,4])
+     df.take(sampler)
+     #=>
+     #     0   1   2   3
+     # 1   4   5   6   7
+     # 3  12  13  14  15
+     # 4  16  17  18  19
+     # 0   0   1   2   3
+     # 2   8   9  10  11
+   #+END_SRC
+** String Manipulation
+   df.str.XXX
+*** Vectorized string methods
+    cat, contains, count, endswith/startswith, findall, get,
+    join, len, lower, upper, match, pad, center, repeat, replace,
+    slice, split, strip/rstrip/lstrip
+** Others
+*** TODO Indicator/Dummy(for statistical model)
+    *pd.get_dummies*
 * plotting
