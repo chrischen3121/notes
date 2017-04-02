@@ -650,3 +650,116 @@ reindex args: index, method, fill_value, limit, level, copy
 *** TODO Indicator/Dummy(for statistical model)
     *pd.get_dummies*
 * plotting
+** Basic
+*** Figures and Subplots
+    #+BEGIN_SRC python
+      fig = plt.figure()
+      ax1 = fig.add_subplot(2, 2, 1)
+      # get a reference of active figure
+      plt.gcf()
+
+      # all in one subplots
+      fig, axes = plt.subplots(2,3, figsize=(14, 8))
+    #+END_SRC
+*** subplots options
+    | Argument  | Description                            |
+    |-----------+----------------------------------------|
+    | figsize   | Size of figure                         |
+    | nrows     | Number of rows of subplots             |
+    | ncols     | Number of columns of subplots          |
+    | *sharex*  | All subplots use the same X-axis ticks |
+    | *sharey*  | see above                              |
+    | subpot_kw | creating dict of keywords              |
+    | **fig_kw  | Additional keywords                    |
+*** Adjusting Size
+    subplots_adjust
+    - args: left, right, bottom, top, wspace, hspace
+
+*** global configuration
+    plt.rc
+    #+BEGIN_SRC python
+      plt.rc('figure', figsize=(10, 10))
+      font_options = {'family' : 'monospace',
+                      'weight' : 'bold',
+                      'size'
+                      : 'small'}
+      plt.rc('font', **font_options)
+    #+END_SRC
+** plot function
+*** plotting range
+    plt.xlim, plt.ylim, ax.set_xlim, ax.set_ylim
+
+*** title, label, tick, ticklabel
+    set_title, set_xlabel, set_xticks, set_xticklabels
+
+*** legend
+    #+BEGIN_SRC python
+      fig = plt.figure()
+      ax = fig.add_subplot(1, 1, 1)
+      ax.plot(randn(1000).cumsum(), 'k', label='one')
+      ax.legend(loc='best') #show the label
+    #+END_SRC
+
+*** Annotations
+**** *text, arrows, annotate* functions
+     #+BEGIN_SRC python
+       ax.annotate(label, xy=(date, spx.asof(date) + 50),
+                   xytext=(date, spx.asof(date) + 200),
+                   arrowprops=dict(facecolor='black'),
+                   horizontalalignment='left', verticalalignment='top')
+     #+END_SRC
+**** shapes
+     matplotlib.patches
+     #+BEGIN_SRC python
+       fig = plt.figure()
+       ax = fig.add_subplot(1, 1, 1)
+       rect = plt.Rectangle((0.2, 0.75), 0.4, 0.15, color='k', alpha=0.3)
+       circ = plt.Circle((0.7, 0.2), 0.15, color='b', alpha=0.3)
+       ax.add_patch(rect)
+       ax.add_patch(circ)
+     #+END_SRC
+
+** pandas Plotting
+*** Line Plots
+**** Series
+     | Argument | Description                                                                             |
+     |----------+-----------------------------------------------------------------------------------------|
+     | label    | Label for plot legend                                                                   |
+     | ax       | matplotlib subplot object to plot on. If nothing passed, uses active matplotlib subplot |
+     | style    | Style string, like 'ko--' , to be passed to matplotlib                                  |
+     | alpha    | The plot fill opacity (from 0 to 1)                                                     |
+**** DataFrame
+     | Argument       | Description                                      |
+     |----------------+--------------------------------------------------|
+     | kind           | Can be 'line', 'bar', 'barh', 'kde'              |
+     | logy           | Use logarithmic scaling on the Y axis            |
+     | use_index      | Use the object index for tick labels             |
+     | rot            | Rotation of tick labels (0 through 360)          |
+     | xticks         | Values to use for X axis ticks                   |
+     | yticks         | Values to use for Y axis ticks                   |
+     | xlim           | X axis limits (e.g. [0, 10] )                    |
+     | ylim           | Y axis limits                                    |
+     | grid           | Display axis grid (on by default)                |
+     | subplots       | Plot each DataFrame column in a separate subplot |
+     | sharex, sharey | If subplots=True , share the same Y/x axis       |
+     | figsize        | Size of figure to create as tuple                |
+     | title          | Plot title as string                             |
+     | legend         | Add a subplot legend ( True by default)          |
+     | sort_columns   | Plot columns in alphabetical order               |
+*** Bar Plots
+    - kind='bar': for vertical bars, 'barh' for horizontal bars
+    - stacked=True: stacked bar plots
+    - useful recipe: s.value_counts().plot(kind='bar')
+
+*** Histogram Plots
+*** Density Plots
+*** Scatter Plots
+
+** Saving Plots to File
+   Figure.savefig args
+   - fname, dpi, facecolor, edgecolor, format
+   - bbox_inches: The portion of the figure to save
+
+** add-ons
+   - mplot3d
+   - basemap: mapping and projections
