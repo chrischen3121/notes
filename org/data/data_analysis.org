@@ -1,5 +1,5 @@
-ff#+TITLE: DataAnalysis For Python
-#+KEYWORDS: python, data analysis
+#+TITLE: DataAnalysis For Python
+#+KEYWORDS: data analysis, python
 #+OPTIONS: H:4 toc:2 num:3 ^:nil
 #+LaTeX: t
 #+LANGUAGE: en-US
@@ -10,40 +10,41 @@ ff#+TITLE: DataAnalysis For Python
 #+SETUPFILE: ../../org-templates/level-1.org
 * numpy
 ** ndarray
-#+BEGIN_SRC python
-  import numpy as np
-  py_array = [1, 2, 3, 4, 5]
-  np_array = np.array(py_array)
-  np_array.shape #=> (5,)
-  np_array.dtype #=> dtype('int64')
+   #+BEGIN_SRC python
+     import numpy as np
+     py_array = [1, 2, 3, 4, 5]
+     np_array = np.array(py_array)
+     np_array.shape #=> (5,)
+     np_array.dtype #=> dtype('int64')
 
-  py_array = [[1, 2, 3, 4], [5, 6, 7, 8]]
-  np_array = np.array(py_array)
-  np_array.shape #=> (2, 4)
-  np_array.ndim #=> 2
+     py_array = [[1, 2, 3, 4], [5, 6, 7, 8]]
+     np_array = np.array(py_array)
+     np_array.shape #=> (2, 4)
+     np_array.ndim #=> 2
 
-  np.zeros(10)
-  #=> array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.])
-  np.ones((2, 3))
-  #=> array([[ 1.,  1.,  1.], [ 1.,  1.,  1.]])
-  np.empty((2, 3, 2))
-  #=>
-  # array([[[ 0.,  0.],
-  #         [ 0.,  0.],
-  #         [ 0.,  0.]],
+     np.zeros(10)
+     #=> array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.])
+     np.ones((2, 3))
+     #=> array([[ 1.,  1.,  1.], [ 1.,  1.,  1.]])
+     np.empty((2, 3, 2))
+     #=>
+     # array([[[ 0.,  0.],
+     #         [ 0.,  0.],
+     #         [ 0.,  0.]],
 
-  #        [[ 0.,  0.],
-  #         [ 0.,  0.],
-  #         [ 0.,  0.]]])
+     #        [[ 0.,  0.],
+     #         [ 0.,  0.],
+     #         [ 0.,  0.]]])
 
-  np.arange(5)
-  #=> array([0, 1, 2, 3, 4])
-  np.random.randn(2, 3)
+     np.arange(5)
+     #=> array([0, 1, 2, 3, 4])
+     np.random.randn(2, 3)
 
-  np_array = np.array([1, 2, 3], dtype=np.int32)
-  np_array = np_array.astype(np.float64)
-  np_array.dtype #=> dtype('float64')
-#+END_SRC
+     np_array = np.array([1, 2, 3], dtype=np.int32)
+     np_array = np_array.astype(np.float64)
+     np_array.dtype #=> dtype('float64')
+   #+END_SRC
+
 - Creation
 
   | Function          | Description                                                                                                                                                                   |
@@ -746,14 +747,27 @@ reindex args: index, method, fill_value, limit, level, copy
      | title          | Plot title as string                             |
      | legend         | Add a subplot legend ( True by default)          |
      | sort_columns   | Plot columns in alphabetical order               |
+
 *** Bar Plots
     - kind='bar': for vertical bars, 'barh' for horizontal bars
     - stacked=True: stacked bar plots
     - useful recipe: s.value_counts().plot(kind='bar')
 
-*** Histogram Plots
-*** Density Plots
+*** Histogram & Density Plots
+    - A kind of bar plot that gives a discretized display of value frequency
+    #+BEGIN_SRC python
+      comp1 = np.random.normal(0, 1, size=200) # N(0, 1)
+      comp2 = np.random.normal(10, 2, size=200) # N(10, 4)
+      values = Series(np.concatenate([comp1, comp2]))
+      fig = plt.figure(figsize=(10, 5))
+      values.hist(bins=100, alpha=0.3, color='k', normed=True)
+      values.plot(kind='kde', style='k--')
+    #+END_SRC
+    #+ATTR_HTML: align="center"
+    [[file:../resources/data/hist_kde_plot.png]]
+
 *** Scatter Plots
+    pairs plot or scatter plot matrix: *scatter_matrix*
 
 ** Saving Plots to File
    Figure.savefig args
@@ -762,4 +776,11 @@ reindex args: index, method, fill_value, limit, level, copy
 
 ** add-ons
    - mplot3d
-   - basemap: mapping and projections
+   - *basemap* /cartopy: projection and mapping(plotting 2D data on maps)
+   - *seaborn* /holoviews/ggplot: higher-level plotting interfaces
+   - axes_grid:  axes and axis helpers
+
+** visualization ecosystem
+   - Chaco: 2-Dimensional Plotting, interactive visualization.
+   - mayavi: a 3D graphics toolkit built on the open source C++ graphics library VTK
+   - PyQwt
