@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-03-29 Wed 07:23 -->
+<!-- 2017-04-07 Fri 00:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PyQt</title>
@@ -333,6 +333,7 @@ Dumb dialogs are normally modal dialogs with an “accept” button (e.g., OK ) 
 </p>
 </div>
 </div>
+
 <div id="outline-container-org9438132" class="outline-3">
 <h3 id="org9438132"><span class="section-number-3">2.2</span> Standard Dialogs</h3>
 <div class="outline-text-3" id="text-2-2">
@@ -342,10 +343,45 @@ accordance with the values set through its initializer or through its methods,
 and whose final values are obtained by method calls or from instance variables—not
 directly from the dialog’s widgets.
 </p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">dialog</span> = FakeDlg<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">if</span> dialog.exec_<span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">self</span>.values = dialog.get_values<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">self</span>.refreshSomeWidgets<span style="color: #3a81c3;">()</span>
+</pre>
 </div>
 </div>
+</div>
+
 <div id="outline-container-org33d212f" class="outline-3">
 <h3 id="org33d212f"><span class="section-number-3">2.3</span> Smart Dialogs</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+We define a “smart” dialog to be one that initializes its widgets in accordance
+with data references or data structures that are passed to its initializer, and
+which is capable of updating the data directly in response to user interaction.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">dialog</span> = FakeDlg<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">self</span>.connect<span style="color: #3a81c3;">(</span>dialog, SIGNAL<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"changed"</span><span style="color: #6c3163;">)</span>, <span style="color: #3a81c3; font-weight: bold;">self</span>.refreshSomeWidgets<span style="color: #3a81c3;">)</span>
+dialog.show<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgc3dbe1e" class="outline-4">
+<h4 id="orgc3dbe1e"><span class="section-number-4">2.3.1</span> live</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3; font-weight: bold;">self</span>.dialog <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #4e3163;">None</span>:
+    <span style="color: #3a81c3; font-weight: bold;">self</span>.dialog = FakeDlg<span style="color: #3a81c3;">(</span>
+        <span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span>.refreshSomeWidgets, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.show<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.raise_<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.activateWindow<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 

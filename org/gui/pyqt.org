@@ -36,15 +36,40 @@
 
    Dumb dialogs are normally modal dialogs with an “accept” button (e.g., OK ) and a
    “reject” button (e.g., Cancel ).
+
 ** Standard Dialogs
    We consider a dialog to be a “standard” dialog if it initializes its widgets in
    accordance with the values set through its initializer or through its methods,
    and whose final values are obtained by method calls or from instance variables—not
    directly from the dialog’s widgets.
+   #+BEGIN_SRC python
+     dialog = FakeDlg(self.values_to_set, self)
+     if dialog.exec_():
+         self.values = dialog.get_values()
+         self.refreshSomeWidgets()
+
+   #+END_SRC
+
 ** Smart Dialogs
+   We define a “smart” dialog to be one that initializes its widgets in accordance
+   with data references or data structures that are passed to its initializer, and
+   which is capable of updating the data directly in response to user interaction.
+   #+BEGIN_SRC python
+     dialog = FakeDlg(self.values_to_set, self)
+     self.connect(dialog, SIGNAL("changed"), self.refreshSomeWidgets)
+     dialog.show()
+   #+END_SRC
+*** live
+    #+BEGIN_SRC python
+      if self.dialog is None:
+          self.dialog = FakeDlg(
+              self.values_to_set, self.refreshSomeWidgets, self)
+      self.dialog.show()
+      self.dialog.raise_()
+      self.dialog.activateWindow()
+    #+END_SRC
 
 * Signal
-
 ** short-circuit
     If we use the SIGNAL() function with an identifier but no parentheses, we are
     specifying a short-circuit signal.
