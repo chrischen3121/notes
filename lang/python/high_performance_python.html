@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-04-06 Thu 09:31 -->
+<!-- 2017-04-06 Thu 09:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -258,39 +258,38 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8dd9924">1. Profiling</a>
+<li><a href="#org8d20d95">1. Profiling</a>
 <ul>
-<li><a href="#org46b1779">1.1. CPU</a></li>
-<li><a href="#org6fd0d1e">1.2. memory</a></li>
-<li><a href="#org5446636">1.3. work with UT</a></li>
+<li><a href="#org5de5ca2">1.1. CPU</a></li>
+<li><a href="#orge3cbf0e">1.2. memory</a></li>
+<li><a href="#org4926de0">1.3. work with UT</a></li>
 </ul>
 </li>
-<li><a href="#orgfdb3e13">2. Lists and tuples</a>
+<li><a href="#org2e6a969">2. Lists and tuples</a>
 <ul>
-<li><a href="#org083c216">2.1. Sort algorithm</a></li>
-<li><a href="#org8d10fe3">2.2. list vs. tuple</a></li>
+<li><a href="#org2e18045">2.1. Sort algorithm</a></li>
+<li><a href="#orgece1432">2.2. list vs. tuple</a></li>
 </ul>
 </li>
-<li><a href="#org7e5cd9a">3. set &amp; dict</a>
+<li><a href="#org4e9cd0a">3. set &amp; dict</a>
 <ul>
-<li><a href="#org3784cbb">3.1. hashable key</a></li>
-<li><a href="#org2199382">3.2. resizing</a></li>
-<li><a href="#orge65c7d4">3.3. extra</a></li>
+<li><a href="#org7a5f5a5">3.1. hashable key</a></li>
+<li><a href="#org2878693">3.2. resizing</a></li>
+<li><a href="#orgb1b0945">3.3. extra</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org8dd9924" class="outline-2">
-<h2 id="org8dd9924"><span class="section-number-2">1</span> Profiling</h2>
+<div id="outline-container-org8d20d95" class="outline-2">
+<h2 id="org8d20d95"><span class="section-number-2">1</span> Profiling</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-org46b1779" class="outline-3">
-<h3 id="org46b1779"><span class="section-number-3">1.1</span> CPU</h3>
+</div><div id="outline-container-org5de5ca2" class="outline-3">
+<h3 id="org5de5ca2"><span class="section-number-3">1.1</span> CPU</h3>
 <div class="outline-text-3" id="text-1-1">
-<ul class="org-ul">
-<li><p>
-simple <i>time</i> module
-</p>
+</div><div id="outline-container-org05c88aa" class="outline-4">
+<h4 id="org05c88aa"><span class="section-number-4">1.1.1</span> simple <i>time</i> module</h4>
+<div class="outline-text-4" id="text-1-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> time
 <span style="color: #715ab1;">start_time</span> = time.time<span style="color: #3a81c3;">()</span>
@@ -298,10 +297,12 @@ fn<span style="color: #3a81c3;">()</span>
 <span style="color: #715ab1;">end_time</span> = time.time<span style="color: #3a81c3;">()</span>
 <span style="color: #3a81c3; font-weight: bold;">print</span> end_time - start_time <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">seconds</span>
 </pre>
-</div></li>
-<li><p>
-decorator
-</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org4f55ba6" class="outline-4">
+<h4 id="org4f55ba6"><span class="section-number-4">1.1.2</span> decorator</h4>
+<div class="outline-text-4" id="text-1-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> functools <span style="color: #3a81c3; font-weight: bold;">import</span> wraps
 <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">timefn</span><span style="color: #3a81c3;">(</span>fn<span style="color: #3a81c3;">)</span>:
@@ -318,29 +319,40 @@ decorator
 <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">measure_fn</span><span style="color: #3a81c3;">(</span>arg1, arg2<span style="color: #3a81c3;">)</span>:
     ...
 </pre>
-</div></li>
-<li>%timeit in IPython</li>
-<li><p>
-unix <i>time</i> command
+</div>
+</div>
+</div>
+<div id="outline-container-org9e450c5" class="outline-4">
+<h4 id="org9e450c5"><span class="section-number-4">1.1.3</span> %timeit in IPython</h4>
+</div>
+<div id="outline-container-orgea38199" class="outline-4">
+<h4 id="orgea38199"><span class="section-number-4">1.1.4</span> unix <i>time</i> command</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
 might be useful if you start lots of fresh processes.
 </p>
 <div class="org-src-container">
 <pre class="src src-sh">/usr/bin/time -p python xxx.py
 /usr/bin/time --verbose python xxx.py
 </pre>
-</div></li>
+</div>
+</div>
+</div>
 
-<li><p>
-cProfile
-</p>
+<div id="outline-container-org97533ce" class="outline-4">
+<h4 id="org97533ce"><span class="section-number-4">1.1.5</span> cProfile</h4>
+<div class="outline-text-4" id="text-1-1-5">
 <div class="org-src-container">
 <pre class="src src-sh">python -m cProfile -s cumulative xxx.py
 </pre>
 </div>
-<p class="verse">
--s cumulative: sort by cumulative time spent<br  />
-record profiling:<br  />
+<p>
+-s cumulative: sort by cumulative time spent.
 </p>
+
+<ul class="org-ul">
+<li>record profiling:</li>
+</ul>
 <div class="org-src-container">
 <pre class="src src-sh">python -m cProfile -o profile.stats xxx.py
 </pre>
@@ -354,46 +366,51 @@ p.print_callers<span style="color: #3a81c3;">()</span> <span style="color: #2aa1
 p.print_callees<span style="color: #3a81c3;">()</span>
 </pre>
 </div>
-<ul class="org-ul">
-<li>visualize a profile file: runsnake</li>
-<li>line_profiler</li>
-</ul></li>
-</ul>
 </div>
 </div>
-<div id="outline-container-org6fd0d1e" class="outline-3">
-<h3 id="org6fd0d1e"><span class="section-number-3">1.2</span> memory</h3>
+<div id="outline-container-orgf4ea567" class="outline-4">
+<h4 id="orgf4ea567"><span class="section-number-4">1.1.6</span> visualize a profile file: runsnake</h4>
+</div>
+<div id="outline-container-orgb8147f3" class="outline-4">
+<h4 id="orgb8147f3"><span class="section-number-4">1.1.7</span> line_profiler</h4>
+</div>
+</div>
+<div id="outline-container-orge3cbf0e" class="outline-3">
+<h3 id="orge3cbf0e"><span class="section-number-3">1.2</span> memory</h3>
 <div class="outline-text-3" id="text-1-2">
-<ul class="org-ul">
-<li><p>
-memory_profiler
-</p>
+</div><div id="outline-container-org03958ac" class="outline-4">
+<h4 id="org03958ac"><span class="section-number-4">1.2.1</span> memory_profiler</h4>
+<div class="outline-text-4" id="text-1-2-1">
 <div class="org-src-container">
 <pre class="src src-sh">python -m memory_profiler xxx.py
 <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">or</span>
 mprof run xxx.py
 mprof plot
 </pre>
-</div></li>
-<li><p>
-heapy
-</p>
-<p class="verse">
-<i>pip install guppy</i> first.<br  />
-Add following to your code.<br  />
+</div>
+</div>
+</div>
+<div id="outline-container-org086c2bc" class="outline-4">
+<h4 id="org086c2bc"><span class="section-number-4">1.2.2</span> heapy</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+<i>pip install guppy</i> first.
+Add following to your code.
 </p>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> guppy <span style="color: #3a81c3; font-weight: bold;">import</span> hpy; <span style="color: #715ab1;">hp</span> = hpy<span style="color: #3a81c3;">()</span>
 hp.setrelheap<span style="color: #3a81c3;">()</span><span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">set checkpoint</span>
 <span style="color: #3a81c3; font-weight: bold;">print</span> hp.heap<span style="color: #3a81c3;">()</span><span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">print heap usage since last checkpoint</span>
 </pre>
-</div></li>
-<li>dowser??</li>
-</ul>
 </div>
 </div>
-<div id="outline-container-org5446636" class="outline-3">
-<h3 id="org5446636"><span class="section-number-3">1.3</span> work with UT</h3>
+</div>
+<div id="outline-container-orgf23602f" class="outline-4">
+<h4 id="orgf23602f"><span class="section-number-4">1.2.3</span> <span class="todo TODO">TODO</span> dowser??</h4>
+</div>
+</div>
+<div id="outline-container-org4926de0" class="outline-3">
+<h3 id="org4926de0"><span class="section-number-3">1.3</span> work with UT</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Add following at the top of unittest code.
@@ -418,23 +435,28 @@ Add following at the top of unittest code.
 </div>
 </div>
 
-<div id="outline-container-orgfdb3e13" class="outline-2">
-<h2 id="orgfdb3e13"><span class="section-number-2">2</span> Lists and tuples</h2>
+<div id="outline-container-org2e6a969" class="outline-2">
+<h2 id="org2e6a969"><span class="section-number-2">2</span> Lists and tuples</h2>
 <div class="outline-text-2" id="text-2">
-</div><div id="outline-container-org083c216" class="outline-3">
-<h3 id="org083c216"><span class="section-number-3">2.1</span> Sort algorithm</h3>
+</div><div id="outline-container-org2e18045" class="outline-3">
+<h3 id="org2e18045"><span class="section-number-3">2.1</span> Sort algorithm</h3>
 <div class="outline-text-3" id="text-2-1">
-</div><ol class="org-ol"><li><a id="org2fec94e"></a>Tim sort<br  /><div class="outline-text-4" id="text-2-1-1">
-<p class="verse">
-built-in sort algorithm<br  />
-(it hybridizes insertion and merge sort algorithms).<br  />
+</div><div id="outline-container-org7e8755b" class="outline-4">
+<h4 id="org7e8755b"><span class="section-number-4">2.1.1</span> Tim sort</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+built-in sort algorithm
+(it hybridizes insertion and merge sort algorithms).
 </p>
-</div></li>
+</div>
+</div>
 
-<li><a id="orga329677"></a>bisect<br  /><div class="outline-text-4" id="text-2-1-2">
-<p class="verse">
-<b>bisect</b> provides support for maintaining a list in<br  />
-sorted order without having to sort the list after each insertion.<br  />
+<div id="outline-container-org1ad7c3a" class="outline-4">
+<h4 id="org1ad7c3a"><span class="section-number-4">2.1.2</span> bisect</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+<b>bisect</b> provides support for maintaining a list in
+sorted order without having to sort the list after each insertion.
 </p>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> bisect
@@ -447,22 +469,22 @@ bisect.insort<span style="color: #3a81c3;">(</span>alist, <span style="color: #4
 <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; [3, 5, 17, 20]</span>
 </pre>
 </div>
-</div></li></ol>
+</div>
+</div>
 </div>
 
-<div id="outline-container-org8d10fe3" class="outline-3">
-<h3 id="org8d10fe3"><span class="section-number-3">2.2</span> list vs. tuple</h3>
+<div id="outline-container-orgece1432" class="outline-3">
+<h3 id="orgece1432"><span class="section-number-3">2.2</span> list vs. tuple</h3>
 <div class="outline-text-3" id="text-2-2">
-</div><ol class="org-ol"><li><a id="org35c9cb4"></a>list<br  /><div class="outline-text-4" id="text-2-2-1">
+</div><div id="outline-container-org4f2189a" class="outline-4">
+<h4 id="org4f2189a"><span class="section-number-4">2.2.1</span> list</h4>
+<div class="outline-text-4" id="text-2-2-1">
 <p>
 dynamic arrays, mutable and allow for resizing.
 </p>
+</div>
 
-<ul class="org-ul">
-<li><p>
-resizing
-</p>
-
+<ul class="org-ul"><li><a id="orgc7d8249"></a>resizing<br  /><div class="outline-text-5" id="text-orgc7d8249">
 <p>
 The growth pattern is:
 </p>
@@ -522,20 +544,20 @@ The growth pattern is:
 <pre class="src src-c">new_allocated = <span style="color: #3a81c3;">(</span>newsize &gt;&gt; <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span> + <span style="color: #3a81c3;">(</span>newsize &lt; <span style="color: #4e3163;">9</span> ? <span style="color: #4e3163;">3</span> : <span style="color: #4e3163;">6</span><span style="color: #3a81c3;">)</span>;
 new_allocated += newsize;
 </pre>
+</div>
 </div></li>
 
-<li><p>
-dereference
+<li><a id="orgef9970a"></a>dereference<br  /><div class="outline-text-5" id="text-orgef9970a">
+<p>
+List objects (for background, see Chapter 3) have an overhead for each dereference, as
+the objects they reference can occur anywhere in memory.
 </p>
+</div></li></ul>
+</div>
 
-<p class="verse">
-List objects (for background, see Chapter 3) have an overhead for each dereference, as<br  />
-the objects they reference can occur anywhere in memory.<br  />
-</p></li>
-</ul>
-</div></li>
-
-<li><a id="orgdee50ba"></a>tuple<br  /><div class="outline-text-4" id="text-2-2-2">
+<div id="outline-container-orga201807" class="outline-4">
+<h4 id="orga201807"><span class="section-number-4">2.2.2</span> tuple</h4>
+<div class="outline-text-4" id="text-2-2-2">
 <p>
 static arrays, immutable
 </p>
@@ -543,24 +565,24 @@ static arrays, immutable
 <li>instantiating a list can be 5.1x slower than instantiating a tuple</li>
 <li>tuple is a hashable type</li>
 </ul>
-</div></li></ol>
+</div>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org7e5cd9a" class="outline-2">
-<h2 id="org7e5cd9a"><span class="section-number-2">3</span> set &amp; dict</h2>
+<div id="outline-container-org4e9cd0a" class="outline-2">
+<h2 id="org4e9cd0a"><span class="section-number-2">3</span> set &amp; dict</h2>
 <div class="outline-text-2" id="text-3">
-</div><div id="outline-container-org3784cbb" class="outline-3">
-<h3 id="org3784cbb"><span class="section-number-3">3.1</span> hashable key</h3>
+</div><div id="outline-container-org7a5f5a5" class="outline-3">
+<h3 id="org7a5f5a5"><span class="section-number-3">3.1</span> hashable key</h3>
 <div class="outline-text-3" id="text-3-1">
-<p class="verse">
-The type should implements both the <span class="underline"><span class="underline">hash</span></span> magic<br  />
-function and either <span class="underline"><span class="underline">eq</span></span> or <span class="underline"><span class="underline">cmp</span></span> .<br  />
+<p>
+The type should implements both the <span class="underline"><span class="underline">hash</span></span> magic function and either <span class="underline"><span class="underline">eq</span></span> or <span class="underline"><span class="underline">cmp</span></span> .
 </p>
-<ul class="org-ul">
-<li><p>
-probing function
-</p>
+</div>
+<div id="outline-container-org1da12f9" class="outline-4">
+<h4 id="org1da12f9"><span class="section-number-4">3.1.1</span> probing function</h4>
+<div class="outline-text-4" id="text-3-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pseudocode</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">mask is always equal to bin(hashtable_size - 1)</span>
@@ -573,57 +595,64 @@ probing function
         <span style="color: #715ab1;">perturb</span> &gt;&gt;= PERTURB_SHIFT
         <span style="color: #3a81c3; font-weight: bold;">yield</span> i &amp; mask
 </pre>
-</div></li>
-<li><p>
-User-defined classes
-</p>
-<p class="verse">
-User-defined classes have default hash and comparison functions.<br  />
-The default <span class="underline"><span class="underline">hash</span></span> function simply returns the object’s placement<br  />
-in memory as given by the built-in id function. Similarly,<br  />
-the <span class="underline"><span class="underline">cmp</span></span> operator compares the numerical value of the object’s<br  />
-placement in memory.<br  />
-</p></li>
-<li><p>
-entropy
-</p>
-<p class="verse">
-“how well distributed my hash function is” is called the <b>entropy</b><br  />
-of the hash function:<br  />
-</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org8169693" class="outline-4">
+<h4 id="org8169693"><span class="section-number-4">3.1.2</span> User-defined classes</h4>
+<div class="outline-text-4" id="text-3-1-2">
 <p>
-\[S = - \sum_i p(i)\cdot\log(p(i))\]
+User-defined classes have default hash and comparison functions.
+The default <span class="underline"><span class="underline">hash</span></span> function simply returns the object’s placement
+in memory as given by the built-in id function. Similarly,
+the <span class="underline"><span class="underline">cmp</span></span> operator compares the numerical value of the object’s
+placement in memory.
 </p>
-<p class="verse">
-where p(i) is the probability that the hash function gives hash i.<br  />
-<br  />
-knowing up front what range of values will be used and how large<br  />
-the dictionary will be helps in making a good selection.<br  />
-</p></li>
-</ul>
 </div>
 </div>
 
-<div id="outline-container-org2199382" class="outline-3">
-<h3 id="org2199382"><span class="section-number-3">3.2</span> resizing</h3>
+<div id="outline-container-org7703b8d" class="outline-4">
+<h4 id="org7703b8d"><span class="section-number-4">3.1.3</span> entropy</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<p>
+“how well distributed my hash function is” is called the <b>entropy</b>
+of the hash function:
+\[S = - \sum_i p(i)\cdot\log(p(i))\]
+</p>
+
+<p>
+where p(i) is the probability that the hash function gives hash i.
+</p>
+
+<p>
+knowing up front what range of values will be used and how large
+the dictionary will be helps in making a good selection.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2878693" class="outline-3">
+<h3 id="org2878693"><span class="section-number-3">3.2</span> resizing</h3>
 <div class="outline-text-3" id="text-3-2">
-<p class="verse">
-The growth pattern is:<br  />
-8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, &#x2026;<br  />
-the number of bucket increases by 4x until we reach 50,000<br  />
-elements, after which the size is increased by 2x.<br  />
-<br  />
-resizing requires recomputing indices,<br  />
+</div><ul class="org-ul"><li><a id="orgf804857"></a>The growth pattern is:<br  /><div class="outline-text-5" id="text-orgf804857">
+<p>
+8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, &#x2026;
+the number of bucket increases by 4x until we reach 50,000
+elements, after which the size is increased by 2x.
 </p>
+
+<p>
+resizing requires recomputing indices
+</p>
+</div></li></ul>
 </div>
-</div>
-<div id="outline-container-orge65c7d4" class="outline-3">
-<h3 id="orge65c7d4"><span class="section-number-3">3.3</span> extra</h3>
+<div id="outline-container-orgb1b0945" class="outline-3">
+<h3 id="orgb1b0945"><span class="section-number-3">3.3</span> extra</h3>
 <div class="outline-text-3" id="text-3-3">
-<ul class="org-ul">
-<li><p>
-Namespace lookups
-</p>
+</div><div id="outline-container-orgcc3a628" class="outline-4">
+<h4 id="orgcc3a628"><span class="section-number-4">3.3.1</span> Namespace lookups</h4>
+<div class="outline-text-4" id="text-3-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> math
 <span style="color: #3a81c3; font-weight: bold;">from</span> math <span style="color: #3a81c3; font-weight: bold;">import</span> sin
@@ -649,27 +678,28 @@ Namespace lookups
     <span style="color: #3a81c3; font-weight: bold;">return</span> sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
 </pre>
 </div>
-<pre class="example">
-&gt;&gt;&gt; dis.dis(test1)
-0 LOAD_GLOBAL      0 (math)  # Dictionary lookup
-3 LOAD_ATTR        1 (sin)   # Dictionary lookup
-6 LOAD_FAST        0 (x)     # Local lookup
-9 CALL_FUNCTION    1
-12 RETURN_VALUE
+<div class="org-src-container">
+<pre class="src src-python">dis.dis<span style="color: #3a81c3;">(</span>test1<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_GLOBAL      0 (math)  # Dictionary lookup</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_ATTR        1 (sin)   # Dictionary lookup</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 LOAD_FAST        0 (x)     # Local lookup</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">9 CALL_FUNCTION    1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">12 RETURN_VALUE</span>
 
-&gt;&gt;&gt; dis.dis(test2)
-0 LOAD_GLOBAL      0 (sin)   # Dictionary lookup
-3 LOAD_FAST        0 (x)     # Local lookup
-6 CALL_FUNCTION    1
-9 RETURN_VALUE
+dis.dis<span style="color: #3a81c3;">(</span>test2<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_GLOBAL      0 (sin)   # Dictionary lookup</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_FAST        0 (x)     # Local lookup</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 CALL_FUNCTION    1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">9 RETURN_VALUE</span>
 
-&gt;&gt;&gt; dis.dis(test3)
-0 LOAD_FAST        1 (sin)   # Local lookup
-3 LOAD_FAST        0 (x)     # Local lookup
-6 CALL_FUNCTION    1
-9 RETURN_VALUE
-</pre></li>
-</ul>
+dis.dis<span style="color: #3a81c3;">(</span>test3<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_FAST        1 (sin)   # Local lookup</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_FAST        0 (x)     # Local lookup</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 CALL_FUNCTION    1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">9 RETURN_VALUE</span>
+</pre>
+</div>
+</div>
 </div>
 </div>
 </div>

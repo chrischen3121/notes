@@ -1,6 +1,6 @@
 #+TITLE: High Performance Python
 #+KEYWORDS: python, performance
-#+OPTIONS: H:2 toc:2 num:3 ^:nil
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
@@ -9,7 +9,7 @@
 #+SETUPFILE: ../../../org-templates/level-2.org
 * Profiling
 ** CPU
-- simple /time/ module
+*** simple /time/ module
   #+BEGIN_SRC python
     import time
     start_time = time.time()
@@ -17,7 +17,7 @@
     end_time = time.time()
     print end_time - start_time #seconds
   #+END_SRC
-- decorator
+*** decorator
   #+BEGIN_SRC python
     from functools import wraps
     def timefn(fn):
@@ -34,22 +34,21 @@
     def measure_fn(arg1, arg2):
         ...
   #+END_SRC
-- %timeit in IPython
-- unix /time/ command
+*** %timeit in IPython
+*** unix /time/ command
   might be useful if you start lots of fresh processes.
   #+BEGIN_SRC sh
     /usr/bin/time -p python xxx.py
     /usr/bin/time --verbose python xxx.py
   #+END_SRC
 
-- cProfile
+*** cProfile
   #+BEGIN_SRC sh
     python -m cProfile -s cumulative xxx.py
   #+END_SRC
-  #+BEGIN_VERSE
-  -s cumulative: sort by cumulative time spent
-  record profiling:
-  #+END_VERSE
+  -s cumulative: sort by cumulative time spent.
+
+  - record profiling:
   #+BEGIN_SRC sh
     python -m cProfile -o profile.stats xxx.py
   #+END_SRC
@@ -61,27 +60,26 @@
     p.print_callers() #locate the most expensive parents
     p.print_callees()
   #+END_SRC
-  - visualize a profile file: runsnake
-  - line_profiler
+*** visualize a profile file: runsnake
+*** line_profiler
 ** memory
-- memory_profiler
+*** memory_profiler
   #+BEGIN_SRC sh
     python -m memory_profiler xxx.py
     #or
     mprof run xxx.py
     mprof plot
   #+END_SRC
-- heapy
-  #+BEGIN_VERSE
+*** heapy
+
   /pip install guppy/ first.
   Add following to your code.
-  #+END_VERSE
   #+BEGIN_SRC python
     from guppy import hpy; hp = hpy()
     hp.setrelheap()#set checkpoint
     print hp.heap()#print heap usage since last checkpoint
   #+END_SRC
-- dowser??
+*** TODO dowser??
 ** work with UT
 Add following at the top of unittest code.
 #+BEGIN_SRC python
@@ -103,104 +101,89 @@ Add following at the top of unittest code.
 * Lists and tuples
 ** Sort algorithm
 *** Tim sort
-#+BEGIN_VERSE
 built-in sort algorithm
 (it hybridizes insertion and merge sort algorithms).
-#+END_VERSE
 
 *** bisect
-#+BEGIN_VERSE
-*bisect* provides support for maintaining a list in
-sorted order without having to sort the list after each insertion.
-#+END_VERSE
-#+BEGIN_SRC python
-import bisect
-alist=[]
-bisect.insort(alist, 5)
-bisect.insort(alist, 3)
-bisect.insort(alist, 20)
-bisect.insort(alist, 17)
-print alist
-#=> [3, 5, 17, 20]
-#+END_SRC
+    *bisect* provides support for maintaining a list in
+    sorted order without having to sort the list after each insertion.
+    #+BEGIN_SRC python
+      import bisect
+      alist=[]
+      bisect.insort(alist, 5)
+      bisect.insort(alist, 3)
+      bisect.insort(alist, 20)
+      bisect.insort(alist, 17)
+      print alist
+      #=> [3, 5, 17, 20]
+    #+END_SRC
 
 ** list vs. tuple
 *** list
 dynamic arrays, mutable and allow for resizing.
 
-- resizing
-
-  The growth pattern is:
-  | new size      | 0 | 1 | 5 |  9 | 17 | 26 | 36 | 47 | ... |
-  | new allocated | 0 | 4 | 8 | 16 | 25 | 35 | 46 | 58 | ... |
+**** resizing
+     The growth pattern is:
+     | new size      | 0 | 1 | 5 |  9 | 17 | 26 | 36 | 47 | ... |
+     | new allocated | 0 | 4 | 8 | 16 | 25 | 35 | 46 | 58 | ... |
   #+BEGIN_SRC c
     new_allocated = (newsize >> 3) + (newsize < 9 ? 3 : 6);
     new_allocated += newsize;
   #+END_SRC
 
-- dereference
-
-  #+BEGIN_VERSE
-  List objects (for background, see Chapter 3) have an overhead for each dereference, as
-  the objects they reference can occur anywhere in memory.
-  #+END_VERSE
+**** dereference
+     List objects (for background, see Chapter 3) have an overhead for each dereference, as
+     the objects they reference can occur anywhere in memory.
 
 *** tuple
-static arrays, immutable
+    static arrays, immutable
 - instantiating a list can be 5.1x slower than instantiating a tuple
 - tuple is a hashable type
 
 * set & dict
 ** hashable key
-#+BEGIN_VERSE
-The type should implements both the __hash__ magic
-function and either __eq__ or __cmp__ .
-#+END_VERSE
-- probing function
-  #+BEGIN_SRC python
-    # pseudocode
-    # mask is always equal to bin(hashtable_size - 1)
-    def index_sequence(key, mask=0b111, PERTURB_SHIFT=5):
-        perturb = hash(key)
-        i = perturb & mask
-        yield i
-        while True:
-            i = ((i << 2) + i + perturb + 1)
-            perturb >>= PERTURB_SHIFT
-            yield i & mask
-  #+END_SRC
-- User-defined classes
-  #+BEGIN_VERSE
-  User-defined classes have default hash and comparison functions.
-  The default __hash__ function simply returns the object’s placement
-  in memory as given by the built-in id function. Similarly,
-  the __cmp__ operator compares the numerical value of the object’s
-  placement in memory.
-  #+END_VERSE
-- entropy
-  #+BEGIN_VERSE
-  “how well distributed my hash function is” is called the *entropy*
-  of the hash function:
-  #+END_VERSE
-  $$S = - \sum_i p(i)\cdot\log(p(i))$$
-  #+BEGIN_VERSE
-  where p(i) is the probability that the hash function gives hash i.
+   The type should implements both the __hash__ magic function and either __eq__ or __cmp__ .
+*** probing function
+    #+BEGIN_SRC python
+      # pseudocode
+      # mask is always equal to bin(hashtable_size - 1)
+      def index_sequence(key, mask=0b111, PERTURB_SHIFT=5):
+          perturb = hash(key)
+          i = perturb & mask
+          yield i
+          while True:
+              i = ((i << 2) + i + perturb + 1)
+              perturb >>= PERTURB_SHIFT
+              yield i & mask
+    #+END_SRC
+*** User-defined classes
+    User-defined classes have default hash and comparison functions.
+    The default __hash__ function simply returns the object’s placement
+    in memory as given by the built-in id function. Similarly,
+    the __cmp__ operator compares the numerical value of the object’s
+    placement in memory.
 
-  knowing up front what range of values will be used and how large
-  the dictionary will be helps in making a good selection.
-  #+END_VERSE
+*** entropy
+    “how well distributed my hash function is” is called the *entropy*
+    of the hash function:
+    $$S = - \sum_i p(i)\cdot\log(p(i))$$
+
+    where p(i) is the probability that the hash function gives hash i.
+
+    knowing up front what range of values will be used and how large
+    the dictionary will be helps in making a good selection.
 
 ** resizing
-#+BEGIN_VERSE
-The growth pattern is:
-8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, ...
-the number of bucket increases by 4x until we reach 50,000
-elements, after which the size is increased by 2x.
 
-resizing requires recomputing indices,
-#+END_VERSE
+**** The growth pattern is:
+
+     8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, ...
+     the number of bucket increases by 4x until we reach 50,000
+     elements, after which the size is increased by 2x.
+
+     resizing requires recomputing indices
 ** extra
-- Namespace lookups
+*** Namespace lookups
   #+BEGIN_SRC python
     import math
     from math import sin
@@ -225,23 +208,23 @@ resizing requires recomputing indices,
         """
         return sin(x)
   #+END_SRC
-  #+BEGIN_EXAMPLE
-  >>> dis.dis(test1)
-  0 LOAD_GLOBAL      0 (math)  # Dictionary lookup
-  3 LOAD_ATTR        1 (sin)   # Dictionary lookup
-  6 LOAD_FAST        0 (x)     # Local lookup
-  9 CALL_FUNCTION    1
-  12 RETURN_VALUE
+  #+BEGIN_SRC python
+    dis.dis(test1)
+    # 0 LOAD_GLOBAL      0 (math)  # Dictionary lookup
+    # 3 LOAD_ATTR        1 (sin)   # Dictionary lookup
+    # 6 LOAD_FAST        0 (x)     # Local lookup
+    # 9 CALL_FUNCTION    1
+    # 12 RETURN_VALUE
 
-  >>> dis.dis(test2)
-  0 LOAD_GLOBAL      0 (sin)   # Dictionary lookup
-  3 LOAD_FAST        0 (x)     # Local lookup
-  6 CALL_FUNCTION    1
-  9 RETURN_VALUE
+    dis.dis(test2)
+    # 0 LOAD_GLOBAL      0 (sin)   # Dictionary lookup
+    # 3 LOAD_FAST        0 (x)     # Local lookup
+    # 6 CALL_FUNCTION    1
+    # 9 RETURN_VALUE
 
-  >>> dis.dis(test3)
-  0 LOAD_FAST        1 (sin)   # Local lookup
-  3 LOAD_FAST        0 (x)     # Local lookup
-  6 CALL_FUNCTION    1
-  9 RETURN_VALUE
-  #+END_EXAMPLE
+    dis.dis(test3)
+    # 0 LOAD_FAST        1 (sin)   # Local lookup
+    # 3 LOAD_FAST        0 (x)     # Local lookup
+    # 6 CALL_FUNCTION    1
+    # 9 RETURN_VALUE
+  #+END_SRC
