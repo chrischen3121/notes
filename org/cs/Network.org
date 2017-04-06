@@ -1,0 +1,1081 @@
+#+TITLE: Network
+#+KEYWORDS: Network
+#+OPTIONS: H:2 toc:3 num:3 ^:nil LaTeX:t
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ../../org-templates/level-1.org
+* Physical Layer
+Concerns how signals are used to transfer message bits over a link.
+** Latency
+Message Latency is the delay to send a message over a link.
+- Transmission Delay
+  Time to put M-bit message "on the wire"
+  $$T-delay = \frac{M(bits)}{Rate(bits/sec)} = \frac{M}{R}\ seconds$$
+- Propagation Delay
+  Time for bits to propagate across the wire
+  $$P-delay = \frac{Length}{speed\ of\ signals} \approx \frac{Length}{\frac{2}{3}C} = D\ seconds$$
+  C is the speed of light.
+  #+BEGIN_VERSE
+  In wireless communication, s=c, i.e. the speed of light.
+  In copper wire, the speed s generally ranges from .59c to .77c
+  #+END_VERSE
+
+
+so $$L = \frac{M}{R} + D$$
+Often one delay component dominates.
+*** Bandwidth-Delay
+BD is the amount of data in flight. Reperesents the data "in the network".
+$$BD = R\times D$$
+Small for LANs, big for "long fat" pipes.
+** Media
+Media propagate signals that carry bits of information
+*** Wires
+- Twisted Pair
+  #+BEGIN_VERSE
+  Widely used in LANs and telephone lines
+  Twist reduce radiated signal.
+  #+END_VERSE
+- Coaxial Cable
+*** Fiber
+Long, thin, pure strands of glass. Properties:
+- Enormous bandwidth
+*** Wireless
+Sender radiates signal over a region. Properties:
+- In many directions, to potentially many receivers.
+- Receiver need to coordinate use(choose a sender).
+** Signal
+Analog signals encode digital bits.
+*** Frequency Representation
+A signal over time can be represented by its frequency components.(Fourier analysis)
+$$g(t)=\frac{1}{2}c+\sum_{n=1}^\infty a_n sin(2\pi nft) + \sum b_n cos(2\pi nft)$$
+** Modulation
+- NRZ(Non-Return to Zero)
+  Let a high voltage(+V) represent a 1, and low voltage(-V)represent a 0.
+- Passband
+  #+BEGIN_VERSE
+  Carriers is simply a signal oscillatiog at a desired frequency.
+  To modulate these signal, we can change amplitude, frequency, or phase.
+  #+END_VERSE
+  #+CAPTION: Modulations
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/SignalModulation.png]]
+
+- more signal levels
+  eg: voltage splits into four levels. reperents 2bits per symbol.
+- Clock Recovery
+  Clock recovery is designed for the case like 1000000000...0
+  - 4B/5B
+    #+BEGIN_VERSE
+    The baseband for wires.
+    Map every 4 bits into 5bits without long runs of zeros/ones.(called NRZI)
+    eg: 0000->11110, 0001->01001, 1110->11100, 1111->11101
+    Not work for fiber/wireless.Need to send at higher frequencies.
+    #+END_VERSE
+
+** Limit
+*** Nyquist Limit
+$$Maximum\ data\ rate = 2Hlog_{2}V\ bits/sec$$
+#+BEGIN_VERSE
+V is the discrete levels the signal consists.
+H is the bandwidth
+#+END_VERSE
+*** Shannon Capacity
+$$Maximum\ data\ rate = Hlog_{2}(1+S/N)\ bits/sec$$
+#+BEGIN_VERSE
+S/N is the signal-to-noise ratio, S is the signal power, N is the noise power.
+S/N in db unit $=10log_{10}(S/N)$
+#+END_VERSE
+
+** Other Hints
+*** Metric Units
+#+BEGIN_VERSE
+Use power of 10 for rates, 2 for storage.
+$Mbps=1,000,000bps, 1KB = 2^{10}bytes$
+"B" is for bytes, "b" is for bits
+#+END_VERSE
+*** BandWidth
+The range of frequencies transmitted without being strongly attenuated is called the bandwidth
+
+* Data Link Layer
+** Frame
+| FLAG | Header | Payload field | Trailer | FLAG |
+*** Bit Stuffing
+After five 1s in the data, insert a 0.
+*** Example(PPP)
+#+BEGIN_VERSE
+PPP is a Point-to-Point Protocal.
+FLAG in PPP is 0x7E, ESC is 0x7D.
+To stuff(unstuff) a byte, add(remove) ESC(0x7D),
+and XOR byte with 0x20.
+#+END_VERSE
+
+** Error Detection
+*** Keywords
+**** Codeword
+An n-bit unit containing data and check bits is often referred to as an n-bit codeword.
+**** Hamming distance
+The number of bit positions in which two codewords differ is called the Hamming distance.
+
+- To detect *d* errors, we need *d+1* distance.
+#+BEGIN_EXAMPLE
+000, 111
+001, 101 are both wrong.
+#+END_EXAMPLE
+
+- To correct *d* errors, we need *2d+1* distance.
+#+BEGIN_EXAMPLE
+0000000000, 0000011111, 1111100000, 1111111111
+Hamming distance: 5
+Number of errors will be corrected: 2
+When we get 0000000111,
+If 2 errors occured, the rec
+When we get 0000000111(2 errors occured), we can correct it: 0000011111
+if three errors happen(0000000011), this code doesn't work.
+#+END_EXAMPLE
+
+*** Parity
+#+BEGIN_VERSE
+Take D data bits, add 1 check bit.
+Check bit is the sum of the D bits module 2.(diff by even sum or odd)
+Distance: 2
+Detect 1 error
+#+END_VERSE
+
+*** Checksums
+- Sending
+
+Sum is defined in 1s complement.
+1) Arrange data in 16-bit words
+2) Add all
+3) Add with the carryover back to get 16bits
+4) Trans to 1s Complement
+
+#+BEGIN_EXAMPLE
+0001+f203+f4f5+f6f7=2ddf0
+ddf0+2=ddf2
+ddf2->220d
+#+END_EXAMPLE
+
+- Receiving
+
+
+1) Arrange data in 16-bit words
+2) Add all + checksum
+3) Add any carryover back to get 16bits.
+4) Negate the result and check it is 0.
+
+#+BEGIN_EXAMPLE
+0001+f203+f4f5+f6f7+220d=2fffd
+fffd+2 = ffff
+ffff->0
+#+END_EXAMPLE
+
+- Conclusion
+#+BEGIN_VERSE
+Distance: 2
+Detect 1 error
+#+END_VERSE
+
+*** CRC(Cyclic Redundancy Check)
+#+BEGIN_VERSE
+Given n data bits, generate k check bits such that the n+k bits are evenly
+divisible by a generator C.
+C(x) use the polynomial code:
+eg: 10011010 is $x^7+x^4+x^3+x^1$
+Both the high- and low-order bits of the generator must be 1
+#+END_VERSE
+
+- Sending
+
+  1) Extend the n data bits with k zeros
+  2) Divide by the generator value C
+  3) Keep remainder, ignore quotient
+  4) Adjust k check bits by remainder
+  #+BEGIN_EXAMPLE
+  Frame: 1101011011
+  Generator: 10011
+  K: 4 bits
+  11010110110000 devided by 10011
+  Reminder: 0010
+  #+END_EXAMPLE
+
+  #+BEGIN_VERSE
+  Note that: There are no carries for addition or borrows
+  for subtraction. Both addition and subtraction are
+  identical to exclusive OR.
+  #+END_VERSE
+
+
+- Receiving
+
+  1) Divide and check for zero remainder
+
+
+- Conclusion
+  #+BEGIN_VERSE
+  Protection depends on generator.
+  Standard CRC-32 is: 1 0000 0100 1100 0001 0001 1101 1011 0111
+  Distance: 4
+  Detect 3 errors
+  #+END_VERSE
+
+*** In Practice
+CRCs are widely used on links
+- Ethernet, 802.11, ADSL, Cable...
+Checksum used in Internet
+- IP, TCP, UDP
+Parity
+- Is little used
+
+** Error Correction
+*** Hamming Code
+#+BEGIN_VERSE
+Uses $n=2^k-k-1$
+n: data bits
+k: check bits
+eg: n=4, k=3
+#+END_VERSE
+- Put check bits in positions p that are powers of 2, starting with position 1
+- Check bit in position p is parity of positions with a p term in their values
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/HammingCodeModel.png]]
+
+- Encoding
+#+BEGIN_EXAMPLE
+data=0101, 3 check bits
+__0_101
+P1=0+1+1=0
+P2=0+0+1=1
+P4=1+0+1=0
+After encoded: 0100101
+#+END_EXAMPLE
+
+- Decoding
+#+BEGIN_EXAMPLE
+0100101
+P1=P1+D3+D5+D7=0+0+1+1=0
+P2=P2+D3+D6+D7=1+0+0+1=0
+P4=P4+D5+D6+D7=0+1+0+1=0
+Syndrome=000, no error
+
+0100111
+P1=0, P2=1, P4=1
+Syndrome=110->6
+The 6th bit is wrong.
+#+END_EXAMPLE
+** Detection vs. Correction
+Error correction:
+- Needed when errors are expected
+- When no time for retransmission
+
+Error dection:
+- More efficient when errors are not expected
+- When errors are large when they do occur
+** ARP(Address Resolution Protocol)
+Node uses ARP to map a local IP address to its Link layer address
+#+ATTR_HTML: align="center"
+[[file:../resources/network/ARPPurpose.png]]
+
+- No servers, just asks node with target IP.
+- Uses *broadcast* to reach all nodes.
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/ARPSeq.png]]
+
+* Medium Access Control Sublayer
+** Retransmissions
+Detect errors and retransmit frame(Automatic Repeat reQuest, ARQ)
+- ARQ often used when errors are common or must be corrected. E.g., WIFI, TCP
+- Rules
+#+BEGIN_VERSE
+Receiver automatically confirms with an ACK.
+Sender automatically resends after a timeout, until an ACK is received
+#+END_VERSE
+Two non-trivial issues: *Timeouts* and *Duplicates*
+*** Timeouts
+Should be
+- Not too long (link goes idle)
+- Not too short (spurious resend)
+*** Duplicates
+Two ways to solve this problem:
+**** Stop-and-Wait
+Add a single bit to distinguish the current frame from the next one(in the head of the frame)
+- Normal Case
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/SaWNormalCase.png]]
+- With Ack Loss
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/SaWWithACKLoss.png]]
+- With Early Timeout
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/SaWWithEarlyTimeout.png]]
+
+- Limitation of Stop-and-Wait
+  #+BEGIN_VERSE
+  Stop-and-Wait allows only one frame to
+  be outstanding from the sender at a time.
+  Not good with high BD networks.
+  #+END_VERSE
+**** Sliding Window
+Generalization of Stop-and-Wait
+- Allow W frams to be outstanding
+- Can send W frams per RTT (= 2D + transmission time, Round Trip Time)
+- Various options for numbering frams/ACKs and handling loss
+
+** Multiplexing
+*Multiplexing* is the network word for the sharing of a resource.
+- Time Division Multiplexing (TDM)
+
+  Users take turns on a fixed schedule
+
+- Frequency Division Multiplexing (FDM)
+
+  Put different users on different frequency bands
+*** TDM/FDM Usage
+- Statically divide a resource
+  #+BEGIN_VERSE
+  Suited for continuous traffic, fixed
+  number of users
+  #+END_VERSE
+
+- Widely used in telecommunications
+  #+BEGIN_VERSE
+  E.g:
+  TV and radio stations: FDM
+  GSM (2G cellular): TDM within FDM
+  #+END_VERSE
+
+** Multiple Access Control
+*** Randomized Multiple Access
+**** ALOHA
+#+BEGIN_VERSE
+Simple idea:
+If there was a collision(no ACK received) then wait
+a random time and resend.
+#+END_VERSE
+- Low load: Works well
+- High load: Need improvement
+
+  Improvement: divide time into slots(transmit frames at the beginnings of slots)
+
+**** CSMA(Carrier Sense Multiple Access)
+
+- *carrier sensing* (CSMA)
+
+  #+BEGIN_VERSE
+  A node listens to the channel before transmitting.
+  #+END_VERSE
+
+- *collision detection* (CSMA/CD)
+
+  #+BEGIN_VERSE
+  A transmitting node listens to the channel while it is transmitting.
+  If it detects that another node is transmitting an interfering frame,
+  it stops transmitting and wait a random amount time before repeating.
+  #+END_VERSE
+
+  - Complications
+
+    #+BEGIN_VERSE
+    Time window in which a node may hear of a collision is 2D seconds.
+    Solution: Impose a minimum frame size that last for 2D seconds.
+    Then, node can't finish before collision.
+    Note that: Ethernet minimum frame is 64bytes.
+    #+END_VERSE
+
+  - Persistence
+
+    #+BEGIN_VERSE
+    Multiple waiting nodes will queue up then collide.
+    Espacially on high load network.
+
+    Idea to solve: N queued senders, each send probability 1/N. How to estimate?
+
+    In practice: BEB(Binary Exponential Backoff)
+    Clever estimates the probability:
+    1st collision, wait 0 to 1 frame times; 2nd, 0 to 3; 3rd, 0 to 7;
+    BEB doubles interval for each successive collision.
+    #+END_VERSE
+
+  - Summary
+
+    - CSMA Improve ALOHA by listening for activity before sending.
+    - Can do easily with wire.
+    - Still possible to hear nothing when another node is sending because of delay.
+    - CSMA is a good defense against collisions only when BD is small
+
+**** Classic Ethernet
+
+- 10 Mbps over shared coaxial cable
+- 1-persistent CSMA/CD with BEB
+- Frame Format
+  - contains addresses of sender and receiver
+  - CRC-32 for error detection
+  - No ACKs or retransmission
+  - Start of frame identified with physical layer preamble
+
+  | Preamble | Dest addr | Source addr | Type | Data(Packet from Network layer) |  Pad | Check-sum |
+  |        8 |         6 |           6 |    2 |                          0-1500 | 0-46 | 4         |
+*** Wireless Multiple Access
+**** Complications
+Wireless can't work with CSMA/CD
+
+- Nodes may have different areas of coverage
+
+  May case two problems:
+
+  - Hidden Terminals
+
+    A and C are hidden terminals when sending to B
+    #+ATTR_HTML: align="center"
+    [[file:../resources/network/HiddenTerminal.png]]
+
+  - Exposed Terminals
+
+    B and C are exposed terminals when sending to A and D
+    #+ATTR_HTML: align="center"
+    [[file:../resources/network/ExposedTerminal.png]]
+
+
+- Nodes can't hear while sending
+
+  Detecting collisions wasted much time with wireless.
+**** MACA Protocol
+Uses a short handshake instead of CSMA
+
+1) Sender transmits a RTS(Request-To-Send) with frame length
+2) Receiver replies with a CTS(Clear-To-Send) with frame length
+3) Sender transmits the frame while hearing the CTS _stay silent_
+
+
+- Solution For Hidden Terminals
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/MACAHiddenTerminal.png]]
+
+- Solution For Exposed Terminals
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/MACAExposedTerminal.png]]
+
+- Collisions on the RTS/CTS are still possible, but less likely
+**** 802.11
+- Physical Layer
+  - Uses 20/40Mhz, b/g/n on 2.4GHz, a/n on 5GHz
+- Link Layer
+  - Multiple access uses CSMA/CA; RTS/CTS optional
+    #+ATTR_HTML: align="center"
+    [[file:../resources/network/CSMACASeq.png]]
+
+    Backoff is a small random gap.
+
+  - Frames are ACKed and retransmitted with ARQ
+  - Three addresses(due to AP)
+  - Errors are detected with a 32-bit CRC
+  | Frame control | Duration | Dest addr | Source addr | AP addr |   Data | Check-sum |
+  |             2 |        2 |         6 |           6 |       6 | 0-2312 |         4 |
+
+*** Turn-Taking Multiple Access
+Issue about CSMA under high load:
+- High overhead(expect collisions)
+- Access time varies(random)
+
+#+BEGIN_VERSE
+Turn-Taking protocol defines an order in which nodes get a chance to send.
+The way to define ordering:
+E.g Token Ring, node addresses
+#+END_VERSE
+
+- Token Ring
+
+  Arrange nodes in a ring. Token rotates permission to send to each node in turn.
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/TokenRing.png]]
+
+
+  - Advantages:
+
+    1) Fixed overhead with no collisions
+    2) Regular chance to send with no unlucky nodes
+
+  - DisAdvantages(Complexity):
+
+    1) More things could be wrong. E.g: token lost
+    2) High overhead at low load
+
+** Switching
+#+BEGIN_VERSE
+Hub/repeater for physical layer.
+Router for network layer.
+Switch for link layer.
+#+END_VERSE
+Inside Switch Box:
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/InsideSwitch.png]]
+
+#+BEGIN_VERSE
+Uses buffers for multiple inputs to send to one output,
+may overload, and lead to frame loss.
+#+END_VERSE
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/SwitchBuffer.png]]
+
+*** Switch Forwarding
+Uses a learning table, sends to the port in the table or broadcasts to all ports.
+
+*** Switch Spanning Tree
+- How can we connect switches in any topology?
+- Problem - forwarding loops
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/RedundantLinks.png]]
+
+  Redundancy in case of failures. But loops occurs:
+
+  1) $A\to C\to B, D-left, D-right$
+  2) $D-left\to C-right, E, F$
+  3) $D-right\to C-left, E, F$
+  4) $C-right\to D-left, A, B$
+  5) $C-left\to D-right, A, B$
+  6) ...
+
+**** Solution
+
+Switches collectively find a spanning tree for the topology
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/STSolution1.png]]
+
+- Outline
+
+  1) Elect a root node of the tree(switch with the lowest addr)
+  2) Grow tree as shortest distances from the root
+  3) Turn off ports for forwarding if they aren't on the spanning tree
+
+
+- Algorithm
+
+  1) Each switch initially believes it is the root of the tree
+  2) Each switch sends periodic updates to neighbors
+  3) Switches favors ports with shorter distances to lowest root
+
+  #+BEGIN_VERSE
+  Update Information like:
+  Hi, I'm *C*, the root is *A*, it's *2* hops away. (C, A, 2)
+  #+END_VERSE
+
+
+- Example:
+  - At the beginning
+
+    #+ATTR_HTML: align="center"
+    [[file:../resources/network/STExample1.png]]
+
+  - 1st round, sending:
+
+    A sends (A,A,0) to say it is root. Same as B, C, D, E and F.
+
+  - 1st round, receiving:
+    #+BEGIN_VERSE
+    A still thinks (A,A,0)
+    B still thinks (B,B,0)
+    C updates to (C,A,1)
+    D updates to (D,C,1)
+    E updates to (E,A,1)
+    F updates to (F,B,1)
+    #+END_VERSE
+    #+ATTR_HTML: align="center"
+    [[file:../resources/network/STExample2.png]]
+
+  - 2nd round, receiving:
+    #+BEGIN_VERSE
+    A still thinks (A,A,0)
+    B updates to (B,A,2) via C
+    C remains (C,A,1)
+    D updates to (D,A,2) via C
+    E remains (E,A,1)
+    F remains (F,B,1)
+    #+END_VERSE
+    #+ATTR_HTML: align="center"
+    [[file:../resources/network/STExample3.png]]
+
+  - 3rd round, receiving:
+    #+BEGIN_VERSE
+    A remains (A,A,0)
+    B remains (B,A,2)
+    C remains (C,A,1)
+    D remains (D,A,2)
+    E remains (E,A,1)
+    F updates to (F,A,3) via B
+    #+END_VERSE
+    #+ATTR_HTML: align="center"
+    [[file:../resources/network/STExample4.png]]
+
+  - 4th round
+    #+BEGIN_VERSE
+    Steady-state has be reached
+    Turn off forwarding that is not on spanning tree
+    #+END_VERSE
+
+  - Continus to run
+    #+BEGIN_VERSE
+    Adapts by timeing out information
+    E.g: If A fails, other nodes forget it, and B will become the new root
+    #+END_VERSE
+* Network Layer
+** Service Models
+*** Store-and-Forward
+#+BEGIN_VERSE
+Both of two models use Store-and-Forward packet switching.
+Switching element has internal buffering for contention.
+#+END_VERSE
+
+- Buffer is typically a FIFO queue
+- If full, packets will be discarded
+*** Datagrams(Connectionless)
+Like postal letters
+- Packets contain a dest. address
+- Each router has a forwarding table(often changes) keyed by dest addr.
+  Example table:
+  #+CAPTION: Router A's Table
+  | Dest. | Line |
+  |-------+------|
+  | A     |      |
+  | B     | B    |
+  | C     | C    |
+  | D     | B    |
+  | E     | C    |
+  | F     | C    |
+
+*** Virtual Circuits(Connection-Oriented)
+Like a telephone call. Three steps:
+1) Connection establishment, circuit is set up (Path is chosen, circuit info stored in routers)
+2) Data transfer, circuit is used
+3) Connection teardown, circuit is deleted
+
+
+- Virtual means there's no bandwidth need be reserved
+- Packets only contain a short label to identify the circuit
+- Each router has a forwarding table keyed by circuit
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/VirtualCircuitsTable.png]]
+
+
+**** MPLS(Multi-Protocol Label Switching)
+A virtual-circuit like technology widely used by ISPs.
+
+- ISP set up circuits inside their backbone ahead of time
+- ISP add MPLS label to IP packet at ingress, undoes at egress
+
+  #+ATTR_HTML: align="left"
+  file:../resources/network/MPLSStructure.png
+
+*** Datagrams vs Virtual Circuits
+#+ATTR_HTML: align="center"
+| Issue              | Datagrams                | Vitual Circuits            |
+|--------------------+--------------------------+----------------------------|
+| Setup              | Not needed               | Required                   |
+| Router state       | Per destination          | Per connection             |
+| Addresses          | Packet carries full addr | Packet carries short label |
+| Routing            | Per packet               | Per circuit                |
+| Failures           | Easier to mask           | Hard to mask               |
+| Quality of service | Diffcult to add          | Easier to add              |
+
+** IP(Internet Protocol)
+*** Internetworking
+Connecting different networks together called internetworking. Differs:
+- Service model(datagrams, VCs)
+- Addressing
+- QOS(priorities, no priorities)
+- Packet sizes
+- Security(whether encrypted)
+
+IP is the "narrow waist" of the internet.
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/IPNarrowWaist.png]]
+#+BEGIN_VERSE
+The idea is make IP as a lowest common denominator.
+Ask little from lower-layer, gives little to a higher-layer.
+#+END_VERSE
+*** IPv4
+#+BEGIN_VERSE
+IPv4 carries 32-bit addresses on each packet(often 1.5KB)
+
+Uses datagrams, you can see Source and Destination addr inside.
+#+END_VERSE
+
+The fields to handle the difference of networks:
+
+- Identification, Fragment offset, Fragment control bits for different packet size.
+
+- Differentiated Services for QOS
+
+- Time to live(TTL) for ICMP
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/IPProtocol.png]]
+
+**** IP Prefix
+Notation: IP address/prefix-length E.g:128.13.0.0/16
+
+**** IP Allocation
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/IPAllocation.png]]
+
+*** IP Forwarding
+Nodes uses a table that lists the next hop for IP prefixes. Example:
+#+ATTR_HTML: align="center"
+[[file:../resources/network/HopList.png]]
+
+- Longest Matching Prefix
+  #+BEGIN_VERSE
+  Prefixes can overlap!
+  In example above,
+  D: 192.24.0~63.0~255
+  B: 192.24.12~15.0~255
+  #+END_VERSE
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/IPOverlap.png]]
+
+
+  The rule is to *more specific* area. This rule called *Longest Matching Prefix*.
+
+  - Flexibility
+    #+BEGIN_VERSE
+    provide default behavior, with less specific prefixes.
+    E.g. send traffic going outside an organization to a border router.
+
+    special case behavior, with more specific prefixes.
+    E.g. For performance, economics, security
+    #+END_VERSE
+
+
+- Host Forwarding Table
+  | Prefix            | Next Hop               |
+  |-------------------+------------------------|
+  | My network prefix | Send direct to that IP |
+  | 0.0.0.0/0         | Send to my router      |
+  - 0.0.0.0/0 is a default route that catches all IP addresses.
+
+*** Packet Size Issue
+#+BEGIN_VERSE
+Different networks have different maximum packet sizes.
+Also known MTU(Maximum Transmission Unit)
+Two solutions:
+#+END_VERSE
+**** Fragmentation
+Split up large packets in the network----classic method, dated.
+#+ATTR_HTML: align="center"
+[[file:../resources/network/PacketFragmentation.png]]
+
+
+#+BEGIN_VERSE
+Related fields:
+MF=More Fragment
+DF=Don't Fragment
+identification field links pieces together.
+#+END_VERSE
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/FragmentationFields.png]]
+
+- Procedure
+
+  1) Copy IP header to pieces
+  2) Adjust length on pieces
+  3) Set offset to indicate position
+  4) Set MF on all pieces except last
+
+
+ #+ATTR_HTML: align="center"
+ [[file:../resources/network/FragmentationExample.png]]
+
+- Disadvantages
+  - More work for routers, hosts
+  - Tends to magnify loss rate
+  - Security vulnerabilities
+
+**** Discovery
+Find the largest packet that fits on the network path.
+- Solution
+  Host tests path with large packet.
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/MTUDiscovery.png]]
+
+  #+BEGIN_VERSE
+  Implemented with ICMP.
+  Set DF(Don't Fragment) bit in IP header to get feedback messages.
+  #+END_VERSE
+
+*** ICMP(Internet Control Message Protocol)
+#+BEGIN_VERSE
+On IP Header: IP Protocol = 1
+Provides error report and testing
+
+When router encounters an error while forwarding:
+#+END_VERSE
+1) Sends an ICMP error report back to the IP source address
+2) Discards the problematic packet(host needs to rectify)
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/RouterReturnICMPError.png]]
+
+- ICMP Message
+
+  #+BEGIN_VERSE
+  ICMP message has a type, code, and checksum
+  Often carry the start of the offending packet as payload
+  Each message is carried in an IP packet
+  #+END_VERSE
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/ICMPMessage.png]]
+
+  Some examples:
+  | Name                           | Type/Code | Usage                |
+  |--------------------------------+-----------+----------------------|
+  | Dest. Unreachable(Net or Host) | 3/ 0or1   | Lack of connectivity |
+  | Dest. Unreachable(Fragment)    | 3/4       | Path MTU Discovery   |
+  | Time Exceeded(Transit)         | 11/0      | *Traceroute*         |
+  | Echo Request or Reply          | 8or0 /0   | Ping                 |
+
+  The last two are used for testing.
+
+*** IPv6
+- 128 bits address
+  #+BEGIN_VERSE
+  8 groups of 4 hex digits. Omit *leading* zeros and group of zeros.
+  Ex: 2001:0db8:0000:0000:0000:ff00:0042:8329
+  -> 2001:db8:ff:42:8329
+  #+END_VERSE
+
+- Message Format
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/IPv6Format.png]]
+
+  The changes:
+  - Streamlined header processing
+  - Flow lable to group of packets
+  - Better fit with advanced features(mobility, multicasting, security)
+
+- Deploy Issue
+  #+BEGIN_VERSE
+  The format incompatible with IPv4
+  Solutions:
+  #+END_VERSE
+  - Dual stack (speak IPv4 and IPv6)
+  - Translators (convert packets)
+  - Tunnels (carry IPv6 on IPv4)
+
+    #+ATTR_HTML: align="center"
+    [[file:../resources/network/IPv6Tunneling.png]]
+
+** Traceroute
+Uses TTL(Time to live) field in IP header.
+#+ATTR_HTML: align="center"
+[[file:../resources/network/TimeToLiveField.png]]
+#+BEGIN_VERSE
+TTL decremented every router hop, with ICMP error if it hits zero.
+It also protects against forwarding loops.
+
+Traceroute sends probe packets increasing TTL starting from 1.
+#+END_VERSE
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/TraceRouterFlow.png]]
+
+** NAT(Network Address Translation)
+#+BEGIN_VERSE
+NAT is one type of the *middle box*.
+*Middle box* provides new functionality(NAT, firewall, Intrusion Detection).
+NAT holds a table, map internal IP:Port with External IP:Port.
+May look like the following table:
+#+END_VERSE
+|          Internal |        External |
+|-------------------+-----------------|
+| 192.168.1.12:5523 | 44.25.80.3:1500 |
+| 192.168.1.13:1234 | 44.25.80.3:1501 |
+| 192.168.2.20:1234 | 44.25.80.3:1502 |
+
+#+BEGIN_VERSE
+Internal\to External: looks up the map, changes the src IP:Port.
+External\to Internal: changes the dest IP:Port.
+#+END_VERSE
+
+- Advantage
+  - Relieves much public IP address pressure
+  - Easy to deploy
+  - Useful functionality(helps with privacy, firewall, etc.)
+
+- Disadvantage
+
+  - Connectivity has been broken
+    #+BEGIN_VERSE
+    Can only send packets after outgoing connection is set up.
+    Difficult to run servers or peer-to-peer apps(Skype) at home.
+    #+END_VERSE
+
+  - Doesn't work so well with UDP
+  - Unwisely expose their IP addresses(FTP)?
+
+* Routing
+** Distance Vector Routing
+#+ATTR_HTML: align="center"
+[[file:../resources/network/DVExample.png]]
+
+- Initial Status
+  | To | A        | B        | C        | D        |
+  |----+----------+----------+----------+----------|
+  | A  | 0        | $\infty$ | $\infty$ | $\infty$ |
+  | B  | $\infty$ | 0        | $\infty$ | $\infty$ |
+  | C  | $\infty$ | $\infty$ | 0        | $\infty$ |
+  | D  | $\infty$ | $\infty$ | $\infty$ | 0        |
+
+- 1st Exchange
+  #+BEGIN_VERSE
+  AC: A Cost
+  AN: A NextTo
+  #+END_VERSE
+  | To |       AC | AN | BC | BN |       CC | CN | DC | DN |
+  |----+----------+----+----+----+----------+----+----+----|
+  | A  |        0 | -- |  3 | A  | $\infty$ | -- |  7 | A  |
+  | B  |        3 | B  |  0 | -- |        6 | B  |  3 | B  |
+  | C  | $\infty$ | -- |  6 | C  |        0 | -- |  2 | C  |
+  | D  |        7 | D  |  3 | D  |        2 | D  |  0 | -- |
+
+- 2nd Exchange
+  | To | AC | AN | BC | BN | CC | CN | DC | DN |
+  |----+----+----+----+----+----+----+----+----|
+  | A  |  0 | -- |  3 | A  |  9 | B  |  6 | B  |
+  | B  |  3 | B  |  0 | -- |  5 | D  |  3 | B  |
+  | C  |  9 | D  |  5 | D  |  0 | -- |  2 | C  |
+  | D  |  6 | B  |  3 | D  |  2 | D  |  0 | -- |
+
+- final
+  | To | AC | AN | BC | BN | CC | CN | DC | DN |
+  |----+----+----+----+----+----+----+----+----|
+  | A  |  0 | -- |  3 | A  |  8 | D  |  6 | B  |
+  | B  |  3 | B  |  0 | -- |  5 | D  |  3 | B  |
+  | C  |  8 | B  |  5 | D  |  0 | -- |  2 | C  |
+  | D  |  6 | B  |  3 | D  |  2 | D  |  0 | -- |
+
+*** Dynamics
+- Adding routes: one hop per exchange
+- Removing routes: no more exchanges
+- Partitions are a problem: "Count to infinity" scenario
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/CountToInfty.png]]
+
+  #+BEGIN_VERSE
+  Some way to address: Split horizon, poison reverse.
+  (Don't send route back to where you learned it from)
+
+  There's no very effective way to solve this problem.
+  And now link state favored in practice.
+  #+END_VERSE
+
+*** RIP(Routing Information Protocal)
+- DV protocal with hop count as metric
+  - Infinity is 16 hops; limits network size.
+  - Include split horizon, poison reverse.
+
+- Routers send vectors every 30 secs
+  - Runs on top of UDP.
+  - Timeout in 180 secs to detect failures.
+
+** Flooding
+*** Rule Used at Each Node
+- Sends an incoming message on to all other neighbors
+- Remember the message so that it is only flood once
+
+  Using source and sequence number
+
+* Transport Layer
+** TCP vs UDP
+| TCP(Streams)             | UDP(Datagrams)                         |
+|--------------------------+----------------------------------------|
+| Connections              | Datagrams                              |
+| Reliably, and in order   | reordered, duplicated, msg may be lost |
+| Arbitrary length content | Limited message size                   |
+| Flow control             | Can send regardless of receiver state  |
+| Congestion control       | Can send regardless of network state   |
+
+** Well-known Ports
+|   Port | Protocol | Use                            |
+| 20, 21 | FTP      | File transfer                  |
+|     22 | SSH      | Remote login                   |
+|     25 | SMTP     | Email                          |
+|     80 | HTTP     | World Wide Web                 |
+|    110 | POP-3    | Remote email access            |
+|    143 | IMAP     | Remote email access            |
+|    443 | HTTPS    | Secure Web (HTTP over SSL/TLS) |
+|    543 | RTSP     | Media player control           |
+|    631 | IPP      | Printer sharing                |
+
+** UDP socket
+*** header
+- Datagram length up to 64K
+- Checksum(16 bits) for reliability
+
+| Source port | Destination  |
+| UDP length  | UDP checksum |
+
+*** sequence
+#+ATTR_HTML: align="center"
+[[file:../resources/network/DatagramSockets.png]]
+
+** TCP socket
+*** Three-way handshake
+#+ATTR_HTML: align="center"
+[[file:../resources/network/ThreeWayHandshake.png]]
+
+- state machine
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/ThreeWayHandshake_SM.png]]
+
+*** Connection Release
+#+ATTR_HTML: align="center"
+[[file:../resources/network/TCPConnectionRelease.png]]
+
+- state machine
+
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/TCPConnectionRelease_SM.png]]
+
+* Application Layer
+** DHCP(Dynamic Host Configuration Protocol)
+Provide the following information to Node:
+- The node IP
+- Network prefix
+- Address of local router
+- DNS server, time server, etc.
+
+DHCP uses UDP ports 67,68
+| DHCP     |
+| UDP      |
+| IP       |
+| Ethernet |
+
+*** How does node find DHCP server?
+#+BEGIN_VERSE
+Node sends broadcast messages.
+broadcast address is all 1s.
+255.255.255.255 for IP, ff:ff:ff:ff:ff:ff for Ethernet
+#+END_VERSE
+#+ATTR_HTML: align="center"
+[[file:../resources/network/DHCPSeq.png]]
