@@ -793,8 +793,7 @@ reindex args: index, method, fill_value, limit, level, copy
      dict(list(df.groupby('key1')))
 
      # df groupby
-     df.groupby()
-     df.groupby(axis=1)
+     df.groupby(['key1', 'key2']) # options: as_index, axis
 
      # get group size
      df.groupby().size()
@@ -836,4 +835,44 @@ reindex args: index, method, fill_value, limit, level, copy
    | min, max    | Minimum and maximum of non-NA values                         |
    | prod        | Product of non-NA values                                     |
    | first, last | First and last non-NA values                                 |
-   costom aggregation fuction, use *aggregate* or *agg* method
+*** *aggregate* / *agg* method
+**** Series
+     #+BEGIN_SRC python
+       s.agg(['mean', 'std'])
+       s.agg([('foo', 'mean'), ('bar', 'np.std')]) # foo bar will be the column name of result df
+     #+END_SRC
+**** DataFrame
+     #+BEGIN_SRC python
+       df.agg({'col1': 'mean', 'col2': 'std', 'col3': np.max})
+       df.agg({'col1': ['mean', 'std']})
+     #+END_SRC
+*** apply
+    apply function has args:
+    #+BEGIN_SRC python
+      df.groupby(['key1', 'key2']).apply(top, n=1)
+    #+END_SRC
+**** GroupBy method
+     #+BEGIN_SRC python
+       grouped.describe()
+       # is just shortcut of
+       f = lambda x: x.describe()
+       grouped.apply(f)
+     #+END_SRC
+*** transform
+    *transform* is a more specialized function having rigid requirements.
+    *transform* applies a funtion to *each group*, then places the results
+    in the appropriate locations. If each group produces a scalar value, it
+    will be *propagated(broadcasted)*.
+**** Standardizing data (zscore) within group
+     #+BEGIN_SRC python
+       key = lambda x: x.year
+       zscore = lambda x: (x - x.mean()) / x.std()
+       transformed = ts.groupby(key).transform(zscore)
+     #+END_SRC
+
+**** Filling NAs within groups with a value derived from each group
+     #+BEGIN_SRC python
+       f = lambda x: x.fillna(x.mean())
+       transformed = grouped.transform(f)
+     #+END_SRC
+** cut & qcut
