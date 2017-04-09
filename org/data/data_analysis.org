@@ -784,3 +784,56 @@ reindex args: index, method, fill_value, limit, level, copy
    - Chaco: 2-Dimensional Plotting, interactive visualization.
    - mayavi: a 3D graphics toolkit built on the open source C++ graphics library VTK
    - PyQwt
+* aggregation
+** group by
+   #+BEGIN_SRC python
+     # series groupby
+     df['data1'].groupby(df['key1'])
+     df.groupby(df['key1'])['data1'] # syntactic sugar
+     dict(list(df.groupby('key1')))
+
+     # df groupby
+     df.groupby()
+     df.groupby(axis=1)
+
+     # get group size
+     df.groupby().size()
+
+     # iterations
+     for name, group in df.groupby('key1'):
+         print name, group
+   #+END_SRC
+*** via dict
+    #+BEGIN_SRC python
+      # using mapping dict
+      mapping = {'a': 'group1', 'b': 'group1', 'c': 'group2'}
+      df.groupby(mapping, axis=1)
+    #+END_SRC
+*** via function
+    Any function passed as a group key will be called once per
+    index value, with the return values being used as the group names
+    #+BEGIN_SRC python
+      # using function
+      df.groupby(len).sum()
+    #+END_SRC
+*** via mixing
+    Mixing functions with arrays, dicts or Series is not a problem as
+    everything gets converted to arrays internally
+    #+BEGIN_SRC python
+      key_list = ['one', 'one', 'two']
+      df.groupby([len, key_list]).min()
+    #+END_SRC
+
+** groupby aggregation
+   #+CAPTION: Optimized grouby methods
+   | Name        | Description                                                  |
+   |-------------+--------------------------------------------------------------|
+   | count       | Number of non-NA values in the groupNumber of non            |
+   | sum         | Sum of non-NA values                                         |
+   | mean        | Mean of non-NA values                                        |
+   | median      | Arithmetic median of non-NA values                           |
+   | std, var    | Unbiased (n - 1 denominator) standard deviation and variance |
+   | min, max    | Minimum and maximum of non-NA values                         |
+   | prod        | Product of non-NA values                                     |
+   | first, last | First and last non-NA values                                 |
+   costom aggregation fuction, use *aggregate* or *agg* method
