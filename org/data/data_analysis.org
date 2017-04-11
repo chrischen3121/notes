@@ -179,6 +179,7 @@
     | abs, fabs      | Use *fabs* as a faster alternative for non-complex-valued data                             |
     | modf           | Return factional and integral parts of array as separate array                             |
     | rint           | Round elements to the nearest integer, preserving the dtype                                |
+    | average        | Compute the weighted average along the specified axis.                                     |
 *** Linear Algebra
     | Function | Description                                                         |
     |----------+---------------------------------------------------------------------|
@@ -456,7 +457,7 @@ reindex args: index, method, fill_value, limit, level, copy
       returns.corrwith(returns.IBM)
     #+END_SRC
 
-*** args
+*** common args
      | Method | Description                                                                |
      |--------+----------------------------------------------------------------------------|
      | axis   | Axis to reduce over. 0 for DataFrame’s rows and 1 for columns             |
@@ -507,6 +508,75 @@ reindex args: index, method, fill_value, limit, level, copy
       #+BEGIN_SRC python
         stacked.to_panel()
       #+END_SRC
+
+** TimeSeries
+*** numpy.datatime64
+    nanoseconds resolution.
+    pandas *stores* timestamps as numpy.datatime64
+*** pandas *Timestamp*
+**** timezone-aware
+**** to_period
+*** Frequencies
+    #+CAPTION Base Time Series Frequencies
+    | Alias               | Offset Type          |
+    |---------------------+----------------------|
+    | D                   | Day                  |
+    | B                   | BusinessDay          |
+    | H                   | Hour                 |
+    | T or min            | Minute               |
+    | S                   | Second               |
+    | L or ms             | Milli                |
+    | U                   | Micro                |
+    | M                   | MonthEnd             |
+    | BM                  | BusinessMonthEnd     |
+    | MS                  | MonthBegin           |
+    | BMS                 | BusinessMonthBegin   |
+    | W-Mon, W-TUE, ...   | Week                 |
+    | WOM-1MON, ...       | WeekOfMonth          |
+    | Q-JAN, Q-FEB, ...   | QuarterEnd           |
+    | BQ-JAN, BQ-FEB, ... | BusinessQuarterEnd   |
+    | QS-JAN, ...         | QuarterBegin         |
+    | BQS-JAN, ...        | BusinessQuarterBegin |
+    | A-JAN, ...          | YearEnd              |
+    | BA-JAN, ...         | BusinessYearEnd      |
+    | AS-JAN, ...         | YearBegin            |
+    | BAS-JAN, ...        | BusinessYearBegin    |
+**** Users can define custon frequency classes
+**** offsets can also be used with *datetime* or *Timestamp* objects
+**** offset.rollforward/rollback
+     #+BEGIN_SRC python
+       ts.groupby(offset.rollforward).mean()
+     #+END_SRC
+     but *resample* is faster
+
+*** Timezone
+    internal library: *pytz*
+**** tz_localize
+**** tz_convert
+*** Period
+**** pandas.Period
+**** pandas.PeriodIndex
+*** Resample
+    Aggregating higher frequency data to lower frequency is called downsampling,
+    while converting lower frequency to higher frequency is called upsampling.
+**** args
+     #+CAPTION: Resample method arguments
+     | Argument         | Description                                                                                                     |
+     |------------------+-----------------------------------------------------------------------------------------------------------------|
+     | freq             | String or DateOffset indicating desired resampled frequency, e.g. ‘M', ’5min', or Second(15)                    |
+     | how='mean'       | Function name or array function producing aggregated value, for example 'ohlc' , np.max. Default 'mean'         |
+     | axis=0           | Axis to resample on, default axis=0                                                                             |
+     | fill_method=None | How to interpolate when upsampling, as in 'ffill' or 'bfill' . By default does no interpolation.                |
+     | closed='right'   | In downsampling, which end of each interval is closed (inclusive). Default 'right'                              |
+     | label='right'    | In downsampling, how to label the aggregated result, with the 'right' or 'left bin edge                         |
+     | loffset=None     | Time adjustment to the bin labels, such as '-1s' / Second(-1) to shift the aggregate labels one second earlier  |
+     | limit=None       | When forward or backward filling, the maximum number of periods to fill                                         |
+
+*** useful functions
+**** truncate
+     slices a timeseries between two dates
+**** normalize
+     convert times to midnight
 
 * wrangling
 ** Data Input/Output
@@ -647,6 +717,8 @@ reindex args: index, method, fill_value, limit, level, copy
     cat, contains, count, endswith/startswith, findall, get,
     join, len, lower, upper, match, pad, center, repeat, replace,
     slice, split, strip/rstrip/lstrip
+** Check Duplicates
+   pandas.Index.is_unique, pandas.Series.is_unique
 ** Others
 *** TODO Indicator/Dummy(for statistical model)
     *pd.get_dummies*
@@ -780,10 +852,6 @@ reindex args: index, method, fill_value, limit, level, copy
    - *seaborn* /holoviews/ggplot: higher-level plotting interfaces
    - axes_grid:  axes and axis helpers
 
-** visualization ecosystem
-   - Chaco: 2-Dimensional Plotting, interactive visualization.
-   - mayavi: a 3D graphics toolkit built on the open source C++ graphics library VTK
-   - PyQwt
 * aggregation
 ** group by
    #+BEGIN_SRC python
@@ -875,8 +943,6 @@ reindex args: index, method, fill_value, limit, level, copy
        f = lambda x: x.fillna(x.mean())
        transformed = grouped.transform(f)
      #+END_SRC
-*** weigthed average
-    np.average
 ** cut & qcut
 ** fillna with group value
    #+BEGIN_SRC python
@@ -885,3 +951,20 @@ reindex args: index, method, fill_value, limit, level, copy
      fill_values = {'a': 5, 'b': 4}
      grouped.fillna(lambda g: g.fillna(fill_values[g.name]))
    #+END_SRC
+** pivot_table
+   *pivot_table* aggregates a table of data by one or more keys,
+   arranging the data in a rectangle with some of the group keys along the rows and some
+   along the columns. default aggfunc: mean
+*** crosstab
+    A cross-tabulation (or crosstab for short) is a special case of a pivot table
+    that computes group frequencies.
+
+* other tools
+** dateutil
+   parser.parse: parse datetime str to datetime object
+** statsmodels
+** scikit-learn
+** visualization ecosystem
+   - Chaco: 2-Dimensional Plotting, interactive visualization.
+   - mayavi: a 3D graphics toolkit built on the open source C++ graphics library VTK
+   - PyQwt
