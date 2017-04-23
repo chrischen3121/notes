@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-04-23 Sun 12:49 -->
+<!-- 2017-04-23 Sun 22:14 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DataAnalysis For Python</title>
@@ -228,6 +228,28 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "left",
+        displayIndent: "5em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "left",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -241,13 +263,13 @@ for the JavaScript code in this tag.
 <li><a href="#org6e8406f">1.1. ndarray</a></li>
 <li><a href="#org3ee5d00">1.2. Conditional Logic</a></li>
 <li><a href="#orgd5be7c1">1.3. Transpose</a></li>
-<li><a href="#orgb2d802f">1.4. Useful functions</a></li>
+<li><a href="#org6b3ce91">1.4. Useful functions</a></li>
 </ul>
 </li>
 <li><a href="#orga2c716c">2. pandas</a>
 <ul>
-<li><a href="#org356244b">2.1. Series</a></li>
-<li><a href="#orgb5818e8">2.2. DataFrame</a></li>
+<li><a href="#orgc99141e">2.1. Series</a></li>
+<li><a href="#orgbd8a801">2.2. DataFrame</a></li>
 <li><a href="#orgab0a06c">2.3. Indexing Options</a></li>
 <li><a href="#orgd8f89c5">2.4. Index</a></li>
 <li><a href="#org86e64a1">2.5. Functionality</a></li>
@@ -340,83 +362,36 @@ np.random.randn<span style="color: #3a81c3;">(</span><span style="color: #4e3163
 np_array.dtype <span style="color: #75715E;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; dtype('float64')</span>
 </pre>
 </div>
-
-<ul class="org-ul">
-<li><p>
-Creation
-</p>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Function</th>
-<th scope="col" class="org-left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">array</td>
-<td class="org-left">Convert input data (list, tuple, array, or other sequence type) to an ndarray either by inferring a dtype or explicitly specifying a dtype. Copies the input data by default.</td>
-</tr>
-
-<tr>
-<td class="org-left">asarray</td>
-<td class="org-left">Convert input to ndarray, but do not copy if the input is already an ndarray</td>
-</tr>
-
-<tr>
-<td class="org-left">arange</td>
-<td class="org-left">Like the built-in range but returns an ndarray instead of a list</td>
-</tr>
-
-<tr>
-<td class="org-left">ones, ones_like</td>
-<td class="org-left">Produce an array of all 1’s with the given shape and dtype, ones_like takes another array and produces a ones array of the same shape and dtype.</td>
-</tr>
-
-<tr>
-<td class="org-left">zeros, zeros_like</td>
-<td class="org-left">Like ones and ones_like but producing arrays of 0’s instead</td>
-</tr>
-
-<tr>
-<td class="org-left">empty, empty_like</td>
-<td class="org-left">Create new arrays by allocating new memory, but do not populate with any values like ones and zeros</td>
-</tr>
-
-<tr>
-<td class="org-left">eye, identity</td>
-<td class="org-left">Create a square N x N identity matrix (1’s on the diagonal and 0’s elsewhere)</td>
-</tr>
-</tbody>
-</table></li>
-
-<li><p>
-Supported dtype
-</p>
-
+</div>
+<div id="outline-container-orgbf5dd02" class="outline-4">
+<h4 id="orgbf5dd02"><span class="section-number-4">1.1.1</span> Strides</h4>
+<div class="outline-text-4" id="text-1-1-1">
 <p>
-int8, uint8, int16, uint16, int32, uint32, int64, uint64,
-float16, float32, float64, float128
-complex64, complex128, complex256
-bool
-object
-string_
-unicode_
-</p></li>
+indicating the number of bytes to "step" in order to advance
+one element along a dimension, \(3 * 4 * 5\) array of float64(8-bytes)
+has strides (160, 40, 8)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeb7273f" class="outline-4">
+<h4 id="orgeb7273f"><span class="section-number-4">1.1.2</span> Supported dtype</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<ul class="org-ul">
+<li>int8, uint8, int16, uint16, int32, uint32, int64, uint64</li>
+<li>float16, float32, float64, float128</li>
+<li>complex64, complex128, complex256</li>
+<li>bool</li>
+<li>object</li>
+<li>string_</li>
+<li>unicode_</li>
 </ul>
+</div>
 </div>
 
 <div id="outline-container-org851c02b" class="outline-4">
-<h4 id="org851c02b"><span class="section-number-4">1.1.1</span> Creating</h4>
-<div class="outline-text-4" id="text-1-1-1">
+<h4 id="org851c02b"><span class="section-number-4">1.1.3</span> Creating</h4>
+<div class="outline-text-4" id="text-1-1-3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -470,9 +445,10 @@ unicode_
 </table>
 </div>
 </div>
-<div id="outline-container-orgc30419c" class="outline-4">
-<h4 id="orgc30419c"><span class="section-number-4">1.1.2</span> Indexing</h4>
-<div class="outline-text-4" id="text-1-1-2">
+
+<div id="outline-container-orgcd83e9f" class="outline-4">
+<h4 id="orgcd83e9f"><span class="section-number-4">1.1.4</span> Indexing</h4>
+<div class="outline-text-4" id="text-1-1-4">
 <p>
 <a id="org7918867"></a>
 </p>
@@ -596,8 +572,8 @@ Simple transposing with <code>.T</code> is just a special case of <code>swapaxes
 </div>
 </div>
 
-<div id="outline-container-orgb2d802f" class="outline-3">
-<h3 id="orgb2d802f"><span class="section-number-3">1.4</span> Useful functions</h3>
+<div id="outline-container-org6b3ce91" class="outline-3">
+<h3 id="org6b3ce91"><span class="section-number-3">1.4</span> Useful functions</h3>
 <div class="outline-text-3" id="text-1-4">
 </div><div id="outline-container-orga9a5227" class="outline-4">
 <h4 id="orga9a5227"><span class="section-number-4">1.4.1</span> Math</h4>
@@ -893,16 +869,16 @@ Simple transposing with <code>.T</code> is just a special case of <code>swapaxes
 <div id="outline-container-orga2c716c" class="outline-2">
 <h2 id="orga2c716c"><span class="section-number-2">2</span> pandas</h2>
 <div class="outline-text-2" id="text-2">
-</div><div id="outline-container-org356244b" class="outline-3">
-<h3 id="org356244b"><span class="section-number-3">2.1</span> Series</h3>
+</div><div id="outline-container-orgc99141e" class="outline-3">
+<h3 id="orgc99141e"><span class="section-number-3">2.1</span> Series</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Series is a fixed-length <b>ordered dict</b>
 </p>
 </div>
 </div>
-<div id="outline-container-orgb5818e8" class="outline-3">
-<h3 id="orgb5818e8"><span class="section-number-3">2.2</span> DataFrame</h3>
+<div id="outline-container-orgbd8a801" class="outline-3">
+<h3 id="orgbd8a801"><span class="section-number-3">2.2</span> DataFrame</h3>
 <div class="outline-text-3" id="text-2-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span><span style="color: #4e3163;">8</span><span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span><span style="color: #4e3163;">4</span>,<span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span>,
@@ -1109,7 +1085,7 @@ frame.drop<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[<
 <h4 id="org6cb10c3"><span class="section-number-4">2.5.3</span> Selection</h4>
 <div class="outline-text-4" id="text-2-5-3">
 <p>
-See <a href="#org7918867">1.1.2</a>.
+See <a href="#org7918867">1.1.4</a>.
 </p>
 </div>
 </div>
@@ -1398,8 +1374,8 @@ returns.corrwith<span style="color: #3a81c3;">(</span>returns.IBM<span style="co
 <div id="outline-container-org624c9bd" class="outline-3">
 <h3 id="org624c9bd"><span class="section-number-3">2.7</span> Hierarchical Indexing</h3>
 <div class="outline-text-3" id="text-2-7">
-</div><div id="outline-container-org8a4ea64" class="outline-4">
-<h4 id="org8a4ea64"><span class="section-number-4">2.7.1</span> Indexing</h4>
+</div><div id="outline-container-org2b8b624" class="outline-4">
+<h4 id="org2b8b624"><span class="section-number-4">2.7.1</span> Indexing</h4>
 <div class="outline-text-4" id="text-2-7-1">
 <div class="org-src-container">
 <pre class="src src-example">data[index_level1]
@@ -1432,8 +1408,8 @@ Although hierarchical indexing makes using truly N-dimensional arrays unnecessar
 </pre>
 </div>
 </div>
-<div id="outline-container-org6b3ce91" class="outline-4">
-<h4 id="org6b3ce91"><span class="section-number-4">2.8.1</span> Useful functions</h4>
+<div id="outline-container-org6db2c91" class="outline-4">
+<h4 id="org6db2c91"><span class="section-number-4">2.8.1</span> Useful functions</h4>
 <div class="outline-text-4" id="text-2-8-1">
 <ul class="org-ul">
 <li><p>
@@ -1496,8 +1472,8 @@ pandas <b>stores</b> timestamps as numpy.datatime64
 <h5 id="org28dc91c">to_period</h5>
 </div>
 </div>
-<div id="outline-container-org9133972" class="outline-4">
-<h4 id="org9133972"><span class="section-number-4">2.9.3</span> Indexing</h4>
+<div id="outline-container-org2c72567" class="outline-4">
+<h4 id="org2c72567"><span class="section-number-4">2.9.3</span> Indexing</h4>
 <div class="outline-text-4" id="text-2-9-3">
 <div class="org-src-container">
 <pre class="src src-python">ts<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">(</span>time<span style="color: #2d9574;">(</span><span style="color: #4e3163;">10</span>,<span style="color: #4e3163;">0</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
@@ -1788,8 +1764,19 @@ convert times to midnight
 </p>
 </div>
 </div>
-</div>
 
+<div id="outline-container-org78861d0" class="outline-5">
+<h5 id="org78861d0">compute returns</h5>
+<div class="outline-text-5" id="text-org78861d0">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">returns</span> = price.pct_change<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">ret_index</span> = <span style="color: #3a81c3;">(</span><span style="color: #4e3163;">1</span> + returns<span style="color: #3a81c3;">)</span>.cumprod<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">ret_index</span><span style="color: #3a81c3;">[</span><span style="color: #4e3163;">0</span><span style="color: #3a81c3;">]</span> = <span style="color: #4e3163;">1</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
 <div id="outline-container-org5fad0cd" class="outline-4">
 <h4 id="org5fad0cd"><span class="section-number-4">2.9.9</span> moving window</h4>
 <div class="outline-text-4" id="text-2-9-9">
@@ -1905,9 +1892,9 @@ It is just a special case where the window is the length of the time series.
 </div><div id="outline-container-org3d11201" class="outline-4">
 <h4 id="org3d11201"><span class="section-number-4">3.1.1</span> Reading option categories</h4>
 <div class="outline-text-4" id="text-3-1-1">
-</div><div id="outline-container-orgcd83e9f" class="outline-5">
-<h5 id="orgcd83e9f">Indexing</h5>
-<div class="outline-text-5" id="text-orgcd83e9f">
+</div><div id="outline-container-orgc708b39" class="outline-5">
+<h5 id="orgc708b39">Indexing</h5>
+<div class="outline-text-5" id="text-orgc708b39">
 <p>
 Can treat one or more columns as the returned DataFrame, and whether
 to get column names from the file, the user, or not at all.
@@ -1968,7 +1955,7 @@ with thousands separated by commas.
 <li><b>pd.merge</b>, <b>merge</b> method</li>
 <li><b>join</b> method: performs a left join on the join keys</li>
 <li><b>pd.concat</b></li>
-<li><b>combine_first</b>: patching missing data with arg object</li>
+<li><b>combine_first</b>: patching missing data with arg object(df.update(overwrite=False))</li>
 <li><b>align</b>: align two object on their axes with the specified join method for each axis Index</li>
 </ul>
 </div>
@@ -2384,9 +2371,9 @@ ax.add_patch<span style="color: #3a81c3;">(</span>circ<span style="color: #3a81c
 </div><div id="outline-container-org4805780" class="outline-4">
 <h4 id="org4805780"><span class="section-number-4">4.3.1</span> Line Plots</h4>
 <div class="outline-text-4" id="text-4-3-1">
-</div><div id="outline-container-org0a1aa42" class="outline-5">
-<h5 id="org0a1aa42">Series</h5>
-<div class="outline-text-5" id="text-org0a1aa42">
+</div><div id="outline-container-org741eab4" class="outline-5">
+<h5 id="org741eab4">Series</h5>
+<div class="outline-text-5" id="text-org741eab4">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -2425,9 +2412,9 @@ ax.add_patch<span style="color: #3a81c3;">(</span>circ<span style="color: #3a81c
 </table>
 </div>
 </div>
-<div id="outline-container-org533e015" class="outline-5">
-<h5 id="org533e015">DataFrame</h5>
-<div class="outline-text-5" id="text-org533e015">
+<div id="outline-container-org47beffb" class="outline-5">
+<h5 id="org47beffb">DataFrame</h5>
+<div class="outline-text-5" id="text-org47beffb">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -2724,9 +2711,9 @@ df.groupby<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[<
 <div id="outline-container-orgb54e1c7" class="outline-4">
 <h4 id="orgb54e1c7"><span class="section-number-4">5.2.1</span> <b>aggregate</b> / <b>agg</b> method</h4>
 <div class="outline-text-4" id="text-5-2-1">
-</div><div id="outline-container-orgc99141e" class="outline-5">
-<h5 id="orgc99141e">Series</h5>
-<div class="outline-text-5" id="text-orgc99141e">
+</div><div id="outline-container-org660fa57" class="outline-5">
+<h5 id="org660fa57">Series</h5>
+<div class="outline-text-5" id="text-org660fa57">
 <div class="org-src-container">
 <pre class="src src-python">s.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'std'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
 s.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">(</span><span style="color: #2d9574;">'foo'</span>, <span style="color: #2d9574;">'mean'</span><span style="color: #2d9574;">)</span>, <span style="color: #2d9574;">(</span><span style="color: #2d9574;">'bar'</span>, <span style="color: #2d9574;">'np.std'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> <span style="color: #75715E;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">foo bar will be the column name of result df</span>
@@ -2734,9 +2721,9 @@ s.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span
 </div>
 </div>
 </div>
-<div id="outline-container-orgbd8a801" class="outline-5">
-<h5 id="orgbd8a801">DataFrame</h5>
-<div class="outline-text-5" id="text-orgbd8a801">
+<div id="outline-container-orgbd173c8" class="outline-5">
+<h5 id="orgbd173c8">DataFrame</h5>
+<div class="outline-text-5" id="text-orgbd173c8">
 <div class="org-src-container">
 <pre class="src src-python">df.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'col1'</span>: <span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'col2'</span>: <span style="color: #2d9574;">'std'</span>, <span style="color: #2d9574;">'col3'</span>: np.<span style="color: #3a81c3;">max</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
 df.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'col1'</span>: <span style="color: #2d9574;">[</span><span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'std'</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>

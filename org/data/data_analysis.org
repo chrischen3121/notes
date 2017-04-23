@@ -44,28 +44,19 @@
      np_array = np_array.astype(np.float64)
      np_array.dtype #=> dtype('float64')
    #+END_SRC
+*** Strides
+    indicating the number of bytes to "step" in order to advance
+    one element along a dimension, $3 * 4 * 5$ array of float64(8-bytes)
+    has strides (160, 40, 8)
 
-- Creation
-
-  | Function          | Description                                                                                                                                                                   |
-  |-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-  | array             | Convert input data (list, tuple, array, or other sequence type) to an ndarray either by inferring a dtype or explicitly specifying a dtype. Copies the input data by default. |
-  | asarray           | Convert input to ndarray, but do not copy if the input is already an ndarray                                                                                                  |
-  | arange            | Like the built-in range but returns an ndarray instead of a list                                                                                                              |
-  | ones, ones_like   | Produce an array of all 1’s with the given shape and dtype, ones_like takes another array and produces a ones array of the same shape and dtype.                             |
-  | zeros, zeros_like | Like ones and ones_like but producing arrays of 0’s instead                                                                                                                  |
-  | empty, empty_like | Create new arrays by allocating new memory, but do not populate with any values like ones and zeros                                                                           |
-  | eye, identity     | Create a square N x N identity matrix (1’s on the diagonal and 0’s elsewhere)                                                                                               |
-
-- Supported dtype
-
-  int8, uint8, int16, uint16, int32, uint32, int64, uint64,
-  float16, float32, float64, float128
-  complex64, complex128, complex256
-  bool
-  object
-  string_
-  unicode_
+*** Supported dtype
+    - int8, uint8, int16, uint16, int32, uint32, int64, uint64
+    - float16, float32, float64, float128
+    - complex64, complex128, complex256
+    - bool
+    - object
+    - string_
+    - unicode_
 
 *** Creating
     | Function          | Description                                                                     |
@@ -77,6 +68,7 @@
     | zeros, zeros_like | Produce an array of all 0’s with the given shape and dtype.                    |
     | empty, empty_like | Create new arrays by allocating new memory                                      |
     | eye, identity     | Create a square N x N identity matrix (1’s on the diagonal and 0’s elsewhere) |
+
 *** Indexing
     <<numpy indexing>>
 **** basic indexing
@@ -595,6 +587,12 @@ reindex args: index, method, fill_value, limit, level, copy
 **** normalize
      convert times to midnight
 
+**** compute returns
+     #+BEGIN_SRC python
+       returns = price.pct_change()
+       ret_index = (1 + returns).cumprod()
+       ret_index[0] = 1
+     #+END_SRC
 *** moving window
      | Function                   | Description                                                                          |
      |----------------------------+--------------------------------------------------------------------------------------|
@@ -642,7 +640,7 @@ reindex args: index, method, fill_value, limit, level, copy
    - *pd.merge*, *merge* method
    - *join* method: performs a left join on the join keys
    - *pd.concat*
-   - *combine_first*: patching missing data with arg object
+   - *combine_first*: patching missing data with arg object(df.update(overwrite=False))
    - *align*: align two object on their axes with the specified join method for each axis Index
 *** concat args
     | Argument         | Description                                                                                                           |
