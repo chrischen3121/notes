@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-04-07 Fri 00:05 -->
+<!-- 2017-04-22 Sat 19:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PyQt</title>
@@ -331,6 +331,12 @@ the widgets, again by the dialog’s caller.
 Dumb dialogs are normally modal dialogs with an “accept” button (e.g., OK ) and a
 “reject” button (e.g., Cancel ).
 </p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #FD971F;">dialog</span> = FakeDlg<span style="color: #AE81FF;">(</span><span style="color: #F92672;">self</span>.values_to_set, <span style="color: #F92672;">self</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">if</span> dialog.exec_<span style="color: #AE81FF;">()</span>:
+    <span style="color: #F92672;">self</span>.values = dialog.someWidget.value<span style="color: #AE81FF;">()</span>
+</pre>
+</div>
 </div>
 </div>
 
@@ -344,10 +350,9 @@ and whose final values are obtained by method calls or from instance variables�
 directly from the dialog’s widgets.
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">dialog</span> = FakeDlg<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">if</span> dialog.exec_<span style="color: #3a81c3;">()</span>:
-    <span style="color: #3a81c3; font-weight: bold;">self</span>.values = dialog.get_values<span style="color: #3a81c3;">()</span>
-    <span style="color: #3a81c3; font-weight: bold;">self</span>.refreshSomeWidgets<span style="color: #3a81c3;">()</span>
+<pre class="src src-python"><span style="color: #FD971F;">dialog</span> = FakeDlg<span style="color: #AE81FF;">(</span><span style="color: #F92672;">self</span>.values_to_set, <span style="color: #F92672;">self</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">if</span> dialog.exec_<span style="color: #AE81FF;">()</span>:
+    <span style="color: #F92672;">self</span>.values = dialog.get_values<span style="color: #AE81FF;">()</span>
 </pre>
 </div>
 </div>
@@ -362,9 +367,9 @@ with data references or data structures that are passed to its initializer, and
 which is capable of updating the data directly in response to user interaction.
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">dialog</span> = FakeDlg<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">self</span>.connect<span style="color: #3a81c3;">(</span>dialog, SIGNAL<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"changed"</span><span style="color: #6c3163;">)</span>, <span style="color: #3a81c3; font-weight: bold;">self</span>.refreshSomeWidgets<span style="color: #3a81c3;">)</span>
-dialog.show<span style="color: #3a81c3;">()</span>
+<pre class="src src-python"><span style="color: #FD971F;">dialog</span> = FakeDlg<span style="color: #AE81FF;">(</span><span style="color: #F92672;">self</span>.values_to_set, <span style="color: #F92672;">self</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">self</span>.connect<span style="color: #AE81FF;">(</span>dialog, SIGNAL<span style="color: #66D9EF;">(</span><span style="color: #E6DB74;">"changed"</span><span style="color: #66D9EF;">)</span>, <span style="color: #F92672;">self</span>.refreshSomeWidgets<span style="color: #AE81FF;">)</span>
+dialog.show<span style="color: #AE81FF;">()</span>
 </pre>
 </div>
 </div>
@@ -372,12 +377,12 @@ dialog.show<span style="color: #3a81c3;">()</span>
 <h4 id="orgc3dbe1e"><span class="section-number-4">2.3.1</span> live</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3; font-weight: bold;">self</span>.dialog <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #4e3163;">None</span>:
-    <span style="color: #3a81c3; font-weight: bold;">self</span>.dialog = FakeDlg<span style="color: #3a81c3;">(</span>
-        <span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span>.refreshSomeWidgets, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.show<span style="color: #3a81c3;">()</span>
-<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.raise_<span style="color: #3a81c3;">()</span>
-<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.activateWindow<span style="color: #3a81c3;">()</span>
+<pre class="src src-python"><span style="color: #F92672;">if</span> <span style="color: #F92672;">self</span>.dialog <span style="color: #F92672;">is</span> <span style="color: #AE81FF;">None</span>:
+    <span style="color: #F92672;">self</span>.dialog = FakeDlg<span style="color: #AE81FF;">(</span>
+        <span style="color: #F92672;">self</span>.values_to_set, <span style="color: #F92672;">self</span>.refreshSomeWidgets, <span style="color: #F92672;">self</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">self</span>.dialog.show<span style="color: #AE81FF;">()</span>
+<span style="color: #F92672;">self</span>.dialog.raise_<span style="color: #AE81FF;">()</span>
+<span style="color: #F92672;">self</span>.dialog.activateWindow<span style="color: #AE81FF;">()</span>
 </pre>
 </div>
 </div>

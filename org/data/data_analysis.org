@@ -279,12 +279,15 @@
    | is_monotonic | Returns True if each element is greater than or equal to the previous element             |
    | is_unique    | Returns True if the Index has no duplicate values                                         |
    | unique       | Compute the array of unique values in the Index                                           |
+*** pd.PeriodIndex
+
 ** Functionality
 *** Reindexing
 Example:
 #+BEGIN_SRC python
   frame.reindex(columns=['c1', 'c2'])
   frame.reindex(index=['a', 'b', 'c', 'd'], method='ffill', columns=['c1', 'c2'])
+  frame.reindex(frame2.index, method='ffill')
   # is similar to frame.ix[['a', 'b', 'c', 'd'], ['c1', 'c2']]
 #+END_SRC
 reindex args: index, method, fill_value, limit, level, copy
@@ -516,6 +519,18 @@ reindex args: index, method, fill_value, limit, level, copy
 *** pandas *Timestamp*
 **** timezone-aware
 **** to_period
+*** Indexing
+    #+BEGIN_SRC python
+      ts[(time(10,0))]
+      # same as
+      ts.at_time(time(10,0))
+
+      ts.between_time(time(10, 0), time(10, 30))
+      ts.asof(pd.date_range('2016-05-01 10:00', periods=4, freq='B'))
+    #+END_SRC
+**** asof
+     By passing an array of timestamps to the asof method, you will obtain
+     an array of the last valid(non-NA) values at or before each timestamps.
 *** Frequencies
     #+CAPTION: Base Time Series Frequencies
     | Alias               | Offset Type          |
@@ -561,22 +576,46 @@ reindex args: index, method, fill_value, limit, level, copy
     while converting lower frequency to higher frequency is called upsampling.
 **** args
      #+CAPTION: Resample method arguments
-     | Argument         | Description                                                                                                     |
-     |------------------+-----------------------------------------------------------------------------------------------------------------|
-     | freq             | String or DateOffset indicating desired resampled frequency, e.g. ‘M', ’5min', or Second(15)                    |
-     | how='mean'       | Function name or array function producing aggregated value, for example 'ohlc' , np.max. Default 'mean'         |
-     | axis=0           | Axis to resample on, default axis=0                                                                             |
-     | fill_method=None | How to interpolate when upsampling, as in 'ffill' or 'bfill' . By default does no interpolation.                |
-     | closed='right'   | In downsampling, which end of each interval is closed (inclusive). Default 'right'                              |
-     | label='right'    | In downsampling, how to label the aggregated result, with the 'right' or 'left bin edge                         |
-     | loffset=None     | Time adjustment to the bin labels, such as '-1s' / Second(-1) to shift the aggregate labels one second earlier  |
-     | limit=None       | When forward or backward filling, the maximum number of periods to fill                                         |
+     | Argument         | Description                                                                                                             |
+     |------------------+-------------------------------------------------------------------------------------------------------------------------|
+     | freq             | String or DateOffset indicating desired resampled frequency, e.g. ‘M', ’5min', or Second(15)                          |
+     | how='mean'       | Function name or array function producing aggregated value, for example 'ohlc' , np.max. Default 'mean'                 |
+     | axis=0           | Axis to resample on, default axis=0                                                                                     |
+     | fill_method=None | How to interpolate when upsampling, as in 'ffill' or 'bfill' . By default does no interpolation.                        |
+     | closed='right'   | In downsampling, which end of each interval is closed (inclusive). Default 'right'                                      |
+     | label='right'    | In downsampling, how to label the aggregated result, with the 'right' or 'left bin edge                                 |
+     | loffset=None     | Time adjustment to the bin labels, such as '-1s' / Second(-1) to shift the aggregate labels one second earlier          |
+     | limit=None       | When forward or backward filling, the maximum number of periods to fill                                                 |
+     | kind=None        | Aggregate to periods or timestamps                                                                                      |
+     | convention=None  | When resampling periods, the convention ( 'start' or 'end' ) for converting the low frequency period to high frequency. |
 
 *** useful functions
 **** truncate
      slices a timeseries between two dates
 **** normalize
      convert times to midnight
+
+*** moving window
+     | Function                   | Description                                                                          |
+     |----------------------------+--------------------------------------------------------------------------------------|
+     | rolling_count              | Returns number of non-NA observations in each trailing window.                       |
+     | rolling_sum                | Moving window sum.                                                                   |
+     | rolling_mean               | Moving window mean.                                                                  |
+     | rolling_median             | Moving window median.                                                                |
+     | rolling_var, rolling_std   | Moving window variance and standard deviation, respectively. Uses n - 1 denominator. |
+     | rolling_skew, rolling_kurt | Moving window skewness (3rd moment) and kurtosis (4th moment), respectively.         |
+     | rolling_min, rolling_max   | Moving window minimum and maximum.                                                   |
+     | rolling_quantile           | Moving window score at percentile/sample quantile.                                   |
+     | rolling_corr, rolling_cov  | Moving window correlation and covariance.                                            |
+     | rolling_apply              | Apply generic array function over a moving window.                                   |
+     | ewma                       | Exponentially-weighted moving average.                                               |
+     | ewmvar, ewmstd             | Exponentially-weighted moving variance and standard deviation.                       |
+     | ewmcorr, ewmcov            | Exponentially-weighted moving correlation and covariance.                            |
+**** exponentially-weighted
+     Exponentially-weighted statistic places more weight on more recent observations
+     It "adapts" *faster* to changes compared with the equal-weighted version.
+**** expanding window mean
+     It is just a special case where the window is the length of the time series.
 
 * wrangling
 ** Data Input/Output
@@ -604,6 +643,7 @@ reindex args: index, method, fill_value, limit, level, copy
    - *join* method: performs a left join on the join keys
    - *pd.concat*
    - *combine_first*: patching missing data with arg object
+   - *align*: align two object on their axes with the specified join method for each axis Index
 *** concat args
     | Argument         | Description                                                                                                           |
     |------------------+-----------------------------------------------------------------------------------------------------------------------|
@@ -846,6 +886,7 @@ reindex args: index, method, fill_value, limit, level, copy
    - fname, dpi, facecolor, edgecolor, format
    - bbox_inches: The portion of the figure to save
 
+** interactive mode
 ** add-ons
    - mplot3d
    - *basemap* /cartopy: projection and mapping(plotting 2D data on maps)
@@ -964,6 +1005,8 @@ reindex args: index, method, fill_value, limit, level, copy
    parser.parse: parse datetime str to datetime object
 ** statsmodels
 ** scikit-learn
+** bottleneck
+   provides an alternate implementation of NaN-friendly moving window functions.
 ** visualization ecosystem
    - Chaco: 2-Dimensional Plotting, interactive visualization.
    - mayavi: a 3D graphics toolkit built on the open source C++ graphics library VTK
