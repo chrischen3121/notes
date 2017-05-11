@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2017-04-06 Thu 09:00 -->
+<!-- 2017-05-11 Thu 10:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Common Lisp</title>
@@ -236,29 +236,29 @@ for the JavaScript code in this tag.
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5af00e4">1. 安装</a></li>
-<li><a href="#org5ef24af">2. 函数</a>
+<li><a href="#orgf96b104">1. 安装</a></li>
+<li><a href="#org08b2bf6">2. 函数</a>
 <ul>
-<li><a href="#org0b5bf97">2.1. 参数</a></li>
-<li><a href="#org44745e4">2.2. 返回值</a></li>
-<li><a href="#org70758d6">2.3. 函数对象</a></li>
-<li><a href="#org6f54b6a">2.4. lambda</a></li>
+<li><a href="#orgcf0a108">2.1. 参数</a></li>
+<li><a href="#orgf5671f1">2.2. 返回值</a></li>
+<li><a href="#orgd1aa14f">2.3. 函数对象</a></li>
+<li><a href="#org2b6ea8e">2.4. lambda</a></li>
 </ul>
 </li>
-<li><a href="#org4eb76e0">3. 变量</a>
+<li><a href="#orgb5823d8">3. 变量</a>
 <ul>
-<li><a href="#org885d07f">3.1. 词法(lexical)变量</a></li>
-<li><a href="#org7ab6dd6">3.2. 动态(dynamic)变量</a></li>
-<li><a href="#org72fa4cc">3.3. 常量</a></li>
-<li><a href="#org55ed8a5">3.4. SETF</a></li>
-<li><a href="#orge153d21">3.5. 其他常用操作</a></li>
+<li><a href="#org8306ac9">3.1. 词法(lexical)变量</a></li>
+<li><a href="#org974bde9">3.2. 动态(dynamic)变量</a></li>
+<li><a href="#orgd5cd98d">3.3. 常量</a></li>
+<li><a href="#orga51d24b">3.4. SETF</a></li>
+<li><a href="#org7280594">3.5. 其他常用操作</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org5af00e4" class="outline-2">
-<h2 id="org5af00e4"><span class="section-number-2">1</span> 安装</h2>
+<div id="outline-container-orgf96b104" class="outline-2">
+<h2 id="orgf96b104"><span class="section-number-2">1</span> 安装</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Install Slime, SBCL
@@ -269,23 +269,23 @@ Install Slime, SBCL
 </div>
 </div>
 
-<div id="outline-container-org5ef24af" class="outline-2">
-<h2 id="org5ef24af"><span class="section-number-2">2</span> 函数</h2>
+<div id="outline-container-org08b2bf6" class="outline-2">
+<h2 id="org08b2bf6"><span class="section-number-2">2</span> 函数</h2>
 <div class="outline-text-2" id="text-2">
-</div><div id="outline-container-org0b5bf97" class="outline-3">
-<h3 id="org0b5bf97"><span class="section-number-3">2.1</span> 参数</h3>
+</div><div id="outline-container-orgcf0a108" class="outline-3">
+<h3 id="orgcf0a108"><span class="section-number-3">2.1</span> 参数</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 参数四种类型按解析顺序列出：必要形参，optional 形参，rest 形参，keyword 形参。
 </p>
 </div>
-<ul class="org-ul"><li><a id="org2b3e1a1"></a>注意点<br  /><div class="outline-text-4" id="text-org2b3e1a1">
+<ul class="org-ul"><li><a id="orgbd0b7d1"></a>注意点<br /><div class="outline-text-4" id="text-orgbd0b7d1">
 <p>
 避免&amp;optional 与&amp;key 混合使用，为保持更好的扩展性，应使用&amp;key。
 &amp;rest 与&amp;key 一同使用时，两者都会解析。例如：
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defun</span> <span style="color: #6c3163; font-weight: bold;">foo</span> <span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">&amp;rest</span> values <span style="color: #ba2f59; font-weight: bold;">&amp;key</span> a b<span style="color: #6c3163;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defun</span> <span style="color: #6c3163; font-weight: bold;">foo</span> <span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">&amp;rest</span> values <span style="color: #ba2f59; font-weight: bold;">&amp;key</span> a b<span style="color: #6c3163;">)</span>
   <span style="color: #6c3163;">(</span>list rest a b<span style="color: #6c3163;">)</span>
 
 <span style="color: #6c3163;">(</span>foo <span style="color: #3a81c3;">:a</span> <span style="color: #4e3163;">1</span> <span style="color: #3a81c3;">:b</span> <span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span> -&gt; <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span><span style="color: #3a81c3;">:A</span> <span style="color: #4e3163;">1</span> <span style="color: #3a81c3;">:B</span> <span style="color: #4e3163;">2</span><span style="color: #2d9574;">)</span> <span style="color: #4e3163;">1</span> <span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span>
@@ -293,21 +293,21 @@ Install Slime, SBCL
 </div>
 </div></li></ul>
 </div>
-<div id="outline-container-org44745e4" class="outline-3">
-<h3 id="org44745e4"><span class="section-number-3">2.2</span> 返回值</h3>
+<div id="outline-container-orgf5671f1" class="outline-3">
+<h3 id="orgf5671f1"><span class="section-number-3">2.2</span> 返回值</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 使用 RETURN-FROM 从函数中间返回，需传入函数名。
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">return-from</span> foo return-value<span style="color: #3a81c3;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">return-from</span> foo return-value<span style="color: #3a81c3;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org70758d6" class="outline-3">
-<h3 id="org70758d6"><span class="section-number-3">2.3</span> 函数对象</h3>
+<div id="outline-container-orgd1aa14f" class="outline-3">
+<h3 id="orgd1aa14f"><span class="section-number-3">2.3</span> 函数对象</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 以下两种形式都返回函数对象
@@ -328,20 +328,20 @@ Install Slime, SBCL
 </div>
 </div>
 
-<ul class="org-ul"><li><a id="org83d005a"></a>函数作为参数<br  /><div class="outline-text-4" id="text-org83d005a">
+<ul class="org-ul"><li><a id="org355bd25"></a>函数作为参数<br /><div class="outline-text-4" id="text-org355bd25">
 <ul class="org-ul">
 <li><p>
 funcall
 </p>
 
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defun</span> <span style="color: #6c3163; font-weight: bold;">double-v</span> <span style="color: #6c3163;">(</span>x<span style="color: #6c3163;">)</span> <span style="color: #6c3163;">(</span>* <span style="color: #4e3163;">2</span> x<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defun</span> <span style="color: #6c3163; font-weight: bold;">double-v</span> <span style="color: #6c3163;">(</span>x<span style="color: #6c3163;">)</span> <span style="color: #6c3163;">(</span>* <span style="color: #4e3163;">2</span> x<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
 
-<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defun</span> <span style="color: #6c3163; font-weight: bold;">mapp</span> <span style="color: #6c3163;">(</span>fn <span style="color: #ba2f59; font-weight: bold;">&amp;rest</span> values<span style="color: #6c3163;">)</span>
-  <span style="color: #6c3163;">(</span>list <span style="color: #2d9574;">(</span><span style="color: #3a81c3; font-weight: bold;">dolist</span> <span style="color: #67b11d;">(</span>x values<span style="color: #67b11d;">)</span> <span style="color: #67b11d;">(</span>print <span style="color: #b1951d;">(</span>funcall fn x<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defun</span> <span style="color: #6c3163; font-weight: bold;">mapp</span> <span style="color: #6c3163;">(</span>fn <span style="color: #ba2f59; font-weight: bold;">&amp;rest</span> values<span style="color: #6c3163;">)</span>
+  <span style="color: #6c3163;">(</span>list <span style="color: #2d9574;">(</span><span style="color: #3a81c3;">dolist</span> <span style="color: #67b11d;">(</span>x values<span style="color: #67b11d;">)</span> <span style="color: #67b11d;">(</span>print <span style="color: #b1951d;">(</span>funcall fn x<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
 
-<span style="color: #3a81c3;">(</span>mapp #'<span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> <span style="color: #2d9574;">(</span>x<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>+ x <span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #4e3163;">1</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3;">(</span>mapp <span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> <span style="color: #2d9574;">(</span>x<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>+ x <span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #4e3163;">1</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">(</span>mapp #'<span style="color: #6c3163;">(</span><span style="color: #3a81c3;">lambda</span> <span style="color: #2d9574;">(</span>x<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>+ x <span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #4e3163;">1</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">(</span>mapp <span style="color: #6c3163;">(</span><span style="color: #3a81c3;">lambda</span> <span style="color: #2d9574;">(</span>x<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>+ x <span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #4e3163;">1</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
 <span style="color: #3a81c3;">(</span>mapp #'double-v <span style="color: #4e3163;">1</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
 </pre>
 </div></li>
@@ -354,7 +354,7 @@ apply
 apply 第二个参数接受列表参数
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defun</span> <span style="color: #6c3163; font-weight: bold;">foo</span> <span style="color: #6c3163;">(</span>fn arg1 arg2 arg3<span style="color: #6c3163;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defun</span> <span style="color: #6c3163; font-weight: bold;">foo</span> <span style="color: #6c3163;">(</span>fn arg1 arg2 arg3<span style="color: #6c3163;">)</span>
   ...<span style="color: #3a81c3;">)</span>
 
 <span style="color: #3a81c3;">(</span>apply #'foo args<span style="color: #3a81c3;">)</span>
@@ -368,19 +368,19 @@ apply 允许像第二种方式那样，“孤立”头几个参数，最后传�
 </div></li></ul>
 </div>
 
-<div id="outline-container-org6f54b6a" class="outline-3">
-<h3 id="org6f54b6a"><span class="section-number-3">2.4</span> lambda</h3>
+<div id="outline-container-org2b6ea8e" class="outline-3">
+<h3 id="org2b6ea8e"><span class="section-number-3">2.4</span> lambda</h3>
 <div class="outline-text-3" id="text-2-4">
-</div><ul class="org-ul"><li><a id="org4efbc2b"></a>funcall 调用<br  /><div class="outline-text-4" id="text-org4efbc2b">
+</div><ul class="org-ul"><li><a id="org99907bb"></a>funcall 调用<br /><div class="outline-text-4" id="text-org99907bb">
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span>funcall #'<span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> <span style="color: #2d9574;">(</span>x y<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>+ x y<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span> -&gt; <span style="color: #4e3163;">5</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span>funcall #'<span style="color: #6c3163;">(</span><span style="color: #3a81c3;">lambda</span> <span style="color: #2d9574;">(</span>x y<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>+ x y<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span> -&gt; <span style="color: #4e3163;">5</span>
 </pre>
 </div>
 </div></li>
 
-<li><a id="org4007f4b"></a>lambda 作为函数名调用<br  /><div class="outline-text-4" id="text-org4007f4b">
+<li><a id="org22b49ea"></a>lambda 作为函数名调用<br /><div class="outline-text-4" id="text-org22b49ea">
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> <span style="color: #2d9574;">(</span>x y<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>+ x y<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span> -&gt; <span style="color: #4e3163;">5</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3;">lambda</span> <span style="color: #2d9574;">(</span>x y<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>+ x y<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #4e3163;">2</span> <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span> -&gt; <span style="color: #4e3163;">5</span>
 </pre>
 </div>
 <p>
@@ -389,18 +389,18 @@ apply 允许像第二种方式那样，“孤立”头几个参数，最后传�
 </div></li></ul>
 </div>
 </div>
-<div id="outline-container-org4eb76e0" class="outline-2">
-<h2 id="org4eb76e0"><span class="section-number-2">3</span> 变量</h2>
+<div id="outline-container-orgb5823d8" class="outline-2">
+<h2 id="orgb5823d8"><span class="section-number-2">3</span> 变量</h2>
 <div class="outline-text-2" id="text-3">
-</div><div id="outline-container-org885d07f" class="outline-3">
-<h3 id="org885d07f"><span class="section-number-3">3.1</span> 词法(lexical)变量</h3>
+</div><div id="outline-container-org8306ac9" class="outline-3">
+<h3 id="org8306ac9"><span class="section-number-3">3.1</span> 词法(lexical)变量</h3>
 <div class="outline-text-3" id="text-3-1">
-</div><ul class="org-ul"><li><a id="orgde5b1bc"></a>Let<br  /><div class="outline-text-4" id="text-orgde5b1bc">
+</div><ul class="org-ul"><li><a id="orgd2a8e19"></a>Let<br /><div class="outline-text-4" id="text-orgd2a8e19">
 <p>
 形式：(let (variable*) body-form*)
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">let</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>x <span style="color: #4e3163;">10</span><span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>y <span style="color: #4e3163;">20</span><span style="color: #2d9574;">)</span> z<span style="color: #6c3163;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">let</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>x <span style="color: #4e3163;">10</span><span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>y <span style="color: #4e3163;">20</span><span style="color: #2d9574;">)</span> z<span style="color: #6c3163;">)</span>
   ...<span style="color: #3a81c3;">)</span>
 </pre>
 </div>
@@ -410,12 +410,12 @@ apply 允许像第二种方式那样，“孤立”头几个参数，最后传�
 <li>body 中最后一个表达式返回的值，将作为 let 表达式的值返回。</li>
 </ul>
 </div>
-<ul class="org-ul"><li><a id="org6a6eff2"></a>let*<br  /><div class="outline-text-5" id="text-org6a6eff2">
+<ul class="org-ul"><li><a id="org3d87aec"></a>let*<br /><div class="outline-text-5" id="text-org3d87aec">
 <p>
 let*允许变量引用变量列表中早先引入的变量
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">let*</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>x <span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">let*</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>x <span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span>
        <span style="color: #2d9574;">(</span>y <span style="color: #67b11d;">(</span>+ x <span style="color: #4e3163;">1</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>
   <span style="color: #6c3163;">(</span>list x y<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
 </pre>
@@ -424,15 +424,15 @@ let*允许变量引用变量列表中早先引入的变量
 等同于嵌套的 let
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">let</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>x <span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>
-  <span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">let</span> <span style="color: #2d9574;">(</span><span style="color: #67b11d;">(</span>y <span style="color: #b1951d;">(</span>+ x <span style="color: #4e3163;">10</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">let</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>x <span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>
+  <span style="color: #6c3163;">(</span><span style="color: #3a81c3;">let</span> <span style="color: #2d9574;">(</span><span style="color: #67b11d;">(</span>y <span style="color: #b1951d;">(</span>+ x <span style="color: #4e3163;">10</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
     <span style="color: #2d9574;">(</span>list x y<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>
 </pre>
 </div>
 </div></li></ul></li>
-<li><a id="org5474adb"></a>闭包<br  /><div class="outline-text-4" id="text-org5474adb">
+<li><a id="orgc6b96a6"></a>闭包<br /><div class="outline-text-4" id="text-orgc6b96a6">
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">let</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>count <span style="color: #4e3163;">0</span><span style="color: #2d9574;">)</span> #'<span style="color: #2d9574;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> <span style="color: #67b11d;">()</span> <span style="color: #67b11d;">(</span>setf count <span style="color: #b1951d;">(</span><span style="color: #4e3163;">1+</span> count<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">let</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>count <span style="color: #4e3163;">0</span><span style="color: #2d9574;">)</span> #'<span style="color: #2d9574;">(</span><span style="color: #3a81c3;">lambda</span> <span style="color: #67b11d;">()</span> <span style="color: #67b11d;">(</span>setf count <span style="color: #b1951d;">(</span><span style="color: #4e3163;">1+</span> count<span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
 </pre>
 </div>
 <p>
@@ -441,8 +441,8 @@ let*允许变量引用变量列表中早先引入的变量
 </div></li></ul>
 </div>
 
-<div id="outline-container-org7ab6dd6" class="outline-3">
-<h3 id="org7ab6dd6"><span class="section-number-3">3.2</span> 动态(dynamic)变量</h3>
+<div id="outline-container-org974bde9" class="outline-3">
+<h3 id="org974bde9"><span class="section-number-3">3.2</span> 动态(dynamic)变量</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 有时被称为特殊(special)变量。通常用作全局变量。其特殊是因为其作用域是动态作用域，运行时决定。
@@ -469,7 +469,7 @@ let*允许变量引用变量列表中早先引入的变量
 defvar
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defvar</span> <span style="color: #715ab1;">*count*</span> <span style="color: #4e3163;">0</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defvar</span> <span style="color: #715ab1;">*count*</span> <span style="color: #4e3163;">0</span>
   <span style="color: #2aa1ae;">"Count of ..."</span><span style="color: #3a81c3;">)</span>
 </pre>
 </div></li>
@@ -478,22 +478,22 @@ defvar
 defparameter
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defparameter</span> <span style="color: #715ab1;">*gap*</span> <span style="color: #4e3163;">0.001</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defparameter</span> <span style="color: #715ab1;">*gap*</span> <span style="color: #4e3163;">0.001</span>
   <span style="color: #2d9574;">"Gaps of ..."</span><span style="color: #3a81c3;">)</span>
 </pre>
 </div></li>
 </ul>
 </div>
 
-<ul class="org-ul"><li><a id="org1dac79b"></a>注意点<br  /><div class="outline-text-4" id="text-org1dac79b">
+<ul class="org-ul"><li><a id="org34bbeef"></a>注意点<br /><div class="outline-text-4" id="text-org34bbeef">
 <p>
 将全局对象的改变限定在函数体内，可使用 <b>let</b> 对全局对象进行重新绑定。
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defvar</span> <span style="color: #715ab1;">*x*</span> <span style="color: #4e3163;">10</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defun</span> <span style="color: #6c3163; font-weight: bold;">foo</span> <span style="color: #6c3163;">()</span> <span style="color: #6c3163;">(</span>print *x*<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defun</span> <span style="color: #6c3163; font-weight: bold;">bar</span> <span style="color: #6c3163;">()</span>
-  <span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">let</span> <span style="color: #2d9574;">(</span>*x* <span style="color: #4e3163;">20</span><span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>foo<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>
+<pre class="src src-lisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defvar</span> <span style="color: #715ab1;">*x*</span> <span style="color: #4e3163;">10</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defun</span> <span style="color: #6c3163; font-weight: bold;">foo</span> <span style="color: #6c3163;">()</span> <span style="color: #6c3163;">(</span>print *x*<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">defun</span> <span style="color: #6c3163; font-weight: bold;">bar</span> <span style="color: #6c3163;">()</span>
+  <span style="color: #6c3163;">(</span><span style="color: #3a81c3;">let</span> <span style="color: #2d9574;">(</span>*x* <span style="color: #4e3163;">20</span><span style="color: #2d9574;">)</span> <span style="color: #2d9574;">(</span>foo<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>
   <span style="color: #6c3163;">(</span>foo<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
 
 <span style="color: #3a81c3;">(</span>bar<span style="color: #3a81c3;">)</span>
@@ -504,8 +504,8 @@ defparameter
 </div>
 </div></li></ul>
 </div>
-<div id="outline-container-org72fa4cc" class="outline-3">
-<h3 id="org72fa4cc"><span class="section-number-3">3.3</span> 常量</h3>
+<div id="outline-container-orgd5cd98d" class="outline-3">
+<h3 id="orgd5cd98d"><span class="section-number-3">3.3</span> 常量</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 形式：(defconstant name initial-value [document-string])
@@ -523,8 +523,8 @@ defparameter
 </div>
 
 
-<div id="outline-container-org55ed8a5" class="outline-3">
-<h3 id="org55ed8a5"><span class="section-number-3">3.4</span> SETF</h3>
+<div id="outline-container-orga51d24b" class="outline-3">
+<h3 id="orga51d24b"><span class="section-number-3">3.4</span> SETF</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 形式：(setf place value)
@@ -552,14 +552,14 @@ setf 返回最后一个被赋值的值
 </div>
 </div>
 
-<div id="outline-container-orge153d21" class="outline-3">
-<h3 id="orge153d21"><span class="section-number-3">3.5</span> 其他常用操作</h3>
+<div id="outline-container-org7280594" class="outline-3">
+<h3 id="org7280594"><span class="section-number-3">3.5</span> 其他常用操作</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 假设 x=20, y=5, z=15
 </p>
 </div>
-<ul class="org-ul"><li><a id="orgb7afbfc"></a>ROTATEF<br  /><div class="outline-text-4" id="text-orgb7afbfc">
+<ul class="org-ul"><li><a id="org2baf428"></a>ROTATEF<br /><div class="outline-text-4" id="text-org2baf428">
 <p>
 两两交换
 </p>
@@ -571,7 +571,7 @@ x=5, y=15, z=20
 </div>
 </div></li>
 
-<li><a id="org8a2b493"></a>SHIFTF<br  /><div class="outline-text-4" id="text-org8a2b493">
+<li><a id="orge8976bc"></a>SHIFTF<br /><div class="outline-text-4" id="text-orge8976bc">
 <div class="org-src-container">
 <pre class="src src-lisp"><span style="color: #3a81c3;">(</span>shiftf x y z<span style="color: #3a81c3;">)</span>
 -&gt;
