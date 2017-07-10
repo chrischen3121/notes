@@ -1,0 +1,269 @@
+#+TITLE: Statistic
+#+KEYWORDS: math, statistic
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LaTeX: t
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ../../org-templates/level-1.org
+* Type of research
+- Observational Study
+- Controlled Experiment
+- Survey
+* Central tendency
+- mode
+- median
+  - *even* $\frac{x_\frac{n}{2} + x_{\frac{n}{2}+1}}{2}$
+  - *odd* $x_\frac{n+1}{2}$
+
+- mean
+  $$\mu = \frac{\sum_{i=1}^{N}x_i}{N}$$
+  or
+  $$\mu = \sum_{i=1}^{N}p_i\cdot x_i$$
+
+* Variability
+- range
+
+  cut off the upper 25% and lower 25% tails of the distribution
+
+- IQR(Interquartile Range)
+
+  $$Q_3 - Q_1$$
+  $Q_1$ is the midean of the first half
+
+  file:../resources/math/IQR.png
+
+- Outlier
+
+  whiskers = 1.5
+  $$< Q_1 - whiskers\cdot(IQR)$$
+  $$> Q_3 + whiskers\cdot(IQR)$$
+
+- MAD
+
+  mean absolute deviation
+
+- Variance
+
+  $$\sigma^2 = \frac{\sum_{i=1}^N(x_i-\mu)^2}{N}$$
+  $$\sigma^2 = \frac{\sum_{i=1}^Nx_i^2}{N} - \mu^2$$
+
+  - Sample Variance
+
+    Bessel's Correction a better estimate of population
+    $$\sigma^2 = \frac{\sum_{i=1}^N(x_i-\mu)^2}{N-1}$$
+
+- SD
+  #+BEGIN_VERSE
+  standard deviation $\sigma$
+  approximately 68% lie within 1SD of the mean
+  approximately 95% lie within 2SD of the mean
+  #+END_VERSE
+
+  calculate numbers of SD
+  $$z=\frac{x-\mu}{\sigma}$$
+
+* Sampling Distribution
+** Central limit theorem
+1. The distribution of sample means is approximately normal distribution
+2. The standard deviation of the sample(standard error) means $\approx\frac{\sigma}{\sqrt{n}}$
+3. The mean of the sample means $\approx\mu$
+** Confidence Interval
+- Y% confidence interval:
+  #+BEGIN_VERSE
+  $$(\bar{x}-z\frac{\sigma}{\sqrt{n}}, \bar{x}+z\frac{\sigma}{\sqrt{n}})$$
+  $\pm{z}$ are the critical values of Y% confidence interval
+  #+END_VERSE
+- Margin of error $z\frac{\sigma}{\sqrt{n}}$
+** Terms
+| z-score               | number of standard deviation away from $\mu$ |
+| sampling distribution | distribution of sample means                 |
+| standard error        | the SD of the sampling distribution          |
+
+* Hypothesis testing
+- $\alpha$ levels
+
+  Levels of likelihood: 5%, 1%, 0.1%. If the probability of getting a particular
+  sample mean is less than 5%, it is unlikely to occur.
+
+- critical region: the aera with the probability is less than particular $\alpha$ level
+- critical value: the z-score of the $\alpha$ level
+
+** null hypothesis $H_0$
+$$\mu\approx\mu_I$$
+- type 1 error
+  #+BEGIN_VERSE
+  Reject $H_0$, but in the real world $H_0$ is true.
+  We think our hypothesis is correct, but it is wrong.
+  #+END_VERSE
+- type 2 error
+  #+BEGIN_VERSE
+  Retain $H_0$, but in the real world $H_0$ is false.
+  We think our hypothesis is wrong, but it is true.
+  #+END_VERSE
+
+** alternative hypothesis $H_A$
+$$\mu\neq\mu_I, \mu<\mu_I, \mu>\mu_I$$
+* T-Tests
+** DF(degree of freedom)
+** SEM(standard error of mean)
+$$SEM=\frac{S}{\sqrt{n}}$$
+** t-score(one sample)
+$$t=\frac{\bar{x}-\mu_0}{S/\sqrt{n}}$$
+** Cohen's d
+   standardized mean difference that measures the distance between means in standardized units.
+   $$Cohen's\ d = \frac{\bar{x}-\mu_0}{S}$$
+** $r_2$
+   #+BEGIN_VERSE
+   $r_2$: coefficient of determination
+   $r^2$ % of variation in one variable that is related to
+   ('explained by') another variable.
+   #+END_VERSE
+   $$r^2 = \frac{t^2}{t^2+DF}$$
+** Formula Wrapup
+$$df=n-1$$
+$$SE=\frac{S}{\sqrt{n}}$$
+$$t=\frac{\bar{x}-\mu}{SE}$$
+$$d=\frac{\bar{x}-\mu}{S}$$
+$$CI=\bar{x}\pm{margin\ of\ error}$$
+$$margin\ of\ error = t_{criticl}\cdot{SEM}$$
+$$cohen's\ d = \frac{\bar{x}-\mu}{S}$$
+$$r^2=\frac{t^2}{t^2+df}$$
+* Dependent t-test
+$$t=\frac{\bar{x}_D-\mu_D}{S_D/\sqrt{n}}$$
+$$CI=\bar{x}_D\pm t_{critical}\cdot\frac{S_D}{\sqrt{n}}$$
+$$cohen's\ d=\frac{\bar{x}_D}{S_D}$$
+** Within-Subject designs
+- Two conditions
+- Pre-test, post-test
+- Growth over time(longitudinal study)
+** Effect size
+- difference measures: mean, standardized
+  #+BEGIN_VERSE
+  cohen's d == standardized mean difference
+  #+END_VERSE
+
+** Statistical significance
+
+   Statistical significance means:
+   - rejected the null
+   - results are not likely due to chance(sampling error)
+
+** Advantages
+- Controls for individual differences
+- Use fewer subject
+- Cost-effective
+- Less time-consuming
+- Less expensive
+
+** Disadvantages
+- Carry-over effects
+
+  Second measurement can be affected by first treatment
+
+- Order may influence results
+
+* Independent t-test
+** Between-Subject designs
+- Experimental
+- Observational
+
+** DF: $n_1+n_2-2$
+** SE
+   $$S=\sqrt{S_{1}^2+S_{2}^2}$$
+
+   Assumes samples are approximately the same size, then
+   $$SE=\sqrt{\frac{S_{1}^2}{n_1} + \frac{S_{2}^2}{n_2}}$$
+
+*** Corrected Standard Error
+    $$SS=\sum_{i=1}^{n}(x_i-\bar{x})^2$$
+    $$S_{p}^2=\frac{SS_1 + SS_2}{df_1 + df_2}$$
+    $$SE=\sqrt{\frac{S_{p}^2}{n_1} + \frac{S_{p}^2}{n_2}}$$
+
+    cohen's d also uses $S_p$
+
+** t statistic
+   $$t=\frac{\bar{x}_D-\mu_D}{SE}$$
+
+* ANOVA
+  Analysis of variance
+** Grand mean $\bar{x}_G$
+   mean of all values
+
+** F-Ratio
+- Between-group variability
+
+  The greater the distance between sample means, the more
+  likely population means will differ significantly.
+
+- Within-group variability
+
+  The greater the variability of each individual sample,
+  the less likely population means will differ significantly.
+
+$$F=\frac{MS_{between}}{MS_{within}}=\frac{SS_{between}/df_{between}}{SS_{within}/df_{within}}
+=\frac{\sum_{i}n_i(\bar{x}_i-\bar{x}_G)^2/(k-1)}{\sum_i\sum_j(x_{ij}-\bar{x}_i)^2/(N-k)}$$
+$$SS_{total}=SS_{between}+SS_{within}=\sum_i\sum_j(x_{ij}-\bar{x}_G)$$
+$$df_{total}=df_{between}+df_{within}=N-1$$
+
+** Multiple Comparison Tests
+
+   We use *multiple comparison tests* if we want to know which two samples
+   are differ after we've done ANOVA.
+*** Tukey's Honestly Significant Difference(HSD)
+    $$Tukey's HSD = q^*\sqrt{\frac{MS_{within}}{n}} = q^*\frac{S_p}{n}$$
+    /q/ is the *Studentized Range Statistic*
+
+** Cohen's d
+   $$Cohen's\ d = \frac{\bar{x}_a-\bar{x}_b}{MS_{within}}$$
+
+** Explained Variation $\eta^2$
+   Proportion of total variation that is due to between-group differences.
+   $$\eta^2=\frac{SS_{between}}{SS_{total}}$$
+
+** ANOVA assumptions
+- Normality
+- Homogeneity of variance
+- Independence of observations
+* Report
+** Meaningfulness of Results
+1. What was measured?
+2. Effect size
+3. Can we rule out random chance?
+4. Can we rule out alternative explanations?(lurking variables)
+
+** descriptive statistics(Mean,SD,...)
+
+   report styles: text, graphs, tables
+
+** inferential statistics($\alpha$)
+*** factors
+- kind of test
+- test statistic
+- DF
+- p-value
+- direction of test(one/two tails)
+
+*** inferential statistics
+- confidence intervals
+  - confidence level e.g. 95%
+  - lower limit
+  - upper limit
+  - CI on what?
+
+*** effect size measures
+
+    d, $r^2$
+
+*** APA style
+
+    APA style is a whole guide on writing researh papers.
+    $$t(df)=xxx, p=xx, direction$$
+    example:
+    $$t(24)=-2.5, p=0.01, one-tailed$$
+
+- CI
+
+  example: Confidence interval on the mean difference;95%CI=(4,6)
