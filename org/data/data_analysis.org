@@ -1009,3 +1009,38 @@ reindex args: index, method, fill_value, limit, level, copy
    - Chaco: 2-Dimensional Plotting, interactive visualization.
    - mayavi: a 3D graphics toolkit built on the open source C++ graphics library VTK
    - PyQwt
+* hdf
+** dataset
+   #+BEGIN_SRC python
+     f = h5py.File("testfile.hdf5")
+     dset = f.create_dataset("big dataset", (1024**3, ), dtype=np.float32)
+     dset[0:1024] = np.arange(1024)
+     f.flush() # dump cache on disk
+
+     with dset.astype('float64'):
+         out = dset[0,:]
+     out.dtype #=> dtype('float64')
+   #+END_SRC
+*** Ellipsis
+     #+BEGIN_SRC python
+       dset = f.create_dataset('4d', shape=(100, 80, 50, 20))
+       dset[0,...,0].shape
+       # => (80, 50)
+       dset[...].shape
+       # => (100, 80, 50, 20)
+     #+END_SRC
+*** chunks
+    #+BEGIN_SRC python
+      dset = f.create_dataset('chunked', (100,480,640), dtype='i1', chunks=(1, 64, 64))
+    #+END_SRC
+
+** lookup tools
+   - ViTables
+   - h5ls
+
+** notice
+   - slice on hdf table will do read&write on disk
+   - use np.s_ to get a slice object
+     #+BEGIN_SRC python
+       dset.read_direct(out, source_sel=np.s_[0,:], dest_sel=np.s_[50,:])
+     #+END_SRC
