@@ -1,0 +1,52 @@
+#+TITLE: Redis in action
+#+KEYWORDS: redis
+#+OPTIONS: H:3 toc:1 num:3 ^:nil
+#+LANGUAGE: zh-CN
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SETUPFILE: ../../org-templates/level-1.org
+* 类型
+| 类型   | 存储格式             |
+| STRING | 字符串、整数或浮点数 |
+| LIST   | 链表                 |
+| SET    | 无序集合             |
+| HASH   | 无序散列表           |
+| ZSET   | 有序映射             |
+** STRING
+   存储类型：byte string, int, float
+   常用命令：GET, SET, DEL, INCR, DECR, INCRBY, DECRBY, INCRBYFLOAT
+   其他命令：APPEND, GETRANGE, SETRANGE, GETBIT, SETBIT, BITCOUNT, BITOP
+
+** LIST
+   常用命令：LPUSH/RPUSH, LPOP/RPOP, LRANGE, LINDEX, LTRIM
+   其他命令：RPOLPUSH, BLPOP, BRPOP, BRPOPLPUSH; B 开头为阻塞式调用
+
+** SET
+   常用命令：SADD, SREM, SISMEMBER, SMEMBERS
+   其他命令：
+   | SCARD       | 返回元素数量                                             |
+   | SRANDMEMBER | 随机返回一个或多个元素，count 参数控制随机元素是否可重复 |
+   | SPOP        | 随机移除并返回一个元素                                   |
+   | SMOVE       | SMOVE source-set dest-set item                           |
+   集合命令：SDIFF, SDIFFSTORE, SINTER, SUNION, SUNIONSTORE
+
+** HASH
+   常用命令：HSET/HMSET, HGET/HMGET, HDEL, HLEN
+   其他命令：HEXISTS, HKEYS, HVALS, HGETALL, HINCRBY, HINCRBYFLOAT
+
+** ZSET
+   常用命令：ZADD, ZREM, ZCARD
+   其他命令：ZINCRBY, ZINTERSTORE, ZCOUNT, ZSCORE,
+   范围获取/删除命令：ZRANGE/ZREVRANGE, ZRANK/ZREVRANK, ZRANGEBYSCORE/ZREVRANGEBYSCORE, ZREMRANGEBYRANK,
+   ZREMRANGEBYSCORE
+   集合命令：ZINTERSTORE, ZUNIONSTORE; 可指定 score 的运算方式
+
+* 命令
+** 通用命令
+   EXPIRE
+** 发布订阅
+   | SUBSCRIBE    | SUBSCRIBE channel [channel ...] 订阅单个或多个频道 |
+   | UNSUBSCRIBE  | UNSUBSCRIBE channel [channel ...]                  |
+   | PUBLISH      | PUBLISH channel message                            |
+   | PSUBSCRIBE   | PSUBSCRIBE pattern [pattern ...]                   |
+   | PUNSUBSCRIBE | PUNSUBSCRIBE pattern [pattern ...]                 |
