@@ -13,57 +13,56 @@
 - Controlled Experiment
 - Survey
 * Central tendency
+- mean
+  $$\mu = \frac{\sum_{i=1}^{n}x_i}{n}$$
+  $$\mu = \frac{\sum_{i=1}^{n}freq_i \cdot x_i}{\sum_{i=1}^{n}freq_i}$$
+  $$\mu = \sum_{i=1}^{n}p_i\cdot x_i$$
 - mode
 - median
-  - *even* $\frac{x_\frac{n}{2} + x_{\frac{n}{2}+1}}{2}$
-  - *odd* $x_\frac{n+1}{2}$
+  - even
+    $$\frac{x_\frac{n}{2} + x_{\frac{n}{2}+1}}{2}$$
 
-- mean
-  $$\mu = \frac{\sum_{i=1}^{N}x_i}{N}$$
-  or
-  $$\mu = \sum_{i=1}^{N}p_i\cdot x_i$$
+  - odd
+    $$x_\frac{n+1}{2}$$
 
 * Variability
-- range
+** range
+   highest value - lowest value
 
-  may cut off the upper 25% and lower 25% tails of the distribution
+** quartile
+   | lower bound(lowest) | lower quartile(Q1) | median(Q2) | upper quartile(Q3) | upper bound(highest) |
 
-- IQR(Interquartile Range)
+*** mini range
+    may cut off the upper 25% and lower 25% tails of the distribution
 
-  $$Q_3 - Q_1$$
-  $Q_1$ is the midean of the first half
+*** IQR(Interquartile Range)
+    $$Q_3 - Q_1$$
+    $Q_1$ is the midean of the first half
 
-  file:../resources/math/IQR.png
+    file:../resources/math/IQR.png
 
-- Outlier
+*** Outlier
+    whiskers = 1.5
+    $$< Q_1 - whiskers\cdot(IQR)$$
+    $$> Q_3 + whiskers\cdot(IQR)$$
 
-  whiskers = 1.5
-  $$< Q_1 - whiskers\cdot(IQR)$$
-  $$> Q_3 + whiskers\cdot(IQR)$$
+** deviation
+*** MAD
+    mean absolute deviation, average absolute distances to the mean
 
-- MAD
+*** Variance
+    $$\sigma^2 = \frac{\sum_{i=1}^n(x_i-\mu)^2}{n}$$
+    $$\sigma^2 = \frac{\sum_{i=1}^n x_i^2}{n} - \mu^2$$
 
-  mean absolute deviation
+*** Standard deviation
+    - standard deviation $\sigma$
+    - approximately 68% lie within 1SD of the mean
+    - approximately 95% lie within 2SD of the mean
 
-- Variance
-
-  $$\sigma^2 = \frac{\sum_{i=1}^N(x_i-\mu)^2}{N}$$
-  $$\sigma^2 = \frac{\sum_{i=1}^Nx_i^2}{N} - \mu^2$$
-
-  - Sample Variance
-
-    Bessel's Correction a better estimate of population
-    $$\sigma^2 = \frac{\sum_{i=1}^N(x_i-\mu)^2}{N-1}$$
-
-- SD
-
-  - standard deviation $\sigma$
-  - approximately 68% lie within 1SD of the mean
-  - approximately 95% lie within 2SD of the mean
-
-- z-score
-
-  $$z=\frac{x-\mu}{\sigma}$$
+*** Standandize(z-score)
+    $$z=\frac{x-\mu}{\sigma}$$
+    Standard scores work by transforming sets of data into a new, theoretical distribution
+    with a mean of 0 and a standard deviation of 1.
 
 * Sampling Distribution
 ** Central limit theorem
@@ -71,20 +70,28 @@
 2. The standard deviation of the sample(standard error) means $\approx\frac{\sigma}{\sqrt{n}}$
 3. The mean of the sample means $\approx\mu$
 ** Confidence Interval
+- z score:
+
+  $z=\frac{x-\mu}{\sigma}$
 - Y% confidence interval:
   #+BEGIN_VERSE
-  $$(\bar{X}-z\frac{\sigma}{\sqrt{N}}, \bar{x}+z\frac{\sigma}{\sqrt{n}})$$
+  $$(\bar{x}-z\frac{\sigma}{\sqrt{N}}, \bar{x}+z\frac{\sigma}{\sqrt{n}})$$
   $\pm{z}$ are the critical values of Y% confidence interval
   #+END_VERSE
 - Margin of error $z\frac{\sigma}{\sqrt{n}}$
 ** Terms
-| population mean       | $\mu$                                        |
-| population sd         | $\sigma$                                     |
-| sample mean           | $\bar{x}$                                    |
-| sample sd             | $s$                                          |
-| z-score               | number of standard deviation away from $\mu$ |
-| sampling distribution | distribution of sample means                 |
-| standard error        | the SD of the sampling distribution          |
+  - Sample Variance
+
+    Bessel's Correction a better estimate of population
+    $$\sigma^2 = \frac{\sum_{i=1}^N(x_i-\mu)^2}{N-1}$$
+
+| population mean       | $\mu$                                         |
+| population sd         | $\sigma$                                      |
+| sample mean           | $\bar{x}$                                     |
+| sample sd             | $s$                                           |
+| z-score               | number of standard deviations away from $\mu$ |
+| sampling distribution | distribution of sample means                  |
+| standard error        | the SD of the sampling distribution           |
 
 * Hypothesis testing
 - $\alpha$ levels
@@ -241,6 +248,7 @@ $$df_{total}=df_{between}+df_{within}=N-1$$
 - Normality
 - Homogeneity of variance
 - Independence of observations
+
 * Report
 ** Meaningfulness of Results
 1. What was measured?
@@ -278,6 +286,29 @@ $$df_{total}=df_{between}+df_{within}=N-1$$
     example:
     $$t(24)=-2.5, p=0.01, one-tailed$$
 
-- CI
+    - CI
 
-  example: Confidence interval on the mean difference;95%CI=(4,6)
+    example: Confidence interval on the mean difference;95%CI=(4,6)
+** visualization
+*** Pie charts
+    Pie charts work by splitting your data into distinct groups or categories.
+    Pie charts are less useful if all the slices have similar sizes, use bar charts for this case.
+*** Bar charts
+    Bar charts allow you to compare relative sizes, but the advantage of using a bar chart is that they
+    allow for a greater degree of precision.
+    - vertical or horizontal
+
+    Vertical bar charts tend to be more common, but horizontal bar charts
+    are useful if the names of your categories are long.
+
+**** extensions
+     - The split-category bar chart
+     - The segmented bar chart
+
+*** Histogram
+    Histograms are like bar charts but with two key differences.
+    - The area of each bar is proportional to the frequency
+    - There are no gaps between the bars on the chart
+
+*** Line charts
+    Line charts are better at showing a trend.

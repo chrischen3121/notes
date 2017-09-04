@@ -43,7 +43,27 @@
 
 * 命令
 ** 通用命令
-   EXPIRE
+*** SORT
+    SORT cource-key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE dest-key]
+*** Basic transaction
+    WATCH, MULTI, EXEC, UNWATCH, DISCARD.
+    事务可以通过减少客户端和服务端之间的通信次数提升性能
+**** python pipeline
+     #+BEGIN_SRC python
+       conn = redis.Redis()
+       pipeline = conn.pipeline()
+       # ... #-> operations in transitions
+       pipeline.excute()
+     #+END_SRC
+*** Expire time
+    | PERSIST   | PERSIST key-name 移除键过期时间     |
+    | TTL       | TTL key-name 查看距离过期剩余多少秒 |
+    | EXPIRE    | EXPIRE key-name seconds             |
+    | EXPIREAT  | EXPIREAT key-name timestamp         |
+    | PTTL      | PTTL key-name 同 TTL，单位毫秒      |
+    | PEXPIRE   | 毫秒级 PEXPIRE                      |
+    | PEXPIREAT | 毫秒级 EXPIREAT                      |
+
 ** 发布订阅
    | SUBSCRIBE    | SUBSCRIBE channel [channel ...] 订阅单个或多个频道 |
    | UNSUBSCRIBE  | UNSUBSCRIBE channel [channel ...]                  |
