@@ -1,0 +1,80 @@
+#+TITLE: Probability
+#+KEYWORDS: math, probability
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LaTeX: t
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ../../org-templates/level-1.org
+* Probability
+** Conceptions
+*** event
+    An outcome or occurrence that has a probability assigned to it.
+
+** Axioms
+*** Nonnegativity
+    For every event A, $P(A) \ge 0$.
+
+*** Complementary events
+    $$P(A)+P(A^{'})=1$$
+
+** Laws
+   - If $A\subset B$, then $P(A)\le P(B)$
+   - $P(A\cup B) = P(A) + P(B) - P(A \cap B)$
+   - $P(A\cup B) \le P(A)+P(B)$
+   - $P(A\cup B\cup C) = P(A) + P(A^c\cap B) + P(A^c\cap B^c\cap C)$ ??
+   - if $P(A\cap B)$ equals to 0, this stuation is called mutually exclusive
+
+* Conditional probabilities
+** Conceptions
+*** P(A|B)
+    The probability of *A* given that we know *B* has happened.
+    #+BEGIN_SRC dot :file ../resources/math/probabilityTree.png :cmdline -Kdot -Tpng
+      graph probabilityTree{
+        size="2,2";
+        node [shape=circle fontsize=14 width=0.1 fontname="Inconsolata"];
+        "begin" -- "A" [label="50%"];
+          "A" -- "B" [label="30%"];
+          "A" -- "C" [label="70%"];
+        "begin" -- "D" [label="50%"];
+          "D" -- "E" [label="100%"];
+      }
+    #+END_SRC
+
+    #+RESULTS:
+    [[file:../resources/math/probabilityTree.png]]
+
+    then, P(B|A)=30%
+
+** Laws
+   $$P(A|B) = \frac{P(A\cap B)}{P(B)}$$
+   $$P(A\cap B) = P(A|B)\times P(B)$$
+   - law of total probability
+   $$P(B)=P(B\cap A) + P(B\cap A^{'})=P(A)\times P(B|A)+P(A^{'})\times P(B|A^{'})$$
+*** independent
+    if *A* and *B* are independent events.
+    $$P(A|B)=P(A)$$
+    $$P(A\cap B) = P(A)\times P(B)$$
+
+** Bayes' Theorem
+   $$P(A|B)=\frac{P(A\cap B)}{P(B)}=\frac{P(A)\times P(B|A)}{P(A)\times P(B|A) + P(A^{'})\times P(B|A^{'})}$$
+   use to find reverse conditional probabilities
+
+* Probability distribution
+** Conceptions
+   - *random variable* is a variable that can takes on a set of values
+   - *discrete* if a variable is discrete, that means it can only take exact values.
+   - *expectation*
+     $$E(X)=\mu=\sum_{i=1}^n x_i P(X=x_i)$$
+   - *variance*
+     $$Var(X)=E((X-\mu)^2)=\sum_{i=1}^n (x_i-\mu)^2 P(X=x_i)$$
+   - *standard deviation*
+     $$\sigma=\sqrt{Var(X)}$$
+** Linear Transforms
+   *Linear transforms* are when a variable X is transformed into aX + b, where a and b are constants.
+   $$E(aX+b)=aE(X)+b$$
+   $$Var(aX+b)=a^2Var(X)$$
+* Binomial Theorem
+   $$(x+y)^n = \sum_{k=0}^{n} \dbinom{n}{k}x^{n-k}y^{k}$$
