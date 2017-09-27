@@ -1342,3 +1342,157 @@ reindex args: index, method, fill_value, limit, level, copy
      #+BEGIN_SRC python
        Base.metadata.create_all(engine)
      #+END_SRC
+*** session
+    The session wraps a database connection via an engine,
+    and provides an identity map for objects that you load
+    via the session or associate with the session.
+
+    A session also wraps a transaction, and that transaction
+    will be open until the session is committed or rolled back.
+**** Init
+     #+BEGIN_SRC python
+       from sqlalchemy import create_engine
+       from sqlalchemy.orm import sessionmaker
+       engine = create_engine('sqlite:///:memory:')
+       Session = sessionmaker(bind=engine)
+       session = Session()
+     #+END_SRC
+
+**** Insert
+***** add->commit
+      #+BEGIN_SRC python
+        cc_cookie = Cookie(cookie_name='chocolate chip',
+                           cookie_recipe_url='http://some.aweso.me/cookie/recipe.html',
+                           cookie_sku='CC01',
+                           quantity=12,
+                           unit_cost=0.50)
+        session.add(cc_cookie)
+        session.commit()
+        print(cc_cookie.cookie_id)
+      #+END_SRC
+***** add->flush
+      A flush is like a commit; however, it doesn’t perform a database commit and end the transaction.
+      The data objects are still associated with the session.
+
+***** bulk_save_objects
+      performance benefits:
+      - Relationship settings and actions are not respected or triggered.
+      - The objects are not connected to the session.
+      - Fetching primary keys is not done by default.
+      - No events will be triggered.
+**** Query
+     #+BEGIN_SRC python
+       cookies = session.query(Cookie).all()
+     #+END_SRC
+     fetch method: all, first, one, scalar
+     #+BEGIN_SRC python
+       for cookie in session.query(Cookie):
+           print(cookie)
+     #+END_SRC
+     The iterable version is more memory efficient.
+***** Choose columns
+      #+BEGIN_SRC python
+        print(session.query(Cookie.cookie_name, Cookie.quantity).first())
+      #+END_SRC
+***** Ordering
+      #+BEGIN_SRC python
+        for cookie in session.query(Cookie).order_by(desc(Cookie.quantity)):
+            print('{:3} - {}'.format(cookie.quantity, cookie.cookie_name))
+      #+END_SRC
+***** Limiting
+      #+BEGIN_SRC python
+        query = session.query(Cookie).order_by(
+            Cookie.quantity)[:2]  # slices the return list. ineffecient.
+        query = session.query(Cookie).order_by(Cookie.quantity).limit(2)
+        print([result.cookie_name for result in query])
+      #+END_SRC
+      This runs the query and slices the returned list. This can
+      be very ineffecient with a large result set.
+***** Built-in functions
+      #+BEGIN_SRC python
+        from sqlalchemy import func
+        inv_count = session.query(func.sum(Cookie.quantity)).scalar()
+        rec_count = session.query(
+            func.count(Cookie.cookie_name).label('inventory_count')).first()  # rename
+      #+END_SRC
+***** Filtering
+      #+BEGIN_SRC python
+        record = session.query(Cookie).filter(
+            Cookie.cookie_name == 'chocolate chip').first()
+        record = session.query(Cookie).filter_by(cookie_name='chocolate chip').first()
+        query = session.query(Cookie).filter(Cookie.cookie_name.like('%chocolate%'))
+      #+END_SRC
+***** Conjunctions
+      #+BEGIN_SRC python
+        query = session.query(Cookie).filter(
+            Cookie.quantity > 23, Cookie.unit_cost < 0.40)  # default and conjunctions
+        from sqlalchemy import and_, or_, not_
+        query = session.query(Cookie).filter(
+            or_(Cookie.quantity.between(10, 50), Cookie.cookie_name.contains('chip')))
+      #+END_SRC
+**** Update
+     #+BEGIN_SRC python
+       query = session.query(Cookie)
+       cc_cookie = query.filter(Cookie.cookie_name == "chocolate chip").first()
+
+       cc_cookie.quantity = cc_cookie.quantity + 120
+       # or
+       query.update({Cookie.quantity: Cookie.quantity - 20})
+
+       session.commit()
+       print(cc_cookie.quantity)
+     #+END_SRC
+**** Delete
+***** session.delete
+      #+BEGIN_SRC python
+        query = session.query(Cookie)
+        query = query.filter(Cookie.cookie_name == "dark chocolate chip")
+        dcc_cookie = query.one()
+        session.delete(dcc_cookie)
+        session.commit()
+      #+END_SRC
+***** query.delete
+      #+BEGIN_SRC python
+        query = session.query(Cookie)
+        query = query.filter(Cookie.cookie_name == "molasses")
+        query.delete()
+      #+END_SRC
+**** Join
+     #+BEGIN_SRC python
+       query = session.query(Order.order_id, User.username, User.phone,
+       Cookie.cookie_name, LineItem.quantity,
+       LineItem.extended_cost)
+       query = query.join(User).join(LineItem).join(Cookie)
+       results = query.filter(User.username == 'cookiemon').all()
+     #+END_SRC
+**** GroupBy
+     #+BEGIN_SRC python
+       query = session.query(User.username, func.count(Order.order_id))
+       query = query.outerjoin(Order).group_by(User.username)
+     #+END_SRC
+*** Exceptions
+**** MultipleResultsFound
+     This exception occurs when we use the .one() query method, but get more than one result back.
+**** DetachedInstanceError
+     This exception occurs when we attempt to access an attribute on an instance that
+     needs to be loaded from the database, but the instance we are using is not currently
+     attached to the database.
+*** Reflection
+    #+BEGIN_SRC python
+      from sqlalchemy.ext.automap import automap_base
+      Base = automap_base() # use automap_base instead of declarative_base
+      Base.prepare(engine, reflect=True)
+
+      Base.classes.keys() # show ORM classes
+    #+END_SRC
+
+** Debug Tools
+*** create_engine(..., echo=True)
+*** from sqlalchemy import inspect
+    Four state for objects
+    1. Transient: The instance is not in session, and is not in the database.
+    2. Pending: The instance has been added to the session with add() , but hasn’t been flushed or committed.
+    3. Persistent: The object in session has a corresponding record in the database.
+    4. Detached: The instance is no longer connected to the session, but has a record in the database.
+**** expunge()
+     Use /expunge()/ when you are moving data from one session to another
