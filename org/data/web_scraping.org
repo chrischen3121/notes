@@ -1,4 +1,4 @@
-#+TITLE: Web Scraping
+f#+TITLE: Web Scraping
 #+KEYWORDS: data analysis, python, scraping
 #+OPTIONS: H:4 toc:2 num:3 ^:nil
 #+LaTeX: t
@@ -29,3 +29,141 @@
 ** alternatives
    - lxml: fast
    - HTML Parser: built-in
+
+* *scrapy* module
+  create scraping project
+  #+BEGIN_SRC shell
+    scrapy startproject wikiSpider
+  #+END_SRC
+  #+BEGIN_EXAMPLE
+    ├── scrapy.cfg
+    └── project
+        ├── __init__.py
+        ├── items.py: Each Scrapy Item object represents a single page on the website
+        ├── middlewares.py
+        ├── pipelines.py
+        ├── settings.py
+        └── spiders
+            ├── site_spider.py
+            └── __init__.py
+  #+END_EXAMPLE
+** Output
+   #+BEGIN_SRC shell
+     scrapy crawl spider_name -o some_items.csv -t csv
+     scrapy crawl spider_name -o some_items.json -t json
+     scrapy crawl spider_name -o some_items.xml -t xml
+   #+END_SRC
+** [[http://doc.scrapy.org/en/latest/][Documentation]]
+
+* Requests
+** Basic use
+  #+BEGIN_SRC python
+    import requests
+    params = {'firstname': 'Ryan', 'lastname': 'Mitchell'}
+    r = requests.post("http://pythonscraping.com/files/processing.php", data=params)
+    print(r.text)
+  #+END_SRC
+
+** cookies
+   #+BEGIN_SRC python
+     import requests
+     params = {'username': 'Ryan', 'password': 'password'}
+     r = requests.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+     print(r.cookies.get_dict())
+     r = requests.get("http://pythonscraping.com/pages/cookies/profile.php", cookies=r.cookies)
+     print(r.text)
+   #+END_SRC
+
+** Session
+   #+BEGIN_SRC python
+     session = requests.Session()
+     params = {'username': 'username', 'password': 'password'}
+     s = session.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+     print(s.cookies.get_dict())
+     s = session.get("http://pythonscraping.com/pages/cookies/profile.php")
+     print(s.text)
+   #+END_SRC
+* Selenium
+  often using with non-GUI engine PhantomJS
+  #+BEGIN_SRC python
+    driver = webdriver.PhantomJS(executable_path='')
+    driver.get("http://pythonscraping.com/pages/javascript/ajaxDemo.html")
+    time.sleep(3)
+    print(driver.find_element_by_id("content").text)
+    driver.close()
+  #+END_SRC
+
+** Waiting until fully loaded
+   #+BEGIN_SRC python
+     from selenium.webdriver.common.by import By
+     from selenium.webdriver.support.ui import WebDriverWait
+     from selenium.webdriver.support import expected_conditions as EC
+     driver = webdriver.PhantomJS(executable_path='')
+     driver.get("http://pythonscraping.com/pages/javascript/ajaxDemo.html")
+     try:
+         element = WebDriverWait(driver, 10).until(
+             EC.presence_of_element_located((By.ID, "loadedButton")))
+     finally:
+         print(driver.find_element_by_id("content").text)
+         driver.close()
+   #+END_SRC
+** Selectors
+   The following locator selection strategies can used with the By object:
+   - ID: Used in the example; finds elements by their HTML id attribute.
+   - CLASS_NAME
+
+   Used to find elements by their HTML class attribute. Why is this function CLASS_NAME: and not simply CLASS?
+   Using the form object.CLASS would create problems for Selenium’s Java library, where .class is a reserved method.
+   In order to keep the Selenium syntax consistent between different languages, CLASS_NAME was used instead.
+
+   - CSS_SELECTOR
+
+   Find elements by their class, id, or tag name, using the #idName, .className, tagName convention.
+
+   - LINK_TEXT
+
+   Finds HTML <a> tags by the text they contain. For example, a link that says
+   “Next” can be selected using (By.LINK_TEXT, "Next").
+
+   - PARTIAL_LINK_TEXT: Similar to LINK_TEXT , but matches on a partial string.
+   - NAME: Finds HTML tags by their name attribute. This is handy for HTML forms.
+   - TAG_NAME: Finds HTML tags by their tag name.
+   - XPATH: Uses an XPath expression (the syntax of which is described in the upcoming sidebar) to select matching elements.
+
+** Handling Redirects
+   We can detect that redirect in a clever way by “watching” an element in the DOM
+   when the page initially loads, then repeatedly calling that element until Selenium
+   throws a StaleElementReferenceException ; that is, the element is no longer
+   attached to the page’s DOM and the site has redirected:
+   #+BEGIN_SRC python
+     from selenium import webdriver
+     import time
+     from selenium.webdriver.remote.webelement import WebElement
+     from selenium.common.exceptions import StaleElementReferenceException
+     def waitForLoad(driver):
+         elem = driver.find_element_by_tag_name("html")
+         count = 0
+         while True:
+             count += 1
+             if count > 20:
+                 print("Timing out after 10 seconds and returning")
+                 return
+         time.sleep(.5)
+         try:
+             elem == driver.find_element_by_tag_name("html")
+         except StaleElementReferenceException:
+             return
+     driver = webdriver.PhantomJS(executable_path='<Path to Phantom JS>')
+     driver.get("http://pythonscraping.com/pages/javascript/redirectDemo1.html")
+     waitForLoad(driver)
+     print(driver.page_source)
+   #+END_SRC
+* Scaping Rule Checklist
+  - First, if the page you are receiving from the web server is blank, missing information, or is otherwise not what you expect (or have seen in your own browser), it is likely caused by JavaScript being executed on the site to create the page.
+  - If you are submitting a form or making a POST request to a website, check the page to make sure that everything the website is expecting you to submit is being submitted and in the correct format. Use a tool such as Chrome’s Network inspector to view an actual POST command sent to the site to make sure you’ve got everything.
+  - If you are trying to log into a site and can’t make the login “stick,” or the website is experiencing other strange “state” behavior, check your cookies. Make sure that cookies are being persisted correctly between each page load and that your cookies are sent to the site for every request.
+  - If you are getting HTTP errors from the client, especially 403 Forbidden errors, it might indicate that the website has identified your IP address as a bot and is unwilling to accept any more requests. You will need to either wait until your IP address is removed from the list, or obtain a new IP address. To make sure you don’t get blocked again, try the following:
+    - Make sure that your scrapers aren’t moving through the site too quickly. Fast scraping is a bad practice that places a heavy burden on the web administrator’s servers, can land you in legal trouble, and is the number-one cause of scrapers getting blacklisted. Add delays to your scrapers and let them run overnight. Remember: Being in a rush to write programs or gather data is a sign of bad project management; plan ahead to avoid messes like this in the first place.
+    - The obvious one: change your headers! Some sites will block anything that advertises itself as a scraper. Copy your own browser’s headers if you’re unsure about what some reasonable header values are.
+    - Make sure you’re not clicking on or accessing anything that a human normally would not be able to
+    - If you find yourself jumping through a lot of difficult hoops to gain access, consider contacting the website administrator to let them know what you’re doing. Try emailing webmaster@<domain name> or admin@<domain name> for permission to use your scrapers. Admins are people, too!
