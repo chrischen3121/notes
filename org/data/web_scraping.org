@@ -1,4 +1,4 @@
-f#+TITLE: Web Scraping
+#+TITLE: Web Scraping
 #+KEYWORDS: data analysis, python, scraping
 #+OPTIONS: H:4 toc:2 num:3 ^:nil
 #+LaTeX: t
@@ -167,3 +167,22 @@ f#+TITLE: Web Scraping
     - The obvious one: change your headers! Some sites will block anything that advertises itself as a scraper. Copy your own browser’s headers if you’re unsure about what some reasonable header values are.
     - Make sure you’re not clicking on or accessing anything that a human normally would not be able to
     - If you find yourself jumping through a lot of difficult hoops to gain access, consider contacting the website administrator to let them know what you’re doing. Try emailing webmaster@<domain name> or admin@<domain name> for permission to use your scrapers. Admins are people, too!
+* Tor
+  #+BEGIN_SRC shell
+    sudo apt-get install tor tor-geoipdb
+    tor Socks5Proxy host:port # use sock5 proxy
+
+    # test
+    sudo apt-get install torsocks
+    torsocks curl 'https://api.ipify.org' #or http://icanhazip.com/
+  #+END_SRC
+
+** PySocks
+   #+BEGIN_SRC python
+     import socks
+     import socket
+     from urllib.request import urlopen
+     socks.set_default_proxy(socks.SOCKS5, "localhost", 9050)
+     socket.socket = socks.socksocket
+     print(urlopen('https://api.ipify.org').read())
+   #+END_SRC
