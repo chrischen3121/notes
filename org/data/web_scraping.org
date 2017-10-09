@@ -30,30 +30,137 @@
    - lxml: fast
    - HTML Parser: built-in
 
-* *scrapy* module
-  create scraping project
-  #+BEGIN_SRC shell
-    scrapy startproject wikiSpider
-  #+END_SRC
+* Scrapy
+  docs: https://docs.scrapy.org/en/latest/index.html
   #+BEGIN_EXAMPLE
-    ├── scrapy.cfg
-    └── project
-        ├── __init__.py
-        ├── items.py: Each Scrapy Item object represents a single page on the website
-        ├── middlewares.py
-        ├── pipelines.py
-        ├── settings.py
-        └── spiders
-            ├── site_spider.py
-            └── __init__.py
+        ├── scrapy.cfg # deploy configuration file
+        └── myproject # import your code from here
+            ├── __init__.py
+            ├── items.py: # each scrapy item object represents a single page on the website
+            ├── middlewares.py
+            ├── pipelines.py
+            ├── settings.py
+            └── spiders
+                ├── spider1.py
+                ├── spider2.py
+                └── __init__.py
   #+END_EXAMPLE
-** Output
+** Commands
+   see: https://docs.scrapy.org/en/latest/topics/commands.html
+
+** Spider Example
+   #+BEGIN_SRC python
+     import scrapy
+
+
+     class QuotesSpider(scrapy.Spider):
+         name = "quotes"
+         # start_urls = [
+         # 'http://quotes.toscrape.com/page/1/',
+         # 'http://quotes.toscrape.com/page/2/',
+         # ]
+         # start_urls attribute is a shortcut to the start_requests method
+
+         def start_requests(self):
+             urls = [
+                 'http://quotes.toscrape.com/page/1/',
+                 'http://quotes.toscrape.com/page/2/',
+             ]
+             for url in urls:
+                 yield scrapy.Request(url=url, callback=self.parse)
+
+         def parse(self, response): # response is a TextResponse object
+             page = response.url.split("/")[-2]
+             filename = 'quotes-%s.html' % page
+             with open(filename, 'wb') as f:
+                 f.write(response.body)
+             self.log('Saved file %s' % filename)
+   #+END_SRC
+*** Interactive Shell
+     #+BEGIN_SRC shell
+       scrapy shell 'url'
+     #+END_SRC
+**** inspection with spider
+     #+BEGIN_SRC python
+       def parse(self, response):
+           from scrapy.shell import inspect_response
+           inspect_response(response, self)
+     #+END_SRC
+
+*** CSS selector
+    #+BEGIN_SRC python
+      response.css('title').extract()
+      response.css('title::text').extract_first()
+      response.css('title::text')[0].extract()
+      response.css('title::text').re(r'Q\w+')
+    #+END_SRC
+
+*** XPath selector
+    #+BEGIN_SRC python
+      response.xpath('//title')
+      response.xpath('//title/text()').extract_first()
+    #+END_SRC
+
+*** Following links
+    #+BEGIN_SRC python
+      next_page = response.css('li.next a::attr(href)').extract_first()
+      if next_page is not None:
+          next_page = response.urljoin(next_page)
+          yield scrapy.Request(next_page, callback=self.parse)
+    #+END_SRC
+    shortcut:
+    #+BEGIN_SRC python
+      next_page = response.css('li.next a::attr(href)').extract_first()
+      if next_page is not None:
+          yield response.follow(next_page, callback=self.parse) # supports relative URLs directly
+    #+END_SRC
+    simpler version:
+    #+BEGIN_SRC python
+      for href in response.css('li.next a::attr(href)'):
+          yield response.follow(href, callback=self.parse)
+    #+END_SRC
+    simplest version:
+    #+BEGIN_SRC python
+      for a in response.css('li.next a'): # for a elements, css method uses their href attribute automatically
+          yield response.follow(a, callback=self.parse)
+    #+END_SRC
+
+** Feed Export
    #+BEGIN_SRC shell
      scrapy crawl spider_name -o some_items.csv -t csv
      scrapy crawl spider_name -o some_items.json -t json
      scrapy crawl spider_name -o some_items.xml -t xml
    #+END_SRC
-** [[http://doc.scrapy.org/en/latest/][Documentation]]
+** Settings
+**** Command Line(most precedence)
+     #+BEGIN_SRC shell
+       scrapy crawl myspider -s LOG_FILE=scrapy.log
+     #+END_SRC
+**** Settings per-spider
+     #+BEGIN_SRC python
+       class MySpider(scrapy.Spider):
+           name = 'myspider'
+
+           custom_settings = {
+               'SOME_SETTING': 'some value',
+           }
+     #+END_SRC
+**** Project settings module
+     settings.py in project root
+**** Default settings per-command
+     =default_settings= attribute of the command class.
+**** Default global settings(less precedence)
+     =scrapy.settings.default_settings=
+**** Access settings
+     In a spider, the settings are available through self.settings
+
+**** Useful settings
+     - DOWNLOAD_DELAY
+     - ROBOTSTXT_OBEY
+     - SCHEDULER
+     - USER_AGENT
+
+** Deploy(Scrapyd)
 
 * Requests
 ** Basic use
