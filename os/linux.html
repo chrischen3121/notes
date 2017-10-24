@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-10-23 Mon 14:56 -->
+<!-- 2017-10-24 Tue 13:59 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux Administration</title>
@@ -236,7 +236,17 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9bfa0de">1. Users and groups</a></li>
+<li><a href="#org9bfa0de">1. Users and groups</a>
+<ul>
+<li><a href="#orgeb5c983">1.1. /etc/passwd</a></li>
+<li><a href="#org12eb190">1.2. /etc/shadow</a></li>
+<li><a href="#orgb9cbe0d">1.3. /etc/group</a></li>
+<li><a href="#orgbf97d80">1.4. users basic</a></li>
+<li><a href="#orgf4633e2">1.5. <b>useradd</b> command</a></li>
+<li><a href="#orgde683dc">1.6. Disabling logins</a></li>
+<li><a href="#org3d20f91">1.7. Centralizing account management</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -321,14 +331,122 @@ Use <b>chsh</b> to change login shell listed in <b>/etc/shells</b>.
 </ul>
 <p>
 It is possible to enter a group password to allow users not belonging to
-a group to enter it with the <b>newgrp</b> command. A password can be set with
-the <b>gpasswd</b> command
+a group to enter it with the <b>newgrp</b> command.
+</p>
+
+<p>
+A password can be set with the <b>gpasswd</b> command
 </p>
 
 <p>
 A user’s personal group should contain only that user. If you want to let users
 share files by way of the group mechanism, create separate groups for that purpose
 </p>
+</div>
+</div>
+<div id="outline-container-orgbf97d80" class="outline-3">
+<h3 id="orgbf97d80"><span class="section-number-3">1.4</span> users basic</h3>
+<div class="outline-text-3" id="text-1-4">
+</div><div id="outline-container-org65ab94a" class="outline-4">
+<h4 id="org65ab94a"><span class="section-number-4">1.4.1</span> Required</h4>
+<div class="outline-text-4" id="text-1-4-1">
+</div><ul class="org-ul"><li><a id="org9a81ebb"></a>Sign policy agreement<br /></li>
+<li><a id="orgec57656"></a>Edit the <b>passwd</b> and <b>shadow</b> files to define user<br /><div class="outline-text-5" id="text-orgec57656">
+<p>
+Use <b>vipw</b> to edit <b>passwd</b> and <b>shadow</b>
+</p>
+</div></li>
+<li><a id="org944470d"></a>Add the user to the /etc/group file(optional)<br /><div class="outline-text-5" id="text-org944470d">
+<p>
+If the new user should be a member of more groups than just the default group
+specified in the passwd file, you must edit the /etc/group file and add the user’s
+login name to each of the additional groups.
+</p>
+</div></li>
+<li><a id="org8f923ad"></a>Set an initial password<br /><div class="outline-text-5" id="text-org8f923ad">
+<p>
+Use <b>passwd</b>
+</p>
+</div></li>
+<li><a id="org8789c12"></a>Create, <b>chown</b>, and <b>chmod</b> the user’s home directory.<br /><div class="outline-text-5" id="text-org8789c12">
+<div class="org-src-container">
+<pre class="src src-bash">sudo chown -R newuser:newgroup ~newuser
+</pre>
+</div>
+</div></li>
+<li><a id="org2bf8e35"></a>Configure roles and permissions(RBAC)<br /></li></ul>
+</div>
+
+<div id="outline-container-orge0b2182" class="outline-4">
+<h4 id="orge0b2182"><span class="section-number-4">1.4.2</span> For the user</h4>
+<div class="outline-text-4" id="text-1-4-2">
+</div><ul class="org-ul"><li><a id="orgb3c37ca"></a>Copy default startup files to the user’s home directory.<br /></li>
+<li><a id="orgcfbd847"></a>Set the user’s mail home and establish mail aliases.<br /></li></ul>
+</div>
+
+<div id="outline-container-org881bb40" class="outline-4">
+<h4 id="org881bb40"><span class="section-number-4">1.4.3</span> For administrator</h4>
+<div class="outline-text-4" id="text-1-4-3">
+</div><ul class="org-ul"><li><a id="org5bc0347"></a>Verify that the account is set up correctly.<br /></li>
+<li><a id="org885516c"></a>Add the user’s contact information and account status to your database.<br /></li></ul>
+</div>
+
+<div id="outline-container-org977d5ba" class="outline-4">
+<h4 id="org977d5ba"><span class="section-number-4">1.4.4</span> Verification</h4>
+<div class="outline-text-4" id="text-1-4-4">
+<div class="org-src-container">
+<pre class="src src-bash">$ pwd /* verify home directory */
+$ ls -al /* check owner/group of startup files */
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf4633e2" class="outline-3">
+<h3 id="orgf4633e2"><span class="section-number-3">1.5</span> <b>useradd</b> command</h3>
+<div class="outline-text-3" id="text-1-5">
+</div><div id="outline-container-org25ca22c" class="outline-4">
+<h4 id="org25ca22c"><span class="section-number-4">1.5.1</span> examples</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<div class="org-src-container">
+<pre class="src src-bash">sudo useradd -c <span style="color: #2d9574;">"David Hilbert"</span> -d /home/math/hilbert -g hilbert -G famous -m -s /bin/tcsh hilbert
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4173e08" class="outline-4">
+<h4 id="org4173e08"><span class="section-number-4">1.5.2</span> ubuntu</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<p>
+Ubuntu provides two ways to add users: <b>adduser</b> and <b>useradd</b>. <b>adduser</b> is a Perl
+wrapper for useradd that is a bit more helpful (makes home directories, copies in
+startup files, etc.).
+</p>
+<ul class="org-ul">
+<li><b>adduser</b> is configured in <b>/etc/adduser.conf</b></li>
+<li><b>adduser</b> has a twin <b>addgroup</b> and cousins <b>deluser</b> and <b>delgroup</b>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgde683dc" class="outline-3">
+<h3 id="orgde683dc"><span class="section-number-3">1.6</span> Disabling logins</h3>
+<div class="outline-text-3" id="text-1-6">
+<ul class="org-ul">
+<li><b>usermod -L</b> to lock user</li>
+<li><b>usermod -U</b> to unlock user</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3d20f91" class="outline-3">
+<h3 id="org3d20f91"><span class="section-number-3">1.7</span> Centralizing account management</h3>
+<div class="outline-text-3" id="text-1-7">
+</div><div id="outline-container-orgaf4ff41" class="outline-4">
+<h4 id="orgaf4ff41"><span class="section-number-4">1.7.1</span> LDAP</h4>
+</div>
+<div id="outline-container-org37bc46b" class="outline-4">
+<h4 id="org37bc46b"><span class="section-number-4">1.7.2</span> Identity management systems</h4>
 </div>
 </div>
 </div>

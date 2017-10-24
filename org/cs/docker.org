@@ -1,0 +1,150 @@
+#+TITLE: Docker
+#+KEYWORDS: docker
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LANGUAGE: zh-CN
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SETUPFILE: ../../org-templates/level-1.org
+* 基本
+** 交互式启动
+   docker run -ti ...
+** 指定容器名
+   docker run --name ...
+** 重启动
+   docker start container
+** 运行中交互
+   docker attach container
+** 守护进程启动
+   docker -d
+** logs
+*** 跟踪日志
+    docker logs -f container
+*** 限制最后 n 条
+    docker logs --tail n -f container
+*** log driver
+    docker run --log-driver="syslog" ...
+** stats
+   docker stats container1 container2 ...
+** exec [command]
+   #+BEGIN_SRC bash
+     docker exec -d container [command]
+     docker exec -t -i container /bin/bash
+   #+END_SRC
+
+** 自动重启
+   #+BEGIN_SRC bash
+     docker run --restart=always --name daemon_dave -d ubuntu /
+     　bin/sh -c "while true; do echo hello world; sleep 1; done"
+   #+END_SRC
+   其他选项，例如：退出代码为非 0 时，Docker 会尝试自动重启，最多重启 5 次：
+   --restart=on-failure:5
+** docker top, docker ps
+   docker top 查看容器运行情况
+   docker ps -a 可列出所有容器(包括未运行的容器)
+
+** 查看镜像/容器详细信息
+   docker inspect container/image
+
+** 端口映射
+   #+BEGIN_SRC bash
+     # 绑定端口
+     docker run -p [outer_port]:[inner_port]
+     docker run -P #遵循 Dockerfile EXPOSE
+     # 查看端口映射
+     docker ps -l
+     docker port container inner_port
+   #+END_SRC
+** 删除全部容器
+   docker rm `sudo docker ps -a -q`
+* 镜像
+- docker pull [user/]repo[:tag]
+- docker push [user/]repo[:tag]
+- docker images
+- docker search
+** 创建镜像
+- docker login
+*** commit
+    #+BEGIN_SRC bash
+      docker run -ti image_to_modify /bin/bash
+      # modify in container
+      docker commit container user/repo -m "comment" -a "User Name"
+    #+END_SRC
+*** Dockerfile
+    例子：
+    #+BEGIN_SRC dockerfile
+      # Version: 0.0.1　
+      FROM ubuntu:14.04　
+      MAINTAINER XXX "xxx@xxx.com"
+      ENV REFRESHED_AT 2017-07-01 #表明该镜像模板最后的更新时间，Docker 在命中 ENV 指令时开始重置这个镜像缓存
+      RUN apt-get update && apt-get install -y nginx　
+      RUN echo 'Hi, I am in your container' \
+      　　 >/usr/share/nginx/html/index.html　
+      EXPOSE 80 #只是给外界看的，具体使用哪个端口在 run 时指定，或使用 docker run 的-P 选项生效
+    #+END_SRC
+    RUN 指令默认会在 shell 里使用命令包装器/bin/sh -c 来执行。exec 格式 RUN 指令:
+    #+BEGIN_SRC dockerfile
+      RUN [ "apt-get", " install", "-y", "nginx" ]
+    #+END_SRC
+*** docker build
+    docker build -t="user/repo:tag"
+    Dockerfile 一般放在项目根目录，指定 Dockerfile 路径使用-f 选项
+    .dockerignore 指定忽略文件。
+*** docker history
+    查看构建过程
+** Dockerfile 指令集
+*** CMD
+    指定容器启动时运行的命令，docker run 末尾的命令如果与 CMD 指定的重叠，则 CMD 中的不会运行
+*** ENTRYPOINT
+    可使与 docker run 末尾的重复命令不生效
+*** WORKDIR
+*** ENV
+    ENV 指令用于在容器中永久的建立环境变量
+    #+BEGIN_SRC dockerfile
+    ENV MYENV1=XXX MYENV2=XXX TARGET_DIR=/opt/app
+    WORKDIR $TARGET_DIR
+    #+END_SRC
+*** USER
+    指定用户运行镜像
+    #+BEGIN_SRC dockerfile
+      USER user/uid
+      USER [user/uid]:[group/gid]
+    #+END_SRC
+*** VOLUME
+    VOLUME 指令用来向基于镜像创建的容器添加卷
+    - 卷可以在容器间共享和重用
+    - 一个容器可以不和其他容器共享卷
+    - 对卷的修改是立时生效的
+    - 对卷的修改不会对更新镜像产生影响
+    - 卷会一直存在直到没有任何容器再使用它
+   #+BEGIN_SRC dockerfile
+     VOLUME ["/opt/project"]
+     VOLUME ["/opt/project", "/data" ]
+   #+END_SRC
+*** ADD
+*** COPY
+*** LABEL
+*** STOPSIGNAL
+*** ARG
+*** ONBUILD
+** 推送镜像
+    先登录 docker login，docker push 推送镜像到 docker hub
+**** 自动推送
+     为了使用自动构建，我们只需要将 GitHub 或 BitBucket 中含有 Dockerfile 文件的仓库连接到 Docker Hub 即可。
+     向这个代码仓库推送代码时，将会触发一次镜像构建活动并创建一个新镜像。
+** 删除镜像
+    docker rmi
+**** 全部删除
+    docker rmi `docker images -a -q`
+** 自建 Registry
+*** 部署
+    #+BEGIN_SRC bash
+      docker run -p 5000:5000 registry
+    #+END_SRC
+*** 上传 image 到 registry
+    #+BEGIN_SRC bash
+      docker tag image_id registry_host:registry_port/user/repo:tag
+    #+END_SRC
+*** 运行 registry 中的镜像
+    #+BEGIN_SRC bash
+      sudo docker run -t -i host:port/user/repo:tag /bin/bash
+    #+END_SRC
