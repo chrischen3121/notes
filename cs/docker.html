@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2017-10-26 Thu 13:38 -->
+<!-- 2017-10-31 Tue 14:14 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Docker</title>
@@ -246,7 +246,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgc43088f">1.6. logs</a></li>
 <li><a href="#orgb9d9bcf">1.7. stats</a></li>
 <li><a href="#org1d2c183">1.8. exec [command]</a></li>
-<li><a href="#org45c811b">1.9. 自动重启</a></li>
+<li><a href="#org85fac3b">1.9. 自动启动/自动重启</a></li>
 <li><a href="#orgf9675b4">1.10. docker top, docker ps</a></li>
 <li><a href="#orgd4c6980">1.11. 查看镜像/容器详细信息</a></li>
 <li><a href="#orgc8b071a">1.12. 端口映射</a></li>
@@ -262,6 +262,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgcbf35a9">2.5. 自建 Registry</a></li>
 </ul>
 </li>
+<li><a href="#org7b9c5a9">3. Networking</a></li>
 </ul>
 </div>
 </div>
@@ -295,16 +296,17 @@ docker start container
 <div id="outline-container-orge3e7774" class="outline-3">
 <h3 id="orge3e7774"><span class="section-number-3">1.4</span> 运行中交互</h3>
 <div class="outline-text-3" id="text-1-4">
-<p>
-docker attach container
-</p>
+<ul class="org-ul">
+<li>docker attach container</li>
+<li>docker exec -t -i container /bin/bash</li>
+</ul>
 </div>
 </div>
 <div id="outline-container-org6e0850c" class="outline-3">
 <h3 id="org6e0850c"><span class="section-number-3">1.5</span> 守护进程启动</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
-docker -d
+docker run -d
 </p>
 </div>
 </div>
@@ -355,8 +357,8 @@ docker exec -t -i container /bin/bash
 </div>
 </div>
 
-<div id="outline-container-org45c811b" class="outline-3">
-<h3 id="org45c811b"><span class="section-number-3">1.9</span> 自动重启</h3>
+<div id="outline-container-org85fac3b" class="outline-3">
+<h3 id="org85fac3b"><span class="section-number-3">1.9</span> 自动启动/自动重启</h3>
 <div class="outline-text-3" id="text-1-9">
 <div class="org-src-container">
 <pre class="src src-bash">docker run --restart=always --name daemon_dave -d ubuntu /
@@ -369,6 +371,7 @@ docker exec -t -i container /bin/bash
 </p>
 </div>
 </div>
+
 <div id="outline-container-orgf9675b4" class="outline-3">
 <h3 id="orgf9675b4"><span class="section-number-3">1.10</span> docker top, docker ps</h3>
 <div class="outline-text-3" id="text-1-10">
@@ -424,13 +427,17 @@ docker rm `sudo docker ps -a -q`
 <div id="outline-container-org978ba83" class="outline-3">
 <h3 id="org978ba83"><span class="section-number-3">2.1</span> 创建镜像</h3>
 <div class="outline-text-3" id="text-2-1">
-<ul class="org-ul">
-<li>docker login</li>
-</ul>
+</div><div id="outline-container-org0079f18" class="outline-4">
+<h4 id="org0079f18"><span class="section-number-4">2.1.1</span> login</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+docker login
+</p>
+</div>
 </div>
 <div id="outline-container-org7342bf6" class="outline-4">
-<h4 id="org7342bf6"><span class="section-number-4">2.1.1</span> commit</h4>
-<div class="outline-text-4" id="text-2-1-1">
+<h4 id="org7342bf6"><span class="section-number-4">2.1.2</span> commit</h4>
+<div class="outline-text-4" id="text-2-1-2">
 <div class="org-src-container">
 <pre class="src src-bash">docker run -ti image_to_modify /bin/bash
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">modify in container</span>
@@ -440,8 +447,8 @@ docker commit container user/repo -m <span style="color: #2d9574;">"comment"</sp
 </div>
 </div>
 <div id="outline-container-org70c57f2" class="outline-4">
-<h4 id="org70c57f2"><span class="section-number-4">2.1.2</span> Dockerfile</h4>
-<div class="outline-text-4" id="text-2-1-2">
+<h4 id="org70c57f2"><span class="section-number-4">2.1.3</span> Dockerfile</h4>
+<div class="outline-text-4" id="text-2-1-3">
 <p>
 例子：
 </p>
@@ -466,8 +473,8 @@ RUN 指令默认会在 shell 里使用命令包装器/bin/sh -c 来执行。exec
 </div>
 </div>
 <div id="outline-container-org0b0145a" class="outline-4">
-<h4 id="org0b0145a"><span class="section-number-4">2.1.3</span> docker build</h4>
-<div class="outline-text-4" id="text-2-1-3">
+<h4 id="org0b0145a"><span class="section-number-4">2.1.4</span> docker build</h4>
+<div class="outline-text-4" id="text-2-1-4">
 <p>
 docker build -t="user/repo:tag"
 Dockerfile 一般放在项目根目录，指定 Dockerfile 路径使用-f 选项
@@ -476,8 +483,8 @@ Dockerfile 一般放在项目根目录，指定 Dockerfile 路径使用-f 选项
 </div>
 </div>
 <div id="outline-container-org3731563" class="outline-4">
-<h4 id="org3731563"><span class="section-number-4">2.1.4</span> docker history</h4>
-<div class="outline-text-4" id="text-2-1-4">
+<h4 id="org3731563"><span class="section-number-4">2.1.5</span> docker history</h4>
+<div class="outline-text-4" id="text-2-1-5">
 <p>
 查看构建过程
 </p>
@@ -625,6 +632,31 @@ docker rmi `docker images -a -q`
 <pre class="src src-bash">sudo docker run -t -i host:port/user/repo:tag /bin/bash
 </pre>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org7b9c5a9" class="outline-2">
+<h2 id="org7b9c5a9"><span class="section-number-2">3</span> Networking</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-sh">docker network create app <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#21019;&#24314;</span>
+docker network inspect app <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#26597;&#30475;</span>
+
+docker network ls <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">list</span>
+</pre>
+</div>
+<p>
+使用 <b>&#x2013;network</b> 参数指定容器运行网络
+</p>
+</div>
+<div id="outline-container-orga1af5d1" class="outline-4">
+<h4 id="orga1af5d1"><span class="section-number-4">3.0.1</span> 已有容器网络操作</h4>
+<div class="outline-text-4" id="text-3-0-1">
+<div class="org-src-container">
+<pre class="src src-sh">docker network connect app container1
+docker network disconnect app container1
+</pre>
 </div>
 </div>
 </div>

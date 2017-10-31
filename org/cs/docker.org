@@ -13,9 +13,10 @@
 ** 重启动
    docker start container
 ** 运行中交互
-   docker attach container
+   - docker attach container
+   - docker exec -t -i container /bin/bash
 ** 守护进程启动
-   docker -d
+   docker run -d
 ** logs
 *** 跟踪日志
     docker logs -f container
@@ -31,13 +32,14 @@
      docker exec -t -i container /bin/bash
    #+END_SRC
 
-** 自动重启
+** 自动启动/自动重启
    #+BEGIN_SRC bash
      docker run --restart=always --name daemon_dave -d ubuntu /
      　bin/sh -c "while true; do echo hello world; sleep 1; done"
    #+END_SRC
    其他选项，例如：退出代码为非 0 时，Docker 会尝试自动重启，最多重启 5 次：
    --restart=on-failure:5
+
 ** docker top, docker ps
    docker top 查看容器运行情况
    docker ps -a 可列出所有容器(包括未运行的容器)
@@ -62,7 +64,8 @@
 - docker images
 - docker search
 ** 创建镜像
-- docker login
+*** login
+    docker login
 *** commit
     #+BEGIN_SRC bash
       docker run -ti image_to_modify /bin/bash
@@ -147,4 +150,17 @@
 *** 运行 registry 中的镜像
     #+BEGIN_SRC bash
       sudo docker run -t -i host:port/user/repo:tag /bin/bash
+    #+END_SRC
+* Networking
+  #+BEGIN_SRC sh
+    docker network create app # 创建
+    docker network inspect app # 查看
+
+    docker network ls # list
+  #+END_SRC
+  使用 *--network* 参数指定容器运行网络
+*** 已有容器网络操作
+    #+BEGIN_SRC sh
+      docker network connect app container1
+      docker network disconnect app container1
     #+END_SRC
