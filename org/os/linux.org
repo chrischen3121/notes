@@ -115,3 +115,95 @@ share files by way of the group mechanism, create separate groups for that purpo
 ** Centralizing account management
 *** LDAP
 *** Identity management systems
+* Shell command
+** Filters
+   - cut: separate lines into fields
+   - sort: sort lines
+   - uniq: print unique lines
+   - wc: count lines, words, and characters
+   - tee: copy input to two places
+   - head & tail
+   - grep: g/regular-expression/p
+** try to write script
+   #+BEGIN_SRC bash
+     find . -name '*log '
+     find . -type f -name '*.log '
+     find . -type f -name '*.log ' | grep -v .do-not-touch
+     find . -type f -name '*.log ' | grep -v .do-not-touch | while read fname
+     do
+     echo mv $fname ${fname/.log/.LOG/}
+     done
+     # finally
+     find . -type f -name '*.log ' | grep -v .do-not-touch | while read fname; do
+         echo mv $fname ${fname/.log/.LOG/}; done | bash -x
+   #+END_SRC
+   *bash -x* prints each command before executing it
+** args
+   - $0: name of the script
+   - $1: first argument
+   - $#: the number of arguments
+   - $*: contains all the arguments at once
+
+   - echo $?: the exit status of the last command executed
+** Control flow
+*** *if* clause
+   #+BEGIN_SRC bash
+     if [condition]
+     then dosomething
+     elif [condition]
+     then dosomething
+     else dosomething
+     fi
+   #+END_SRC
+*** *case* clause
+    #+BEGIN_SRC bash
+      case $message_level in
+          0) message_level_text="Error" ;;
+          1) message_level_text="Warning" ;;
+          2) message_level_text="Info" ;;
+          3) message_level_text="Debug" ;;
+          ,*) message_level_text="Other"
+      esac
+    #+END_SRC
+*** comparison operators
+   | String | Numeric |
+   |--------+---------|
+   | x = y  | x -eq y |
+   | x != y | x -ne y |
+   | x < y  | x -lt y |
+   | x <= y | x -le y |
+   | x > y  | x -gt y |
+   | x >= y | x -ge y |
+   | -n x   | -       |
+   | -z x   | -       |
+*** bash file operators
+   | Operator        | True if                            |
+   |-----------------+------------------------------------|
+   | -d file         | file exists and is a directory     |
+   | -e file         | file exists                        |
+   | -f file         | file exists and is a regular file  |
+   | -r file         | You have read permissions on file  |
+   | -s file         | file exists and is not empty       |
+   | -w file         | You have write permissions on file |
+   | file1 -nt file2 | file1 is newer than file2          |
+   | file1 -ot file2 | file1 is order than file2          |
+*** Loops
+    #+BEGIN_SRC bash
+      for var in stuff; do
+          ...
+      done
+
+      while cond; do
+          ...
+      done
+
+      for ((i=0; i < count; i++)); do
+          ...
+      done
+    #+END_SRC
+*** $(())
+    The $((...)) notation forces numeric evaluation,
+    #+BEGIN_SRC bash
+    $((counter++))
+    $(($a+$b))
+    #+END_SRC
