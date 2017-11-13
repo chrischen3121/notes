@@ -11,7 +11,6 @@
    searches a broader range of system directories and is independent of your shell’s search path
 ** locate
    consults a precompiled index of the filesystem to locate file
-   -
 
 * Help
 ** man
@@ -137,7 +136,7 @@ share files by way of the group mechanism, create separate groups for that purpo
      find . -type f -name '*.log ' | grep -v .do-not-touch | while read fname; do
          echo mv $fname ${fname/.log/.LOG/}; done | bash -x
    #+END_SRC
-   *bash -x* prints each command before executing it
+   *bash -x* prints each command before executing it. Use *fc* to transfer last command to editor.
 ** args
    - $0: name of the script
    - $1: first argument
@@ -207,3 +206,81 @@ share files by way of the group mechanism, create separate groups for that purpo
     $((counter++))
     $(($a+$b))
     #+END_SRC
+*** Array
+    Use *${array_name[subscript]}* to access individual elements.
+    The subscripts * and @ refer to the array as a whole, and the special
+    forms *${#array_name[*]}* and *${#array_name[@]}* yield the number of elements in the array.
+* Booting
+  1. Loading BIOS/UEFI from NVRAM
+  1. Probe for hardware
+  1. Select boot device(disk, network,...)
+  1. Identify EFI system partition
+  1. Load boot loader(e.g. GRUB)
+  1. Determine which kernel to boot
+  1. Load kernel
+  1. Instantiate kernel data structures
+  1. Start init/systemd as PID 1
+  1. Execute startup scripts
+  1. Running system
+** BIOS vs. UEFI
+*** Legacy BIOS(Basic Input/Output System)
+    BIOS assumes that the boot device starts with a record called the MBR.
+    MBR reads and executes the second-stage boot loader(volume boot record)
+*** UFEI(Unified Extensible Firmware Interface)
+    The UEFI specification includes a modern disk partitioning scheme known as GPT(GUID Partition Table).
+
+# ** GRUB: The grand unified boot loader
+# *** GRUB Legacy
+# **** config files
+#      */boot/grub/menu.lst* or */boot/grub/grub.conf*
+# **** specify kernel boot-time options
+# *** GRUB 2
+# ** Kernel initialization
+#    Path of kernel */boot/vmlinuz*. Two stage to load process.
+#    1. ROM loads *bootloader*, outside the domain of UNIX
+#    1. bootloader loads and starts the kernel
+# ** Hardware configuration
+#    /Preserved/
+# ** Spontaneous processes
+# ** Operator intervention (recovery mode only)
+# *** Edit Configure file
+#     Remount with read and write mode, then
+#     #+BEGIN_SRC shell
+#       mount -o rw,remount /
+#     #+END_SRC
+# ** Execution of startup scripts
+# *** Run level
+#     - 0: the system is completely shut down.
+#     - 1 and S: represent single-user mode.
+#     - 2 through 5 include support for networking.
+#     - 6: is a "reboot" level
+# *** /etc/init.d
+#     Scripts are kept here
+# *** /etc/inittab
+#     The */etc/inittab* file tells init what to do at each run level.
+
+# *** *telinit*
+#     The *telinit* command changes *init* ’s run level once the system is up. For example,
+#     *telinit* 3 forces init to go to run level 3. *telinit* ’s most useful argument is -q, which
+#     causes init to reread the */etc/inittab* file.
+
+# *** CentOS
+#     At each run level, *init* invokes the script */etc/rc.d/rc* with the
+#     new run level as an argument.
+# **** old *chkconfig*
+# **** new: *systemd*
+# **** */etc/rc.d/rc.local* script: runs at boot time
+# **** */etc/sysconfig*: configurations for sys process
+
+# *** Ubuntu
+# **** old *upstart*
+#     Use *upstart* instead of *init*, and use */etc/event.d* instead of *inittab*.
+#     Run-level scripts are stored in /etc/rc*.d/rc
+#     - *update-rc.d*
+#       example:
+#       #+BEGIN_SRC shell
+#         sudo update-rc.d cups start 80 2 3 4 5 . stop 20 S 1 6 .
+#       #+END_SRC
+# **** new: *systemd*
+
+# ** Boot process completion
