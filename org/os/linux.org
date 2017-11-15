@@ -228,59 +228,138 @@ share files by way of the group mechanism, create separate groups for that purpo
     MBR reads and executes the second-stage boot loader(volume boot record)
 *** UFEI(Unified Extensible Firmware Interface)
     The UEFI specification includes a modern disk partitioning scheme known as GPT(GUID Partition Table).
+** GRUB 2
+*** config
+    - /etc/default/grub
+    - /etc/grub.d/40_custom
+    - /boot/grub/grub.cfg
 
-# ** GRUB: The grand unified boot loader
-# *** GRUB Legacy
-# **** config files
-#      */boot/grub/menu.lst* or */boot/grub/grub.conf*
-# **** specify kernel boot-time options
-# *** GRUB 2
-# ** Kernel initialization
-#    Path of kernel */boot/vmlinuz*. Two stage to load process.
-#    1. ROM loads *bootloader*, outside the domain of UNIX
-#    1. bootloader loads and starts the kernel
-# ** Hardware configuration
-#    /Preserved/
-# ** Spontaneous processes
-# ** Operator intervention (recovery mode only)
-# *** Edit Configure file
-#     Remount with read and write mode, then
-#     #+BEGIN_SRC shell
-#       mount -o rw,remount /
-#     #+END_SRC
-# ** Execution of startup scripts
-# *** Run level
-#     - 0: the system is completely shut down.
-#     - 1 and S: represent single-user mode.
-#     - 2 through 5 include support for networking.
-#     - 6: is a "reboot" level
-# *** /etc/init.d
-#     Scripts are kept here
-# *** /etc/inittab
-#     The */etc/inittab* file tells init what to do at each run level.
+      Use *grub-mkconfig* to generate grub.cfg, *update-grub* stub for *grub-mkconfig* on Ubuntu
+** init
+*** modes
+**** Single-user mode
+     in which only a minimal set of filesystems is mounted, no services
+     are running, and a root shell is started on the console.
+**** Multiuser mode
+     in which all customary filesystems are mounted and all configured
+     network services have been started, along with a window system and graphical login
+     manager for the console
+**** Server mode
+     similar to multiuser mode, but with no GUI running on the console
+*** Implementations
+**** "traditional *init*" from AT&T’s System V UNIX
+     system modes are known as "run levels"
+**** BSD *init*
+**** *systemd* for linux
 
-# *** *telinit*
-#     The *telinit* command changes *init* ’s run level once the system is up. For example,
-#     *telinit* 3 forces init to go to run level 3. *telinit* ’s most useful argument is -q, which
-#     causes init to reread the */etc/inittab* file.
+**** *launchd* for macOS
+**** *Upstart* for ubuntu
+** systemd
+*** *unit* file
+    #+BEGIN_SRC systemd
+      [Unit]
+      Description=fast remote file copy program daemon
+      ConditionPathExists=/etc/rsyncd.conf
 
-# *** CentOS
-#     At each run level, *init* invokes the script */etc/rc.d/rc* with the
-#     new run level as an argument.
-# **** old *chkconfig*
-# **** new: *systemd*
-# **** */etc/rc.d/rc.local* script: runs at boot time
-# **** */etc/sysconfig*: configurations for sys process
+      [Service]
+      ExecStart=/usr/bin/rsync --daemon --no-detach
 
-# *** Ubuntu
-# **** old *upstart*
-#     Use *upstart* instead of *init*, and use */etc/event.d* instead of *inittab*.
-#     Run-level scripts are stored in /etc/rc*.d/rc
-#     - *update-rc.d*
-#       example:
-#       #+BEGIN_SRC shell
-#         sudo update-rc.d cups start 80 2 3 4 5 . stop 20 S 1 6 .
-#       #+END_SRC
-# **** new: *systemd*
+      [Install]
+      WantedBy=multi-user.target
+    #+END_SRC
+    unit directory: */usr/lib/systemd/system* or */lib/systemd/system*.
+    */run/systemd/system* that’s a scratch area for transient units.
+*** systemctl
+**** Subcommands
+     | Subcommand                | Function                                           |
+     |---------------------------+----------------------------------------------------|
+     | list-unit-files [pattern] | Shows installed units; optionally matching pattern |
+     | enable /unit/             | Enables /unit/ to activate at boot                 |
+     | disable /unit/            | Prevents /unit/ from to activate at boot           |
+     | isolate /target/          | Changes operating mode to target                   |
+     | start /unit/              |                                                    |
+     | stop /unit/               |                                                    |
+     | restart /unit/            |                                                    |
+     | status /unit/             |                                                    |
+     | kill /pattern/            | Sends a signal to units matching /pattern/         |
+     | daemon-reload             | Reloads unit files and *systemd* configuration     |
+**** States
+     | State    | Meaning                                                        |
+     |----------+----------------------------------------------------------------|
+     | bad      | Smoe kind of problem within *systemd*; usually a bad unit file |
+     | disabled | Present, but not configured to start autonomously              |
+     | enabled  | Installed and runnable; will start autonomously                |
+     | indirect | Disabled, but has peers in Also clauses that may be enabled    |
+     | linked   | Unit file available through a symlink                          |
+     | masked   | Banished from the *systemd* world from a logical perspective   |
+     | static   | Depended upon by another unit; has no install requirements     |
+**** Targets
+     #+CAPTION: Mapping between init run levels and systemd targets
+     |    Run level | Target            | Description                            |
+     |--------------+-------------------+----------------------------------------|
+     |            0 | poweroff.target   | System halt                            |
+     |    emergency | emergency.target  | Bare-bones shell for system recovery   |
+     | 1, s, single | rescue.target     | Single-user mode                       |
+     |            2 | multi-user.target | Multiuser mode(command line)           |
+     |            3 | multi-user.target | Multiuser mode with networking         |
+     |            4 | multi-user.target | Not normally used by *init*            |
+     |            5 | graphical.target  | Multiuser mode with networking and GUI |
+     |            6 | reboot.target     | System reboot                          |
+     To change current operating mode, use *systemctl isolate*, like *telinit* for *init*.
+     *systemctl get-default* see the target the system boots into by default. *set-default* to set default.
 
-# ** Boot process completion
+*** Dependencies
+    #+CAPTION: Explict dependencies in the [Unit] section
+    | Option    | Meaning                                                                  |
+    |-----------+--------------------------------------------------------------------------|
+    | Wants     | Units that should be coactivated if possible, but are not required       |
+    | Requires  | Strict dependencies; failure of any prerequisite terminates this service |
+    | Requisite | Like Requires, but must already be active                                |
+    | BindsTo   | Similar to Requires, but even more tightly coupled                       |
+    | PartOf    | Similar to Requires, but affects only starting and stopping              |
+    | Conflicts | Negative dependencies; cannot be coactive with these units               |
+    Use systemctl *add-wants* or *add-requires* to specify a dependency.
+    Or add option *WantedBy* or *RequiredBy* to [Install] section.
+
+*** Execution order
+    Use Before/After clauses from the unit files to sort the work list.
+
+*** *halt* & *reboot* & *shutdown*
+*** a more complex example
+    #+BEGIN_SRC systemd
+      [Unit]
+      Description=The nginx HTTP and reverse proxy server
+      After=network.target remote-fs.target nss-lookup.target
+
+      [Service]
+      Type=forking
+      PIDFile=/run/nginx.pid
+      ExecStartPre=/usr/bin/rm -f /run/nginx.pid
+      ExecStartPre=/usr/sbin/nginx -t
+      ExecStart=/usr/sbin/nginx
+      ExecReload=/bin/kill -s HUP $MAINPID
+      KillMode=process
+      KillSignal=SIGQUIT
+      TimeoutStopSec=5
+      PrivateTmp=true
+
+      [Install]
+      WantedBy=multi-user.target
+    #+END_SRC
+*** useful man to write unit file
+    - *man systemd.service* to see complete list of options for service
+    - *man systemd.unit* to see common options for all types
+*** customizations
+    Add *conf* file to */etc/systemd/system/xxx.service.d* directory.
+    - easy way:
+    #+BEGIN_SRC shell
+      systemctl edit xxx.service
+      systemctl restart xxx.service
+    #+END_SRC
+*** logging
+    System messages captured by *journald* are stored in the */run* directory.
+
+    *rsyslog* can process these messages and store then in traditional log files or
+    forward them to a remote syslog server.
+
+    *journalctl* displays log entries. *-u* to specify which service to display.

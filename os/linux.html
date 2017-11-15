@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-11-13 Mon 18:08 -->
+<!-- 2017-11-15 Wed 15:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux Administration</title>
@@ -270,6 +270,9 @@ for the JavaScript code in this tag.
 <li><a href="#org74a2cfb">5. Booting</a>
 <ul>
 <li><a href="#org6be0726">5.1. BIOS vs. UEFI</a></li>
+<li><a href="#org696d678">5.2. GRUB 2</a></li>
+<li><a href="#org7c28f55">5.3. init</a></li>
+<li><a href="#orgada3af5">5.4. systemd</a></li>
 </ul>
 </li>
 </ul>
@@ -807,6 +810,426 @@ MBR reads and executes the second-stage boot loader(volume boot record)
 <div class="outline-text-4" id="text-5-1-2">
 <p>
 The UEFI specification includes a modern disk partitioning scheme known as GPT(GUID Partition Table).
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org696d678" class="outline-3">
+<h3 id="org696d678"><span class="section-number-3">5.2</span> GRUB 2</h3>
+<div class="outline-text-3" id="text-5-2">
+</div><div id="outline-container-org06912ad" class="outline-4">
+<h4 id="org06912ad"><span class="section-number-4">5.2.1</span> config</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<ul class="org-ul">
+<li>/etc/default/grub</li>
+<li>/etc/grub.d/40_custom</li>
+<li><p>
+/boot/grub/grub.cfg
+</p>
+
+<p>
+Use <b>grub-mkconfig</b> to generate grub.cfg, <b>update-grub</b> stub for <b>grub-mkconfig</b> on Ubuntu
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org7c28f55" class="outline-3">
+<h3 id="org7c28f55"><span class="section-number-3">5.3</span> init</h3>
+<div class="outline-text-3" id="text-5-3">
+</div><div id="outline-container-org2341c13" class="outline-4">
+<h4 id="org2341c13"><span class="section-number-4">5.3.1</span> modes</h4>
+<div class="outline-text-4" id="text-5-3-1">
+</div><ul class="org-ul"><li><a id="orgfeacc25"></a>Single-user mode<br /><div class="outline-text-5" id="text-orgfeacc25">
+<p>
+in which only a minimal set of filesystems is mounted, no services
+are running, and a root shell is started on the console.
+</p>
+</div></li>
+<li><a id="org86af1ee"></a>Multiuser mode<br /><div class="outline-text-5" id="text-org86af1ee">
+<p>
+in which all customary filesystems are mounted and all configured
+network services have been started, along with a window system and graphical login
+manager for the console
+</p>
+</div></li>
+<li><a id="orga089d70"></a>Server mode<br /><div class="outline-text-5" id="text-orga089d70">
+<p>
+similar to multiuser mode, but with no GUI running on the console
+</p>
+</div></li></ul>
+</div>
+<div id="outline-container-org2664bd8" class="outline-4">
+<h4 id="org2664bd8"><span class="section-number-4">5.3.2</span> Implementations</h4>
+<div class="outline-text-4" id="text-5-3-2">
+</div><ul class="org-ul"><li><a id="orge0db1d1"></a>"traditional <b>init</b>" from AT&amp;T’s System V UNIX<br /><div class="outline-text-5" id="text-orge0db1d1">
+<p>
+system modes are known as "run levels"
+</p>
+</div></li>
+<li><a id="orgcc48422"></a>BSD <b>init</b><br /></li>
+<li><a id="org0a8cf5a"></a><b>systemd</b> for linux<br /></li>
+
+<li><a id="org9fc22ce"></a><b>launchd</b> for macOS<br /></li>
+<li><a id="orgc9f8358"></a><b>Upstart</b> for ubuntu<br /></li></ul>
+</div>
+</div>
+<div id="outline-container-orgada3af5" class="outline-3">
+<h3 id="orgada3af5"><span class="section-number-3">5.4</span> systemd</h3>
+<div class="outline-text-3" id="text-5-4">
+</div><div id="outline-container-org6f2b6a1" class="outline-4">
+<h4 id="org6f2b6a1"><span class="section-number-4">5.4.1</span> <b>unit</b> file</h4>
+<div class="outline-text-4" id="text-5-4-1">
+<div class="org-src-container">
+<pre class="src src-systemd"><span style="color: #ba2f59; font-weight: bold;">[Unit]</span>
+<span style="color: #3a81c3; font-weight: bold;">Description</span>=fast remote file copy program daemon
+<span style="color: #3a81c3; font-weight: bold;">ConditionPathExists</span>=/etc/rsyncd.conf
+
+<span style="color: #ba2f59; font-weight: bold;">[Service]</span>
+<span style="color: #3a81c3; font-weight: bold;">ExecStart</span>=/usr/bin/rsync --daemon --no-detach
+
+<span style="color: #ba2f59; font-weight: bold;">[Install]</span>
+<span style="color: #3a81c3; font-weight: bold;">WantedBy</span>=multi-user.target
+</pre>
+</div>
+<p>
+unit directory: <b>/usr/lib/systemd/system</b> or <b>/lib/systemd/system</b>.
+<b>/run/systemd/system</b> that’s a scratch area for transient units.
+</p>
+</div>
+</div>
+<div id="outline-container-org40e2730" class="outline-4">
+<h4 id="org40e2730"><span class="section-number-4">5.4.2</span> systemctl</h4>
+<div class="outline-text-4" id="text-5-4-2">
+</div><ul class="org-ul"><li><a id="org498da6b"></a>Subcommands<br /><div class="outline-text-5" id="text-org498da6b">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Subcommand</th>
+<th scope="col" class="org-left">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">list-unit-files [pattern]</td>
+<td class="org-left">Shows installed units; optionally matching pattern</td>
+</tr>
+
+<tr>
+<td class="org-left">enable <i>unit</i></td>
+<td class="org-left">Enables <i>unit</i> to activate at boot</td>
+</tr>
+
+<tr>
+<td class="org-left">disable <i>unit</i></td>
+<td class="org-left">Prevents <i>unit</i> from to activate at boot</td>
+</tr>
+
+<tr>
+<td class="org-left">isolate <i>target</i></td>
+<td class="org-left">Changes operating mode to target</td>
+</tr>
+
+<tr>
+<td class="org-left">start <i>unit</i></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">stop <i>unit</i></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">restart <i>unit</i></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">status <i>unit</i></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">kill <i>pattern</i></td>
+<td class="org-left">Sends a signal to units matching <i>pattern</i></td>
+</tr>
+
+<tr>
+<td class="org-left">daemon-reload</td>
+<td class="org-left">Reloads unit files and <b>systemd</b> configuration</td>
+</tr>
+</tbody>
+</table>
+</div></li>
+<li><a id="org1e7e4bd"></a>States<br /><div class="outline-text-5" id="text-org1e7e4bd">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">State</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">bad</td>
+<td class="org-left">Smoe kind of problem within <b>systemd</b>; usually a bad unit file</td>
+</tr>
+
+<tr>
+<td class="org-left">disabled</td>
+<td class="org-left">Present, but not configured to start autonomously</td>
+</tr>
+
+<tr>
+<td class="org-left">enabled</td>
+<td class="org-left">Installed and runnable; will start autonomously</td>
+</tr>
+
+<tr>
+<td class="org-left">indirect</td>
+<td class="org-left">Disabled, but has peers in Also clauses that may be enabled</td>
+</tr>
+
+<tr>
+<td class="org-left">linked</td>
+<td class="org-left">Unit file available through a symlink</td>
+</tr>
+
+<tr>
+<td class="org-left">masked</td>
+<td class="org-left">Banished from the <b>systemd</b> world from a logical perspective</td>
+</tr>
+
+<tr>
+<td class="org-left">static</td>
+<td class="org-left">Depended upon by another unit; has no install requirements</td>
+</tr>
+</tbody>
+</table>
+</div></li>
+<li><a id="org84c93cd"></a>Targets<br /><div class="outline-text-5" id="text-org84c93cd">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> Mapping between init run levels and systemd targets</caption>
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Run level</th>
+<th scope="col" class="org-left">Target</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0</td>
+<td class="org-left">poweroff.target</td>
+<td class="org-left">System halt</td>
+</tr>
+
+<tr>
+<td class="org-right">emergency</td>
+<td class="org-left">emergency.target</td>
+<td class="org-left">Bare-bones shell for system recovery</td>
+</tr>
+
+<tr>
+<td class="org-right">1, s, single</td>
+<td class="org-left">rescue.target</td>
+<td class="org-left">Single-user mode</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">multi-user.target</td>
+<td class="org-left">Multiuser mode(command line)</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">multi-user.target</td>
+<td class="org-left">Multiuser mode with networking</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">multi-user.target</td>
+<td class="org-left">Not normally used by <b>init</b></td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">graphical.target</td>
+<td class="org-left">Multiuser mode with networking and GUI</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-left">reboot.target</td>
+<td class="org-left">System reboot</td>
+</tr>
+</tbody>
+</table>
+<p>
+To change current operating mode, use <b>systemctl isolate</b>, like <b>telinit</b> for <b>init</b>.
+<b>systemctl get-default</b> see the target the system boots into by default. <b>set-default</b> to set default.
+</p>
+</div></li></ul>
+</div>
+
+<div id="outline-container-org0f07d3a" class="outline-4">
+<h4 id="org0f07d3a"><span class="section-number-4">5.4.3</span> Dependencies</h4>
+<div class="outline-text-4" id="text-5-4-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> Explict dependencies in the [Unit] section</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Option</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Wants</td>
+<td class="org-left">Units that should be coactivated if possible, but are not required</td>
+</tr>
+
+<tr>
+<td class="org-left">Requires</td>
+<td class="org-left">Strict dependencies; failure of any prerequisite terminates this service</td>
+</tr>
+
+<tr>
+<td class="org-left">Requisite</td>
+<td class="org-left">Like Requires, but must already be active</td>
+</tr>
+
+<tr>
+<td class="org-left">BindsTo</td>
+<td class="org-left">Similar to Requires, but even more tightly coupled</td>
+</tr>
+
+<tr>
+<td class="org-left">PartOf</td>
+<td class="org-left">Similar to Requires, but affects only starting and stopping</td>
+</tr>
+
+<tr>
+<td class="org-left">Conflicts</td>
+<td class="org-left">Negative dependencies; cannot be coactive with these units</td>
+</tr>
+</tbody>
+</table>
+<p>
+Use systemctl <b>add-wants</b> or <b>add-requires</b> to specify a dependency.
+Or add option <b>WantedBy</b> or <b>RequiredBy</b> to [Install] section.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgea187d9" class="outline-4">
+<h4 id="orgea187d9"><span class="section-number-4">5.4.4</span> Execution order</h4>
+<div class="outline-text-4" id="text-5-4-4">
+<p>
+Use Before/After clauses from the unit files to sort the work list.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgff5c076" class="outline-4">
+<h4 id="orgff5c076"><span class="section-number-4">5.4.5</span> <b>halt</b> &amp; <b>reboot</b> &amp; <b>shutdown</b></h4>
+</div>
+<div id="outline-container-org33f6e00" class="outline-4">
+<h4 id="org33f6e00"><span class="section-number-4">5.4.6</span> a more complex example</h4>
+<div class="outline-text-4" id="text-5-4-6">
+<div class="org-src-container">
+<pre class="src src-systemd"><span style="color: #ba2f59; font-weight: bold;">[Unit]</span>
+<span style="color: #3a81c3; font-weight: bold;">Description</span>=The nginx HTTP and reverse proxy server
+<span style="color: #3a81c3; font-weight: bold;">After</span>=network.target remote-fs.target nss-lookup.target
+
+<span style="color: #ba2f59; font-weight: bold;">[Service]</span>
+<span style="color: #3a81c3; font-weight: bold;">Type</span>=<span style="color: #3a81c3;">forking</span>
+<span style="color: #3a81c3; font-weight: bold;">PIDFile</span>=/run/nginx.pid
+<span style="color: #3a81c3; font-weight: bold;">ExecStartPre</span>=/usr/bin/rm -f /run/nginx.pid
+<span style="color: #3a81c3; font-weight: bold;">ExecStartPre</span>=/usr/sbin/nginx -t
+<span style="color: #3a81c3; font-weight: bold;">ExecStart</span>=/usr/sbin/nginx
+<span style="color: #3a81c3; font-weight: bold;">ExecReload</span>=/bin/kill -s HUP <span style="color: #715ab1;">$MAINPID</span>
+<span style="color: #3a81c3; font-weight: bold;">KillMode</span>=<span style="color: #3a81c3;">process</span>
+<span style="color: #3a81c3; font-weight: bold;">KillSignal</span>=<span style="color: #4e3163;">SIGQUIT</span>
+<span style="color: #3a81c3; font-weight: bold;">TimeoutStopSec</span>=5
+<span style="color: #3a81c3; font-weight: bold;">PrivateTmp</span>=<span style="color: #4e3163;">true</span>
+
+<span style="color: #ba2f59; font-weight: bold;">[Install]</span>
+<span style="color: #3a81c3; font-weight: bold;">WantedBy</span>=multi-user.target
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org234faec" class="outline-4">
+<h4 id="org234faec"><span class="section-number-4">5.4.7</span> useful man to write unit file</h4>
+<div class="outline-text-4" id="text-5-4-7">
+<ul class="org-ul">
+<li><b>man systemd.service</b> to see complete list of options for service</li>
+<li><b>man systemd.unit</b> to see common options for all types</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf85c1dc" class="outline-4">
+<h4 id="orgf85c1dc"><span class="section-number-4">5.4.8</span> customizations</h4>
+<div class="outline-text-4" id="text-5-4-8">
+<p>
+Add <b>conf</b> file to <b>/etc/systemd/system/xxx.service.d</b> directory.
+</p>
+<ul class="org-ul">
+<li>easy way:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-shell">systemctl edit xxx.service
+systemctl restart xxx.service
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org34e90d7" class="outline-4">
+<h4 id="org34e90d7"><span class="section-number-4">5.4.9</span> logging</h4>
+<div class="outline-text-4" id="text-5-4-9">
+<p>
+System messages captured by <b>journald</b> are stored in the <b>/run</b> directory.
+</p>
+
+<p>
+<b>rsyslog</b> can process these messages and store then in traditional log files or
+forward them to a remote syslog server.
+</p>
+
+<p>
+<b>journalctl</b> displays log entries. <b>-u</b> to specify which service to display.
 </p>
 </div>
 </div>
