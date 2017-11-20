@@ -1,0 +1,135 @@
+#+TITLE: Flask
+#+KEYWORDS: flask, backend
+#+OPTIONS: H:4 toc:2 num:3 ^:nil
+#+LaTeX: t
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ../../org-templates/level-1.org
+* Context
+  | Variable name | Context             | Description                                                              |
+  |---------------+---------------------+--------------------------------------------------------------------------|
+  | current_app   | Application context | The application instance for the active application                      |
+  | g             | Application context | An object can use for temporary storage. reset with each request         |
+  | request       | Request context     | The request object, which encapsulates a http request                    |
+  | session       | Request context     | The user session, a dictionary storage shared by requests within session |
+* Request hooks
+  - before_first_request: register a function to run before the first request
+  - before_request: register a function to run before each request
+  - after_request: register a function to run after each request if no unhandled exceptions occurred
+  - teardown_request: register a function to run after each request even if unhandled exceptions occurred
+* Jinja2 template engine
+  #+BEGIN_EXAMPLE
+    <p>A value from a dictionary: {{ mydict['key'] }}.</p>
+    <p>A value from a list: {{ mylist[3] }}.</p>
+    <p>A value from a list, with a variable index: {{ mylist[myintvar] }}.</p>
+    <p>A value from an object's method: {{ myobj.somemethod() }}.</p>
+  #+END_EXAMPLE
+** Filters
+   | Filter name | Description                                 |
+   |-------------+---------------------------------------------|
+   | safe        | Renders the value without applying escaping |
+   | capitalize  | Converts the first char to uppercase        |
+   | lower       |                                             |
+   | upper       |                                             |
+   | title       |                                             |
+   | trim        | Removes leading and trailing whitespace     |
+   | striptags   | Removes any HTML tags                       |
+*** safe
+    - Never use the safe filter on values that aren’t trusted, such as text entered by users on web forms.
+** Control structures
+*** if
+    #+BEGIN_EXAMPLE
+      {% if user %}
+          Hello, {{ user }}!
+      {% else %}
+          Hello, Stranger!
+      {% endif %}
+    #+END_EXAMPLE
+*** loop
+    #+BEGIN_EXAMPLE
+      <ul>
+          {% for comment in comments %}
+              <li>{{ comment }}</li>
+          {% endfor %}
+      </ul>
+    #+END_EXAMPLE
+*** macro
+    #+BEGIN_EXAMPLE
+      {% macro render_comment(comment) %}
+          <li>{{ comment }}</li>
+      {% endmacro %}
+
+      <ul>
+          {% for comment in comments %}
+              {{ render_comment(comment) }}
+          {% endfor %}
+      </ul>
+    #+END_EXAMPLE
+    - import macro from file
+    #+BEGIN_EXAMPLE
+      {% import 'macros.html' as macros %}
+      <ul>
+          {% for comment in comments %}
+              {{ macros.render_comment(comment) }}
+          {% endfor %}
+      </ul>
+    #+END_EXAMPLE
+    - {% include 'common.html' %}
+** Inheritance
+   - base
+     #+BEGIN_SRC html
+       <html>
+       <head>
+           {% block head %}
+           <title>{% block title %}{% endblock %} - My Application</title>
+           {% endblock %}
+       </head>
+       <body>
+           {% block body %}
+           {% endblock %}
+       </body>
+       </html>
+     #+END_SRC
+   - extendsion
+     #+BEGIN_SRC html
+       {% extends "base.html" %}
+       {% block title %}Index{% endblock %}
+       {% block head %}
+           {{ super() }} <!--super() to retain the original contents -->
+           <style>
+           </style>
+       {% endblock %}
+       {% block body %}
+       <h1>Hello, World!</h1>
+       {% endblock %}
+     #+END_SRC
+** Custom Error Pages
+   #+BEGIN_SRC python
+     @app.errorhandler(404)
+     def page_not_found(e):
+         return render_template('404.html'), 404
+
+     @app.errorhandler(500)
+     def internal_server_error(e):
+         return render_template('500.html'), 500
+   #+END_SRC
+** Links
+   *url_for()* function to generate URLs from the imformation stored in the app's URL map.
+   #+BEGIN_SRC python
+     url_for('user', name='john', _external=True) # return http://localhost:5000/user/john
+   #+END_SRC
+** Static files
+   #+BEGIN_SRC python
+     url_for('static', filename='css/styles.css', _external=True)
+   #+END_SRC
+
+* ext
+** flask_script
+** flask_bootstrap
+   base template blocks
+   - doc, html_attribs, html, head, title, metas, styles, body_attribs, body, navbar, content, scripts
+** flask_moment
+   Localization of dates and times
