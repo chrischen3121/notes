@@ -289,8 +289,19 @@ reindex args: index, method, fill_value, limit, level, copy
   frame.drop(['c1', 'c2'], axis=1)
 #+END_SRC
 *** Selection
-    See [[numpy indexing]].
-
+    Indexing options:
+    | Type                      | Notes                                                |
+    |---------------------------+------------------------------------------------------|
+    | df[val]                   | Select column                                        |
+    | df.loc[val]               | Select row                                           |
+    | df.loc[:, val]            | Select column                                        |
+    | df.loc[val1, val2]        | Select both column and row                           |
+    | df.iloc[where]            | Select row by int position                           |
+    | df.iloc[:, where]         | Select column by int position                        |
+    | df.iloc[where_i, where_j] | Select both column and row by int position           |
+    | df.at[label_i, label_j]   | Select a single scalar value by row and column label |
+    | df.iat[i, j]              | Select a single scalar value by int position         |
+    | get_value, set_value      | Select single value by row and column label          |
 *** Arithmetic
     - Basic df1 + df2,
     - use add method to fill na values: df1.add(df2, fill_value=0)
@@ -324,7 +335,7 @@ reindex args: index, method, fill_value, limit, level, copy
   # r3    3
   # dtype: int64
 
-  df.add(s2, axis=0)
+  df.add(s2, axis=0, fill_value=0)
   #     c1  c2
   # r1   1   2
   # r2   4   5
@@ -357,7 +368,7 @@ reindex args: index, method, fill_value, limit, level, copy
       frame.apply(f)
       frame.apply(f, axis=1)
     #+END_SRC
-    *apply* can also return a series
+    *apply* can also return a Series
     #+BEGIN_SRC python
       def f(x):
           return pd.Series([x.min(), x.max()], index=['min', 'max'])
@@ -366,16 +377,21 @@ reindex args: index, method, fill_value, limit, level, copy
       # min xxx xxx
       # max xxx xxx
     #+END_SRC
+    - *map* method for applying an element-wise function on a Series
+    - *applymap* for applying an element-wise function on a DataFrame
 *** Sort
   #+BEGIN_SRC python
     df.sort_index()
 
     # by column(s)
-    df.sort_index(by='c1')
-    df.sort_index(by=['c1', 'c2'])
+    df.sort_values(by='c1')
+    df.sort_values(by=['c1', 'c2'])
+
+    series.sort_values()
   #+END_SRC
 *** Rank
-    args: 'average'(default), 'min', 'max', 'first'
+    By default, rank breaks ties by assigning each group the mean rank
+    - args: 'average'(default), 'min', 'max', 'first'
     #+BEGIN_SRC python
       obj = pd.Series([7, -5, 7, 4, 2, 0, 4, 7])
       obj.rank()
@@ -388,22 +404,19 @@ reindex args: index, method, fill_value, limit, level, copy
       # 5    2.0
       # 6    4.5
       # 7    7.0
-      obj.rank(method='first')
+      obj.rank(method='first', ascending=False)
       #=>
-      # 0    6.0
-      # 1    1.0
-      # 2    7.0
-      # 3    4.0
-      # 4    3.0
-      # 5    2.0
-      # 6    5.0
-      # 7    8.0
+      # 0    1.0
+      # 1    7.0
+      # 2    2.0
+      # 3    3.0
+      # 4    5.0
+      # 5    6.0
+      # 6    4.0
     #+END_SRC
 
 *** Other funtions
 - numpy *ufancs* works fine with pandas objects
-- applymap(element-wise), map(series element-wise)
-- order(for series sorting): s.order()
 - isnull, notnull, dropna, fillna
 - stack, unstack, swaplevel, sortlevel
 - set_index, reset_index
@@ -415,7 +428,6 @@ reindex args: index, method, fill_value, limit, level, copy
 ** Statistic methods
    Basic:
    count, describe, min, max, quantile, sum, pct_change, diff, corr, cov, corrwith
-
 *** mean, median, mad, var, std
 *** argmin, argmax, idxmin, idxmax
 
