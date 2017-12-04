@@ -225,6 +225,14 @@ A password can be set with the *gpasswd* command
 
 A user’s personal group should contain only that user. If you want to let users
 share files by way of the group mechanism, create separate groups for that purpose
+** /etc/sudoers
+   #+BEGIN_SRC shell
+     mark, ed    SOME_HOST_ALIAS=ALL
+     herb    SOME_HOST_ALIAS=/usr/sbin/tcpdump : !SOME_HOST_ALIAS=(operator) DUMP
+     lynda    ALL=(ALL)ALL, !SOME_CMND_ALIAS
+     %wheel    ALL, !SOME_HOST_ALIAS = NOPASSWD: SOME_CMND_ALIAS
+   #+END_SRC
+   Whitelist the environment variables by adding them to the sudoers file’s env_keep list
 ** users basic
 *** Required
 **** Sign policy agreement
