@@ -1,0 +1,369 @@
+#+TITLE: 微积分
+#+KEYWORDS: math, calculus
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LANGUAGE: zh-CN
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SETUPFILE: ../../org-templates/level-1.org
+* 极限
+** 连续性
+*** 定义
+    f(x) 在 x=a 点是连续的，条件有三：
+    - f(a)是有定义的
+    - $\lim_{x \to a}f(x)$ 存在
+    - $\lim_{x \to a}f(x) = f(a)$
+** 求极限
+*** 运算法则
+    令 $\lim_{x\to c}f(x)=L$ 和 $\lim_{x\to c}g(x)=M$
+    - 和法则
+    $$\lim_{x\to c}(f(x)+g(x)) = L+M$$
+    - 差法则
+    $$\lim_{x\to c}(f(x)-g(x)) = L-M$$
+    - 积法则
+    $$\lim_{x\to c}(f(x)\cdot g(x)) = L\cdot M$$
+    - 乘常数法则
+    $$\lim_{x\to c}(k \cdot f(x)) = k\cdot L$$
+    - 商法则
+    $$\lim_{x\to c}\frac{f(x)}{g(x)} = \frac{L}{M}, \ M\neq 0$$
+    - 幂法则
+    如果 r 和 s 都是整数，$s\neq 0$ ，那么
+    $$\lim_{x\to c}(f(x))^{\frac{r}{s}}=L^{\frac{r}{s}}$$
+
+*** l'Hôpital's rule
+    使用洛必达法则的先决条件：原函数极限为 $\frac{0}{0}$ 或者 $\frac{\infty}{\infty}$ 或者 $0\cdot \infty$
+    洛必达法则：满足先决条件的函数，可以先对其分子分母分别求导再求出求导之后函数的极限，即为原函数的极限。
+    $$\lim_{x\to a}\frac{f(x)}{g(x)} = L = \lim_{x\to a}\frac{f'(x)}{g'(x)}$$
+
+*** 常见示例
+**** 直接代入，分母为 0，分子不为 0 的整数
+     $$\lim_{x\to 14^+} \frac{x}{x-14}$$
+     分母为正数，无限接近于 0，分子无限接近于 14，极限为正无穷
+**** x 趋向于无穷的极限
+     $$\lim_{x\to -\infty}\frac{4x+1}{\sqrt{x^2+2}}$$
+     分子最高阶项为 4x，分母最高阶项为|x|，因为$x\to -\infty$
+     $$\lim_{x\to -\infty}\frac{4x+1}{\sqrt{x^2+2}} = \lim_{x\to -\infty}\frac{4x}{|x|} = \lim_{x\to -\infty}\frac{4x}{-(x)} = -4$$
+
+* 导数
+** 定义
+$$g'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$
+- 可导条件:函数在该点的左右两侧导数都存在且相等
+** 基本法则
+*** 幂法则
+$$\frac{d}{dx}(x^n)=nx^{n-1}$$
+*** 积法则
+$$\frac{d}{dx}(fg)=f'g + fg'$$
+*** 商法则
+$$\frac{d}{dx}(\frac{f}{g})=\frac{f'g-fg'}{g^2}$$
+** 三角函数的导数
+$$\frac{d}{dx}(sinx)=cosx$$
+$$\frac{d}{dx}(cosx)=-sinx$$
+利用商法则：
+$$\frac{d}{dx}(tanx)=\frac{d}{dx}(\frac{sinx}{cosx})=\frac{cos^{2}x+sin^{2}x}{cos^{2}x}=sec^{2}x$$
+** 链式法则(chain rule)
+*** first form
+$$\frac{d}{dx}f(g(x)) = f'(g(x))g'(x)$$
+*** second form
+Let $u = g(x)$, then f(g(x)) turns to be f(u)
+$$\frac{df}{dx}=\frac{df}{du}\frac{du}{dx}$$
+- Example
+  $$\frac{d}{dx}(\sqrt{x^3-7x})$$
+  Let $f(u) = \sqrt u$ and $u = x^3-7x$
+  $$\frac{df}{dx} = \frac{df}{du}\frac{du}{dx} = \frac{3x^2 - 7}{2\sqrt u} = \frac{3x^2 - 7}{2\sqrt{x^3-7x}}$$
+*** 广义幂法则
+$h(x)=(g(x))^n$ Let $f(x)=x^n$, h(x) is the combination of f(x) and g(x)
+$$h'(x)=f'(g(x))g'(x) = n(g(x))^{n-1}g'(x)$$
+↑广义幂法则
+- Example
+  $$\frac{d}{dx}(\sqrt 3x^5)=\frac{d}{dx}((3x^5){\frac{1}{2}} = \frac{1}{2}(3x^5)^{-\frac{1}{2}}(15x^4)$$
+- More complex example
+  $$k(x) = [cos(\sqrt x - x)]^3$$
+  Let $f(x)=\sqrt x - x$, $g(x)=cosx$, $h(x)=x^3$
+  $$k'(x)=(h(g(f(x))))' = h'(g(f(x)))g'(f(x))f'(x) = 3(cos(\sqrt x - x))^2[-sin(\sqrt x - x)][\frac{1}{2\sqrt 2} - 1]$$
+** 对数微分法(乘积变求和)
+核心思想：利用对数将几个数的乘积化为这些数的和
+- Example
+  $$f(x) = (x+1)(x^2+2)$$
+  $$\ln f(x) = \ln(x+1) + \ln(x^2+2)$$
+  $$\frac{f'(x)}{f(x)} = \frac{1}{x+1} +\frac{2x}{x^2+2}$$
+  $$f'(x) = (\frac{1}{x+1} +\frac{2x}{x^2+2})\times (x+1)(x^2+2)$$
+- 另一种用法
+  $$f(x) = 2^x \to \ln f(x) = x\ln 2^x \to \frac{f'(x)}{f(x)} = \ln 2 \to f'(x) = 2^x\ln 2 $$
+** 极大值和极小值
+*** 一般推导
+1) x=a, f'(x) = 0
+2) x<a, f'(x) > 0
+3) x>a, f'(x) < 0
+
+x=a 时，f(x)有局部最大值
+*** 二阶导数推导
+1) x=a, f'(a)=0
+2) f''(a)>0，则函数在 x=a 有局部最小值
+3) f''(a)<0，则函数在 x=a 有局部最大值
+
+Easy way to rember:
+$$-\cap - \space +\cup +$$
+原理：f''(a)>0 => f'(a)在上升，结合 f'(a) = 0 所以 x>a 时，f'(x)>0 => f(x)在上升，即 a 点为极小值
+** 二阶导数
+二阶导数为了表示 f(x)的切线斜率的变化率。
+- f''(x)>0 表示递增中，凹口向上
+- f''(x)<0 表示递减中，凹口向下
+- f''(x)=0 表示正在凹口拐点，当然 f''(x)经常不存在
+  #+ATTR_HTML: align="center"
+  [[file:../resources/calculus/SecondDerivativeMeaning.png]]
+
+** 隐函数微分
+$$y^2+xy+3x = 9$$
+y 可以写成关于 x 的函数，有时不太容易变成 y=f(x)的形式，则把 y 当成关于 x 的隐函数
+$$2y\frac{dy}{dx} +(y + x\frac{dy}{dx}) +3 = 0$$
+$$\frac{dy}{dx}=\frac{-y-3}{2y+x}$$
+由此可算出，(2, 1)点的斜率则为-1
+** 求近似值
+$$f(x+\Delta x) \approx f(x) + f'(x)\Delta x$$
+* 积分
+** 积分定义
+#+BEGIN_VERSE
+使用[[矩形逼近法]]曲线下的面积
+$$\int_a^bf(x)\mathrm{d}x = \lim_{n\to\infty}\sum_{i=1}^nf(x_i)\Delta x$$
+$$\Delta x = \frac{b-a}{n}$$
+对 n 趋向于无穷大取极限，即可得到实际值。
+
+复杂版本：
+$$\int_a^bf(x)\mathrm{d}x=\lim_{n\to\infty}\sum_{i=1}^nf(c_i)(x_i-x_{i-1})$$
+该版本的意思是，将 b-a 分割成不等长的 n 段，即不能使用 $\Delta x$ 。
+#+END_VERSE
+** 基本法则
+*** 幂法则
+$$\int x^n dx = \frac{x^{n+1}}{n+1}+C$$
+- 特别注意
+  #+BEGIN_VERSE
+  n = -1 时，分母为 0，积分无法应用到 $\frac{1}{x}$ 上。
+  正确的结果： $\int \frac{1}{x}dx=ln|x|+C$
+  #+END_VERSE
+** 曲线间的面积
+若对[a, b]区间上的所有 x, $f(x) \ge g(x)$
+f(x)与 g(x)所夹的面积如下：
+$$A = \int_a^b(f(x)-g(x))dx$$
+** 微积分基本定理
+- 定理一
+  $$\int_a^bf(x)dx=F(b)-F(a)$$
+  式中的 F(x)为函数 f(x)的不定积分。
+- 定理二
+  $$\frac{d}{dx}\int_a^xf(t)dt=f(x)$$
+  注意：无论 a 为何数，最终得到的结果均不受影响。
+** 积分解法
+*** 代换法(逆链式法则)
+$$\int f'(u(x))u'(x)dx = \int (f(u(x)))'dx =f(u(x))+C$$
+换一种写法：
+$$u'(x)dx=\frac{du}{dx}dx=du$$
+由此可得：
+$$\int f'(u(x))du = f(u(x))+C$$
+*** 直接观察法
+#+BEGIN_VERSE
+$\int(2x+1)^4\mathrm{d}x$ 猜测一个不太离谱的答案$\frac{(2x+1)^5}{5}+C$
+反向求导看看答案对不对，结果为$2(2x+1)^4$ ，比原函数大了一倍。则修正答案
+为$\frac{(2x+1)^5}{10}+C$
+#+END_VERSE
+
+*** 数值逼近法
+#<<矩形逼近法>>
+- 矩形逼近法
+  #+BEGIN_VERSE
+  使左端点落在函数曲线上
+  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{n}[f(x_0)+f(x_1)+...+f(x_n-1)]$$
+  使右端点落在函数曲线上，
+  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{n}[f(x_1)+...f(x_n)]$$
+  以上两种矩形法成为黎曼和(Riemann sum)
+
+  选中点落在函数曲线上
+  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{n}[f(\frac{x_0+x_1}{2}) + ... + f(\frac{x_{n-1}+x_n}{2})]$$
+  #+END_VERSE
+- 梯形法
+  把矩形法的水平线换成斜率各不相同的直线。该方法利用了梯形的面积公式
+  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{n}[\frac{f(x_0)}{2}+f(x_1)+...+f(x_{n-1})+\frac{f(x_n)}{2}]$$
+- 抛物线法(辛普森法)
+  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{3n}[f(x_0)+4f(x_1)+2f(x_2)+...+2f(x_{n-2})+4f(x_{n-1})+f(x_n)]$$
+  #+BEGIN_VERSE
+  注意点：
+  系数为$\frac{b-a}{3n}$
+  括号内 $f(x_i)$ 的系数为固定的模式(前提是偶数等分)：1, 4, 2, 4, 2, 4, ..., 2, 4, 2, 4, 1
+  #+END_VERSE
+*** 分部积分法
+积法则的逆方法
+$$(u(x)v(x))' = u'(x)v(x)+u(x)v'(x)$$
+$$\int uv'dx = uv - \int u'vdx$$
+因为 $u'dx = \frac{du}{dx}dx = du$ 以及 $v'dx = \frac{dv}{dx}dx = dv$
+$$\to \int udv = uv - \int vdu$$
+例题：
+**** $\int x\ln x dx$
+#+BEGIN_VERSE
+选 $u=\ln x$ 和 $dv = xdx$
+则 $du = \frac{1}{x} dx$ 和 $v = \frac{x^{2}}{2}$
+代入 $uv - \int vdu$ ，则 $\int udv = \frac{x^2}{2}\ln x - \frac{x^2}{4} + C$
+#+END_VERSE
+**** 如何选择 u, dv？
+1) dv 必须选能够积分的项
+2) 经过步骤一，右边出现积分项 $\int vdu$ ，如果这个积分应该当比原积分容易解。如果不是，重新选择 u, dv。
+*** 三角代换法
+**** 求 $\int{\frac{1}{\sqrt{1-x^2}}dx}$ (代换与分部都做不了)
+1) 令 $x=sin\theta$ 则 $\sqrt{1-x^{2}} =\sqrt{1-sin^{2} \theta} =cos\theta$
+2) 对 $x=sin\theta$ 求导 $dx = cos\theta d\theta$
+3) 原积分变为 $\int \frac{1}{\sqrt{1-x^2}}dx = \int\frac{1}{cos\theta} cos\theta\mathrm{d}\theta = \int 1d\theta = \theta + C$
+4) 把 $\theta = arcsin x$ 代入，答案为 $arcsin x + C$
+**** 求 $\int{\frac{1}{4+x^2}}$
+1) 令 $x= 2tan\theta$ 则 $dx = 2\frac{cos^2\theta + sin^2\theta}{cos^2\theta}d\theta$
+2) 代入求得 $\int \frac{1}{2}d\theta = \frac{\theta}{2} + C$
+3) 答案为 $\frac{1}{2}arctan\frac{x}{2} + C$
+*** 部分分式积分法
+#+BEGIN_VERSE
+什么时候用？处于同一分母里的一对函数无法被一同积分。
+Example:
+求 $\int\frac{3x-1}{x^2+x-2}dx$
+$$x^2+x-2 = (x-1)(x+2)$$
+$$\frac{3x-1}{x^2+x-2} = \frac{A}{x-1} + \frac{B}{x+2}$$
+化简得：
+$$(A+B)x-(B-2A)=3x-1 \to A=\frac{2}{3} and B=\frac{7}{3}$$
+$$\int\frac{\frac{2}{3}}{x-1}+\frac{\frac{7}{3}}{x+2}dx = \frac{2}{3}ln|x-1| + \frac{7}{3}ln|x+2| + C$$
+提示(重要)：如果被积函数的分子与分母均为多项式，且分子次数比分母高，如：
+$$\frac{x^3-x^2-7x+2}{x^2-3x+2}$$
+可使用 [[http://zh.wikipedia.org/wiki/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E9%95%BF%E9%99%A4%E6%B3%95][多项式长除法]] 化为
+$$x+2+\frac{-3x-2}{x^2-3x+2}$$
+#+END_VERSE
+*** 常用运算规则
+上下限互换，正负号也跟着换。
+$$\int_a^bf(x)dx=-\int_b^af(x)dx$$
+常数直接拉出积分式外。
+$$\int_a^bcf(x)dx=c\int_a^bf(x)dx$$
+想像一下面积就能得出以下式子。
+$$\int_a^cf(x)dx=\int_a^bf(x)dx+\int_b^cf(x)dx$$
+- Example
+  $\int_{-2}^1|x|\mathrm{d}x$
+  $=\int_{-2}^0-x\mathrm{d}x+\int_0^1x\mathrm{d}x$
+  $=-\frac{x^2}{2}|_0^2+\frac{x^2}{2}|_0^1$
+  $=\frac{5}{2}$
+
+*** 推广公式
+**** $\ln{x}$
+$$\int \ln{x}=\frac{1}{x}$$
+链式法则推广：
+$$\frac{d}{dx}[\ln{g(x)}]=\frac{g'(x)}{g(x)}$$
+example:
+$$\frac{d}{dx}[ln(x^3-7)]=\frac{3x^2}{x^3-7}$$
+** 反常积分
+*** 当积分上下限为 $\pm\infty$
+$$\int_a^{\infty}f(x)dx=\lim_{b\to \infty}\int_a^bf(x)dx$$
+反常积分答案是个有限的数，称为收敛(converge)。不存在或者为 $\infty$ ，称为发散(diverge)。
+$$\int_{-\infty}^{\infty}f(x)dx=\int_{-\infty}{c}f(x)dx + \int_{c}^{\infty}f(x)dx$$
+*** 当被积函数变为 $\pm\infty$
+$\int_{-1}^2 \frac{1}{x^{\frac{2}{3}}}dx$ 在 x=0 处未被定义。解法：分段
+$$= \lim_{b\to -0}\int_{-1}^b \frac{1}{x^{\frac{2}{3}}}dx + \lim_{b\to +0}\int_b^2\frac{1}{x^{\frac{2}{3}}}dx$$
+$$=\lim_{b\to -0} (3b^{\frac{1}{3}}-3(-1)^{\frac{1}{3}}) + \lim_{b\to +0} (3(2^{\frac{1}{3}})-3b^{\frac{1}{3}}) \approx6.780$$
+* 指数和对数
+** $e^x$
+*** 求导
+$$\frac{d}{dx}(e^x)=e^x$$
+*** 积分
+$$\int e^x dx=e^x + C$$
+推广： $e^{kx}$
+$$\int e^{kx}dx=\frac{e^kx}{k} + C$$
+** $\ln{x}$
+*** 求导
+$$\frac{d}{dx} \ln{x}=\frac{1}{x}$$
+链式法则推广：
+$$\frac{d}{dx}[\ln{g(x)}]=\frac{g'(x)}{g(x)}$$
+example:
+$$\frac{d}{dx}[ln(x^3-7)]=\frac{3x^2}{x^3-7}$$
+*** 积分
+$$\int\frac{1}{x}dx=\ln |x| + C$$
+关于绝对值：自然对数函数仅对正数有定义，所以要加上绝对值。
+** 底数为任意数 a
+*** 求导
+$$\frac{d}{dx}(a^x)=a^x \ln a$$
+#+BEGIN_VERSE
+推导：
+$$a = e^{\ln a}$$
+$$a^x=(e^{\ln a})^x=e^{x(\ln a)}=e^{\ln(a^x)}$$
+$$\frac{d}{dx}e^{\ln(a^x)}=e^{\ln(a^x)}\ln a=a^x\ln a$$
+#+END_VERSE
+- *指数函数求导方法*
+  $$f(x)=a^x$$
+  $$\ln{f(x)}=x\ln{a}$$
+  $$\frac{d}{dx}\ln{f(x)} = \frac{f'(x)}{f(x)} = \ln{a}$$
+  $$f'(x) = a^x\ln{a}$$
+*** 对数求导
+#+BEGIN_VERSE
+推导： $\log_b x$ 对 x 求导
+$y=\log_b x$ => $b^y = x$ 对 x 求导得：
+$$b^y\ln b \frac{dy}{dx}=1$$
+$$\frac{dy}{dx}=\frac{1}{b^y\ln b} = \frac{1}{x\ln b}$$
+结论：
+$$\frac{d}{dx}(\log_b x) = \frac{1}{x\ln b}$$
+#+END_VERSE
+** 指数增长(衰退)方程
+函数的变化率与函数值成正比。
+$$\frac{dN}{dt} = kN$$
+$$\to \frac{dN}{N} = k\mathrm{d}t$$
+两边积分
+$$\to \int \frac{dN}{N} = \int k \mathrm{d}t \to \ln N = kt + C \to N = e^{kt+C}$$
+$e^C$ 是常数，继续化简为
+$$N=Ce^{kt}$$
+当时间 t 为 0 时，N(0) = C
+$$N(t)=N_0 e^{kt}$$
+*** 连续复利通式
+本金 P，r 为年利率，t 为年数。本利和 = $Pe^{rt}$
+* e
+*** 定义
+1) $e = \lim_{n \to \infty}(1+\frac{1}{n})^n=\lim_{n \to \infty}\sum_{i=0}^nC_i^n1^{n-i}(\frac{1}{n})^i$
+2) $e = \sum_{n=0}^{\infty}\frac{1}{n}$
+3) $\int_1^x\frac{1}{t}dt = 1, then\space x=e$
+4) $\lim_{h\to 0}\frac{x^h-1}{h}=1$
+可证明以上四个定义是等价的。
+*** $e^x$ 的重要特性
+1) $e^0 = 1$ , 通过(0, 1)点
+2) $for\space any\space x, e^x >0$
+3) 一直递增
+4) 递增得速度非常快，指数成长
+*** 自然对数
+$\ln x=\log_e x$
+- $\ln(ab) = \ln(a)+\ln(b)$
+- $\ln(a^b) = b\ln a$
+- $\ln(\frac{1}{a}) = -\ln a$
+*** $y=\ln x$ 的特性
+1) 曲线经过(1, 0)，(e, 1)
+2) $\lim_{x\to \infty}\ln x = \infty$
+3) $\lim_{x\to +0}\ln x = -\infty$
+4) $\ln x$ 只对 $x>0$ 有定义
+5) $\ln x$ 永远是在递增
+6) 由于 $\ln x$ 是 $e^x$ 的反函数，两者关于 y=x 互为镜像。
+* 极坐标
+** 画图方法
+*** 描点法
+*** 转换成直角坐标
+** 著名的心脏线函数
+$$ r = a(1\pm{sin\theta})$$ OR
+$$ r= a(1\pm{cos\theta})$$
+a 代表心脏的大小。正负号代表心脏的凹进部分方向。sin/cos 代表是横着的还是竖着的。
+** 求面积
+* 一些定理
+** 介质定理
+#+BEGIN_VERSE
+若在区间[a, b]上有一连续的函数 f, 且 p 是介于 f(a)跟 f(b)之间的
+任何一个函数值，则在该区间上必定存在一个数 c 使 f(c)=p
+Example:
+f(x) = 2x 问 f(x)在[-1, 1]的区间上是否可能为 0
+f(x)连续且在区间[-1, 1]的 f(x)为[-2, 2]，0 在该区间内。
+所以必定有一个函数值为 0(注意我们在这不太关心函数值为 0 时 x 的取值)
+#+END_VERSE
+** 中值定理(MVT)
+- 罗尔定理
+  #+BEGIN_VERSE
+  若函数在[a, b]上连续且可微，且若 f(a)=0, f(b)=0，则在
+  区间[a, b]内必须存在一点 c, 使得 f'(c)=0。
+  另一种描述：在函数 f(x)的曲线上必有一条切线，与该曲线
+  两端点的连线平行。
+  #+END_VERSE
+- 中值定理
+  #+BEGIN_VERSE
+  中值定理只是罗尔定理转了个角度。
+  定义：若函数 f(x)在区间[a, b]区间上连续且可微，则在该区
+  间内必定存在一点 c，使 $f'(c)=\frac{f(b)-f(a)}{b-a}$
+  #+END_VERSE
