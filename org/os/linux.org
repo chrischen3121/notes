@@ -297,6 +297,47 @@ share files by way of the group mechanism, create separate groups for that purpo
 *** Implementations
 **** SELinux
 **** AppArmor
+* Process Control
+** kernel related data in memory
+   - The process’s address space map
+   - The current status of the process (sleeping, stopped, runnable, etc.)
+   - The execution priority of the process
+   - Information about the resources the process has used (CPU, memory, etc.)
+   - Information about the files and network ports the process has opened
+   - The process’s signal mask (a record of which signals are blocked)
+   - The owner of the process
+** Signals
+   | No | Name  | Description          | Default   | Can catch? | Can block? | Dump core? |
+   |----+-------+----------------------+-----------+------------+------------+------------|
+   |  1 | HUP   | Hangup               | Terminate | Y          | Y          | N          |
+   |  2 | INT   | Interrupt            | Terminate | Y          | Y          | N          |
+   |  3 | QUIT  | Quit                 | Terminate | Y          | Y          | Y          |
+   |  9 | KILL  | Kill                 | Terminate | N          | N          | N          |
+   | 10 | BUS   | Bus error            | Terminate | Y          | Y          | Y          |
+   | 11 | SEGV  | Segmentation fault   | Terminate | Y          | Y          | Y          |
+   | 15 | TERM  | Software termination | Terminate | Y          | Y          | N          |
+   | 17 | STOP  | Stop                 | Stop      | N          | N          | N          |
+   | 18 | TSTP  | Keyboard stop        | Stop      | Y          | Y          | N          |
+   | 19 | CONT  | Continue after stop  | Ignore    | Y          | N          | N          |
+   | 28 | WINCH | Window changed       | Ignore    | Y          | Y          | N          |
+   | 30 | USR1  | User-defined #1      | Terminate | Y          | Y          | N          |
+   | 31 | USR2  | User-defined #2      | Terminate | Y          | Y          | N          |
+   *kill -l* to list signals.
+** *kill*
+   - killall: kill by process name
+   - pkill: search for process to kill
+** *ps*
+   Useful options
+   - aux
+   - lax: faster than aux(UID only), aslo includes PPID, NI(niceness) and wait channel
+     - ww: enable unlimited column width
+*** with *grep*
+    ps aux | grep -v grep | grep xxxx
+*** alternative *pidof*, *pgrep*
+** *top*
+   1: show loads of individual cores
+   - H: show threads
+*** alternative *htop*
 * Shell command
 ** Filters
    - cut: separate lines into fields
