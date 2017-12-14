@@ -8,13 +8,19 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+SETUPFILE: ../../org-templates/level-1.org
-* Probability basic
-** Conceptions
+* Basic conceptions
+** Terms
+*** experiment
+    Every probabilistic model involves an underlying process, called the *experiment*.
+
+*** sample space
+    The set of all possible outcomes is called the *sample space* of the experiment, denoted by $\Omega$.
+
 *** event
-    An outcome or occurrence that has a probability assigned to it.
+    A subset of the **sample space*, that is, a collection of possible outcomes is called an *event*.
 
 *** observation
-    The outcome of each event is called observation.
+    The outcome of each event is called *observation*.
 
 ** Set
    A *set* is a collection of objects, which are the *elements* of the set.
@@ -32,77 +38,124 @@
 *** intersection
     $$S\cap T = \{x|x\in S\ and\ x\in T\}$$
     $$\bigcap_{n=1}^{\infty} = S_1\cap S_2 \cap \cdots = \{x|x\in S_n\ for\ all\ n\}$$
+*** difference
+    $$S\setminus T=S\cap T^c$$
+    $$S\setminus T=S\setminus (S\cap T)$$
 *** scalar set
     The set of scalars (real numbers) is denoted by $\Re$,
     The two-dimensional plane is denoted by $\Re_2$
 *** algebra of set
-    $$S\cup T=T\cup S$$
-    $$S\cup(T\cup U)=(S\cup T)\cup U$$
-    $$S\cap(T\cup U)=(S\cap T)\cup(S\cap U)$$
-    $$S\cup(T\cap U)=(S\cup T)\cap(S\cup U)$$
-    $$(S^c)^c=S$$
-    $$S\cap S^c=\emptyset$$
-    $$S\cup\Omega=\Omega$$
-    $$S\cap\Omega=S$$
-    de Morgan’s laws:
-    $$(\bigcup_n S_n)^c=\bigcap_n S_n^c$$
-    $$(\bigcap_n S_n)^c=\bigcup_n S_n^c$$
+**** Commutative
+     $$S\cap T=T\cap S$$
+     $$S\cup T=T\cup S$$
+
+**** Associative
+     $$S\cap(T\cap U)=(S\cap T)\cap U$$
+     $$S\cup(T\cup U)=(S\cup T)\cup U$$
+
+**** Distributive
+     $$S\cap(T\cup U)=(S\cap T)\cup(S\cap U)$$
+     $$S\cup(T\cap U)=(S\cup T)\cap(S\cup U)$$
+
+**** de Morgan’s laws:
+     $$(\bigcup_n S_n)^c=\bigcap_n S_n^c$$
+     $$(\bigcap_n S_n)^c=\bigcup_n S_n^c$$
+
+**** others
+     $$(S^c)^c=S$$
+     $$S\cap S^c=\emptyset$$
+     $$S\cup\Omega=\Omega$$
+     $$S\cap\Omega=S$$
+     $$(S\setminus T)\cup T = S\cup T$$
 
 ** Axioms
 *** Nonnegativity
     For every event A,
     $$P(A) \ge 0$$
 
-*** Additivity
-    If A and B are two disjoint events, then the probability of their union satisfies.
-    $$P(A\cup B)=P(A)+P(B)$$
-
 *** Normalization
     The probability of the entire sample space $\omega$ is equal to 1.
     $$P(\Omega) = 1$$
 
-** Laws
+*** Additivity
+    If A and B are two disjoint events, then the probability of their union satisfies.
+    $$P(A\cup B)=P(A)+P(B)$$
+    or $A_1, A_2, \cdots$ are disjoint events,
+    $$P(\bigcup_{i=1}^n A_i) = \sum_{i=1}^n P(A_i)$$
 
-   - If $A\subset B$, then $P(A)\le P(B)$
-   - $P(A\cup B) = P(A) + P(B) - P(A \cap B)$
-   - $P(A\cup B) \le P(A)+P(B)$
-   - $P(A\cup B\cup C) = P(A) + P(A^c\cap B) + P(A^c\cap B^c\cap C)$ ??
-   - if $P(A\cap B)$ equals to 0, this stuation is called mutually exclusive
+** Consequences
+*** The probability of the empty set
+    $$1=P(\Omega)=P(\Omega\cup\emptyset)=P(\Omega)+P(\emptyset)=1+P(\emptyset)$$
+    $$\therefore P(\emptyset)=0$$
+
+*** Monotonicity
+    If $A\subseteq B$, then $P(A)\le P(B)$
+
+*** Addition law
+    $$P(A\cup B)=P(A)+P(B)-P(A\cap B)$$
+**** proof
+     $$P(A) = P(A\cap B) + P(A\setminus B)$$
+     $$P(B) = P(B\cap A) + P(B\setminus A)$$
+     $$P(A)+P(B) = 2P(A\cap B) + P(A\setminus B) + P(B\setminus A)$$
+     $$P(A)+P(B) = P(A\cap B) + P((A\setminus B)\cup(B\setminus A)\cup(A\cap B))\ (axioms 3)$$
+     $$P(A)+P(B) = P(A\cap B) + P(A\cup B)$$
+
+*** others
+   - $P(A\cup B)\le P(A)+P(B)$ (addition law & axioms 1)
+   - $P(A\cup B\cup C) = P(A) + P(A^c\cap B) + P(A^c\cap B^c\cap C)$ (axioms 3)
+   - if $P(A\cap B)$ equals to 0, then A and B are mutually exclusive
 
 * Conditional probabilities
 ** Conceptions
-*** P(A|B)
-    The probability of *A* given that we know *B* has happened.
+*** $P(A|B)$
+    The conditional probability of *A* given *B*, Ex:
     #+BEGIN_SRC dot :file ../resources/math/probabilityTree.png :cmdline -Kdot -Tpng
       graph probabilityTree{
         size="2,2";
         node [shape=circle fontsize=14 width=0.1 fontname="Inconsolata"];
-        "begin" -- "A" [label="50%"];
-          "A" -- "B" [label="30%"];
-          "A" -- "C" [label="70%"];
-        "begin" -- "D" [label="50%"];
-          "D" -- "E" [label="100%"];
+        "begin" -- "A" [label="0.5"];
+          "A" -- "B" [label="0.3"];
+          "A" -- "C" [label="0.7"];
+        "begin" -- "D" [label="0.5"];
+          "D" -- "E" [label="1"];
       }
     #+END_SRC
 
     #+RESULTS:
     [[file:../resources/math/probabilityTree.png]]
 
-    then, P(B|A)=30%
+    then, $P(B|A)=0.3$
 
-** Laws
-   $$P(A|B) = \frac{P(A\cap B)}{P(B)}$$
-   $$P(A\cap B) = P(A|B)\times P(B)$$
-   - law of total probability
-   $$P(B)=P(B\cap A) + P(B\cap A^{'})=P(A)\times P(B|A)+P(A^{'})\times P(B|A^{'})$$
-*** independent
-    if *A* and *B* are independent events.
-    $$P(A|B)=P(A)$$
-    $$P(A\cap B) = P(A)\times P(B)$$
+*** $P(A|B) = \frac{P(A\cap B)}{P(B)}$
+    - useful restatement: $P(A\cap B)=P(A|B)P(B)$
+** Axioms
+*** Nonnegativity
+*** Normalization
+    $$P(B|B)=\frac{P(B)}{P(B)}=1$$
 
-** Bayes' Theorem
+*** Additivity
+    If $A_1, A_2, \cdots$ are disjoint events,
+    $$P(\bigcup_{i=1}^n A_i|B) = \sum_{i=1}^n P(A_i|B)$$
+
+** Consequences
+*** Multiplication Rule
+    $$P(\cap_{i=1}^{n}A_i)=P(A_1)P(A_2|A_1)P(A_3|A_1\cap A_2)\cdots P(A_n|\cap_{i=1}^{n-1}A_i)=\prod_{i=1}^n P(A_n|\cap_{i=1}^{n-1}A_i)$$
+    - proof
+      $$P(\cap_{i=1}^n A_i)=P(A_1)\frac{P(A_1\cap A_2)}{P(A_1)}\cdots\frac{P(\cap_{i=1}^n A_i)}{P(\cap_{i=1}^{n-1} A_i)}$$
+      $$=P(A_1)P(A_2|A_1)\cdots P(A_n|\cap_{i=1}^{n-1} A_i)$$
+
+** Total Probability Theorem
+    $$P(B)=P(B\cap A) + P(B\cap A^c)=P(A)\times P(B|A)+P(A^c)\times P(B|A^c)$$
+
+** Bayes’ Rule
    $$P(A|B)=\frac{P(A\cap B)}{P(B)}=\frac{P(A)\times P(B|A)}{P(A)\times P(B|A) + P(A^{'})\times P(B|A^{'})}$$
    use to find reverse conditional probabilities
+
+** Independence
+    if *A* and *B* are independent events.
+    $$P(A|B)=P(A)$$
+    is equivalent to
+    $$P(A\cap B)=P(A)P(B)$$
 
 * Probability distribution
 ** Conceptions
