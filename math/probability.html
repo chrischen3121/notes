@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-09-11 Mon 16:31 -->
+<!-- 2017-12-14 Thu 10:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Probability</title>
@@ -69,6 +69,7 @@
   pre.src-fortran:before { content: 'Fortran'; }
   pre.src-gnuplot:before { content: 'gnuplot'; }
   pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
   pre.src-java:before { content: 'Java'; }
   pre.src-js:before { content: 'Javascript'; }
   pre.src-latex:before { content: 'LaTeX'; }
@@ -258,81 +259,141 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7faa78e">1. Probability</a>
+<li><a href="#orge9dbe1d">1. Probability basic</a>
 <ul>
-<li><a href="#org70e83a3">1.1. Conceptions</a></li>
-<li><a href="#orgb7242c1">1.2. Axioms</a></li>
-<li><a href="#org48ccf10">1.3. Laws</a></li>
+<li><a href="#org2d4a036">1.1. Conceptions</a></li>
+<li><a href="#org6cc435f">1.2. Axioms</a></li>
+<li><a href="#orgff60404">1.3. Laws</a></li>
 </ul>
 </li>
-<li><a href="#org40d6f9a">2. Conditional probabilities</a>
+<li><a href="#orgfaf2731">2. Conditional probabilities</a>
 <ul>
-<li><a href="#org6c4c237">2.1. Conceptions</a></li>
-<li><a href="#org22c8750">2.2. Laws</a></li>
-<li><a href="#org016e0d3">2.3. Bayes' Theorem</a></li>
+<li><a href="#orgf0c4606">2.1. Conceptions</a></li>
+<li><a href="#org6e8b6ab">2.2. Laws</a></li>
+<li><a href="#org9319122">2.3. Bayes' Theorem</a></li>
 </ul>
 </li>
-<li><a href="#org0513798">3. Probability distribution</a>
+<li><a href="#org54a5b7a">3. Probability distribution</a>
 <ul>
-<li><a href="#org2f658ef">3.1. Conceptions</a></li>
-<li><a href="#orga157f65">3.2. Linear Transforms</a></li>
-<li><a href="#org9bf168d">3.3. Independent observations</a></li>
-<li><a href="#org5c5f013">3.4. Independent Variables</a></li>
-<li><a href="#orgf1f41f1">3.5. distributions</a></li>
+<li><a href="#orgc2e0e14">3.1. Conceptions</a></li>
+<li><a href="#org3787dd0">3.2. Linear Transforms</a></li>
+<li><a href="#orgfa435bf">3.3. Independent observations</a></li>
+<li><a href="#orgb3fde54">3.4. Independent Variables</a></li>
+<li><a href="#orgf7fc33d">3.5. distributions</a></li>
 </ul>
 </li>
-<li><a href="#org5d10077">4. Binomial Theorem</a></li>
+<li><a href="#orgc19e082">4. Binomial Theorem</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org7faa78e" class="outline-2">
-<h2 id="org7faa78e"><span class="section-number-2">1</span> Probability</h2>
+<div id="outline-container-orge9dbe1d" class="outline-2">
+<h2 id="orge9dbe1d"><span class="section-number-2">1</span> Probability basic</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-org70e83a3" class="outline-3">
-<h3 id="org70e83a3"><span class="section-number-3">1.1</span> Conceptions</h3>
+</div>
+<div id="outline-container-org2d4a036" class="outline-3">
+<h3 id="org2d4a036"><span class="section-number-3">1.1</span> Conceptions</h3>
 <div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org275f9ca" class="outline-4">
+<h4 id="org275f9ca"><span class="section-number-4">1.1.1</span> set</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+A <b>set</b> is a collection of objects, which are the <b>elements</b> of the set.
+</p>
+</div>
 <ul class="org-ul">
-<li><b>event</b></li>
+<li><a id="org01555ba"></a>countable \(S=\{x_1, x_2, \cdots\}\)<br /></li>
+<li><a id="org31782e6"></a>uncountable \(S=\{x|x\ satisfies\ P\}\)<br />
+<div class="outline-text-5" id="text-org31782e6">
+<p>
+ex:
+\[\{k|k/2\ is\ integer\}\]
+\[\{x|0\le x\le 1\}\]
+</p>
+</div>
+</li>
+<li><a id="orgb0331cd"></a>complement<br />
+<div class="outline-text-5" id="text-orgb0331cd">
+<p>
+The complement of a set S, with respect to the universe \(\Omega\), is the set \(\{x\in\Omega|x\notin S\}\)
+of all elements of \(\Omega\) that do not belong to S, and is denoted by \(S^c\). Note that \(\Omega^c = \emptyset\).
+</p>
+</div>
+</li>
+<li><a id="orgbaa3163"></a>union<br />
+<div class="outline-text-5" id="text-orgbaa3163">
+<p>
+\[S\cup T = \{x|x\in S\ or\ x\in T\}\]
+\[\bigcup_{n=1}^{\infty} = S_1\cup S_2 \cup \cdots = \{x|x\in S_n\ for\ some\ n\}\]
+</p>
+</div>
+</li>
+<li><a id="org9a9a1d6"></a>intersection<br />
+<div class="outline-text-5" id="text-org9a9a1d6">
+<p>
+\[S\cap T = \{x|x\in S\ and\ x\in T\}\]
+\[\bigcap_{n=1}^{\infty} = S_1\cap S_2 \cap \cdots = \{x|x\in S_n\ for\ all\ n\}\]
+</p>
+</div>
+</li>
 </ul>
-
+</div>
+<div id="outline-container-orgd72f3ca" class="outline-4">
+<h4 id="orgd72f3ca"><span class="section-number-4">1.1.2</span> event</h4>
+<div class="outline-text-4" id="text-1-1-2">
 <p>
 An outcome or occurrence that has a probability assigned to it.
 </p>
+</div>
+</div>
 
-<ul class="org-ul">
-<li><b>observation</b></li>
-</ul>
-
+<div id="outline-container-org2fff96a" class="outline-4">
+<h4 id="org2fff96a"><span class="section-number-4">1.1.3</span> observation</h4>
+<div class="outline-text-4" id="text-1-1-3">
 <p>
 The outcome of each event is called observation.
 </p>
 </div>
 </div>
+</div>
 
-<div id="outline-container-orgb7242c1" class="outline-3">
-<h3 id="orgb7242c1"><span class="section-number-3">1.2</span> Axioms</h3>
+<div id="outline-container-org6cc435f" class="outline-3">
+<h3 id="org6cc435f"><span class="section-number-3">1.2</span> Axioms</h3>
 <div class="outline-text-3" id="text-1-2">
-</div><div id="outline-container-org1349299" class="outline-4">
-<h4 id="org1349299"><span class="section-number-4">1.2.1</span> Nonnegativity</h4>
+</div>
+<div id="outline-container-org9304c48" class="outline-4">
+<h4 id="org9304c48"><span class="section-number-4">1.2.1</span> Nonnegativity</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
-For every event A, \(P(A) \ge 0\).
+For every event A,
+\[P(A) \ge 0\]
 </p>
 </div>
 </div>
 
-<div id="outline-container-org71596a7" class="outline-4">
-<h4 id="org71596a7"><span class="section-number-4">1.2.2</span> Complementary events</h4>
+<div id="outline-container-orge684ea8" class="outline-4">
+<h4 id="orge684ea8"><span class="section-number-4">1.2.2</span> Additivity</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
-\[P(A)+P(A^{'})=1\]
+If A and B are two disjoint events, then the probability of their union satisfies.
+\[P(A\cup B)=P(A)+P(B)\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2bfac01" class="outline-4">
+<h4 id="org2bfac01"><span class="section-number-4">1.2.3</span> Normalization</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+The probability of the entire sample space \(\omega\) is equal to 1.
+\[P(\Omega) = 1\]
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org48ccf10" class="outline-3">
-<h3 id="org48ccf10"><span class="section-number-3">1.3</span> Laws</h3>
+<div id="outline-container-orgff60404" class="outline-3">
+<h3 id="orgff60404"><span class="section-number-3">1.3</span> Laws</h3>
 <div class="outline-text-3" id="text-1-3">
 <ul class="org-ul">
 <li>If \(A\subset B\), then \(P(A)\le P(B)\)</li>
@@ -345,14 +406,16 @@ For every event A, \(P(A) \ge 0\).
 </div>
 </div>
 
-<div id="outline-container-org40d6f9a" class="outline-2">
-<h2 id="org40d6f9a"><span class="section-number-2">2</span> Conditional probabilities</h2>
+<div id="outline-container-orgfaf2731" class="outline-2">
+<h2 id="orgfaf2731"><span class="section-number-2">2</span> Conditional probabilities</h2>
 <div class="outline-text-2" id="text-2">
-</div><div id="outline-container-org6c4c237" class="outline-3">
-<h3 id="org6c4c237"><span class="section-number-3">2.1</span> Conceptions</h3>
+</div>
+<div id="outline-container-orgf0c4606" class="outline-3">
+<h3 id="orgf0c4606"><span class="section-number-3">2.1</span> Conceptions</h3>
 <div class="outline-text-3" id="text-2-1">
-</div><div id="outline-container-orgaf07908" class="outline-4">
-<h4 id="orgaf07908"><span class="section-number-4">2.1.1</span> P(A|B)</h4>
+</div>
+<div id="outline-container-org4a7b3e5" class="outline-4">
+<h4 id="org4a7b3e5"><span class="section-number-4">2.1.1</span> P(A|B)</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 The probability of <b>A</b> given that we know <b>B</b> has happened.
@@ -370,8 +433,8 @@ then, P(B|A)=30%
 </div>
 </div>
 
-<div id="outline-container-org22c8750" class="outline-3">
-<h3 id="org22c8750"><span class="section-number-3">2.2</span> Laws</h3>
+<div id="outline-container-org6e8b6ab" class="outline-3">
+<h3 id="org6e8b6ab"><span class="section-number-3">2.2</span> Laws</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 \[P(A|B) = \frac{P(A\cap B)}{P(B)}\]
@@ -384,8 +447,8 @@ then, P(B|A)=30%
 \[P(B)=P(B\cap A) + P(B\cap A^{'})=P(A)\times P(B|A)+P(A^{'})\times P(B|A^{'})\]
 </p>
 </div>
-<div id="outline-container-orgdb02bdd" class="outline-4">
-<h4 id="orgdb02bdd"><span class="section-number-4">2.2.1</span> independent</h4>
+<div id="outline-container-orge5a767c" class="outline-4">
+<h4 id="orge5a767c"><span class="section-number-4">2.2.1</span> independent</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <p>
 if <b>A</b> and <b>B</b> are independent events.
@@ -396,8 +459,8 @@ if <b>A</b> and <b>B</b> are independent events.
 </div>
 </div>
 
-<div id="outline-container-org016e0d3" class="outline-3">
-<h3 id="org016e0d3"><span class="section-number-3">2.3</span> Bayes' Theorem</h3>
+<div id="outline-container-org9319122" class="outline-3">
+<h3 id="org9319122"><span class="section-number-3">2.3</span> Bayes' Theorem</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 \[P(A|B)=\frac{P(A\cap B)}{P(B)}=\frac{P(A)\times P(B|A)}{P(A)\times P(B|A) + P(A^{'})\times P(B|A^{'})}\]
@@ -407,11 +470,12 @@ use to find reverse conditional probabilities
 </div>
 </div>
 
-<div id="outline-container-org0513798" class="outline-2">
-<h2 id="org0513798"><span class="section-number-2">3</span> Probability distribution</h2>
+<div id="outline-container-org54a5b7a" class="outline-2">
+<h2 id="org54a5b7a"><span class="section-number-2">3</span> Probability distribution</h2>
 <div class="outline-text-2" id="text-3">
-</div><div id="outline-container-org2f658ef" class="outline-3">
-<h3 id="org2f658ef"><span class="section-number-3">3.1</span> Conceptions</h3>
+</div>
+<div id="outline-container-orgc2e0e14" class="outline-3">
+<h3 id="orgc2e0e14"><span class="section-number-3">3.1</span> Conceptions</h3>
 <div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
 <li><b>random variable</b> is a variable that can takes on a set of values</li>
@@ -425,8 +489,8 @@ use to find reverse conditional probabilities
 </ul>
 </div>
 </div>
-<div id="outline-container-orga157f65" class="outline-3">
-<h3 id="orga157f65"><span class="section-number-3">3.2</span> Linear Transforms</h3>
+<div id="outline-container-org3787dd0" class="outline-3">
+<h3 id="org3787dd0"><span class="section-number-3">3.2</span> Linear Transforms</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 <b>Linear transforms</b> are when a variable X is transformed into aX + b, where a and b are constants.
@@ -437,8 +501,8 @@ The probabilities of each Y should be the same as X
 </div>
 </div>
 
-<div id="outline-container-org9bf168d" class="outline-3">
-<h3 id="org9bf168d"><span class="section-number-3">3.3</span> Independent observations</h3>
+<div id="outline-container-orgfa435bf" class="outline-3">
+<h3 id="orgfa435bf"><span class="section-number-3">3.3</span> Independent observations</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 \[E(X_1+X_2+...X_n) = nE(X)\]
@@ -447,8 +511,8 @@ The probabilities of each Y should be the same as X
 </div>
 </div>
 
-<div id="outline-container-org5c5f013" class="outline-3">
-<h3 id="org5c5f013"><span class="section-number-3">3.4</span> Independent Variables</h3>
+<div id="outline-container-orgb3fde54" class="outline-3">
+<h3 id="orgb3fde54"><span class="section-number-3">3.4</span> Independent Variables</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 X and Y are independent random variables
@@ -467,11 +531,12 @@ X and Y are independent random variables
 </div>
 </div>
 
-<div id="outline-container-orgf1f41f1" class="outline-3">
-<h3 id="orgf1f41f1"><span class="section-number-3">3.5</span> distributions</h3>
+<div id="outline-container-orgf7fc33d" class="outline-3">
+<h3 id="orgf7fc33d"><span class="section-number-3">3.5</span> distributions</h3>
 <div class="outline-text-3" id="text-3-5">
-</div><div id="outline-container-org08061c4" class="outline-4">
-<h4 id="org08061c4"><span class="section-number-4">3.5.1</span> geometric distribution</h4>
+</div>
+<div id="outline-container-org4d64ba0" class="outline-4">
+<h4 id="org4d64ba0"><span class="section-number-4">3.5.1</span> geometric distribution</h4>
 <div class="outline-text-4" id="text-3-5-1">
 <p>
 \[X\sim Geo(p)\]
@@ -485,7 +550,9 @@ X follows a geometric distribution where the probability of success is p.
 </ol>
 </div>
 
-<ul class="org-ul"><li><a id="orgce65a6d"></a>P(X)<br /><div class="outline-text-5" id="text-orgce65a6d">
+<ul class="org-ul">
+<li><a id="orged950ba"></a>P(X)<br />
+<div class="outline-text-5" id="text-orged950ba">
 <p>
 let X be the number of trials needed to get the first successful outcome.
 To find the probability of X taking a particular value r, using:
@@ -494,30 +561,38 @@ where p is the probability of success, and \(q=1-p\)
 \[P(X>r)=q^r\]
 \[P(X<=r)=1-q^r\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="orgd5de763"></a>E(X)<br /><div class="outline-text-5" id="text-orgd5de763">
+<li><a id="org857bde9"></a>E(X)<br />
+<div class="outline-text-5" id="text-org857bde9">
 <p>
 \[E(X)=\frac{1}{p}\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="orgae3ed19"></a>Var(X)<br /><div class="outline-text-5" id="text-orgae3ed19">
+<li><a id="org8869e14"></a>Var(X)<br />
+<div class="outline-text-5" id="text-org8869e14">
 <p>
 \[Var(X)=\frac{q}{p^2}\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org6da5ac0"></a>when to use<br /><div class="outline-text-5" id="text-org6da5ac0">
+<li><a id="orgeb63b60"></a>when to use<br />
+<div class="outline-text-5" id="text-orgeb63b60">
 <p>
 Use the Geometric distribution if you’re running independent trials, each one can have a success or failure, and
 you’re interested in how many trials are needed to get the first successful outcome
 </p>
-</div></li></ul>
+</div>
+</li>
+</ul>
 </div>
 
-<div id="outline-container-orgf46ca55" class="outline-4">
-<h4 id="orgf46ca55"><span class="section-number-4">3.5.2</span> binomial distribution</h4>
+<div id="outline-container-org70c8a9f" class="outline-4">
+<h4 id="org70c8a9f"><span class="section-number-4">3.5.2</span> binomial distribution</h4>
 <div class="outline-text-4" id="text-3-5-2">
 <p>
 \[X\sim B(n, p)\]
@@ -531,34 +606,44 @@ where p is the probability of a successful outcome in each trial, and n is the n
 </ol>
 </div>
 
-<ul class="org-ul"><li><a id="org9c89a24"></a>P(X)<br /><div class="outline-text-5" id="text-org9c89a24">
+<ul class="org-ul">
+<li><a id="org9fd32c0"></a>P(X)<br />
+<div class="outline-text-5" id="text-org9fd32c0">
 <p>
 \[P(X=r)=\dbinom{n}{r}\times p^r \times q^{n-r}\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org4651419"></a>E(X)<br /><div class="outline-text-5" id="text-org4651419">
+<li><a id="org6013b18"></a>E(X)<br />
+<div class="outline-text-5" id="text-org6013b18">
 <p>
 \[E(X)=np\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="orgdf13ea4"></a>Var(X)<br /><div class="outline-text-5" id="text-orgdf13ea4">
+<li><a id="org88a98ac"></a>Var(X)<br />
+<div class="outline-text-5" id="text-org88a98ac">
 <p>
 \[E(X)=npq\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org36c9b15"></a>when to use<br /><div class="outline-text-5" id="text-org36c9b15">
+<li><a id="org70b5ccd"></a>when to use<br />
+<div class="outline-text-5" id="text-org70b5ccd">
 <p>
 Use the binomial distribution if you’re running a fixed number of independent trials, each one can have a success
 or failure, and you’re interested in the number of successes or failures
 </p>
-</div></li></ul>
+</div>
+</li>
+</ul>
 </div>
 
-<div id="outline-container-org42161e2" class="outline-4">
-<h4 id="org42161e2"><span class="section-number-4">3.5.3</span> poisson distribution</h4>
+<div id="outline-container-org1ce3eb2" class="outline-4">
+<h4 id="org1ce3eb2"><span class="section-number-4">3.5.3</span> poisson distribution</h4>
 <div class="outline-text-4" id="text-3-5-3">
 <p>
 \[X\sim Po(\lambda)\]
@@ -571,40 +656,52 @@ or failure, and you’re interested in the number of successes or failures
 </ol>
 </div>
 
-<ul class="org-ul"><li><a id="orgfa63983"></a>P(X)<br /><div class="outline-text-5" id="text-orgfa63983">
+<ul class="org-ul">
+<li><a id="org213479b"></a>P(X)<br />
+<div class="outline-text-5" id="text-org213479b">
 <p>
 \[P(X)=\frac{e^{-\lambda}\lambda^{r}}{r!}\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org1354401"></a>E(X)<br /><div class="outline-text-5" id="text-org1354401">
+<li><a id="org672eafd"></a>E(X)<br />
+<div class="outline-text-5" id="text-org672eafd">
 <p>
 \[E(X)=\lambda\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="orgfb111ac"></a>Var(X)<br /><div class="outline-text-5" id="text-orgfb111ac">
+<li><a id="org37536f8"></a>Var(X)<br />
+<div class="outline-text-5" id="text-org37536f8">
 <p>
 \[Var(X)=\lambda\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org2ef38a9"></a>linear transforms<br /><div class="outline-text-5" id="text-org2ef38a9">
+<li><a id="org5df8975"></a>linear transforms<br />
+<div class="outline-text-5" id="text-org5df8975">
 <p>
 If \(X\sim Po(\lambda_x)\) and \(Y\sim Po(\lambda_y)\),
 \[X+Y\sim Po(\lambda_x + \lambda_y)\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org035c41e"></a>when to use<br /><div class="outline-text-5" id="text-org035c41e">
+<li><a id="org356919b"></a>when to use<br />
+<div class="outline-text-5" id="text-org356919b">
 <p>
 Use the Poisson distribution if you have independent events such as malfunctions occurring in a given interval,
 and you know λ, the mean number of occurrences in a given interval. You’re interested in the number of
 occurrences in one particular interval.
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org8dc1995"></a>other use<br /><div class="outline-text-5" id="text-org8dc1995">
+<li><a id="orgbdbd781"></a>other use<br />
+<div class="outline-text-5" id="text-orgbdbd781">
 <p>
 if <b>np</b> is like <b>npq</b>, <b>q</b> should be close to 1, thus
 </p>
@@ -612,60 +709,76 @@ if <b>np</b> is like <b>npq</b>, <b>q</b> should be close to 1, thus
 <p>
 \(X\sim B(n, p)\) can be approximated by \(X\sim Po(np)\) if n is large and p is small.
 </p>
-</div></li></ul>
+</div>
+</li>
+</ul>
 </div>
 
-<div id="outline-container-orgb3fddbc" class="outline-4">
-<h4 id="orgb3fddbc"><span class="section-number-4">3.5.4</span> normal distribution</h4>
+<div id="outline-container-orgac75286" class="outline-4">
+<h4 id="orgac75286"><span class="section-number-4">3.5.4</span> normal distribution</h4>
 <div class="outline-text-4" id="text-3-5-4">
 <p>
 \[X\sim N(\mu, \sigma^2)\]
 </p>
 </div>
-<ul class="org-ul"><li><a id="org5aa9526"></a>probability density function<br /><div class="outline-text-5" id="text-org5aa9526">
+<ul class="org-ul">
+<li><a id="org279411c"></a>probability density function<br />
+<div class="outline-text-5" id="text-org279411c">
 <p>
 \[f(X)=\frac{1}{\sigma\sqrt{2\pi}^e}^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org95e9669"></a>standard score<br /><div class="outline-text-5" id="text-org95e9669">
+<li><a id="orgf8da78e"></a>standard score<br />
+<div class="outline-text-5" id="text-orgf8da78e">
 <p>
 \[z=\frac{x-\mu}{\sigma}\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="orgf96a2c6"></a>probability \(P(X\le x)\)<br /><div class="outline-text-5" id="text-orgf96a2c6">
+<li><a id="orgc5af371"></a>probability \(P(X\le x)\)<br />
+<div class="outline-text-5" id="text-orgc5af371">
 <p>
 \[P(X\le c) = \int_{-\inf}^{c}f(x)dx=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\inf}^{c}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}dx\]
 </p>
-</div></li>
+</div>
+</li>
 
-<li><a id="org4587357"></a>linear transforms<br /><div class="outline-text-5" id="text-org4587357">
+<li><a id="org4800b16"></a>linear transforms<br />
+<div class="outline-text-5" id="text-org4800b16">
 <ul class="org-ul">
 <li>\(X\pm Y\sim N(\mu_x\pm \mu_y, \sigma_x^2+\sigma_y^2)\) if \(X\sim N(\mu_x, \sigma_x^2)\) and \(Y\sim N(\mu_y, \sigma_y^2)\) are independent</li>
 <li>\(aX+b\sim N(a\mu+b, a^2\sigma^2)\)</li>
 <li>if \(X_1,X_2,...,X_n\) are independent observations of X, then \(X_1+X_2+...+X_n\sim N(n\mu, n\sigma^2)\)</li>
 </ul>
-</div></li>
+</div>
+</li>
 
-<li><a id="org5f3d77b"></a>approximate the Binomial<br /><div class="outline-text-5" id="text-org5f3d77b">
+<li><a id="org194c0bf"></a>approximate the Binomial<br />
+<div class="outline-text-5" id="text-org194c0bf">
 <ul class="org-ul">
 <li>if \(X\sim B(n, p)\) and \(np>5\) and \(nq>5\), use \(X\sim N(np, npq)\) to approximate it</li>
 <li>also need a <b>continuity correction</b> adjustment. (round to discrete value)</li>
 </ul>
-</div></li>
+</div>
+</li>
 
-<li><a id="org69c00c0"></a>approximate the Poisson<br /><div class="outline-text-5" id="text-org69c00c0">
+<li><a id="org7b241d8"></a>approximate the Poisson<br />
+<div class="outline-text-5" id="text-org7b241d8">
 <ul class="org-ul">
 <li>if \(X\sim Po(\lambda)\) and \(\lambda>15\), use \(X\sim N(\lambda, \lambda)\) to approximate it</li>
 </ul>
-</div></li></ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org5d10077" class="outline-2">
-<h2 id="org5d10077"><span class="section-number-2">4</span> Binomial Theorem</h2>
+<div id="outline-container-orgc19e082" class="outline-2">
+<h2 id="orgc19e082"><span class="section-number-2">4</span> Binomial Theorem</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 \[(x+y)^n = \sum_{k=0}^{n} \dbinom{n}{k}x^{n-k}y^{k}\]
