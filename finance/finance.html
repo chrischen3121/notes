@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-08-23 Wed 15:40 -->
+<!-- 2017-12-15 Fri 16:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Financial Market</title>
@@ -69,6 +69,7 @@
   pre.src-fortran:before { content: 'Fortran'; }
   pre.src-gnuplot:before { content: 'gnuplot'; }
   pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
   pre.src-java:before { content: 'Java'; }
   pre.src-js:before { content: 'Javascript'; }
   pre.src-latex:before { content: 'LaTeX'; }
@@ -258,68 +259,129 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcfeb93a">1. Strategy Benchmark</a>
+<li><a href="#org1332f9a">1. Conceptions</a>
 <ul>
-<li><a href="#orgf53ac89">1.1. Expected return</a></li>
-<li><a href="#org165fcc2">1.2. Daily return</a></li>
-<li><a href="#org07d3bf3">1.3. Sharpe ratio</a></li>
-<li><a href="#orgaabaad4">1.4. Sortino ratio</a></li>
-<li><a href="#org542ad2b">1.5. Max drawdown</a></li>
-<li><a href="#org54d375b">1.6. Jensen's alpha</a></li>
+<li><a href="#orgc54592d">1.1. VAR(value at risk)</a></li>
+<li><a href="#orgb1083c9">1.2. Stress tests</a></li>
+<li><a href="#org5a99abd">1.3. Cauchy distribution</a></li>
 </ul>
 </li>
-<li><a href="#org6d075dc">2. Company value</a>
+<li><a href="#org8b7fcab">2. Strategy Benchmark</a>
 <ul>
-<li><a href="#orgceb0bf3">2.1. Market capital</a></li>
-<li><a href="#org1eb32ca">2.2. Discount ratio(present value)</a></li>
-<li><a href="#org6e45f0f">2.3. Book value</a></li>
+<li><a href="#orgd0e094c">2.1. Expected return</a></li>
+<li><a href="#orgea6a9a8">2.2. Daily return</a></li>
+<li><a href="#org9d86fcb">2.3. Sharpe ratio</a></li>
+<li><a href="#orgeacf173">2.4. Sortino ratio</a></li>
+<li><a href="#org207afde">2.5. Max drawdown</a></li>
+<li><a href="#orgb1b28fb">2.6. Jensen's alpha</a></li>
 </ul>
 </li>
-<li><a href="#orgfa7ebb4">3. CAPM</a>
+<li><a href="#org7ff133d">3. Company value</a>
 <ul>
-<li><a href="#orgbbd6d2c">3.1. Return on stock has two components</a></li>
-<li><a href="#org67f8e28">3.2. Market return</a></li>
+<li><a href="#org079333a">3.1. Market capital</a></li>
+<li><a href="#org14959b1">3.2. Discount ratio(present value)</a></li>
+<li><a href="#orga67ef8d">3.3. Book value</a></li>
 </ul>
 </li>
-<li><a href="#org1ac3ff9">4. Efficient Markets Hypothesis</a>
+<li><a href="#orgaa0fe96">4. CAPM</a>
 <ul>
-<li><a href="#orga1ca00d">4.1. Weak</a></li>
-<li><a href="#org9b654d1">4.2. Semi-Strong</a></li>
-<li><a href="#org30e9554">4.3. Strong</a></li>
+<li><a href="#orgc764a1e">4.1. Return on stock has two components</a></li>
+<li><a href="#orgdcf0ed8">4.2. Market return</a></li>
 </ul>
 </li>
-<li><a href="#org83e2184">5. Analysis</a>
+<li><a href="#orgc2338be">5. Efficient Markets Hypothesis</a>
 <ul>
-<li><a href="#orgcb6b41c">5.1. Technical Analysis</a></li>
-<li><a href="#org57f7f1f">5.2. Fundamental Analysis</a></li>
+<li><a href="#org888c8cb">5.1. Weak</a></li>
+<li><a href="#orgac89e23">5.2. Semi-Strong</a></li>
+<li><a href="#org7f58f3b">5.3. Strong</a></li>
 </ul>
 </li>
-<li><a href="#org18ccbf4">6. Information Source</a></li>
+<li><a href="#org4f58e4b">6. Analysis</a>
+<ul>
+<li><a href="#org00e29ba">6.1. Technical Analysis</a></li>
+<li><a href="#org545aa26">6.2. Fundamental Analysis</a></li>
+</ul>
+</li>
+<li><a href="#org33dfcc5">7. Information Source</a></li>
+<li><a href="#orgeca38a1">8. Insurance</a>
+<ul>
+<li><a href="#org6359582">8.1. Risk Pooling</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgcfeb93a" class="outline-2">
-<h2 id="orgcfeb93a"><span class="section-number-2">1</span> Strategy Benchmark</h2>
+<div id="outline-container-org1332f9a" class="outline-2">
+<h2 id="org1332f9a"><span class="section-number-2">1</span> Conceptions</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-orgf53ac89" class="outline-3">
-<h3 id="orgf53ac89"><span class="section-number-3">1.1</span> Expected return</h3>
+</div>
+<div id="outline-container-orgc54592d" class="outline-3">
+<h3 id="orgc54592d"><span class="section-number-3">1.1</span> VAR(value at risk)</h3>
 <div class="outline-text-3" id="text-1-1">
+<p>
+<b>Value at risk</b> is usually quoted in units of $ for a given probability and time horizon
+</p>
+
+<p>
+Ex: 1% one-year VAR of $10 million means 1% chance that a portfolio will lose $10 million in a year
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb1083c9" class="outline-3">
+<h3 id="orgb1083c9"><span class="section-number-3">1.2</span> Stress tests</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+The stress test is a test usually ordered by government to see
+how some firm will stand up to a financial crisis.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5a99abd" class="outline-3">
+<h3 id="org5a99abd"><span class="section-number-3">1.3</span> Cauchy distribution</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Fat-tailed
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8b7fcab" class="outline-2">
+<h2 id="org8b7fcab"><span class="section-number-2">2</span> Strategy Benchmark</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgd0e094c" class="outline-3">
+<h3 id="orgd0e094c"><span class="section-number-3">2.1</span> Expected return</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 \[return = \frac{value_{end}}{value_{start}} - 1 \]
 </p>
 </div>
+<div id="outline-container-org08327d7" class="outline-4">
+<h4 id="org08327d7"><span class="section-number-4">2.1.1</span> long-period return 2 short-period avg return(using geomean)</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+Number of period is denoted by <b>n</b>.
+\[short\_avg = \sqrt[n]{1+total\_return} - 1\]
+</p>
 </div>
-<div id="outline-container-org165fcc2" class="outline-3">
-<h3 id="org165fcc2"><span class="section-number-3">1.2</span> Daily return</h3>
-<div class="outline-text-3" id="text-1-2">
+</div>
+</div>
+
+<div id="outline-container-orgea6a9a8" class="outline-3">
+<h3 id="orgea6a9a8"><span class="section-number-3">2.2</span> Daily return</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 \[rets_i = \frac{value_i}{value_{i-1}} - 1 \]
 </p>
 </div>
 </div>
-<div id="outline-container-org07d3bf3" class="outline-3">
-<h3 id="org07d3bf3"><span class="section-number-3">1.3</span> Sharpe ratio</h3>
-<div class="outline-text-3" id="text-1-3">
+
+<div id="outline-container-org9d86fcb" class="outline-3">
+<h3 id="org9d86fcb"><span class="section-number-3">2.3</span> Sharpe ratio</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
 \[Sharpe = \frac{E - R_f}{\sigma} \]
 </p>
@@ -327,9 +389,9 @@ for the JavaScript code in this tag.
 <li>\(R_f\): risk free return</li>
 </ul>
 </div>
-<div id="outline-container-orgddf982c" class="outline-4">
-<h4 id="orgddf982c"><span class="section-number-4">1.3.1</span> from period returns</h4>
-<div class="outline-text-4" id="text-1-3-1">
+<div id="outline-container-orgfb155d3" class="outline-4">
+<h4 id="orgfb155d3"><span class="section-number-4">2.3.1</span> from period returns</h4>
+<div class="outline-text-4" id="text-2-3-1">
 <p>
 \[Sharpe = sqrt(k) * \frac{mean(period\_rets)}{std(period\_rets)}\]
 </p>
@@ -339,71 +401,74 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-orgaabaad4" class="outline-3">
-<h3 id="orgaabaad4"><span class="section-number-3">1.4</span> Sortino ratio</h3>
-<div class="outline-text-3" id="text-1-4">
+<div id="outline-container-orgeacf173" class="outline-3">
+<h3 id="orgeacf173"><span class="section-number-3">2.4</span> Sortino ratio</h3>
+<div class="outline-text-3" id="text-2-4">
 <p>
 only count volatility when it's downward
 </p>
 </div>
 </div>
-<div id="outline-container-org542ad2b" class="outline-3">
-<h3 id="org542ad2b"><span class="section-number-3">1.5</span> Max drawdown</h3>
+<div id="outline-container-org207afde" class="outline-3">
+<h3 id="org207afde"><span class="section-number-3">2.5</span> Max drawdown</h3>
 </div>
-<div id="outline-container-org54d375b" class="outline-3">
-<h3 id="org54d375b"><span class="section-number-3">1.6</span> Jensen's alpha</h3>
+<div id="outline-container-orgb1b28fb" class="outline-3">
+<h3 id="orgb1b28fb"><span class="section-number-3">2.6</span> Jensen's alpha</h3>
 </div>
 </div>
-<div id="outline-container-org6d075dc" class="outline-2">
-<h2 id="org6d075dc"><span class="section-number-2">2</span> Company value</h2>
-<div class="outline-text-2" id="text-2">
-</div><div id="outline-container-orgceb0bf3" class="outline-3">
-<h3 id="orgceb0bf3"><span class="section-number-3">2.1</span> Market capital</h3>
+<div id="outline-container-org7ff133d" class="outline-2">
+<h2 id="org7ff133d"><span class="section-number-2">3</span> Company value</h2>
+<div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org1eb32ca" class="outline-3">
-<h3 id="org1eb32ca"><span class="section-number-3">2.2</span> Discount ratio(present value)</h3>
+<div id="outline-container-org079333a" class="outline-3">
+<h3 id="org079333a"><span class="section-number-3">3.1</span> Market capital</h3>
 </div>
-<div id="outline-container-org6e45f0f" class="outline-3">
-<h3 id="org6e45f0f"><span class="section-number-3">2.3</span> Book value</h3>
-<div class="outline-text-3" id="text-2-3">
+<div id="outline-container-org14959b1" class="outline-3">
+<h3 id="org14959b1"><span class="section-number-3">3.2</span> Discount ratio(present value)</h3>
+</div>
+<div id="outline-container-orga67ef8d" class="outline-3">
+<h3 id="orga67ef8d"><span class="section-number-3">3.3</span> Book value</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 A company's book value is its total assets minus intangible assets and liabilities
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-orgfa7ebb4" class="outline-2">
-<h2 id="orgfa7ebb4"><span class="section-number-2">3</span> CAPM</h2>
-<div class="outline-text-2" id="text-3">
-</div><div id="outline-container-orgbbd6d2c" class="outline-3">
-<h3 id="orgbbd6d2c"><span class="section-number-3">3.1</span> Return on stock has two components</h3>
-<div class="outline-text-3" id="text-3-1">
+<div id="outline-container-orgaa0fe96" class="outline-2">
+<h2 id="orgaa0fe96"><span class="section-number-2">4</span> CAPM</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgc764a1e" class="outline-3">
+<h3 id="orgc764a1e"><span class="section-number-3">4.1</span> Return on stock has two components</h3>
+<div class="outline-text-3" id="text-4-1">
 <p>
 \[r_i = \beta_i \cdot r_m + \alpha_i\]
 </p>
 </div>
-<div id="outline-container-orgecfb448" class="outline-4">
-<h4 id="orgecfb448"><span class="section-number-4">3.1.1</span> Systematic(the market) \(\beta\)</h4>
+<div id="outline-container-org07acb51" class="outline-4">
+<h4 id="org07acb51"><span class="section-number-4">4.1.1</span> Systematic(the market) \(\beta\)</h4>
 </div>
-<div id="outline-container-org76d509e" class="outline-4">
-<h4 id="org76d509e"><span class="section-number-4">3.1.2</span> Residual \(\alpha\)</h4>
+<div id="outline-container-org704e133" class="outline-4">
+<h4 id="org704e133"><span class="section-number-4">4.1.2</span> Residual \(\alpha\)</h4>
 </div>
 </div>
-<div id="outline-container-org67f8e28" class="outline-3">
-<h3 id="org67f8e28"><span class="section-number-3">3.2</span> Market return</h3>
-<div class="outline-text-3" id="text-3-2">
+<div id="outline-container-orgdcf0ed8" class="outline-3">
+<h3 id="orgdcf0ed8"><span class="section-number-3">4.2</span> Market return</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 Risk free rate of return + excess return
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org1ac3ff9" class="outline-2">
-<h2 id="org1ac3ff9"><span class="section-number-2">4</span> Efficient Markets Hypothesis</h2>
-<div class="outline-text-2" id="text-4">
-</div><div id="outline-container-orga1ca00d" class="outline-3">
-<h3 id="orga1ca00d"><span class="section-number-3">4.1</span> Weak</h3>
-<div class="outline-text-3" id="text-4-1">
+<div id="outline-container-orgc2338be" class="outline-2">
+<h2 id="orgc2338be"><span class="section-number-2">5</span> Efficient Markets Hypothesis</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org888c8cb" class="outline-3">
+<h3 id="org888c8cb"><span class="section-number-3">5.1</span> Weak</h3>
+<div class="outline-text-3" id="text-5-1">
 <p>
 Current prices reflect all past publicly available information.
 </p>
@@ -412,9 +477,9 @@ Current prices reflect all past publicly available information.
 </ul>
 </div>
 </div>
-<div id="outline-container-org9b654d1" class="outline-3">
-<h3 id="org9b654d1"><span class="section-number-3">4.2</span> Semi-Strong</h3>
-<div class="outline-text-3" id="text-4-2">
+<div id="outline-container-orgac89e23" class="outline-3">
+<h3 id="orgac89e23"><span class="section-number-3">5.2</span> Semi-Strong</h3>
+<div class="outline-text-3" id="text-5-2">
 <p>
 Weak + prices instantly change to reflect new public information
 </p>
@@ -423,9 +488,9 @@ Weak + prices instantly change to reflect new public information
 </ul>
 </div>
 </div>
-<div id="outline-container-org30e9554" class="outline-3">
-<h3 id="org30e9554"><span class="section-number-3">4.3</span> Strong</h3>
-<div class="outline-text-3" id="text-4-3">
+<div id="outline-container-org7f58f3b" class="outline-3">
+<h3 id="org7f58f3b"><span class="section-number-3">5.3</span> Strong</h3>
+<div class="outline-text-3" id="text-5-3">
 <p>
 Semi-Strong + prices instantly reflect even hidden or "insider" information
 </p>
@@ -435,20 +500,21 @@ Semi-Strong + prices instantly reflect even hidden or "insider" information
 </div>
 </div>
 </div>
-<div id="outline-container-org83e2184" class="outline-2">
-<h2 id="org83e2184"><span class="section-number-2">5</span> Analysis</h2>
-<div class="outline-text-2" id="text-5">
-</div><div id="outline-container-orgcb6b41c" class="outline-3">
-<h3 id="orgcb6b41c"><span class="section-number-3">5.1</span> Technical Analysis</h3>
-<div class="outline-text-3" id="text-5-1">
+<div id="outline-container-org4f58e4b" class="outline-2">
+<h2 id="org4f58e4b"><span class="section-number-2">6</span> Analysis</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org00e29ba" class="outline-3">
+<h3 id="org00e29ba"><span class="section-number-3">6.1</span> Technical Analysis</h3>
+<div class="outline-text-3" id="text-6-1">
 <ul class="org-ul">
 <li>Prices and volume only</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org57f7f1f" class="outline-3">
-<h3 id="org57f7f1f"><span class="section-number-3">5.2</span> Fundamental Analysis</h3>
-<div class="outline-text-3" id="text-5-2">
+<div id="outline-container-org545aa26" class="outline-3">
+<h3 id="org545aa26"><span class="section-number-3">6.2</span> Fundamental Analysis</h3>
+<div class="outline-text-3" id="text-6-2">
 <ul class="org-ul">
 <li>Financial statements</li>
 <li>P/E ratios, cash on hand, dividends</li>
@@ -456,14 +522,34 @@ Semi-Strong + prices instantly reflect even hidden or "insider" information
 </div>
 </div>
 </div>
-<div id="outline-container-org18ccbf4" class="outline-2">
-<h2 id="org18ccbf4"><span class="section-number-2">6</span> Information Source</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-org33dfcc5" class="outline-2">
+<h2 id="org33dfcc5"><span class="section-number-2">7</span> Information Source</h2>
+<div class="outline-text-2" id="text-7">
 <ul class="org-ul">
 <li>Price/Volume: The markets</li>
 <li>Fundamental: SEC filings</li>
 <li>News: Exogenous sources</li>
 </ul>
+</div>
+</div>
+<div id="outline-container-orgeca38a1" class="outline-2">
+<h2 id="orgeca38a1"><span class="section-number-2">8</span> Insurance</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org6359582" class="outline-3">
+<h3 id="org6359582"><span class="section-number-3">8.1</span> Risk Pooling</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+<b>Risk Pooling</b> is the source of all value in insurance.
+</p>
+
+<p>
+If <b>n</b> policies, each has independent probability <b>p</b> of a claim,
+then the number of claims follows the binomial distribution. The
+standard deviation of the fraction of policies that result in a claim is
+\(\frac{\sqrt{np(1-p)}}{n}=\sqrt{\frac{p(1-p)}{n}}\)
+</p>
+</div>
 </div>
 </div>
 </div>
