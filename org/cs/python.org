@@ -1,0 +1,69 @@
+#+TITLE: Python Cookbook
+#+KEYWORDS: python
+#+OPTIONS: H:3 toc:3 num:3 ^:nil LaTeX:t
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SETUPFILE: ../../org-templates/level-1.org
+* Data Structures and Algorithms
+** Unpack Arbitrary items
+   #+BEGIN_SRC python
+     x, *_, y = [1, 2, 3, 4, 5]
+     # x => 1
+     # y => 5
+   #+END_SRC
+** Keeping Last N Items
+   #+BEGIN_SRC python
+     from collections import deque
+     d=deque(maxlen=N)
+   #+END_SRC
+
+** Finding the Largest or Smallest N Items
+   #+BEGIN_SRC python
+     import heapq
+     heapq.nlargest(N, items)
+     heapq.nsmallest(N, items)
+   #+END_SRC
+   Underneath the covers, they work by first converting the data into a list
+   where items are ordered as a heap.
+   #+BEGIN_SRC python
+     nums = [1, 8, 2, 23, 7, -4, 18, 23, 42, 37, 2]
+     heapq.heapify(nums) # inplace function
+     # nums => [-4, 2, 1, 23, 7, 2, 18, 23, 42, 37, 8]
+   #+END_SRC
+
+** PriorityQueue Implemention
+   #+BEGIN_SRC python
+     import heapq
+
+     class PriorityQueue:
+         def __init__(self):
+             self._queue = []
+             self._index = 0
+
+         def push(self, item, priority):
+             heapq.heappush(self._queue, (-priority, self._index, item))
+             self._index += 1
+
+         def pop(self):
+             return heapq.heappop(self._queue)[-1]
+   #+END_SRC
+
+** defaultdict
+   #+BEGIN_SRC python
+     from collections import defaultdict
+     d = defaultdict(list)
+     d['a']
+     #=> []
+   #+END_SRC
+   *defaultdict* will automatically create dictionary entries for keys accessed later on, alternative:
+   #+BEGIN_SRC python
+     d.setdefault('a', []).append(1)
+   #+END_SRC
+
+** Invert Keys & Values of the Dictionary
+   #+BEGIN_SRC python
+     d2 = zip(d.values(), d.keys())
+     max(d2)
+     sorted(d2)
+   #+END_SRC
