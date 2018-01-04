@@ -33,6 +33,93 @@
       from whois import whois
       whois("xxx.com")
     #+END_SRC
+* urllib
+   #+BEGIN_SRC python
+     urllib.request.urlopen(url).read()
+   #+END_SRC
+** setting a user agent
+    #+BEGIN_SRC python
+      request = urllib.request.Request(url)
+      request.add_header('User-agent', user_agent)
+      urllib.request.urlopen(request).read()
+    #+END_SRC
+** urlparse
+    #+BEGIN_SRC python
+      from urllib.parse import urlparse
+      urlparse(url).netloc
+    #+END_SRC
+** urljoin
+    #+BEGIN_SRC python
+      from urllib.parse import urljoin
+      abs_link = urljoin(start_url, link)
+    #+END_SRC
+** robots.txt parser
+    #+BEGIN_SRC python
+      from urllib import robotparser
+      rp = robotparser.RobotFileParser()
+      rp.set_url(robots_url)
+
+      # apis
+      # read()
+      # can_fetch()
+    #+END_SRC
+    - useful function
+      #+BEGIN_SRC python
+        def get_robots_parser(robots_url):
+            " Return the robots parser object using the robots_url "
+            rp = robotparser.RobotFileParser()
+            rp.set_url(robots_url)
+            rp.read()
+            return rp
+      #+END_SRC
+
+** Supporting proxies
+    #+BEGIN_SRC python
+      proxy = 'http://myproxy.net:1234' # example string
+      proxy_handler = urllib.request.ProxyHandler({'http': proxy})
+      opener = urllib.request.build_opener(proxy_handler)
+      urllib.request.install_opener(opener)
+      # now requests via urllib.request will be handled via proxy
+    #+END_SRC
+** Avoiding spider traps
+   use *depth*. when a maximum depth is reached, the crawler does
+   not add links from that web page to the queue.
+
+** full feature code
+    [[https://github.com/kjam/wswp/blob/master/code/chp1/advanced_link_crawler.py][advanced_link_crawler.py]]
+
+* Requests
+** Basic use
+  #+BEGIN_SRC python
+    import requests
+    params = {'firstname': 'Ryan', 'lastname': 'Mitchell'}
+    r = requests.post("http://pythonscraping.com/files/processing.php", data=params)
+    print(r.text)
+  #+END_SRC
+
+** cookies
+   #+BEGIN_SRC python
+     import requests
+     params = {'username': 'Ryan', 'password': 'password'}
+     r = requests.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+     print(r.cookies.get_dict())
+     r = requests.get("http://pythonscraping.com/pages/cookies/profile.php", cookies=r.cookies)
+     print(r.text)
+   #+END_SRC
+
+** Session
+   #+BEGIN_SRC python
+     session = requests.Session()
+     params = {'username': 'username', 'password': 'password'}
+     s = session.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+     print(s.cookies.get_dict())
+     s = session.get("http://pythonscraping.com/pages/cookies/profile.php")
+     print(s.text)
+   #+END_SRC
+
+** Documentation
+   [[http://python-requests.org/][Requests Documentation
+]]
 * BeautifulSoup
 ** objects
 *** BeautifulSoup /objects/
@@ -189,34 +276,6 @@
 
 ** Deploy(Scrapyd)
 
-* Requests
-** Basic use
-  #+BEGIN_SRC python
-    import requests
-    params = {'firstname': 'Ryan', 'lastname': 'Mitchell'}
-    r = requests.post("http://pythonscraping.com/files/processing.php", data=params)
-    print(r.text)
-  #+END_SRC
-
-** cookies
-   #+BEGIN_SRC python
-     import requests
-     params = {'username': 'Ryan', 'password': 'password'}
-     r = requests.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
-     print(r.cookies.get_dict())
-     r = requests.get("http://pythonscraping.com/pages/cookies/profile.php", cookies=r.cookies)
-     print(r.text)
-   #+END_SRC
-
-** Session
-   #+BEGIN_SRC python
-     session = requests.Session()
-     params = {'username': 'username', 'password': 'password'}
-     s = session.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
-     print(s.cookies.get_dict())
-     s = session.get("http://pythonscraping.com/pages/cookies/profile.php")
-     print(s.text)
-   #+END_SRC
 * Selenium
   often using with non-GUI engine PhantomJS
   #+BEGIN_SRC python
