@@ -105,6 +105,17 @@
    - $P(A\cup B\cup C) = P(A) + P(A^c\cap B) + P(A^c\cap B^c\cap C)$ (axioms 3)
    - if $P(A\cap B)$ equals to 0, then A and B are mutually exclusive
 
+** Random Variable
+   *random variable* is a variable that can takes on a set of values
+** Discrete
+   *discrete* if a variable is discrete, that means it can only take exact values.
+** Expectation
+   $$E(X)=\mu=\sum_{i=1}^n x_i P(X=x_i)$$
+** Variance
+   $$Var(X)=E((X-\mu)^2)=\sum_{i=1}^n (x_i-\mu)^2 P(X=x_i)$$
+** Standard Deviation
+   $$\sigma=\sqrt{Var(X)}$$
+
 * Conditional probabilities
 ** Conceptions
 *** $P(A|B)$
@@ -209,21 +220,11 @@
 
    [[https://en.wikipedia.org/wiki/Twelvefold_way][detail]]
 
-* Probability distribution
-** Conceptions
-   - *random variable* is a variable that can takes on a set of values
-   - *discrete* if a variable is discrete, that means it can only take exact values.
-   - *expectation*
-     $$E(X)=\mu=\sum_{i=1}^n x_i P(X=x_i)$$
-   - *variance*
-     $$Var(X)=E((X-\mu)^2)=\sum_{i=1}^n (x_i-\mu)^2 P(X=x_i)$$
-   - *standard deviation*
-     $$\sigma=\sqrt{Var(X)}$$
-** Linear Transforms
-   *Linear transforms* are when a variable X is transformed into aX + b, where a and b are constants.
-   The probabilities of each Y should be the same as X
-   $$E(aX+b)=aE(X)+b$$
-   $$Var(aX+b)=a^2Var(X)$$
+* Linear Transforms
+  *Linear transforms* are when a variable X is transformed into aX + b, where a and b are constants.
+  The probabilities of each Y should be the same as X
+  $$E(aX+b)=aE(X)+b$$
+  $$Var(aX+b)=a^2Var(X)$$
 
 ** Independent observations
    $$E(X_1+X_2+...X_n) = nE(X)$$
@@ -241,71 +242,121 @@
      $$Var(aX+bY)=a2Var(X)+b2Var(Y)$$
      $$Var(aX-bY)=a2Var(X)-b2Var(Y)$$
 
-* distributions
+* Discrete distributions
 ** Bernoulli distribution
-   $$X\sim Bernoulli()$$
-   - $P_X(x)$
-     $$P_X(x)=\begin{cases}
-p,  & \mbox{if }x=1 \\
-1-p, & \mbox{if }x=0
+   Let $X$ be a discrete random variable. Let its support be $R_X = \{0, 1\}$, the probability of $X=1$ is $p$
+
+   $$X\sim Bernoulli(p)$$
+*** PMF
+$$P_X(x)= \begin{cases}
+p,  & \mbox{if }x = 1 \\
+1-p, & \mbox{if }x = 0 \\
+0, & \mbox{if }x\notin R_X \\
 \end{cases}$$
-** binomial distribution
+
+*** E(X)
+    $$E(X)=p$$
+
+*** Var(X)
+    $$Var(X)=p(1-p)$$
+
+*** CDF
+$$F_X(x)= \begin{cases}
+0,  & \mbox{if }x \le 0\\
+1-p, & \mbox{if }0 \le x < 1 \\
+1, & \mbox{if }x\ge 1 \\
+\end{cases}$$
+
+** Binomial distribution
+   1. You’re running a series of *independent* trials.
+   2. There can be either a success or failure for each trial, and the probability of success is the same for each trial.
+   3. There are a *finite* number of trials.
+   4. The main thing you’re interested in is *the number of successes* in the $n$ independent trials.
+
+   Let:
+   - $X$ be the number of successful outcomes out of $n$ trials
+   - $p$ be the probability of success in a trial
+
    $$X\sim B(n, p)$$
-   where p is the probability of a successful outcome in each trial, and n is the number of trials
 
-   1. You’re running a series of independent trials.
+*** PMF
+    $$P_X(x)=\dbinom{n}{x} p^x (1-p)^{n-x}$$
+
+*** E(X)
+    $$E(X)=np$$
+
+*** Var(X)
+    $$E(X)=np(1-p)$$
+
+*** CDF
+    $$F_X(x)=\sum_{m=-\infty}^{\lfloor x \rfloor}{n \choose m}p^m(1-p)^{n-m}$$
+
+** Geometric distribution
+   1. You run a series of *independent* trials.
    2. There can be either a success or failure for each trial, and the probability of success is the same for each trial.
-   3. There are a finite number of trials.
+   3. The main thing you’re interested in is *how many* trials are needed in order to get the *first* successful outcome.
 
-   - $P_X(x=k)$
-     $$P_X(x=r)=\dbinom{n}{r}\times p^r \times q^{n-r}$$
+   Let:
+   - $X$ be the number of trials needed to get the first successful outcome
+   - $p$ be the probability of success in a trial
 
-   - E(X)
-     $$E(X)=np$$
-
-   - Var(X)
-     $$E(X)=npq$$
-
-*** when to use
-    Use the binomial distribution if you’re running a fixed number of independent trials, each one can have a success
-    or failure, and you’re interested in the number of successes or failures
-
-** geometric distribution
    $$X\sim Geo(p)$$
-   X follows a geometric distribution where the probability of success is p.
+*** PMF
+    let X be the number of trials needed to get the first successful outcome.
+    To find the probability of $X$ taking a particular value $x$, using:
+    $$P_X(x)=p(1-p)^{x-1}$$
 
-   1. You run a series of independent trials.
-   2. There can be either a success or failure for each trial, and the probability of success is the same for each trial.
-   3. The main thing you’re interested in is how many trials are needed in order to get the first successful outcome.
+*** E(X)
+    $$E(X)=\frac{1}{p}$$
 
-   - P(X)
+*** Var(X)
+    $$Var(X)=\frac{1-p}{p^2}$$
 
-     let X be the number of trials needed to get the first successful outcome.
-     To find the probability of X taking a particular value r, using:
-     $$P(X=r)=pq^{r-1}$$
-     where p is the probability of success, and $q=1-p$
-     $$P(X>r)=q^r$$
-     $$P(X<=r)=1-q^r$$
+*** CDF
+    $$F_X(x)=1-(1-p)^{\lfloor x \rfloor}$$
 
-   - E(X)
-     $$E(X)=\frac{1}{p}$$
+** Uniform distribution
+   $$X\sim Uniform(a, b)$$
+   A discrete random variable has a uniform distribution if all the values belonging to its support have the same probability density.
+   Let $X$ be a discrete random variable. Let its support be $R_X=\{a, a+k, a+2k \dots b\}$. Let the number of $R_X$ be $N$, then $N=\frac{b-a}{k}+1=\frac{b-a+k}{k}$
+*** PMF
+    $$P_X(x)=\frac{1}{N}=\frac{k}{b-a+k}$$
 
-   - Var(X)
-     $$Var(X)=\frac{q}{p^2}$$
+*** E(X)
+    $$E(X)=\frac{a+b}{2}$$
 
-*** when to use
-    Use the Geometric distribution if you’re running independent trials, each one can have a success or failure, and
-    you’re interested in how many trials are needed to get the first successful outcome
+*** Var(X)
+    $$Var(X)=k^2(\frac{N^2-1}{12})$$
 
-** poisson distribution
-   $$X\sim Po(\lambda)$$
-   $\lambda$ represents the mean number of occurrences.
+*** CDF
+$$F_X(x)= \begin{cases}
+0,  & \mbox{if }x < a\\
+\frac{\lfloor x\rfloor -a+k}{b-a+k}, & \mbox{if }a \le x \le b \\
+1, & \mbox{if }x > b \\
+\end{cases}$$
 
-   1. Individual events occur at random and independently in a given interval.
+** Pascal distribution
+   Let:
+   # - $X$ be the number of trials
+   - $p$ be the probability of success in a trial
+*** PMF
+*** E(X)
+*** Var(X)
+*** CDF
+
+** Poisson distribution
+   1. Individual events occur at *random* and *independently* in a given interval.
    2. You know the mean number of occurrences in the interval or the rate of occurrences, and it’s finite.
+   3. The purpose is to know the number of occurrences in another particular interval.
 
-*** P(X)
-    $$P(X)=\frac{e^{-\lambda}\lambda^{r}}{r!}$$
+   Let:
+   - $X$ be the number of occurrences in a particular interval
+   - $\lambda$ be the rate of occurrences
+
+   $$X\sim Po(\lambda)$$
+
+*** PMF
+    $$P_X(x)=\frac{e^{-\lambda}\lambda^{x}}{x!}$$
 
 *** E(X)
     $$E(X)=\lambda$$
@@ -313,42 +364,42 @@ p,  & \mbox{if }x=1 \\
 *** Var(X)
     $$Var(X)=\lambda$$
 
+*** CDF
+$$F_X(x)= \begin{cases}
+-\lambda^e\sum_{n=-\infty}^{\lfloor x \rfloor}e^{-\lambda}\cdot \frac{\lambda^n}{n!}, & \mbox{if }x\ge 1 \\
+0, & \mbox{otherwise} \\
+\end{cases}$$
+
 *** linear transforms
-    If $X\sim Po(\lambda_x)$ and $Y\sim Po(\lambda_y)$,
+    If $X\sim Po(\lambda_x)$ and $Y\sim Po(\lambda_y)$, and $X$ and $Y$ are independent,
     $$X+Y\sim Po(\lambda_x + \lambda_y)$$
 
-*** when to use
-    Use the Poisson distribution if you have independent events such as malfunctions occurring in a given interval,
-    and you know λ, the mean number of occurrences in a given interval. You’re interested in the number of
-    occurrences in one particular interval.
+*** simplify the special Binomial distribution case
+    If $X\sim B(n, p)$ where $n$ is large and $p$ is small, you can approximate it with $X ~ Po(np)$.
 
-*** other use
-    if *np* is like *npq*, *q* should be close to 1, thus
 
-    $X\sim B(n, p)$ can be approximated by $X\sim Po(np)$ if n is large and p is small.
+# ** normal distribution
+#    $$X\sim N(\mu, \sigma^2)$$
+# *** probability density function
+#     $$f(X)=\frac{1}{\sigma\sqrt{2\pi}^e}^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$$
 
-** normal distribution
-   $$X\sim N(\mu, \sigma^2)$$
-*** probability density function
-    $$f(X)=\frac{1}{\sigma\sqrt{2\pi}^e}^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$$
+# *** standard score
+#     $$z=\frac{x-\mu}{\sigma}$$
 
-*** standard score
-    $$z=\frac{x-\mu}{\sigma}$$
+# *** probability $P(X\le x)$
+#     $$P(X\le c) = \int_{-\inf}^{c}f(x)dx=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\inf}^{c}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}dx$$
 
-*** probability $P(X\le x)$
-    $$P(X\le c) = \int_{-\inf}^{c}f(x)dx=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\inf}^{c}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}dx$$
+# *** linear transforms
+#     - $X\pm Y\sim N(\mu_x\pm \mu_y, \sigma_x^2+\sigma_y^2)$ if $X\sim N(\mu_x, \sigma_x^2)$ and $Y\sim N(\mu_y, \sigma_y^2)$ are independent
+#     - $aX+b\sim N(a\mu+b, a^2\sigma^2)$
+#     - if $X_1,X_2,...,X_n$ are independent observations of X, then $X_1+X_2+...+X_n\sim N(n\mu, n\sigma^2)$
 
-*** linear transforms
-    - $X\pm Y\sim N(\mu_x\pm \mu_y, \sigma_x^2+\sigma_y^2)$ if $X\sim N(\mu_x, \sigma_x^2)$ and $Y\sim N(\mu_y, \sigma_y^2)$ are independent
-    - $aX+b\sim N(a\mu+b, a^2\sigma^2)$
-    - if $X_1,X_2,...,X_n$ are independent observations of X, then $X_1+X_2+...+X_n\sim N(n\mu, n\sigma^2)$
+# *** approximate the Binomial
+#     - if $X\sim B(n, p)$ and $np>5$ and $nq>5$, use $X\sim N(np, npq)$ to approximate it
+#     - also need a *continuity correction* adjustment. (round to discrete value)
 
-*** approximate the Binomial
-    - if $X\sim B(n, p)$ and $np>5$ and $nq>5$, use $X\sim N(np, npq)$ to approximate it
-    - also need a *continuity correction* adjustment. (round to discrete value)
-
-*** approximate the Poisson
-    - if $X\sim Po(\lambda)$ and $\lambda>15$, use $X\sim N(\lambda, \lambda)$ to approximate it
+# *** approximate the Poisson
+#     - if $X\sim Po(\lambda)$ and $\lambda>15$, use $X\sim N(\lambda, \lambda)$ to approximate it
 
 * Binomial Theorem
    $$(x+y)^n = \sum_{k=0}^{n} \dbinom{n}{k}x^{n-k}y^{k}$$
