@@ -336,13 +336,45 @@ $$F_X(x)= \begin{cases}
 \end{cases}$$
 
 ** Pascal distribution
+   aslo known as *Negative binomial distribution*
+
+   1. You run a series of *independent* trials.
+   2. There can be either a success or failure for each trial, and the probability of success is the same for each trial.
+   3. The main thing you’re interested in is *how many* trials are needed in order to get the $n$ successful outcomes.
+
    Let:
-   # - $X$ be the number of trials
+   - $X$ be the number of trials needed to get the $n$ successful outcomes
    - $p$ be the probability of success in a trial
+
+   $$X\sim Pascal(n, p)$$
+
 *** PMF
+$$P_X(x)=\begin{cases}
+{x-1 \choose n-1}(1-p)^{x-n}p^n,  & x\ge n\\
+0, & otherwise\\
+\end{cases}$$
+
 *** E(X)
+    $$E(X)=\frac{n}{p}$$
+
 *** Var(X)
+    $$Var(X)=\frac{n(1-p)}{p^2}$$
+
 *** CDF
+$$F_X(x)=\\
+\begin{cases}
+I_p(n, \lfloor x \rfloor - n + 1),  & x\ge n\\
+0, & otherwise\\
+\end{cases}$$
+$I_z(a,b)$ is the regularized incomplete beta function
+**** more
+$$\begin{align*}
+F_X(x) & =P(X\le x)\\
+& =P(\mbox{the n-th success occurs before the x-th trial})\\
+& =P(\mbox{n success in x trials})\\
+& =P(Y\ge n), Y\sim B(x, p)
+\end{align*}$$
+This is why *pascal* is aslo called *negative binomial*.
 
 ** Poisson distribution
    1. Individual events occur at *random* and *independently* in a given interval.
@@ -351,7 +383,7 @@ $$F_X(x)= \begin{cases}
 
    Let:
    - $X$ be the number of occurrences in a particular interval
-   - $\lambda$ be the rate of occurrences
+   - $\lambda$ be the rate of occurrences, should be $\mu T$
 
    $$X\sim Po(\lambda)$$
 
@@ -375,7 +407,7 @@ $$F_X(x)= \begin{cases}
     $$X+Y\sim Po(\lambda_x + \lambda_y)$$
 
 *** simplify the special Binomial distribution case
-    If $X\sim B(n, p)$ where $n$ is large and $p$ is small, you can approximate it with $X ~ Po(np)$.
+    If $X\sim B(n, p)$ where $n$ is large and $p$ is small, you can approximate it with $X \sim Po(np)$.
 
 
 # ** normal distribution
