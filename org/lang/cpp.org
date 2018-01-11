@@ -17,6 +17,7 @@
 * 指针和引用
 ** 常量指针和引用
    - 指向常量的指针没有规定其所指对象必须是一个常量(该值仍可以通过其他方式改变)。引用也一样。
+
 ** const 指针
    #+BEGIN_SRC cpp
     int val = 0;
@@ -27,27 +28,28 @@
     const int *pci = &val; //指向常量整形的指针 low-level const
     ,*pci = 2; // error: assignment of read-only location ‘* pci’
    #+END_SRC
+
 * 类型
 *** 类型别名
-
     以下两个语句等价：
     #+BEGIN_SRC cpp
-  typedef double wages;
-  using wages = double;
+      typedef double wages;
+      using wages = double;
     #+END_SRC
+
 *** 类型推断
-    #+BEGIN_VERSE
-auto vs decltype 区别：
-auto 会忽略掉 top-level const，decltype 则保留
-使用 decltype 时，给变量名加上括号会把它变为表达式。
-变量是一种可以作为赋值左值的特殊表达式，decltype 会得到引用类型
-    #+END_VERSE
+    - auto vs decltype 区别：
+
+    auto 会忽略掉 top-level const，decltype 则保留。
+    使用 decltype 时，给变量名加上括号会把它变为表达式。
+    变量是一种可以作为赋值左值的特殊表达式，decltype 会得到引用类型
     #+BEGIN_SRC cpp
       int i = 0;
       decltype(i) a = 3;
       decltype((i)) b = 5; //错误：b 为 int &
       decltype((i)) c = i; //正确
     #+END_SRC
+
 * 容器
 ** 数组
    - 声明
@@ -84,6 +86,7 @@ auto 会忽略掉 top-level const，decltype 则保留
        }
      #+END_SRC
    - 迭代器循环体内不能执行改变迭代器容量的操作，如执行会使迭代器失效。
+
 ** C 风格字符串
    常用方法 strlen, strcmp, strcat, strcpy
    - c_str
