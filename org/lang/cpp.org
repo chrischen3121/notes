@@ -49,6 +49,44 @@
       decltype((i)) b = 5; //错误：b 为 int &
       decltype((i)) c = i; //正确
     #+END_SRC
+**** 模板
+     #+BEGIN_SRC cpp
+       int x = 42;
+       const int cx = x;
+       const int &rx = x;
+     #+END_SRC
+     - case 1: reference or pointer
+       #+BEGIN_SRC cpp
+         template<typename T>
+         void f(T& param);
+
+         f(x); // T -> int
+         f(cx); // T -> const int
+         f(rx); // T -> const int &
+       #+END_SRC
+     - case 2: universal reference
+       #+BEGIN_SRC cpp
+         template<typename T>
+         void f(T &&param);
+
+         f(x); // x is lvalue, T -> int &
+         f(cx); // T -> const int &
+         f(rx); // T -> const int &
+         f(42); // x is rvalue, T -> int &&
+       #+END_SRC
+     - case 3: neither reference nor pointer
+       #+BEGIN_SRC cpp
+         template<typename T>
+         void f(T param);
+
+         f(x); // T -> int
+         f(cx); // T -> int
+         f(rx); // T -> int
+       #+END_SRC
+     - case 4: array or function
+
+       默认推断为指针，除非指定模板参数为引用
+
 
 * 容器
 ** 数组

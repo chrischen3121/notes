@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2018-01-11 Thu 17:53 -->
+<!-- 2018-01-16 Tue 11:22 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++ 点滴</title>
@@ -334,9 +334,68 @@ decltype<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</s
 </pre>
 </div>
 </div>
+<ul class="org-ul">
+<li><a id="org9c9ac46"></a>模板<br />
+<div class="outline-text-5" id="text-org9c9ac46">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">x</span> = <span style="color: #4e3163;">42</span>;
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">cx</span> = x;
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">int</span> &amp;<span style="color: #715ab1;">rx</span> = x;
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+case 1: reference or pointer
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">f</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">T</span>&amp; <span style="color: #715ab1;">param</span><span style="color: #3a81c3;">)</span>;
+
+f<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">T -&gt; int</span>
+f<span style="color: #3a81c3;">(</span>cx<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">T -&gt; const int</span>
+f<span style="color: #3a81c3;">(</span>rx<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">T -&gt; const int &amp;</span>
+</pre>
+</div></li>
+<li><p>
+case 2: universal reference
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">f</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">T</span> &amp;&amp;<span style="color: #715ab1;">param</span><span style="color: #3a81c3;">)</span>;
+
+f<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">x is lvalue, T -&gt; int &amp;</span>
+f<span style="color: #3a81c3;">(</span>cx<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">T -&gt; const int &amp;</span>
+f<span style="color: #3a81c3;">(</span>rx<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">T -&gt; const int &amp;</span>
+f<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">42</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">x is rvalue, T -&gt; int &amp;&amp;</span>
+</pre>
+</div></li>
+<li><p>
+case 3: neither reference nor pointer
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">f</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">T</span> <span style="color: #715ab1;">param</span><span style="color: #3a81c3;">)</span>;
+
+f<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">T -&gt; int</span>
+f<span style="color: #3a81c3;">(</span>cx<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">T -&gt; int</span>
+f<span style="color: #3a81c3;">(</span>rx<span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">T -&gt; int</span>
+</pre>
+</div></li>
+<li><p>
+case 4: array or function
+</p>
+
+<p>
+默认推断为指针，除非指定模板参数为引用
+</p></li>
+</ul>
+</div>
+</li>
+</ul>
 </li>
 </ul>
 </div>
+
 
 <div id="outline-container-org5030bd9" class="outline-2">
 <h2 id="org5030bd9"><span class="section-number-2">4</span> 容器</h2>
