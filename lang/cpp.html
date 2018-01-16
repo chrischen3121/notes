@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2018-01-16 Tue 11:22 -->
+<!-- 2018-01-16 Tue 17:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>C++ 点滴</title>
+<title>&lrm;</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
 <meta name="keywords" content="c++" />
@@ -232,7 +232,6 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">C++ 点滴</h1>
 <div id="table-of-contents">
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
@@ -255,6 +254,9 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
+<p>
+f#+TITLE: C++ 点滴
+</p>
 <div id="outline-container-orgd4a676f" class="outline-2">
 <h2 id="orgd4a676f"><span class="section-number-2">1</span> 对象初始化</h2>
 <div class="outline-text-2" id="text-1">
@@ -314,18 +316,14 @@ pi = &amp;val2; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </sp
 <span style="color: #3a81c3; font-weight: bold;">using</span> <span style="color: #ba2f59; font-weight: bold;">wages</span> = <span style="color: #ba2f59; font-weight: bold;">double</span>;
 </pre>
 </div>
+<p>
+尽量使用 using，支持带模板的类型别名
+</p>
 </div>
 </li>
 
 <li><a id="org2009ae6"></a>类型推断<br />
 <div class="outline-text-4" id="text-org2009ae6">
-<ul class="org-ul">
-<li>auto vs decltype 区别：</li>
-</ul>
-
-<p>
-auto 会忽略掉 top-level const，decltype 则保留。使用 decltype 时，给变量名加上括号会把它变为表达式。变量是一种可以作为赋值左值的特殊表达式，decltype 会得到引用类型
-</p>
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">i</span> = <span style="color: #4e3163;">0</span>;
 decltype<span style="color: #3a81c3;">(</span>i<span style="color: #3a81c3;">)</span> a = <span style="color: #4e3163;">3</span>;
@@ -391,11 +389,111 @@ case 4: array or function
 </ul>
 </div>
 </li>
+
+<li><a id="orgf628e37"></a>auto<br />
+<div class="outline-text-5" id="text-orgf628e37">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">x</span> = <span style="color: #4e3163;">42</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">case3</span>
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #3a81c3; font-weight: bold;">auto</span> cx = x; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">case3</span>
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #3a81c3; font-weight: bold;">auto</span> &amp;cx = x; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">case1</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> &amp;&amp;<span style="color: #715ab1;">uref1</span> = x; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">case2: uref1 -&gt; int &amp;</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> &amp;&amp;<span style="color: #715ab1;">uref2</span> = cx; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">case2: uref2 -&gt; const int &amp;</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> &amp;&amp;<span style="color: #715ab1;">uref3</span> = <span style="color: #4e3163;">42</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">case2: uref3 -&gt; int &amp;&amp;</span>
+
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> <span style="color: #715ab1;">name</span><span style="color: #3a81c3;">[]</span> = <span style="color: #2d9574;">"beep"</span>;
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">arr1</span> = name; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">arr1 -&gt; const char *</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> &amp;<span style="color: #715ab1;">arr2</span> = name; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">arr2 -&gt; const char (&amp;)[]</span>
+
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">somefn</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">func1</span> = somefn; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">func1 -&gt; void (*)(int)</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> &amp;<span style="color: #715ab1;">func2</span> = somefn; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">func2 -&gt; void (&amp;)(int)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">x</span> = <span style="color: #3a81c3;">{</span><span style="color: #4e3163;">27</span><span style="color: #3a81c3;">}</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">notice: x -&gt; std::initializer_list&lt;int&gt;</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><b>auto</b> 与模板类型推断唯一的不同在于 auto 会将{}包围的初始化列表，推断为 <b>std::initializer_list</b></li>
+<li>C++14 允许函数返回值使用 <b>auto</b> ，但这里 <b>auto</b> 的行为方式与模板类型推断一致；C++14 lambda 中的 <b>auto</b> 参数也是如此</li>
+</ul>
+</div>
+</li>
+<li><a id="orgf4dd615"></a>decltype<br />
+<div class="outline-text-5" id="text-orgf4dd615">
+<ul class="org-ul">
+<li><b>decltype</b> 通常不做任何修改的返回变量或表达式的类型，非常直观</li>
+<li>对容器中的下标操作 <b>operator[]</b> 使用 <b>decltype</b> 则返回 <b>T&amp;</b></li>
+<li><p>
+<b>decltype</b> 常用于模板函数，通过函数的参数推断函数的返回值类型，并置于函数签名结尾
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Container</span>, <span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Index</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #6c3163; font-weight: bold;">Access</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">Container</span> &amp;<span style="color: #715ab1;">c</span>, <span style="color: #ba2f59; font-weight: bold;">Index</span> <span style="color: #715ab1;">i</span><span style="color: #3a81c3;">)</span>
+    -&gt; decltype<span style="color: #3a81c3;">(</span>c<span style="color: #6c3163;">[</span>i<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">return</span> c<span style="color: #6c3163;">[</span>i<span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<p>
+这里的 <b>auto</b> 没有任何推断作用，只是用于标识尾部的 <b>decltype</b> 。C++14 语法允许去掉尾部的 <b>decltype</b> ，但是由于使用的是模板推断，原本的引用类型 <b>T&amp;</b> 被推断为 <b>T</b> 。
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Container</span>, <span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Index</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #6c3163; font-weight: bold;">Access</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">Container</span> &amp;<span style="color: #715ab1;">c</span>, <span style="color: #ba2f59; font-weight: bold;">Index</span> <span style="color: #715ab1;">i</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">return</span> c<span style="color: #6c3163;">[</span>i<span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">vector</span><span style="color: #3a81c3;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #715ab1;">vec</span>;
+...
+Access<span style="color: #3a81c3;">(</span>vec, <span style="color: #4e3163;">5</span><span style="color: #3a81c3;">)</span> = <span style="color: #4e3163;">10</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Wrong&#65292;&#23454;&#38469;&#36820;&#22238;&#20540;&#20026; int&#65292;&#19988;&#26159;&#19968;&#20010; rvalue</span>
+</pre>
+</div></li>
+<li><p>
+<b>decltype(auto)</b> ? <b>auto</b> 说明类型需要被推断， <b>decltype</b> 说明推断的时候应使用 <b>decltype</b> 的规则；C++14 only.
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">i</span> = <span style="color: #4e3163;">42</span>;
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">int</span> &amp;<span style="color: #715ab1;">ci</span> = i;
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">a1</span> = ci; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">a1 -&gt; int</span>
+decltype<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">auto</span><span style="color: #3a81c3;">)</span> a2 = ci; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">a2 -&gt; const int &amp;</span>
+</pre>
+</div></li>
+
+<li><p>
+<b>std::forward</b> final version:
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Container</span>, <span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Index</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #6c3163; font-weight: bold;">decltype</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">auto</span><span style="color: #3a81c3;">)</span> <span style="color: #6c3163; font-weight: bold;">Access</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">Container</span> &amp;<span style="color: #715ab1;">c</span>, <span style="color: #ba2f59; font-weight: bold;">Index</span> <span style="color: #715ab1;">i</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">forward</span><span style="color: #6c3163;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">Container</span><span style="color: #6c3163;">&gt;(</span><span style="color: #715ab1;">c</span><span style="color: #6c3163;">)[</span>i<span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">for C++14</span>
+
+<span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Container</span>, <span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Index</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #6c3163; font-weight: bold;">Access</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">Container</span> &amp;<span style="color: #715ab1;">c</span>, <span style="color: #ba2f59; font-weight: bold;">Index</span> <span style="color: #715ab1;">i</span><span style="color: #3a81c3;">)</span>
+    -&gt; decltype<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">forward</span><span style="color: #6c3163;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">Container</span><span style="color: #6c3163;">&gt;(</span><span style="color: #715ab1;">c</span><span style="color: #6c3163;">)[</span>i<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">forward</span><span style="color: #6c3163;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">Container</span><span style="color: #6c3163;">&gt;(</span><span style="color: #715ab1;">c</span><span style="color: #6c3163;">)[</span>i<span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">for C++11</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</li>
+
+
+<li><a id="orge0caba4"></a>Diagnositcs(Boost.TypeIndex)<br />
+<div class="outline-text-5" id="text-orge0caba4">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;boost/type_index.hpp&gt;</span>
+<span style="color: #3a81c3; font-weight: bold;">using</span> <span style="color: #4e3163;">boost</span>::<span style="color: #4e3163;">typeindex</span>::<span style="color: #ba2f59; font-weight: bold;">type_id_with_cvr</span>;
+<span style="color: #ba2f59; font-weight: bold;">type_id_with_cvr</span><span style="color: #3a81c3;">&lt;</span>T<span style="color: #3a81c3;">&gt;()</span>.pretty_name<span style="color: #3a81c3;">()</span>;
+</pre>
+</div>
+</div>
+</li>
 </ul>
 </li>
 </ul>
 </div>
-
 
 <div id="outline-container-org5030bd9" class="outline-2">
 <h2 id="org5030bd9"><span class="section-number-2">4</span> 容器</h2>
