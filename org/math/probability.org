@@ -17,7 +17,7 @@
     The set of all possible outcomes is called the *sample space* of the experiment, denoted by $\Omega$.
 
 *** event
-    A subset of the **sample space*, that is, a collection of possible outcomes is called an *event*.
+    A subset of the *sample space*, that is, a collection of possible outcomes is called an *event*.
 
 *** observation
     The outcome of each event is called *observation*.
@@ -194,14 +194,32 @@
   - A (discrete) random variable has an associated probability mass function(PMF)
 *** PMF
     Probability mass function,
-    $$p_X(x)=P(X=x)$$
+    $$PMF_X(x)=P(X=x)$$
     Note that:
-    $$\sum_x p_X(x)=1$$
+    $$\sum_x PMF_X(x)=1$$
 *** CDF
-    $$F_X(x)=P(X\le x)=\sum_{k\le x}p_X(k)$$
+    $$CDF_X(x)=P(X\le x)=\sum_{k\le x}PMF_X(k)$$
 ** Continuous RV
+*** PDF
+$$\begin{align*}
+PDF_X(x) & =\lim_{\varDelta x\to 0}\frac{P(x\le X \le x+\varDelta x)}{\varDelta x}\\
+& =\lim_{\varDelta x\to 0}\frac{CDF_X(x+\varDelta x)-CDF_X(x)}{\varDelta x}\\
+& = CDF^\prime_X(x)
+\end{align*}$$
+
+$$\begin{align*}
+P_X(a < x \le b) & = CDF_X(b)-CDF_X(a)\\
+& = \int_{-\infty}^b PDF_X(x)\mathrm{d}x - \int_{-\infty}^a PDF_X(x)\mathrm{d}x\\
+& = \int_a^b PDF_X(x)\mathrm{d}x
+\end{align*}$$
+
+- $\int_{-\infty}^{\infty}PDF_X(x)\mathrm{d}x = 1$
+- $PDF_X(x)\ge 0$ for all $x$
+
+- If $\varDelta x$ is very small, then $P(x\le X \le x+\varDelta x) \approx PDF_X(x)\cdot \varDelta x$
+
 *** CDF
-    $$F_X(x)=P(X\le x)=\int_{-\infty}^x f_X(t)dt$$
+    $$CDF_X(x)=P(X\le x)=\int_{-\infty}^x PDF_X(u)\mathrm{d}u$$
 
 * Counting
   - Permutations of n objects: $n!$
@@ -248,7 +266,7 @@
 
    $$X\sim Bernoulli(p)$$
 *** PMF
-$$P_X(x)= \begin{cases}
+$$PMF_X(x)= \begin{cases}
 p,  & \mbox{if }x = 1 \\
 1-p, & \mbox{if }x = 0 \\
 0, & \mbox{if }x\notin R_X \\
@@ -261,7 +279,7 @@ p,  & \mbox{if }x = 1 \\
     $$Var(X)=p(1-p)$$
 
 *** CDF
-$$F_X(x)= \begin{cases}
+$$CDF_X(x)= \begin{cases}
 0,  & \mbox{if }x \le 0\\
 1-p, & \mbox{if }0 \le x < 1 \\
 1, & \mbox{if }x\ge 1 \\
@@ -280,7 +298,7 @@ $$F_X(x)= \begin{cases}
    $$X\sim B(n, p)$$
 
 *** PMF
-    $$P_X(x)=\dbinom{n}{x} p^x (1-p)^{n-x}$$
+    $$PMF_X(x)=\dbinom{n}{x} p^x (1-p)^{n-x}$$
 
 *** E(X)
     $$E(X)=np$$
@@ -289,7 +307,7 @@ $$F_X(x)= \begin{cases}
     $$E(X)=np(1-p)$$
 
 *** CDF
-    $$F_X(x)=\sum_{m=-\infty}^{\lfloor x \rfloor}{n \choose m}p^m(1-p)^{n-m}$$
+    $$CDF_X(x)=\sum_{m=-\infty}^{\lfloor x \rfloor}{n \choose m}p^m(1-p)^{n-m}$$
 
 ** Geometric distribution
    1. You run a series of *independent* trials.
@@ -304,7 +322,7 @@ $$F_X(x)= \begin{cases}
 *** PMF
     let X be the number of trials needed to get the first successful outcome.
     To find the probability of $X$ taking a particular value $x$, using:
-    $$P_X(x)=p(1-p)^{x-1}$$
+    $$PMF_X(x)=p(1-p)^{x-1}$$
 
 *** E(X)
     $$E(X)=\frac{1}{p}$$
@@ -313,14 +331,14 @@ $$F_X(x)= \begin{cases}
     $$Var(X)=\frac{1-p}{p^2}$$
 
 *** CDF
-    $$F_X(x)=1-(1-p)^{\lfloor x \rfloor}$$
+    $$CDF_X(x)=1-(1-p)^{\lfloor x \rfloor}$$
 
 ** Uniform distribution
    $$X\sim Uniform(a, b)$$
    A discrete random variable has a uniform distribution if all the values belonging to its support have the same probability density.
    Let $X$ be a discrete random variable. Let its support be $R_X=\{a, a+k, a+2k \dots b\}$. Let the number of $R_X$ be $N$, then $N=\frac{b-a}{k}+1=\frac{b-a+k}{k}$
 *** PMF
-    $$P_X(x)=\frac{1}{N}=\frac{k}{b-a+k}$$
+    $$PMF_X(x)=\frac{1}{N}=\frac{k}{b-a+k}$$
 
 *** E(X)
     $$E(X)=\frac{a+b}{2}$$
@@ -329,7 +347,7 @@ $$F_X(x)= \begin{cases}
     $$Var(X)=k^2(\frac{N^2-1}{12})$$
 
 *** CDF
-$$F_X(x)= \begin{cases}
+$$CDF_X(x)= \begin{cases}
 0,  & \mbox{if }x < a\\
 \frac{\lfloor x\rfloor -a+k}{b-a+k}, & \mbox{if }a \le x \le b \\
 1, & \mbox{if }x > b \\
@@ -349,7 +367,7 @@ $$F_X(x)= \begin{cases}
    $$X\sim Pascal(n, p)$$
 
 *** PMF
-$$P_X(x)=\begin{cases}
+$$PMF_X(x)=\begin{cases}
 {x-1 \choose n-1}(1-p)^{x-n}p^n,  & x\ge n\\
 0, & otherwise\\
 \end{cases}$$
@@ -361,15 +379,14 @@ $$P_X(x)=\begin{cases}
     $$Var(X)=\frac{n(1-p)}{p^2}$$
 
 *** CDF
-$$F_X(x)=\\
-\begin{cases}
+$$CDF_X(x)=\begin{cases}
 I_p(n, \lfloor x \rfloor - n + 1),  & x\ge n\\
 0, & otherwise\\
 \end{cases}$$
 $I_z(a,b)$ is the regularized incomplete beta function
 **** more
 $$\begin{align*}
-F_X(x) & =P(X\le x)\\
+CDF_X(x) & =P(X\le x)\\
 & =P(\mbox{the n-th success occurs before the x-th trial})\\
 & =P(\mbox{n success in x trials})\\
 & =P(Y\ge n), Y\sim B(x, p)
@@ -388,7 +405,7 @@ This is why *pascal* is aslo called *negative binomial*.
    $$X\sim Po(\lambda)$$
 
 *** PMF
-    $$P_X(x)=\frac{e^{-\lambda}\lambda^{x}}{x!}$$
+    $$PMF_X(x)=\frac{e^{-\lambda}\lambda^{x}}{x!}$$
 
 *** E(X)
     $$E(X)=\lambda$$
@@ -397,7 +414,7 @@ This is why *pascal* is aslo called *negative binomial*.
     $$Var(X)=\lambda$$
 
 *** CDF
-$$F_X(x)= \begin{cases}
+$$CDF_X(x)= \begin{cases}
 -\lambda^e\sum_{n=-\infty}^{\lfloor x \rfloor}e^{-\lambda}\cdot \frac{\lambda^n}{n!}, & \mbox{if }x\ge 1 \\
 0, & \mbox{otherwise} \\
 \end{cases}$$
@@ -433,5 +450,74 @@ $$F_X(x)= \begin{cases}
 # *** approximate the Poisson
 #     - if $X\sim Po(\lambda)$ and $\lambda>15$, use $X\sim N(\lambda, \lambda)$ to approximate it
 
+* Continuous distributions
+** Uniform distribution
+   A continuous random variable has a uniform distribution if all the values belonging to its support have the same probability density.
+   $$X\sim Uniform(a, b)$$
+*** PDF
+$$PDF_X(x)=\begin{cases}
+\frac{1}{b-a}, & a \le x \le b\\
+0, & \mbox{otherwise}\\
+\end{cases}$$
+*** E(X)
+    $$E(X)=\frac{a+b}{2}$$
+
+*** Var(X)
+    $$Var(X)=\frac{(b-a)^2}{12}$$
+
+*** CDF
+$$CDF_X(x)=\begin{cases}
+0, & \mbox{if } x < a\\
+\frac{x-a}{b-a}, & \mbox{if } a\le x \le b\\
+1, & \mbox{if } x > b
+\end{cases}$$
+
+** Exponential distribution
+   How long do we need to wait before a customer enters our shop? How long will it take before a call center receives the next phone call?
+   All these questions concern the time we need to wait before a given event occurs.
+   If this waiting time is unknown, it is often appropriate to think of it as a random variable having an exponential.
+   $$X\sim Exponential(\lambda)$$
+   - most commonly used to model waiting times
+   - $\lambda$ is called rate parameter
+*** PDF
+$$PDF_X(x)=\begin{cases}
+\lambda e^{-\lambda x}, & \mbox{if } x \ge 0\\
+0, & otherwise
+\end{cases}$$
+
+*** E(X)
+    $$E(X)=\frac{1}{\lambda}$$
+
+*** Var(X)
+    $$Var(X)=\frac{1}{\lambda^2}$$
+
+*** CDF
+$$CDF_X(x)=\begin{cases}
+1-e^{-\lambda x}, & \mbox{if } x \ge 0\\
+0, & otherwise
+\end{cases}$$
+
+*** memorylessness
+** Erlang distribution
+   Given a *Poisson* distribution with a rate of change $\lambda$,
+   We use Erlang distribution to calculate the waiting times until the  $n$ th Poisson event occurs.
+
+   $$X\sim Erlang(n, \lambda)$$
+*** PDF
+$$PDF_X(x)=\begin{cases}
+\frac{1}{(n-1)!}\lambda^n x^{n-1} e^{-\lambda x}, & x\ge 0\\
+0, & otherwise
+\end{cases}$$
+*** E(X)
+    $$E(X)=\frac{n}{\lambda}$$
+
+*** Var(X)
+    $$Var(X)=\frac{n}{\lambda^2}$$
+
+*** CDF
+$$CDF_X(x)=\begin{cases}
+1-\sum_{k=0}^{n-1}\frac{(\lambda x)^k}{k!}e^{-\lambda x}, & x\ge 0\\
+0, & otherwise
+\end{cases}$$
 * Binomial Theorem
    $$(x+y)^n = \sum_{k=0}^{n} \dbinom{n}{k}x^{n-k}y^{k}$$
