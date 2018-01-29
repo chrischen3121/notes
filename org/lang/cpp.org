@@ -54,7 +54,7 @@
     - case 1: reference or pointer
       #+BEGIN_SRC cpp
         template<typename T>
-        void f(T& param);
+        void f(T &param);
 
         f(x); // T -> int
         f(cx); // T -> const int
@@ -208,3 +208,29 @@
        auto c = s.c_str();
        s = "hello"; // cout << c print 'hello'
      #+END_SRC
+* 移动语义
+** std::move & std::forward
+   - *std::move* 实际只做右值转换，不做任何 move 的事情
+   - *std::forward* 当参数是通过右值初始化时， *std::forward* 将其转化成右值
+     #+BEGIN_SRC cpp
+       template<typename T>
+       void process(const int &n);
+       void process(int &&n);
+
+       void forward_test(T &&param) {
+         process(std::forward<T>(param));
+       }
+
+       int a = 0;
+       forward_test(a); //lvalue->process
+       forward_test(std::move(a)); // rvalue->process, n in process initialized by rvalue
+     #+END_SRC
+** universal reference
+   当"T&&"引用遇上类型推断时，则为 universal 引用；其余时候为右值引用
+   #+BEGIN_SRC cpp
+     template<typename T>
+     void f(T &&param); // param is universal reference
+
+     int &&var1 = 1;
+     auto &&var2 = var1; // var2 is universal reference
+   #+END_SRC
