@@ -17,7 +17,7 @@
     $$\mbox{If }\lim_{x\to a+}f(x)\neq \lim_{x\to a-}f(x), \mbox{then }\lim_{x\to a}f(x)\mbox{ DNF}$$
 
 *** Existence
-    $$\mbox{If }\lim_{x\to a+}f(x)=\lim_{x\to a-}f(x)=L, \mbox{then }$\lim_{x\to a}f(x)=L$$
+    $$\mbox{If }\lim_{x\to a+}f(x)=\lim_{x\to a-}f(x)=L, \mbox{then } \lim_{x\to a}f(x)=L$$
 
 ** Continuity
    To say "$f(x)$ is continuous at $a$"
@@ -64,8 +64,7 @@
 
     then $\lim_{x\to c}f(x)\le \lim_{x\to c}g(x)$
 
-** greate $lim_{x\to 0}\frac{sin(x)}{x}=1$
-*** TODO 待证明
+** $lim_{x\to 0}\frac{sin(x)}{x}=1$
 
 ** l'Hôpital's rule
    使用洛必达法则的先决条件：原函数极限为 $\frac{0}{0}$ 或者 $\frac{\infty}{\infty}$ 或者 $0\cdot \infty$
@@ -85,35 +84,62 @@
 * Derivatives
 ** Definition
    The derivative of $f$ at the point $x$ is defined to be
-   $$\lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$
-   If the derivative of $f$ exists at x, we say that the function is *differentiable* at $x$
+   $$f^\prime(x)=\lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$
+   If the *derivative of $f$ exists* at x, we say that the function is *differentiable* at $x$.
+   The derivative of $f$ exists means $\lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$ exists.
+*** other form
+    $$f^\prime(x)=\lim_{x\to a}\frac{f(x)-f(a)}{x-a}$$
+
+*** $f(x+h)\approx f(x) + f'(x)h$ when $h$ approaches 0
+
+** Differentiable
+*** Differentiable $\to$ Continuity
+    $$f^\prime(x)=\lim_{x\to a}\frac{f(x)-f(a)}{x-a}\ exists$$
+$$\begin{align*}
+\lim_{x\to a}(f(x)-f(a)) & = \lim_{x\to a}(x-a)\cdot\lim_{x\to a}\frac{f(x)-f(a)}{x-a}\\
+& = 0\cdot f^\prime(x) = 0
+\end{align*}$$
+$$\lim_{x\to a}f(x) = f(a)$$
+which means $f(x)$ is continuous at $a$.
+
+*** Continuity $\nrightarrow$ Differentiable
+    $f(x) = |x|$ is continuous at 0, but is not differentiable at 0.
+
+** Rules
+*** Power Rule
+    $$\frac{d}{dx}(x^n)=nx^{n-1}$$
+**** Proof
+$$\begin{align*}
+f^\prime(x) & =\lim_{h\to 0}\frac{(x+h)^n-x^n}{h} \\
+& = \lim_{h\to 0}\frac{\sum_{k=0}^{n}{n\choose k}x^k h^{n-k}-x^n}{h} \\
+& = \lim_{h\to 0}\sum_{k=0}^{n-1}{n\choose k}x^k h^{n-k-1} \\
+& = \lim_{h\to 0}({n \choose n-1}x^{n-1}h^0 + \sum_{k=0}^{n-2}{n\choose k}x^k h^{n-k-1}) \\
+& = nx^{n-1}
+\end{align*}$$
+*** Product Rule
+    $$\frac{d}{dx}(fg)=f'g + fg'$$
+*** Quotient Rule
+    $$\frac{d}{dx}(\frac{f}{g})=\frac{f'g-fg'}{g^2}$$
+*** Trigonometric Rule
+    $$\frac{d}{dx}(\sin x)=\cos x$$
+    $$\frac{d}{dx}(\cos x)=-\sin x$$
+    $$\frac{d}{dx}(\tan x)=\frac{d}{dx}(\frac{\sin x}{\cos x})=\frac{\cos^2 x+\sin^2 x}{\cos^2 x}=\sec^2 x$$
+    $$\frac{d}{dx}(\sec x)=\sec x \tan x$$
+    $$\frac{d}{dx}(\cot x)=\csc^2 x$$
+    $$\frac{d}{dx}(\csc x)=-\csc x \cot x$$
+*** Chain Rule
+**** first form
+     $$f^\prime(g(x)) = f^\prime(g(x))g^\prime(x)$$
+**** second form
+     Let $u = g(x)$, then $f(g(x))$ turns out to be $f(u)$
+     $$\frac{df}{dx}=\frac{df}{du}\frac{du}{dx}$$
+     - Example
+     $$\frac{d}{dx}(\sqrt{x^3-7x})$$
+     Let $f(u) = \sqrt u$ and $u = x^3-7x$
+     $$\frac{df}{dx} = \frac{df}{du}\frac{du}{dx} = \frac{3x^2 - 7}{2\sqrt u} = \frac{3x^2 - 7}{2\sqrt{x^3-7x}}$$
 
 * 导数
-** 定义
-$$g^\prime(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$
-- 可导条件:函数在该点的左右两侧导数都存在且相等
-** 基本法则
-*** 幂法则
-$$\frac{d}{dx}(x^n)=nx^{n-1}$$
-*** 积法则
-$$\frac{d}{dx}(fg)=f'g + fg'$$
-*** 商法则
-$$\frac{d}{dx}(\frac{f}{g})=\frac{f'g-fg'}{g^2}$$
-** 三角函数的导数
-$$\frac{d}{dx}(sinx)=cosx$$
-$$\frac{d}{dx}(cosx)=-sinx$$
-利用商法则：
-$$\frac{d}{dx}(tanx)=\frac{d}{dx}(\frac{sinx}{cosx})=\frac{cos^{2}x+sin^{2}x}{cos^{2}x}=sec^{2}x$$
 ** 链式法则(chain rule)
-*** first form
-$$\frac{d}{dx}f(g(x)) = f'(g(x))g'(x)$$
-*** second form
-Let $u = g(x)$, then f(g(x)) turns to be f(u)
-$$\frac{df}{dx}=\frac{df}{du}\frac{du}{dx}$$
-- Example
-  $$\frac{d}{dx}(\sqrt{x^3-7x})$$
-  Let $f(u) = \sqrt u$ and $u = x^3-7x$
-  $$\frac{df}{dx} = \frac{df}{du}\frac{du}{dx} = \frac{3x^2 - 7}{2\sqrt u} = \frac{3x^2 - 7}{2\sqrt{x^3-7x}}$$
 *** 广义幂法则
 $h(x)=(g(x))^n$ Let $f(x)=x^n$, h(x) is the combination of f(x) and g(x)
 $$h'(x)=f'(g(x))g'(x) = n(g(x))^{n-1}g'(x)$$
@@ -162,8 +188,7 @@ y 可以写成关于 x 的函数，有时不太容易变成 y=f(x)的形式，�
 $$2y\frac{dy}{dx} +(y + x\frac{dy}{dx}) +3 = 0$$
 $$\frac{dy}{dx}=\frac{-y-3}{2y+x}$$
 由此可算出，(2, 1)点的斜率则为-1
-** 求近似值
-$$f(x+\Delta x) \approx f(x) + f'(x)\Delta x$$
+
 * 积分
 ** 积分定义
 #+BEGIN_VERSE
