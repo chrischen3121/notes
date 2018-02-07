@@ -29,6 +29,29 @@
     ,*pci = 2; // error: assignment of read-only location ‘* pci’
    #+END_SRC
 
+* 表达式
+** 输入输出求值顺序
+   #+BEGIN_SRC cpp
+     int i{0};
+     std::cout << i << " " << ++i << "\n"; //未定义
+   #+END_SRC
+** 递增递减运算符
+   除非必须，否则不使用后置版本。后置版本需要存储原始值用于返回未修改的内容。
+*** 与解引用混用
+    #+BEGIN_SRC cpp
+      std::cout << *iter << "\n";
+      ++iter;
+      //等价于
+      std::cout << *iter++ << "\n"; //先递增后解引用，常规简洁写法，记住。
+    #+END_SRC
+** sizeof 运算符
+   sizeof 运算符返回一条表达式或一个类型名字所占的字节数
+   #+BEGIN_SRC cpp
+     sizeof(type)
+     sizeof expr
+   #+END_SRC
+   - sizeof 并不实际计算其运算对象的值，编译期即可
+   - 对 string 或 vector 对象使用，仅返回该类型固定部分的大小
 * 类型
 ** 类型别名
    以下两个语句等价：
@@ -137,7 +160,9 @@
         const int &ci = i;
         auto a1 = ci; // a1 -> int
         decltype(auto) a2 = ci; // a2 -> const int &
-        decltype((i)) a3 = i; // a3 -> int &
+        decltype((i)) a3 = i; // a3 -> int & 因为(i)为表达式且求值结果为左值，decltype 返回引用
+        int *pi = 42;
+        decltype(*pi) a4 = i; // a4 -> int & 同 a3，*pi 为表达式
       #+END_SRC
 
     - *std::forward* final version:
@@ -162,6 +187,34 @@
       type_id_with_cvr<T>().pretty_name();
     #+END_SRC
 
+** 类型转换
+*** 隐式转换
+    #+BEGIN_SRC cpp
+      int i = 5;
+      double d = 3.14;
+      int ival = d + i;
+    #+END_SRC
+    1. i: int -> double
+    2. d + i -> 8.14
+    3. 8.14 -> int
+*** 显式转换
+**** static_cast
+     #+BEGIN_SRC cpp
+       auto d = static_cast<double>(i);
+       void *p;
+       auto pd = static_cast<double*>(p);
+     #+END_SRC
+**** dynamic_cast
+     多态指针转换
+**** const_cast
+     去掉 const
+     #+BEGIN_SRC cpp
+       const char *pc;
+       char *p = const_cast<char *>(pc)
+     #+END_SRC
+     常常用于函数重载的情况
+**** reinterpret_cast
+     用来处理无关类型之间的转换，字面意思“重新解释（类型的比特位）”，避免使用。
 * 容器
 ** 数组
    - 声明
@@ -170,6 +223,9 @@
        int &refs[10]; //语法错误：不存在引用的数组
        int (*pArray)[10]; //指向一个 int 数组
        int (&rArray)[10]; //引用一个 int 数组
+
+       using int_array = int[10];
+       int_array *pArray; //指向一个 int 数组，更简洁
      #+END_SRC
    - 使用数组初始化 vector
      #+BEGIN_SRC cpp
@@ -178,14 +234,12 @@
      #+END_SRC
    - 多维数组
      #+BEGIN_SRC cpp
-       int array[2][3]={2,5,7,5,3,1};
+       int array[2][3] = {2,5,7,5,3,1};
        for (auto &row: array)
          for (auto col: row)
              std::cout << col << std::endl;
      #+END_SRC
-     #+BEGIN_VERSE
-     2 行 3 列数组，使用 for range 时，外层循环要用引用
-     #+END_VERSE
+     - 2 行 3 列数组，使用 for range 时，外层循环要用引用，为了避免数组被自动转成指针
 
 ** iterator
    - C++11 引入 cbegin 和 cend，调用他们返回一个 const_iterator，支持只读访问。
