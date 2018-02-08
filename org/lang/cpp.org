@@ -26,7 +26,7 @@
     pi = &val2; // error: assignment of read-only variable ‘pi’
 
     const int *pci = &val; //指向常量整形的指针 low-level const
-    ,*pci = 2; // error: assignment of read-only location ‘* pci’
+    *pci = 2; // error: assignment of read-only location ‘* pci’
    #+END_SRC
 
 * 表达式
@@ -52,6 +52,53 @@
    #+END_SRC
    - sizeof 并不实际计算其运算对象的值，编译期即可
    - 对 string 或 vector 对象使用，仅返回该类型固定部分的大小
+* 函数
+** 局部静态变量
+   在程序第一次经过对象定义语句时初始化，直到程序结束才销毁。
+   #+BEGIN_SRC cpp
+     auto f() {
+       static auto cst = 0; // 仅执行一次
+       return ++cst;
+     }
+   #+END_SRC
+** 数组形参
+   #+BEGIN_SRC cpp
+     void f(const int *);
+     void f(const int[]); //函数意图显而意见
+     void f(const int[10]); //10 并不起作用，应通过额外的参数传数组长度
+     void f(int (&arr)[10]); //数组引用形参
+   #+END_SRC
+** 可变参数形参
+*** initializer_list
+    同类型多参数
+    #+BEGIN_SRC cpp
+      void f(initializer_list<int> args);
+      f({1, 2, 3});
+    #+END_SRC
+*** 可变参数模板
+    #+BEGIN_SRC cpp
+      template<typename... Args>
+      void f(const Args& ... rest);
+    #+END_SRC
+** 列表初始化返回值
+   #+BEGIN_SRC cpp
+     vector<string> process() {
+       return {"a", "b", "cd"};
+     }
+   #+END_SRC
+** 尾置返回类型
+   #+BEGIN_SRC cpp
+     auto f(int i) -> int(*)[10];//返回指针，指向含有 10 个整数的数组
+   #+END_SRC
+
+** constexpr 函数
+   能用于常量表达式的函数
+   - 函数的返回值及所有形参类型必须是字面值类型
+   - 函数体有且只有一条 return 语句
+   #+BEGIN_SRC cpp
+     constexpr int num() { return 42; }
+   #+END_SRC
+   - 编译时直接用结果值 42 替换对 num 的函数调用
 * 类型
 ** 类型别名
    以下两个语句等价：
@@ -295,3 +342,10 @@
      auto func = [data = std::move(data)] {...}; // C++14 init capture
      auto func = [](auto &&x) { return normalize(std::forward<decltype(x)>x); }; // C++14 forward lambda
    #+END_SRC
+* 辅助调试
+  - NDEBUG 宏
+  - assert 宏
+** 辅助变量
+   #+BEGIN_EXAMPLE
+   __func__, __FILE__, __LINE__, __TIME__, __DATE__
+   #+END_EXAMPLE
