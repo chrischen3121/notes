@@ -99,6 +99,60 @@
      constexpr int num() { return 42; }
    #+END_SRC
    - 编译时直接用结果值 42 替换对 num 的函数调用
+** 函数指针
+   #+BEGIN_SRC cpp
+     bool (*pf)(int a);
+     bool fn(int a) { return a == 1; }
+     pf = fn;                  // & is optional
+     pf(2);                    // (*pf)(2) is optional
+     void usepf(bool fn(int)); // bool (*fn)(int) is optional
+   #+END_SRC
+*** 返回函数指针
+    #+BEGIN_SRC cpp
+      using fn = bool(int);     //函数类型
+      using pf = bool (*)(int); //函数指针类型
+      pf returnFn();            // OK
+      fn returnFn();            // Wrong
+      fn *returnFn();           // OK
+      auto returnFn() -> bool (*)(int)
+    #+END_SRC
+* 类
+** 隐式 inline
+   在类定义中声明的成员函数为隐式 inline 函数
+
+** 可变数据成员
+   定义 const 成员函数可以改变的数据成员，比如用于 const 函数调用计数
+
+** 返回*this 的 const 成员函数
+   const 成员函数以引用形式返回的是 *常量引用*
+
+** 委托构造函数
+** explicit
+   抑制构造函数(拷贝和移动构造函数不算在内)定义的隐式转换
+
+** 聚合类
+   - 要求所有成员都为 public
+   - 成员无默认初始化
+   - 没有基类，没有 virtual
+   #+BEGIN_SRC cpp
+     struct Data {
+       int id;
+       string name;
+     };
+     Data data{1, "steve"};
+   #+END_SRC
+
+** 字面值常量类
+*** 数据成员都是字面值类型的聚合类
+*** 非聚合类
+    - 数据成员必须是字面值类型
+    - 数据成员初始值定义必须使用常量表达式
+    - 至少有一个 constexpr 构造函数
+    - 必须使用析构函数的默认定义
+
+** 静态常量初始值
+   即使静态常量在类内被初始化了也应该在类外部定义该成员。否则该静态值无法传入参数为其类型 const 引用的函数。
+
 * 类型
 ** 类型别名
    以下两个语句等价：
@@ -349,3 +403,10 @@
    #+BEGIN_EXAMPLE
    __func__, __FILE__, __LINE__, __TIME__, __DATE__
    #+END_EXAMPLE
+* 输入输出流
+** 缓冲区控制
+   - endl: 输出一个换行符并刷新缓冲区
+   - flush: 直接刷新缓冲区
+   - ends: 输出一个'\0' 并刷新缓冲区
+   - unitbuf: 设定输出流为每次写入直接刷新缓冲区
+** tie 关联输出流
