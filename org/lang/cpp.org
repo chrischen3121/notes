@@ -410,3 +410,44 @@
    - ends: 输出一个'\0' 并刷新缓冲区
    - unitbuf: 设定输出流为每次写入直接刷新缓冲区
 ** tie 关联输出流
+   例如标准输入流 cin 会关联标准输出流 cout，cin 会刷新 cout 的状态
+   #+BEGIN_SRC cpp
+     cin.tie(&cout);
+   #+END_SRC
+* string
+** 例子：特定字符搜索
+   #+BEGIN_SRC cpp
+     string name = "r1b5";
+     string numbers = "0123456789";
+     string::size_type pos = 0;
+     while ((pos = name.find_first_of(numbers, pos)) != string::npos) {
+       std::cout << name[pos] << "\n";
+       ++pos;
+     }
+   #+END_SRC
+** 数值转换
+   std::to_string, stoXXX
+* 容器
+** 顺序容器
+   - vector
+   - list
+   - forward_list
+   - deque
+   - array
+   - string
+** 遍历删元素
+   #+BEGIN_SRC cpp
+     std::vector<int> ivec{7, 2, 6, 5, 5, 6, 1};
+     std::cout << ivec.capacity() << "\n";
+     for (auto it = ivec.begin(); it != ivec.end();) {
+       if (*it == 6) {
+         it = ivec.erase(it);
+       } else {
+         ++it;
+       }
+     }
+   #+END_SRC
+** 容器适配器
+   - stack(默认基于 deque)
+   - queue(默认基于 deque)
+   - priority_queue(默认基于 vector)
