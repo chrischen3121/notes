@@ -454,6 +454,32 @@
 
 *** local_iterator
     无序容器的桶(bucket)迭代器
+* 智能指针
+** 动态数组
+*** unique_ptr
+    #+BEGIN_SRC cpp
+      {
+        std::unique_ptr<int[]> array(new int[10]);
+      } // 超出作用域自动调用 delete []释放
+    #+END_SRC
+*** shared_ptr
+    默认不支持 delete[]释放，需自定义删除器
+    #+BEGIN_SRC cpp
+      {
+        std::shared_ptr<int[]> array(new int[10], [](int *p) { delete[] p; });
+      }
+    #+END_SRC
+** allocator 类
+   用于分离 *内存分配* 和 *对象构造*
+*** 内存分配
+    - allocate
+    - deallocate
+*** 对象构造与析构
+    - construct
+    - destroy
+*** 未初始化内存的拷贝
+    - uninitialized_copy
+    - uninitialized_fill
 * 移动语义
 ** std::move & std::forward
    - *std::move* 实际只做右值转换，不做任何 move 的事情
