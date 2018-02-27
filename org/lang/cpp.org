@@ -116,6 +116,9 @@
       fn *returnFn();           // OK
       auto returnFn() -> bool (*)(int)
     #+END_SRC
+** std::bind
+   接受一个可调用对象，绑定若干参数，生成一个新的可调用对象。(函数柯里化)
+   引用类型参数需用 std::ref 包装，常量引用使用 std::cref。
 * 类
 ** 隐式 inline
    在类定义中声明的成员函数为隐式 inline 函数
@@ -364,6 +367,93 @@
        auto c = s.c_str();
        s = "hello"; // cout << c print 'hello'
      #+END_SRC
+** 顺序容器
+   - vector
+   - list
+   - forward_list
+   - deque
+   - array
+   - string
+** 关联容器
+*** 有序容器
+*** 无序容器
+    #+BEGIN_SRC cpp
+      std::unordered_map<std::string, int> h{{"a", 2}, {"b", 4}};
+      std::cout << h.bucket_count() << "\n";     //桶个数
+      std::cout << h.max_bucket_count() << "\n"; //最大桶个数
+      std::cout << h.bucket_size(1) << "\n";     //第 1 个桶内的元素个数
+      std::cout << h.load_factor() << "\n";      //每个桶的平均元素数量
+      std::cout << h.max_load_factor() << "\n"; //试图维护的每个桶的平均元素数量
+      h.rehash(20); //桶个数设为大于等于 n，且桶个数>size/max_load_factor
+      h.reserve(50);//使得 h 可以保存 n 个元素且不必 rehash
+    #+END_SRC
+
+** 遍历删元素
+   #+BEGIN_SRC cpp
+     std::vector<int> ivec{7, 2, 6, 5, 5, 6, 1};
+     std::cout << ivec.capacity() << "\n";
+     for (auto it = ivec.begin(); it != ivec.end();) {
+       if (*it == 6) {
+         it = ivec.erase(it);
+       } else {
+         ++it;
+       }
+     }
+   #+END_SRC
+** 容器适配器
+   - stack(默认基于 deque)
+   - queue(默认基于 deque)
+   - priority_queue(默认基于 vector)
+** 常用泛型算法
+*** 算法形式
+    - alg(beg, end, /other args/);
+    - alg(beg, end, dest, /other args/);
+    - alg(beg, end, beg2, /other args/);
+    - alg(beg, end, beg2, end2, /other args/);
+
+*** 读
+    find, accumlate, equal, all, any, none, for_each, count, mismatch, search
+
+*** 写
+    fill, copy, move, replace, generate, remove, unique, reverse, rotate, shuffle
+    - XXX_copy 会讲结果额外拷贝到新的集合中，即 non-inplace
+
+*** 容器自定的算法通常性能更好
+    如 list, forward_list 的 sort, merge, remove, reverse 和 unique
+
+** 非常规迭代器
+*** insert iterator
+**** back_inserter
+     #+BEGIN_SRC cpp
+       vector<int> vec;
+       auto it = back_inserter(vec);
+       *it = 42; //类似于 push_back(42)
+     #+END_SRC
+     常用于泛型算法的输出迭代器
+**** front_inserter
+     类似于 push_front
+**** inserter
+     指定插入位置的迭代器
+*** stream iterator
+**** istream_iterator
+     #+BEGIN_SRC cpp
+       std::istream_iterator<int> ist(cin), eof; //默认构造创建一个 eof 值
+       vector<int> vec;
+       std::transform(ist, eof, std::back_inserter(vec),
+                      [](auto a) { return a * 2; });
+     #+END_SRC
+**** ostream_iterator
+     #+BEGIN_SRC cpp
+       vector<int> vec{9, 5, 5, 3, 5, 7, 8, 2};
+       std::ostream_iterator<int> ost(cout);
+       std::transform(vec.begin(), vec.end(), ost, [](auto a) { return a * 2; });
+     #+END_SRC
+*** reverse iterator
+    rbegin, rend
+*** move iterator
+
+*** local_iterator
+    无序容器的桶(bucket)迭代器
 * 移动语义
 ** std::move & std::forward
    - *std::move* 实际只做右值转换，不做任何 move 的事情
@@ -373,6 +463,7 @@
        void process(const int &n);
        void process(int &&n);
 
+       template<typename T>
        void forward_test(T &&param) {
          process(std::forward<T>(param));
        }
@@ -381,6 +472,7 @@
        forward_test(a); //lvalue->process
        forward_test(std::move(a)); // rvalue->process, n in process initialized by rvalue
      #+END_SRC
+
 ** universal reference
    当"T&&"引用遇上类型推断时，则为 universal 引用；其余时候为右值引用
    #+BEGIN_SRC cpp
@@ -390,12 +482,19 @@
      int &&var1 = 1;
      auto &&var2 = var1; // var2 is universal reference
    #+END_SRC
+
 * lambda
 ** C++14 lambda hints
    #+BEGIN_SRC cpp
      auto func = [data = std::move(data)] {...}; // C++14 init capture
      auto func = [](auto &&x) { return normalize(std::forward<decltype(x)>x); }; // C++14 forward lambda
    #+END_SRC
+** mutable lambda
+   #+BEGIN_SRC cpp
+     int i = 42;
+     auto func = [i]() mutable { return ++i; } // lambda 函数体内能改变 i 的值，默认按值传递不允许
+   #+END_SRC
+
 * 辅助调试
   - NDEBUG 宏
   - assert 宏
@@ -427,27 +526,18 @@
    #+END_SRC
 ** 数值转换
    std::to_string, stoXXX
-* 容器
-** 顺序容器
-   - vector
-   - list
-   - forward_list
-   - deque
-   - array
-   - string
-** 遍历删元素
+* mutable & volatile
+** mutable
+   被 mutable 修饰的数据成员，可以在 const 成员函数中修改。
    #+BEGIN_SRC cpp
-     std::vector<int> ivec{7, 2, 6, 5, 5, 6, 1};
-     std::cout << ivec.capacity() << "\n";
-     for (auto it = ivec.begin(); it != ivec.end();) {
-       if (*it == 6) {
-         it = ivec.erase(it);
-       } else {
-         ++it;
-       }
-     }
+     class Test {
+      public:
+       void fn() const { count++; }; //count 可以被改变
+
+      private:
+       mutable int count = 0;
+     };
    #+END_SRC
-** 容器适配器
-   - stack(默认基于 deque)
-   - queue(默认基于 deque)
-   - priority_queue(默认基于 vector)
+   fn 是一个对于外部来说的逻辑 const 函数，它所改变的内部状态不为外部“所知”(非接口可获取，内部缓存)
+** volatile
+   打破编译器根据有限的上下文对某变量是不会发生改变的假设，从而作出错误的编译优化。
