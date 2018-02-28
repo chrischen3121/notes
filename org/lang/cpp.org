@@ -119,6 +119,16 @@
 ** std::bind
    接受一个可调用对象，绑定若干参数，生成一个新的可调用对象。(函数柯里化)
    引用类型参数需用 std::ref 包装，常量引用使用 std::cref。
+
+** 运算符函数化
+   标准库提供了内置类型的函数形式的运算符，如 plus<int>, negate<int>等。主要用于给算法传递这些函数，例如：
+   #+BEGIN_SRC cpp
+     sort(svec.begin(), svec.end(), greater<string>());
+   #+END_SRC
+
+** std::function
+   为了统一各种不同可调用对象之间(lambda，函数指针，重载调用运算符的类等)的同一调用形式(相同的函数签名)
+
 * 类
 ** 隐式 inline
    在类定义中声明的成员函数为隐式 inline 函数
@@ -155,6 +165,18 @@
 
 ** 静态常量初始值
    即使静态常量在类内被初始化了也应该在类外部定义该成员。否则该静态值无法传入参数为其类型 const 引用的函数。
+
+** 运算符重载
+*** 递增递减运算符
+    #+BEGIN_SRC cpp
+      MyClass operator++(); //前置版本
+      MyClass operator++(int); //后置版本
+    #+END_SRC
+*** 类型转换重载
+    #+BEGIN_SRC cpp
+      operator target_type() const; //隐式转换
+      explicit operator target_type() const; //显示转换
+    #+END_SRC
 
 * 类型
 ** 类型别名
@@ -519,7 +541,20 @@
    #+BEGIN_SRC cpp
      int i = 42;
      auto func = [i]() mutable { return ++i; } // lambda 函数体内能改变 i 的值，默认按值传递不允许
+
+     //类似生成如下类
+     class Func {
+      public:
+       Func(int i) : i_(i) {}
+       int operator()() {
+         return ++i_;
+       }
+
+      private:
+       int i_;
+     };
    #+END_SRC
+   如没有 mutable 修饰，则生成的 operator()会是 const 函数
 
 * 辅助调试
   - NDEBUG 宏
