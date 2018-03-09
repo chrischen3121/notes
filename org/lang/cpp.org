@@ -186,6 +186,17 @@
    #+BEGIN_SRC cpp
      p_base->Base::fn();//使用作用域指定
    #+END_SRC
+** 虚继承
+   菱形结构
+   #+BEGIN_SRC cpp
+     class A {}; //虚基类，被 D 继承了两次
+     class B : public virtual A {}; //声明虚继承
+     class C : public virtual A {}; //声明虚继承
+     class D : public B {};
+     class D : public C {};
+   #+END_SRC
+   - D 中只有一个 A 的基类部分
+   - 在派生类的构造中，虚基类总是先于非虚基类构造
 * 类型
 ** 类型别名
    以下两个语句等价：
@@ -363,6 +374,9 @@
      常常用于函数重载的情况
 **** reinterpret_cast
      用来处理无关类型之间的转换，字面意思“重新解释（类型的比特位）”，避免使用。
+** 运行时类型识别
+   - typeid
+   - dynamic_cast: 常用于将基类转换成派生类并执行派生类非虚函数的操作
 * 容器
 ** 数组
    - 声明
@@ -720,6 +734,11 @@
    #+END_SRC
 ** 数值转换
    std::to_string, stoXXX
+* new & delete
+  - 可重载 new 和 delete 操作符以控制 *内存分配*
+  - 无法改变 *运算符* new 和 delete 的行为
+    - 运算符 new 的操作：1) 调用 operator new 获取内存空间 2) 在内存空间中构造对象
+    - 运算符 delete：1) 调用析构销毁对象 2) 调用 operator delete 回收内存空间
 * mutable & volatile
 ** mutable
    被 mutable 修饰的数据成员，可以在 const 成员函数中修改。
@@ -735,3 +754,20 @@
    fn 是一个对于外部来说的逻辑 const 函数，它所改变的内部状态不为外部“所知”(非接口可获取，内部缓存)
 ** volatile
    打破编译器根据有限的上下文对某变量是不会发生改变的假设，从而作出错误的编译优化。
+* 异常
+** 构造函数处理异常
+   需要声明成函数 try 语句块，这样才能捕获构造函数的初始化过程
+   #+BEGIN_SRC cpp
+     Foo::Foo(int i) try : i_(i) {}
+   #+END_SRC
+* 标准库
+** regex
+** random
+   #+BEGIN_SRC cpp
+     std::uniform_int_distribution<> u(0, 9);
+     std::default_random_engine e; // e{some_seed}
+     std::cout << e.min() << " " << e.max() << "\n";
+     for (std::size_t i = 0; i < 10; ++i) {
+       std::cout << u(e) << "\n";
+     }
+   #+END_SRC
