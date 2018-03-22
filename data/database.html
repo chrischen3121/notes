@@ -3,13 +3,13 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2017-05-11 Thu 10:34 -->
+<!-- 2018-03-22 Thu 14:03 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Database Concept</title>
+<title>SQL Database</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
-<meta name="keywords" content="database" />
+<meta name="keywords" content="database, sql" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -69,6 +69,7 @@
   pre.src-fortran:before { content: 'Fortran'; }
   pre.src-gnuplot:before { content: 'gnuplot'; }
   pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
   pre.src-java:before { content: 'Java'; }
   pre.src-js:before { content: 'Javascript'; }
   pre.src-latex:before { content: 'LaTeX'; }
@@ -253,88 +254,89 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Database Concept</h1>
+<h1 class="title">SQL Database</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org47bb6db">1. Rational Algebra</a>
+<li><a href="#org0a93cb0">1. Rational Algebra</a>
 <ul>
-<li><a href="#org4473c6a">1.1. Basic</a></li>
-<li><a href="#org22a872a">1.2. Addition</a></li>
-<li><a href="#orgfc21ee1">1.3. Modification</a></li>
+<li><a href="#org29acc11">1.1. Basic</a></li>
+<li><a href="#org12e5a23">1.2. Addition</a></li>
+<li><a href="#org15ce2de">1.3. Modification</a></li>
 </ul>
 </li>
-<li><a href="#org47a4bbd">2. SQL Language</a>
+<li><a href="#org51008c3">2. SQL Language</a>
 <ul>
-<li><a href="#orgca0bc62">2.1. Command</a></li>
-<li><a href="#orgae861d3">2.2. Datatype</a></li>
-<li><a href="#org27595c6">2.3. Join</a></li>
-<li><a href="#orgbe46160">2.4. Subquery</a></li>
+<li><a href="#org8950ffd">2.1. Command</a></li>
+<li><a href="#org9113f40">2.2. Datatype</a></li>
+<li><a href="#org077534b">2.3. Join</a></li>
+<li><a href="#orgd44fe52">2.4. Subquery</a></li>
 </ul>
 </li>
-<li><a href="#org1eb1178">3. Design</a>
+<li><a href="#org44d09ed">3. Design</a>
 <ul>
-<li><a href="#orgea32533">3.1. Steps</a></li>
-<li><a href="#org139468c">3.2. Schema Pattern</a></li>
-<li><a href="#orgcac2f93">3.3. Functional Dependency</a></li>
-<li><a href="#org6b3ba20">3.4. Multivalued Dependency</a></li>
+<li><a href="#org2996766">3.1. Steps</a></li>
+<li><a href="#orgfc70303">3.2. Schema Pattern</a></li>
+<li><a href="#org51ec550">3.3. Functional Dependency</a></li>
+<li><a href="#orge2756f1">3.4. Multivalued Dependency</a></li>
 </ul>
 </li>
-<li><a href="#org92d05ef">4. Normalization</a>
+<li><a href="#org81d3823">4. Normalization</a>
 <ul>
-<li><a href="#org7150ef4">4.1. 1-NF</a></li>
-<li><a href="#orgd015ced">4.2. 2-NF</a></li>
-<li><a href="#org754595c">4.3. 3-NF</a></li>
-<li><a href="#org32505c1">4.4. Boyce-Codd Normal Form(BCNF, 3.5-NF)</a></li>
-<li><a href="#org587e802">4.5. 4-NF</a></li>
+<li><a href="#org659d25b">4.1. 1-NF</a></li>
+<li><a href="#org817788f">4.2. 2-NF</a></li>
+<li><a href="#org03e519e">4.3. 3-NF</a></li>
+<li><a href="#org002c8ee">4.4. Boyce-Codd Normal Form(BCNF, 3.5-NF)</a></li>
+<li><a href="#org35733d4">4.5. 4-NF</a></li>
 </ul>
 </li>
-<li><a href="#orgb811142">5. Subclasses</a>
+<li><a href="#orgd8145fe">5. Subclasses</a>
 <ul>
-<li><a href="#org26aede8">5.1. Complete vs. Incomplete(Partial)</a></li>
-<li><a href="#orgf5bdcd5">5.2. Overlapping vs. Disjoint(Exclusive)</a></li>
-<li><a href="#orgbd6a8d1">5.3. How to design?</a></li>
+<li><a href="#orga122317">5.1. Complete vs. Incomplete(Partial)</a></li>
+<li><a href="#org21c124a">5.2. Overlapping vs. Disjoint(Exclusive)</a></li>
+<li><a href="#orgb403ca3">5.3. How to design?</a></li>
 </ul>
 </li>
-<li><a href="#org9a2698b">6. Constraints</a>
+<li><a href="#org48f34a8">6. Constraints</a>
 <ul>
-<li><a href="#orgb879774">6.1. Motivation</a></li>
-<li><a href="#orgeb1aa2d">6.2. Syntax</a></li>
-<li><a href="#orga5fedfd">6.3. Foreign Key</a></li>
+<li><a href="#orgd755e27">6.1. Motivation</a></li>
+<li><a href="#org03b3432">6.2. Syntax</a></li>
+<li><a href="#org23bb7d4">6.3. Foreign Key</a></li>
 </ul>
 </li>
-<li><a href="#orgfc35422">7. Triggers</a>
+<li><a href="#org05aaae1">7. Triggers</a>
 <ul>
-<li><a href="#org687b93c">7.1. Motivation</a></li>
-<li><a href="#org6c3d2cf">7.2. Usage</a></li>
+<li><a href="#org45f3c44">7.1. Motivation</a></li>
+<li><a href="#org76ba8d5">7.2. Usage</a></li>
 </ul>
 </li>
-<li><a href="#orgdf18b50">8. Indexes</a>
+<li><a href="#org21a25f5">8. Indexes</a>
 <ul>
-<li><a href="#org071a0d5">8.1. Usage</a></li>
-<li><a href="#orga07b568">8.2. Underlying Data Structures</a></li>
-<li><a href="#org7d61f15">8.3. SQL Syntax</a></li>
-<li><a href="#org8df8c87">8.4. Downsides</a></li>
-<li><a href="#org9ba8b9d">8.5. Upsides</a></li>
-<li><a href="#orgb8cfb47">8.6. Physical Design Advisors</a></li>
+<li><a href="#orgdc45637">8.1. Usage</a></li>
+<li><a href="#org2a96b8b">8.2. Underlying Data Structures</a></li>
+<li><a href="#org365f132">8.3. SQL Syntax</a></li>
+<li><a href="#orgd9faa94">8.4. Downsides</a></li>
+<li><a href="#org1499d83">8.5. Upsides</a></li>
+<li><a href="#org4b49f82">8.6. Physical Design Advisors</a></li>
 </ul>
 </li>
-<li><a href="#org8cb4d26">9. Transaction</a>
+<li><a href="#org1961a48">9. Transaction</a>
 <ul>
-<li><a href="#orgef3b1d1">9.1. Motivation</a></li>
-<li><a href="#orgc1a737e">9.2. Properties</a></li>
-<li><a href="#org7a53e4b">9.3. Isolation levels</a></li>
+<li><a href="#org15a642a">9.1. Motivation</a></li>
+<li><a href="#org3d30cee">9.2. Properties</a></li>
+<li><a href="#org737e8ae">9.3. Isolation levels</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org47bb6db" class="outline-2">
-<h2 id="org47bb6db"><span class="section-number-2">1</span> Rational Algebra</h2>
+<div id="outline-container-org0a93cb0" class="outline-2">
+<h2 id="org0a93cb0"><span class="section-number-2">1</span> Rational Algebra</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-org4473c6a" class="outline-3">
-<h3 id="org4473c6a"><span class="section-number-3">1.1</span> Basic</h3>
+</div>
+<div id="outline-container-org29acc11" class="outline-3">
+<h3 id="org29acc11"><span class="section-number-3">1.1</span> Basic</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>select \(\sigma_{P}(r)\)</li>
@@ -347,35 +349,36 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org22a872a" class="outline-3">
-<h3 id="org22a872a"><span class="section-number-3">1.2</span> Addition</h3>
+<div id="outline-container-org12e5a23" class="outline-3">
+<h3 id="org12e5a23"><span class="section-number-3">1.2</span> Addition</h3>
 <div class="outline-text-3" id="text-1-2">
-</div><div id="outline-container-org0ab7497" class="outline-4">
-<h4 id="org0ab7497"><span class="section-number-4">1.2.1</span> intersection</h4>
+</div>
+<div id="outline-container-org6c596aa" class="outline-4">
+<h4 id="org6c596aa"><span class="section-number-4">1.2.1</span> intersection</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 \[r\cap s = r-(r-s)\]
 </p>
 </div>
 </div>
-<div id="outline-container-orgbde996d" class="outline-4">
-<h4 id="orgbde996d"><span class="section-number-4">1.2.2</span> natual join</h4>
+<div id="outline-container-org2a8b345" class="outline-4">
+<h4 id="org2a8b345"><span class="section-number-4">1.2.2</span> natual join</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 \[r\Join s = \Pi_{R\cup S}(\sigma_{r.A_1=s.A_1 \land ...}(r\times s))\]
 </p>
 </div>
 </div>
-<div id="outline-container-orgd897500" class="outline-4">
-<h4 id="orgd897500"><span class="section-number-4">1.2.3</span> theta join</h4>
+<div id="outline-container-orgf6a0827" class="outline-4">
+<h4 id="orgf6a0827"><span class="section-number-4">1.2.3</span> theta join</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 \[r\Join_{\theta}s = \sigma_{\theta}(r\times s)\]
 </p>
 </div>
 </div>
-<div id="outline-container-orgeec53fa" class="outline-4">
-<h4 id="orgeec53fa"><span class="section-number-4">1.2.4</span> devision</h4>
+<div id="outline-container-org4535481" class="outline-4">
+<h4 id="org4535481"><span class="section-number-4">1.2.4</span> devision</h4>
 <div class="outline-text-4" id="text-1-2-4">
 <p>
 \[temp1 \leftarrow \Pi_{R-S}(r)\]
@@ -383,9 +386,9 @@ for the JavaScript code in this tag.
 \[result = temp1 - temp2\]
 </p>
 </div>
-<div id="outline-container-orgdbc55d3" class="outline-5">
-<h5 id="orgdbc55d3">Example:</h5>
-<div class="outline-text-5" id="text-orgdbc55d3">
+<ul class="org-ul">
+<li><a id="orgabe63ab"></a>Example:<br />
+<div class="outline-text-5" id="text-orgabe63ab">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> R</caption>
 
@@ -484,11 +487,12 @@ for the JavaScript code in this tag.
 </tbody>
 </table>
 </div>
-</div>
+</li>
+</ul>
 </div>
 
-<div id="outline-container-org9784da7" class="outline-4">
-<h4 id="org9784da7"><span class="section-number-4">1.2.5</span> aggregation</h4>
+<div id="outline-container-orgaa8334f" class="outline-4">
+<h4 id="orgaa8334f"><span class="section-number-4">1.2.5</span> aggregation</h4>
 <div class="outline-text-4" id="text-1-2-5">
 <p>
 \[group_{column}\zeta_{aggre\_func(column)}(r)\]
@@ -496,8 +500,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-orgfc21ee1" class="outline-3">
-<h3 id="orgfc21ee1"><span class="section-number-3">1.3</span> Modification</h3>
+<div id="outline-container-org15ce2de" class="outline-3">
+<h3 id="org15ce2de"><span class="section-number-3">1.3</span> Modification</h3>
 <div class="outline-text-3" id="text-1-3">
 <ul class="org-ul">
 <li>delete \(r\leftarrow r - E\)</li>
@@ -507,48 +511,50 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-org47a4bbd" class="outline-2">
-<h2 id="org47a4bbd"><span class="section-number-2">2</span> SQL Language</h2>
+<div id="outline-container-org51008c3" class="outline-2">
+<h2 id="org51008c3"><span class="section-number-2">2</span> SQL Language</h2>
 <div class="outline-text-2" id="text-2">
-</div><div id="outline-container-orgca0bc62" class="outline-3">
-<h3 id="orgca0bc62"><span class="section-number-3">2.1</span> Command</h3>
+</div>
+<div id="outline-container-org8950ffd" class="outline-3">
+<h3 id="org8950ffd"><span class="section-number-3">2.1</span> Command</h3>
 <div class="outline-text-3" id="text-2-1">
-</div><div id="outline-container-org6d9e4fe" class="outline-4">
-<h4 id="org6d9e4fe"><span class="section-number-4">2.1.1</span> CREATE &amp; DROP &amp; ALTER</h4>
+</div>
+<div id="outline-container-orge1f9e75" class="outline-4">
+<h4 id="orge1f9e75"><span class="section-number-4">2.1.1</span> CREATE &amp; DROP &amp; ALTER</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">CREATE</span> DATABASE dbname;
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> DATABASE dbname;
 USE DATABASE dbname;
-<span style="color: #F92672;">CREATE</span> <span style="color: #F92672;">TABLE</span> <span style="color: #F92672;">table_name</span> <span style="color: #AE81FF;">(</span><span style="color: #F92672;">column_name</span> <span style="color: #F92672;">TYPE</span> Constrains, ... <span style="color: #AE81FF;">)</span>;
-<span style="color: #F92672;">DESC</span> <span style="color: #F92672;">table_name</span>;
-<span style="color: #F92672;">DROP</span> <span style="color: #F92672;">TABLE</span>;
+<span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #3a81c3; font-weight: bold;">table_name</span> <span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">column_name</span> <span style="color: #3a81c3; font-weight: bold;">TYPE</span> Constrains, ... <span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">DESC</span> <span style="color: #3a81c3; font-weight: bold;">table_name</span>;
+<span style="color: #3a81c3; font-weight: bold;">DROP</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span>;
 
-<span style="color: #F92672;">ALTER</span> <span style="color: #F92672;">TABLE</span> <span style="color: #F92672;">table_name</span>
-<span style="color: #F92672;">ADD</span> <span style="color: #F92672;">COLUMN</span> columnName ...
-<span style="color: #F92672;">ADD</span> <span style="color: #F92672;">PRIMARY</span> <span style="color: #F92672;">KEY</span> <span style="color: #AE81FF;">(</span>columnName<span style="color: #AE81FF;">)</span>
-RENAME <span style="color: #F92672;">TO</span> tableNewName
-CHANGE <span style="color: #F92672;">COLUMN</span> columnOldName columnNewName <span style="color: #F92672;">TYPE</span> ...
-<span style="color: #F92672;">MODIFY</span> <span style="color: #F92672;">COLUMN</span> columnName <span style="color: #F92672;">TYPE</span>...
-<span style="color: #F92672;">DROP</span> <span style="color: #F92672;">COLUMN</span> columnName
+<span style="color: #3a81c3; font-weight: bold;">ALTER</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #3a81c3; font-weight: bold;">table_name</span>
+<span style="color: #3a81c3; font-weight: bold;">ADD</span> <span style="color: #3a81c3; font-weight: bold;">COLUMN</span> columnName ...
+<span style="color: #3a81c3; font-weight: bold;">ADD</span> <span style="color: #3a81c3; font-weight: bold;">PRIMARY</span> <span style="color: #3a81c3; font-weight: bold;">KEY</span> <span style="color: #3a81c3;">(</span>columnName<span style="color: #3a81c3;">)</span>
+RENAME <span style="color: #3a81c3; font-weight: bold;">TO</span> tableNewName
+CHANGE <span style="color: #3a81c3; font-weight: bold;">COLUMN</span> columnOldName columnNewName <span style="color: #3a81c3; font-weight: bold;">TYPE</span> ...
+<span style="color: #3a81c3; font-weight: bold;">MODIFY</span> <span style="color: #3a81c3; font-weight: bold;">COLUMN</span> columnName <span style="color: #3a81c3; font-weight: bold;">TYPE</span>...
+<span style="color: #3a81c3; font-weight: bold;">DROP</span> <span style="color: #3a81c3; font-weight: bold;">COLUMN</span> columnName
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8d6e000" class="outline-4">
-<h4 id="org8d6e000"><span class="section-number-4">2.1.2</span> INSERT &amp; UPDATE &amp; DELETE</h4>
+<div id="outline-container-org7887168" class="outline-4">
+<h4 id="org7887168"><span class="section-number-4">2.1.2</span> INSERT &amp; UPDATE &amp; DELETE</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">INSERT</span> <span style="color: #F92672;">INTO</span> tableName <span style="color: #AE81FF;">[</span><span style="color: #66D9EF;">(</span>columnName1, columnName2, ...<span style="color: #66D9EF;">)</span><span style="color: #AE81FF;">]</span> <span style="color: #F92672;">VALUES</span> <span style="color: #AE81FF;">(</span><span style="color: #E6DB74;">'value1'</span>, <span style="color: #E6DB74;">'value2'</span>, ...<span style="color: #AE81FF;">)</span>;
-<span style="color: #F92672;">UPDATE</span> tableName <span style="color: #F92672;">SET</span> columnName1 = <span style="color: #E6DB74;">'value1'</span>, columnName2 = <span style="color: #E6DB74;">'value2'</span> <span style="color: #F92672;">WHERE</span> expr;
-<span style="color: #F92672;">DELETE</span> <span style="color: #F92672;">FROM</span> tableName <span style="color: #F92672;">WHERE</span> expr;
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">INSERT</span> <span style="color: #3a81c3; font-weight: bold;">INTO</span> tableName <span style="color: #3a81c3;">[</span><span style="color: #6c3163;">(</span>columnName1, columnName2, ...<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span> <span style="color: #3a81c3; font-weight: bold;">VALUES</span> <span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'value1'</span>, <span style="color: #2d9574;">'value2'</span>, ...<span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">UPDATE</span> tableName <span style="color: #3a81c3; font-weight: bold;">SET</span> columnName1 = <span style="color: #2d9574;">'value1'</span>, columnName2 = <span style="color: #2d9574;">'value2'</span> <span style="color: #3a81c3; font-weight: bold;">WHERE</span> expr;
+<span style="color: #3a81c3; font-weight: bold;">DELETE</span> <span style="color: #3a81c3; font-weight: bold;">FROM</span> tableName <span style="color: #3a81c3; font-weight: bold;">WHERE</span> expr;
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org80f8c35" class="outline-4">
-<h4 id="org80f8c35"><span class="section-number-4">2.1.3</span> NOT</h4>
+<div id="outline-container-org2c4d67a" class="outline-4">
+<h4 id="org2c4d67a"><span class="section-number-4">2.1.3</span> NOT</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <p>
 When 'NOT' use with 'BETWEEN' and 'LIKE', 'NOT' must follow with 'WHERE' or 'AND/OR'.
@@ -557,101 +563,101 @@ When 'NOT' use with 'BETWEEN' and 'LIKE', 'NOT' must follow with 'WHERE' or 'AND
 </div>
 </div>
 
-<div id="outline-container-org826f546" class="outline-4">
-<h4 id="org826f546"><span class="section-number-4">2.1.4</span> SHOW</h4>
+<div id="outline-container-org4f2163b" class="outline-4">
+<h4 id="org4f2163b"><span class="section-number-4">2.1.4</span> SHOW</h4>
 <div class="outline-text-4" id="text-2-1-4">
 <div class="org-src-container">
-<pre class="src src-sql">SHOW <span style="color: #F92672;">CREATE</span> <span style="color: #F92672;">TABLE</span> tableName;
-SHOW COLUMNS <span style="color: #F92672;">FROM</span> tableName;
-SHOW INDEX <span style="color: #F92672;">FROM</span> tableName;
+<pre class="src src-sql">SHOW <span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> tableName;
+SHOW COLUMNS <span style="color: #3a81c3; font-weight: bold;">FROM</span> tableName;
+SHOW INDEX <span style="color: #3a81c3; font-weight: bold;">FROM</span> tableName;
 SHOW WARNINGS;
 </pre>
 </div>
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">UPDATE</span> tableName <span style="color: #F92672;">SET</span> columnName =
-<span style="color: #F92672;">CASE</span>
-  <span style="color: #F92672;">WHEN</span> column_1 = somevalue1
-    <span style="color: #F92672;">THEN</span> newValue;
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">UPDATE</span> tableName <span style="color: #3a81c3; font-weight: bold;">SET</span> columnName =
+<span style="color: #3a81c3; font-weight: bold;">CASE</span>
+  <span style="color: #3a81c3; font-weight: bold;">WHEN</span> column_1 = somevalue1
+    <span style="color: #3a81c3; font-weight: bold;">THEN</span> newValue;
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org21992dd" class="outline-4">
-<h4 id="org21992dd"><span class="section-number-4">2.1.5</span> GROUP BY</h4>
+<div id="outline-container-orga1107f6" class="outline-4">
+<h4 id="orga1107f6"><span class="section-number-4">2.1.5</span> GROUP BY</h4>
 <div class="outline-text-4" id="text-2-1-5">
 <p>
 remove the duplicates
 </p>
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">SELECT</span> columnName1, columnName2 <span style="color: #F92672;">FROM</span> tableName <span style="color: #F92672;">GROUP</span> <span style="color: #F92672;">BY</span> columnName2
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> columnName1, columnName2 <span style="color: #3a81c3; font-weight: bold;">FROM</span> tableName <span style="color: #3a81c3; font-weight: bold;">GROUP</span> <span style="color: #3a81c3; font-weight: bold;">BY</span> columnName2
 </pre>
 </div>
 </div>
 
-<div id="outline-container-orgf5c0634" class="outline-5">
-<h5 id="orgf5c0634">SUM, AVG, MAX, MIN, COUNT</h5>
-<div class="outline-text-5" id="text-orgf5c0634">
+<ul class="org-ul">
+<li><a id="orgacc6f05"></a>SUM, AVG, MAX, MIN, COUNT<br />
+<div class="outline-text-5" id="text-orgacc6f05">
 <p>
 match with GROUP_BY
 E.g:SUM(columnName) &#x2026; GROUP BY columnName
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-org7a5946e" class="outline-5">
-<h5 id="org7a5946e">HAVING</h5>
-<div class="outline-text-5" id="text-org7a5946e">
+<li><a id="org3db17b1"></a>HAVING<br />
+<div class="outline-text-5" id="text-org3db17b1">
 <p>
 The HAVING clause was added to SQL because the WHERE keyword could not be used with aggregate functions.
 E.g: HAVING count(columnName) &gt; 5
 </p>
 </div>
-</div>
+</li>
+</ul>
 </div>
 
-<div id="outline-container-org547e40a" class="outline-4">
-<h4 id="org547e40a"><span class="section-number-4">2.1.6</span> WITH</h4>
+<div id="outline-container-orgfee760b" class="outline-4">
+<h4 id="orgfee760b"><span class="section-number-4">2.1.6</span> WITH</h4>
 <div class="outline-text-4" id="text-2-1-6">
 <p>
 Define temporary view
 </p>
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">WITH</span> temp_view_name<span style="color: #AE81FF;">(</span>columnName...<span style="color: #AE81FF;">)</span> <span style="color: #F92672;">as</span>
-     <span style="color: #F92672;">select</span> <span style="color: #F92672;">statement</span>
-<span style="color: #F92672;">SELECT</span> ...
-<span style="color: #F92672;">FROM</span> temp_view_name
-<span style="color: #F92672;">WHERE</span> ...
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">WITH</span> temp_view_name<span style="color: #3a81c3;">(</span>columnName...<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span>
+     <span style="color: #3a81c3; font-weight: bold;">select</span> <span style="color: #3a81c3; font-weight: bold;">statement</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> ...
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> temp_view_name
+<span style="color: #3a81c3; font-weight: bold;">WHERE</span> ...
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8ed1ff8" class="outline-4">
-<h4 id="org8ed1ff8"><span class="section-number-4">2.1.7</span> RECURSIVE</h4>
+<div id="outline-container-orga3eeb10" class="outline-4">
+<h4 id="orga3eeb10"><span class="section-number-4">2.1.7</span> RECURSIVE</h4>
 <div class="outline-text-4" id="text-2-1-7">
 <ul class="org-ul">
 <li>CREAT RECURSIVE VIEW</li>
 <li>WITH RECURSIVE</li>
 </ul>
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">WITH</span> <span style="color: #F92672;">RECURSIVE</span> empl<span style="color: #AE81FF;">(</span>employee_name, manager_name<span style="color: #AE81FF;">)</span> <span style="color: #F92672;">as</span> <span style="color: #AE81FF;">(</span>
-<span style="color: #F92672;">SELECT</span> employee_name, manager_name
-<span style="color: #F92672;">FROM</span> manager
-<span style="color: #F92672;">UNION</span>
-<span style="color: #F92672;">SELECT</span> manager.employee_name,empl.manager_name
-<span style="color: #F92672;">FROM</span> manager, empl
-<span style="color: #F92672;">WHERE</span> manager.manager_name = empl.employee_name
-<span style="color: #AE81FF;">)</span>
-<span style="color: #F92672;">SELECT</span> *
-<span style="color: #F92672;">FROM</span> empl
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">WITH</span> <span style="color: #3a81c3; font-weight: bold;">RECURSIVE</span> empl<span style="color: #3a81c3;">(</span>employee_name, manager_name<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> <span style="color: #3a81c3;">(</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> employee_name, manager_name
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> manager
+<span style="color: #3a81c3; font-weight: bold;">UNION</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> manager.employee_name,empl.manager_name
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> manager, empl
+<span style="color: #3a81c3; font-weight: bold;">WHERE</span> manager.manager_name = empl.employee_name
+<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> *
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> empl
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgc70881b" class="outline-4">
-<h4 id="orgc70881b"><span class="section-number-4">2.1.8</span> GRANT &amp; REVOKE</h4>
+<div id="outline-container-orge2ebd1c" class="outline-4">
+<h4 id="orge2ebd1c"><span class="section-number-4">2.1.8</span> GRANT &amp; REVOKE</h4>
 <div class="outline-text-4" id="text-2-1-8">
 <ul class="org-ul">
 <li>GRANT statement ON table TO who</li>
@@ -660,8 +666,8 @@ Define temporary view
 </div>
 </div>
 
-<div id="outline-container-org39b640c" class="outline-4">
-<h4 id="org39b640c"><span class="section-number-4">2.1.9</span> Other Keywords</h4>
+<div id="outline-container-org50c52b6" class="outline-4">
+<h4 id="org50c52b6"><span class="section-number-4">2.1.9</span> Other Keywords</h4>
 <div class="outline-text-4" id="text-2-1-9">
 <ul class="org-ul">
 <li>REGEXP pattern</li>
@@ -698,19 +704,20 @@ Suppress the duplicates by default. UNION ALL can keep the duplicates.
 </div>
 </div>
 
-<div id="outline-container-orgae861d3" class="outline-3">
-<h3 id="orgae861d3"><span class="section-number-3">2.2</span> Datatype</h3>
+<div id="outline-container-org9113f40" class="outline-3">
+<h3 id="org9113f40"><span class="section-number-3">2.2</span> Datatype</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 CHAR, VARCHAR, BLOB, INT, DEC, DATE, DATETIME
 </p>
 </div>
 </div>
-<div id="outline-container-org27595c6" class="outline-3">
-<h3 id="org27595c6"><span class="section-number-3">2.3</span> Join</h3>
+<div id="outline-container-org077534b" class="outline-3">
+<h3 id="org077534b"><span class="section-number-3">2.3</span> Join</h3>
 <div class="outline-text-3" id="text-2-3">
-</div><div id="outline-container-orgadc1ec1" class="outline-4">
-<h4 id="orgadc1ec1"><span class="section-number-4">2.3.1</span> Overview</h4>
+</div>
+<div id="outline-container-orga430e02" class="outline-4">
+<h4 id="orga430e02"><span class="section-number-4">2.3.1</span> Overview</h4>
 <div class="outline-text-4" id="text-2-3-1">
 
 <div class="figure">
@@ -719,8 +726,8 @@ CHAR, VARCHAR, BLOB, INT, DEC, DATE, DATETIME
 </div>
 </div>
 </div>
-<div id="outline-container-org3a85dba" class="outline-4">
-<h4 id="org3a85dba"><span class="section-number-4">2.3.2</span> Inner Join</h4>
+<div id="outline-container-orgd4d37bd" class="outline-4">
+<h4 id="orgd4d37bd"><span class="section-number-4">2.3.2</span> Inner Join</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <p>
 An inner join is just a cartesian join with
@@ -730,11 +737,12 @@ some result rows removed by a condition in the query.
 </div>
 </div>
 
-<div id="outline-container-orgbe46160" class="outline-3">
-<h3 id="orgbe46160"><span class="section-number-3">2.4</span> Subquery</h3>
+<div id="outline-container-orgd44fe52" class="outline-3">
+<h3 id="orgd44fe52"><span class="section-number-3">2.4</span> Subquery</h3>
 <div class="outline-text-3" id="text-2-4">
-</div><div id="outline-container-org177a4af" class="outline-4">
-<h4 id="org177a4af"><span class="section-number-4">2.4.1</span> Noncorrelated Subquery</h4>
+</div>
+<div id="outline-container-org0ee3f11" class="outline-4">
+<h4 id="org0ee3f11"><span class="section-number-4">2.4.1</span> Noncorrelated Subquery</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <p>
 A subquery that stands alone and doesn't reference
@@ -746,8 +754,8 @@ RDBMS will excute inner first, then excute outer.
 </p>
 </div>
 </div>
-<div id="outline-container-orga6509d7" class="outline-4">
-<h4 id="orga6509d7"><span class="section-number-4">2.4.2</span> Correlated Subquery</h4>
+<div id="outline-container-orgd53ce62" class="outline-4">
+<h4 id="orgd53ce62"><span class="section-number-4">2.4.2</span> Correlated Subquery</h4>
 <div class="outline-text-4" id="text-2-4-2">
 <p>
 A subquery that relies on values returned from
@@ -758,11 +766,12 @@ the outer query.(Slow)
 </div>
 </div>
 
-<div id="outline-container-org1eb1178" class="outline-2">
-<h2 id="org1eb1178"><span class="section-number-2">3</span> Design</h2>
+<div id="outline-container-org44d09ed" class="outline-2">
+<h2 id="org44d09ed"><span class="section-number-2">3</span> Design</h2>
 <div class="outline-text-2" id="text-3">
-</div><div id="outline-container-orgea32533" class="outline-3">
-<h3 id="orgea32533"><span class="section-number-3">3.1</span> Steps</h3>
+</div>
+<div id="outline-container-org2996766" class="outline-3">
+<h3 id="org2996766"><span class="section-number-3">3.1</span> Steps</h3>
 <div class="outline-text-3" id="text-3-1">
 <ol class="org-ol">
 <li>Find <b>the one thing</b> need to be described.</li>
@@ -772,15 +781,17 @@ the outer query.(Slow)
 </div>
 </div>
 
-<div id="outline-container-org139468c" class="outline-3">
-<h3 id="org139468c"><span class="section-number-3">3.2</span> Schema Pattern</h3>
+<div id="outline-container-orgfc70303" class="outline-3">
+<h3 id="orgfc70303"><span class="section-number-3">3.2</span> Schema Pattern</h3>
 <div class="outline-text-3" id="text-3-2">
-</div><div id="outline-container-orgfd92812" class="outline-4">
-<h4 id="orgfd92812"><span class="section-number-4">3.2.1</span> One to One</h4>
+</div>
+<div id="outline-container-org92669cd" class="outline-4">
+<h4 id="org92669cd"><span class="section-number-4">3.2.1</span> One to One</h4>
 <div class="outline-text-4" id="text-3-2-1">
-</div><div id="outline-container-orgddadac7" class="outline-5">
-<h5 id="orgddadac7">When to use</h5>
-<div class="outline-text-5" id="text-orgddadac7">
+</div>
+<ul class="org-ul">
+<li><a id="orge240c6a"></a>When to use<br />
+<div class="outline-text-5" id="text-orge240c6a">
 <ol class="org-ol">
 <li>Allow you to write fast queries.</li>
 <li>If you have a column containing values you don't yet know.Iso NULL value.</li>
@@ -788,13 +799,14 @@ the outer query.(Slow)
 <li>To store a large piece of data, like BLOB.</li>
 </ol>
 </div>
+</li>
+</ul>
 </div>
+<div id="outline-container-org7157531" class="outline-4">
+<h4 id="org7157531"><span class="section-number-4">3.2.2</span> One to Many</h4>
 </div>
-<div id="outline-container-org96c9e8c" class="outline-4">
-<h4 id="org96c9e8c"><span class="section-number-4">3.2.2</span> One to Many</h4>
-</div>
-<div id="outline-container-org544febb" class="outline-4">
-<h4 id="org544febb"><span class="section-number-4">3.2.3</span> Many to Many</h4>
+<div id="outline-container-orgd8ae844" class="outline-4">
+<h4 id="orgd8ae844"><span class="section-number-4">3.2.3</span> Many to Many</h4>
 <div class="outline-text-4" id="text-3-2-3">
 <p>
 use junction table.
@@ -803,19 +815,20 @@ use junction table.
 </div>
 </div>
 
-<div id="outline-container-orgcac2f93" class="outline-3">
-<h3 id="orgcac2f93"><span class="section-number-3">3.3</span> Functional Dependency</h3>
+<div id="outline-container-org51ec550" class="outline-3">
+<h3 id="org51ec550"><span class="section-number-3">3.3</span> Functional Dependency</h3>
 <div class="outline-text-3" id="text-3-3">
-</div><div id="outline-container-org804423d" class="outline-4">
-<h4 id="org804423d"><span class="section-number-4">3.3.1</span> Definition</h4>
+</div>
+<div id="outline-container-org2f70e7a" class="outline-4">
+<h4 id="org2f70e7a"><span class="section-number-4">3.3.1</span> Definition</h4>
 <div class="outline-text-4" id="text-3-3-1">
 <p>
 \[\forall t,u \in R\  (t[\bar A]= u[\bar A]) \to (t[\bar B] = u[\bar B])\]
 </p>
 </div>
 </div>
-<div id="outline-container-org81af11b" class="outline-4">
-<h4 id="org81af11b"><span class="section-number-4">3.3.2</span> Functional Dependency</h4>
+<div id="outline-container-org77b0f9d" class="outline-4">
+<h4 id="org77b0f9d"><span class="section-number-4">3.3.2</span> Functional Dependency</h4>
 <div class="outline-text-4" id="text-3-3-2">
 <p>
 If we have a functional dependency \(\bar A \to \bar B\)
@@ -848,27 +861,27 @@ Completely nontrivial
 </ul>
 </div>
 
-<div id="outline-container-orgc38b174" class="outline-5">
-<h5 id="orgc38b174">Partial Functional Dependency</h5>
-<div class="outline-text-5" id="text-orgc38b174">
+<ul class="org-ul">
+<li><a id="orge2f985b"></a>Partial Functional Dependency<br />
+<div class="outline-text-5" id="text-orge2f985b">
 <p>
 When a non-key column is dependent on some, but not all, of the composite PK.
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-org23634b1" class="outline-5">
-<h5 id="org23634b1">Transitive Functional Dependency</h5>
-<div class="outline-text-5" id="text-org23634b1">
+<li><a id="org7433f9b"></a>Transitive Functional Dependency<br />
+<div class="outline-text-5" id="text-org7433f9b">
 <p>
 When any non-key column is dependent on any of the other non-key columns.
 </p>
 </div>
-</div>
+</li>
+</ul>
 </div>
 
-<div id="outline-container-orgf0cc002" class="outline-4">
-<h4 id="orgf0cc002"><span class="section-number-4">3.3.3</span> Rules For FD</h4>
+<div id="outline-container-org754b8fb" class="outline-4">
+<h4 id="org754b8fb"><span class="section-number-4">3.3.3</span> Rules For FD</h4>
 <div class="outline-text-4" id="text-3-3-3">
 <ul class="org-ul">
 <li><p>
@@ -898,8 +911,8 @@ If \(\bar A \to \bar B\) and \(\bar B \to \bar C\), then \(\bar A \to \bar C\)
 </div>
 </div>
 
-<div id="outline-container-org3d39e3b" class="outline-4">
-<h4 id="org3d39e3b"><span class="section-number-4">3.3.4</span> Closure of Attributes</h4>
+<div id="outline-container-org17f91cb" class="outline-4">
+<h4 id="org17f91cb"><span class="section-number-4">3.3.4</span> Closure of Attributes</h4>
 <div class="outline-text-4" id="text-3-3-4">
 <p>
 Given relation, FDs, set of attributes \(\bar A\)
@@ -909,11 +922,12 @@ Find all B such that \(\bar A \to B\) .
 </div>
 </div>
 
-<div id="outline-container-org6b3ba20" class="outline-3">
-<h3 id="org6b3ba20"><span class="section-number-3">3.4</span> Multivalued Dependency</h3>
+<div id="outline-container-orge2756f1" class="outline-3">
+<h3 id="orge2756f1"><span class="section-number-3">3.4</span> Multivalued Dependency</h3>
 <div class="outline-text-3" id="text-3-4">
-</div><div id="outline-container-orgaaf157b" class="outline-4">
-<h4 id="orgaaf157b"><span class="section-number-4">3.4.1</span> Definition</h4>
+</div>
+<div id="outline-container-orgb4c1f03" class="outline-4">
+<h4 id="orgb4c1f03"><span class="section-number-4">3.4.1</span> Definition</h4>
 <div class="outline-text-4" id="text-3-4-1">
 <p>
 \[\forall t, u\in R:\ t[\bar A] = u[\bar A]\] then
@@ -1017,8 +1031,8 @@ otherwise.
 </div>
 </div>
 
-<div id="outline-container-orge734e1c" class="outline-4">
-<h4 id="orge734e1c"><span class="section-number-4">3.4.2</span> Rules For MVD</h4>
+<div id="outline-container-org6cb0b50" class="outline-4">
+<h4 id="org6cb0b50"><span class="section-number-4">3.4.2</span> Rules For MVD</h4>
 <div class="outline-text-4" id="text-3-4-2">
 <p>
 MVD is a <b>tuple-generating</b> dependency.
@@ -1048,11 +1062,12 @@ then \(\bar A\twoheadrightarrow \bar C - \bar B\) .
 </div>
 </div>
 
-<div id="outline-container-org92d05ef" class="outline-2">
-<h2 id="org92d05ef"><span class="section-number-2">4</span> Normalization</h2>
+<div id="outline-container-org81d3823" class="outline-2">
+<h2 id="org81d3823"><span class="section-number-2">4</span> Normalization</h2>
 <div class="outline-text-2" id="text-4">
-</div><div id="outline-container-org7150ef4" class="outline-3">
-<h3 id="org7150ef4"><span class="section-number-3">4.1</span> 1-NF</h3>
+</div>
+<div id="outline-container-org659d25b" class="outline-3">
+<h3 id="org659d25b"><span class="section-number-3">4.1</span> 1-NF</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 Data in your column is atomic if it's been broken
@@ -1127,8 +1142,8 @@ with the same type of data.
 </div>
 </div>
 
-<div id="outline-container-orgd015ced" class="outline-3">
-<h3 id="orgd015ced"><span class="section-number-3">4.2</span> 2-NF</h3>
+<div id="outline-container-org817788f" class="outline-3">
+<h3 id="org817788f"><span class="section-number-3">4.2</span> 2-NF</h3>
 <div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
 <li>Rule 1: Be in 1NF</li>
@@ -1137,8 +1152,8 @@ with the same type of data.
 </div>
 </div>
 
-<div id="outline-container-org754595c" class="outline-3">
-<h3 id="org754595c"><span class="section-number-3">4.3</span> 3-NF</h3>
+<div id="outline-container-org03e519e" class="outline-3">
+<h3 id="org03e519e"><span class="section-number-3">4.3</span> 3-NF</h3>
 <div class="outline-text-3" id="text-4-3">
 <ul class="org-ul">
 <li>Rule 1: Be in 2NF</li>
@@ -1147,8 +1162,8 @@ with the same type of data.
 </div>
 </div>
 
-<div id="outline-container-org32505c1" class="outline-3">
-<h3 id="org32505c1"><span class="section-number-3">4.4</span> Boyce-Codd Normal Form(BCNF, 3.5-NF)</h3>
+<div id="outline-container-org002c8ee" class="outline-3">
+<h3 id="org002c8ee"><span class="section-number-3">4.4</span> Boyce-Codd Normal Form(BCNF, 3.5-NF)</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 FD leads to the BCNF.
@@ -1163,8 +1178,8 @@ For each  nontrivial \(\bar A\to B\), \(\bar A\) is a key.<br />
 </p></li>
 </ul>
 </div>
-<div id="outline-container-org5d6e946" class="outline-4">
-<h4 id="org5d6e946"><span class="section-number-4">4.4.1</span> Validation Example</h4>
+<div id="outline-container-org61e515b" class="outline-4">
+<h4 id="org61e515b"><span class="section-number-4">4.4.1</span> Validation Example</h4>
 <div class="outline-text-4" id="text-4-4-1">
 <ul class="org-ul">
 <li>R(A, B, C, D)</li>
@@ -1175,8 +1190,8 @@ For each  nontrivial \(\bar A\to B\), \(\bar A\) is a key.<br />
 </div>
 </div>
 
-<div id="outline-container-org587e802" class="outline-3">
-<h3 id="org587e802"><span class="section-number-3">4.5</span> 4-NF</h3>
+<div id="outline-container-org35733d4" class="outline-3">
+<h3 id="org35733d4"><span class="section-number-3">4.5</span> 4-NF</h3>
 <div class="outline-text-3" id="text-4-5">
 <ul class="org-ul">
 <li><p>
@@ -1194,27 +1209,28 @@ For each nontrivial \(\bar A\twoheadrightarrow \bar B\), A is a key.<br />
 </div>
 </div>
 </div>
-<div id="outline-container-orgb811142" class="outline-2">
-<h2 id="orgb811142"><span class="section-number-2">5</span> Subclasses</h2>
+<div id="outline-container-orgd8145fe" class="outline-2">
+<h2 id="orgd8145fe"><span class="section-number-2">5</span> Subclasses</h2>
 <div class="outline-text-2" id="text-5">
-</div><div id="outline-container-org26aede8" class="outline-3">
-<h3 id="org26aede8"><span class="section-number-3">5.1</span> Complete vs. Incomplete(Partial)</h3>
+</div>
+<div id="outline-container-orga122317" class="outline-3">
+<h3 id="orga122317"><span class="section-number-3">5.1</span> Complete vs. Incomplete(Partial)</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 Complete: Every object is in at least one subclass.
 </p>
 </div>
 </div>
-<div id="outline-container-orgf5bdcd5" class="outline-3">
-<h3 id="orgf5bdcd5"><span class="section-number-3">5.2</span> Overlapping vs. Disjoint(Exclusive)</h3>
+<div id="outline-container-org21c124a" class="outline-3">
+<h3 id="org21c124a"><span class="section-number-3">5.2</span> Overlapping vs. Disjoint(Exclusive)</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 Overlapping: One object is in two+ subclasses.
 </p>
 </div>
 </div>
-<div id="outline-container-orgbd6a8d1" class="outline-3">
-<h3 id="orgbd6a8d1"><span class="section-number-3">5.3</span> How to design?</h3>
+<div id="outline-container-orgb403ca3" class="outline-3">
+<h3 id="orgb403ca3"><span class="section-number-3">5.3</span> How to design?</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 3 choices:
@@ -1250,11 +1266,12 @@ Examples:
 </div>
 </div>
 </div>
-<div id="outline-container-org9a2698b" class="outline-2">
-<h2 id="org9a2698b"><span class="section-number-2">6</span> Constraints</h2>
+<div id="outline-container-org48f34a8" class="outline-2">
+<h2 id="org48f34a8"><span class="section-number-2">6</span> Constraints</h2>
 <div class="outline-text-2" id="text-6">
-</div><div id="outline-container-orgb879774" class="outline-3">
-<h3 id="orgb879774"><span class="section-number-3">6.1</span> Motivation</h3>
+</div>
+<div id="outline-container-orgd755e27" class="outline-3">
+<h3 id="orgd755e27"><span class="section-number-3">6.1</span> Motivation</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Constrain allowable database states.(static)
@@ -1262,8 +1279,8 @@ Constrain allowable database states.(static)
 </div>
 </div>
 
-<div id="outline-container-orgeb1aa2d" class="outline-3">
-<h3 id="orgeb1aa2d"><span class="section-number-3">6.2</span> Syntax</h3>
+<div id="outline-container-org03b3432" class="outline-3">
+<h3 id="org03b3432"><span class="section-number-3">6.2</span> Syntax</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 Major keywords: PK, FK, UNIQUE, CHECK
@@ -1275,25 +1292,26 @@ Major keywords: PK, FK, UNIQUE, CHECK
 Examples:
 </p>
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">Create</span> ...
-<span style="color: #AE81FF;">{</span>
-    columnName <span style="color: #F92672;">type</span> <span style="color: #F92672;">CHECK</span> <span style="color: #66D9EF;">(</span>columnName <span style="color: #F92672;">IN</span> <span style="color: #A6E22E;">(</span><span style="color: #E6DB74;">'value1'</span>, <span style="color: #E6DB74;">'value2'</span><span style="color: #A6E22E;">)</span><span style="color: #66D9EF;">)</span>;
-<span style="color: #AE81FF;">}</span>
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">Create</span> ...
+<span style="color: #3a81c3;">{</span>
+    columnName <span style="color: #3a81c3; font-weight: bold;">type</span> <span style="color: #3a81c3; font-weight: bold;">CHECK</span> <span style="color: #6c3163;">(</span>columnName <span style="color: #3a81c3; font-weight: bold;">IN</span> <span style="color: #2d9574;">(</span><span style="color: #2d9574;">'value1'</span>, <span style="color: #2d9574;">'value2'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
 
-<span style="color: #F92672;">ADD</span> <span style="color: #F92672;">CONSTRAINT</span> <span style="color: #F92672;">CHECK</span> columnName &gt; <span style="color: #AE81FF;">1</span>;
+<span style="color: #3a81c3; font-weight: bold;">ADD</span> <span style="color: #3a81c3; font-weight: bold;">CONSTRAINT</span> <span style="color: #3a81c3; font-weight: bold;">CHECK</span> columnName &gt; <span style="color: #4e3163;">1</span>;
 
-<span style="color: #F92672;">CHECK</span> <span style="color: #E6DB74;">'A'</span> = <span style="color: #F92672;">SUBSTRING</span><span style="color: #AE81FF;">(</span>columnName, <span style="color: #AE81FF;">1</span>, <span style="color: #AE81FF;">1</span><span style="color: #AE81FF;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">CHECK</span> <span style="color: #2d9574;">'A'</span> = <span style="color: #3a81c3;">SUBSTRING</span><span style="color: #3a81c3;">(</span>columnName, <span style="color: #4e3163;">1</span>, <span style="color: #4e3163;">1</span><span style="color: #3a81c3;">)</span>;
 </pre>
 </div></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga5fedfd" class="outline-3">
-<h3 id="orga5fedfd"><span class="section-number-3">6.3</span> Foreign Key</h3>
+<div id="outline-container-org23bb7d4" class="outline-3">
+<h3 id="org23bb7d4"><span class="section-number-3">6.3</span> Foreign Key</h3>
 <div class="outline-text-3" id="text-6-3">
-</div><div id="outline-container-org2931004" class="outline-4">
-<h4 id="org2931004"><span class="section-number-4">6.3.1</span> Facts</h4>
+</div>
+<div id="outline-container-orgdeb2296" class="outline-4">
+<h4 id="orgdeb2296"><span class="section-number-4">6.3.1</span> Facts</h4>
 <div class="outline-text-4" id="text-6-3-1">
 <ol class="org-ol">
 <li>A FK can have different name than the parent key.</li>
@@ -1303,18 +1321,18 @@ Examples:
 </ol>
 </div>
 </div>
-<div id="outline-container-org08d0072" class="outline-4">
-<h4 id="org08d0072"><span class="section-number-4">6.3.2</span> Creation</h4>
+<div id="outline-container-org33f8dae" class="outline-4">
+<h4 id="org33f8dae"><span class="section-number-4">6.3.2</span> Creation</h4>
 <div class="outline-text-4" id="text-6-3-2">
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">CREATE</span> <span style="color: #F92672;">TABLE</span> <span style="color: #A6E22E;">tableName</span>
-<span style="color: #AE81FF;">(</span>
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #6c3163; font-weight: bold;">tableName</span>
+<span style="color: #3a81c3;">(</span>
     ...
-    columnName <span style="color: #F92672;">TYPE</span> <span style="color: #F92672;">NOT</span> <span style="color: #F92672;">NULL</span>,
-    <span style="color: #66D9EF;">[</span><span style="color: #F92672;">CONSTRAINT</span> <span style="color: #F92672;">constraint_name</span>,<span style="color: #66D9EF;">]</span>
-    <span style="color: #F92672;">FOREIGN</span> <span style="color: #F92672;">KEY</span> <span style="color: #66D9EF;">(</span>foreign_key_name<span style="color: #66D9EF;">)</span>
-    <span style="color: #F92672;">REFERENCES</span> parent_tableName <span style="color: #66D9EF;">(</span>parent_columnName<span style="color: #66D9EF;">)</span>
-<span style="color: #AE81FF;">)</span>
+    columnName <span style="color: #3a81c3; font-weight: bold;">TYPE</span> <span style="color: #3a81c3; font-weight: bold;">NOT</span> <span style="color: #3a81c3; font-weight: bold;">NULL</span>,
+    <span style="color: #6c3163;">[</span><span style="color: #3a81c3; font-weight: bold;">CONSTRAINT</span> <span style="color: #3a81c3; font-weight: bold;">constraint_name</span>,<span style="color: #6c3163;">]</span>
+    <span style="color: #3a81c3; font-weight: bold;">FOREIGN</span> <span style="color: #3a81c3; font-weight: bold;">KEY</span> <span style="color: #6c3163;">(</span>foreign_key_name<span style="color: #6c3163;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">REFERENCES</span> parent_tableName <span style="color: #6c3163;">(</span>parent_columnName<span style="color: #6c3163;">)</span>
+<span style="color: #3a81c3;">)</span>
 </pre>
 </div>
 <p>
@@ -1325,11 +1343,12 @@ You can name constraint_name and foreign_key_name whatever you like.
 </div>
 </div>
 
-<div id="outline-container-orgfc35422" class="outline-2">
-<h2 id="orgfc35422"><span class="section-number-2">7</span> Triggers</h2>
+<div id="outline-container-org05aaae1" class="outline-2">
+<h2 id="org05aaae1"><span class="section-number-2">7</span> Triggers</h2>
 <div class="outline-text-2" id="text-7">
-</div><div id="outline-container-org687b93c" class="outline-3">
-<h3 id="org687b93c"><span class="section-number-3">7.1</span> Motivation</h3>
+</div>
+<div id="outline-container-org45f3c44" class="outline-3">
+<h3 id="org45f3c44"><span class="section-number-3">7.1</span> Motivation</h3>
 <div class="outline-text-3" id="text-7-1">
 <ul class="org-ul">
 <li>To enforce constraints(Dynamic)</li>
@@ -1338,44 +1357,43 @@ You can name constraint_name and foreign_key_name whatever you like.
 </div>
 </div>
 
-<div id="outline-container-org6c3d2cf" class="outline-3">
-<h3 id="org6c3d2cf"><span class="section-number-3">7.2</span> Usage</h3>
+<div id="outline-container-org76ba8d5" class="outline-3">
+<h3 id="org76ba8d5"><span class="section-number-3">7.2</span> Usage</h3>
 <div class="outline-text-3" id="text-7-2">
-</div><div id="outline-container-org9477ba6" class="outline-4">
-<h4 id="org9477ba6"><span class="section-number-4">7.2.1</span> Event-Condition-Action Rules</h4>
+</div>
+<div id="outline-container-org5b5f490" class="outline-4">
+<h4 id="org5b5f490"><span class="section-number-4">7.2.1</span> Event-Condition-Action Rules</h4>
 <div class="outline-text-4" id="text-7-2-1">
 <p>
 When <b>event</b> occurs, check <b>condition</b>; if true, do <b>action</b>.
 </p>
 </div>
-<div id="outline-container-org505d690" class="outline-5">
-<h5 id="org505d690">syntax</h5>
-<div class="outline-text-5" id="text-org505d690">
+<ul class="org-ul">
+<li><a id="org8ff86e2"></a>syntax<br />
+<div class="outline-text-5" id="text-org8ff86e2">
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">CREATE</span> <span style="color: #F92672;">TRIGGER</span> <span style="color: #F92672;">trigger_name</span>
-<span style="color: #AE81FF;">[</span><span style="color: #F92672;">BEFORE</span>|<span style="color: #F92672;">AFTER</span>|INSTEAD <span style="color: #F92672;">OF</span><span style="color: #AE81FF;">]</span> events
-,<span style="color: #AE81FF;">[</span><span style="color: #F92672;">referencing</span>-variables<span style="color: #AE81FF;">]</span>
-<span style="color: #AE81FF;">[</span><span style="color: #F92672;">For</span> <span style="color: #F92672;">Each</span> <span style="color: #66D9EF;">Row</span><span style="color: #AE81FF;">]</span>
-<span style="color: #AE81FF;">[</span><span style="color: #F92672;">when</span> <span style="color: #66D9EF;">(</span>condition<span style="color: #66D9EF;">)</span><span style="color: #AE81FF;">]</span>
-,<span style="color: #F92672;">action</span>
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TRIGGER</span> <span style="color: #3a81c3; font-weight: bold;">trigger_name</span>
+<span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">BEFORE</span>|<span style="color: #3a81c3; font-weight: bold;">AFTER</span>|INSTEAD <span style="color: #3a81c3; font-weight: bold;">OF</span><span style="color: #3a81c3;">]</span> events
+,<span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">referencing</span>-variables<span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">For</span> <span style="color: #3a81c3; font-weight: bold;">Each</span> <span style="color: #ba2f59; font-weight: bold;">Row</span><span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">when</span> <span style="color: #6c3163;">(</span>condition<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
+,<span style="color: #3a81c3; font-weight: bold;">action</span>
 </pre>
 </div>
 </div>
-</div>
-<div id="outline-container-org46236a5" class="outline-5">
-<h5 id="org46236a5">events</h5>
-<div class="outline-text-5" id="text-org46236a5">
+</li>
+<li><a id="org786fe62"></a>events<br />
+<div class="outline-text-5" id="text-org786fe62">
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">INSERT</span> <span style="color: #F92672;">ON</span> T
-<span style="color: #F92672;">DELETE</span> <span style="color: #F92672;">ON</span> T
-<span style="color: #F92672;">UPDATE</span> <span style="color: #AE81FF;">[</span><span style="color: #F92672;">OF</span> C1,...,Cn<span style="color: #AE81FF;">]</span> <span style="color: #F92672;">ON</span> T
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">INSERT</span> <span style="color: #3a81c3; font-weight: bold;">ON</span> T
+<span style="color: #3a81c3; font-weight: bold;">DELETE</span> <span style="color: #3a81c3; font-weight: bold;">ON</span> T
+<span style="color: #3a81c3; font-weight: bold;">UPDATE</span> <span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">OF</span> C1,...,Cn<span style="color: #3a81c3;">]</span> <span style="color: #3a81c3; font-weight: bold;">ON</span> T
 </pre>
 </div>
 </div>
-</div>
-<div id="outline-container-org02e5467" class="outline-5">
-<h5 id="org02e5467">[For Each Row]</h5>
-<div class="outline-text-5" id="text-org02e5467">
+</li>
+<li><a id="org74640a0"></a>[For Each Row]<br />
+<div class="outline-text-5" id="text-org74640a0">
 <p>
 Determines whether the trigger is row-level or statement-level
 </p>
@@ -1384,11 +1402,11 @@ Determines whether the trigger is row-level or statement-level
 referencing-variables
 </p>
 <div class="org-src-container">
-<pre class="src src-sql">DEPENDS <span style="color: #F92672;">ON</span> <span style="color: #AE81FF;">[</span><span style="color: #F92672;">For</span> <span style="color: #F92672;">Each</span> <span style="color: #66D9EF;">Row</span><span style="color: #AE81FF;">]</span>
-<span style="color: #F92672;">OLD</span> <span style="color: #66D9EF;">row</span> <span style="color: #F92672;">AS</span> var
-<span style="color: #F92672;">NEW</span> <span style="color: #66D9EF;">row</span> <span style="color: #F92672;">AS</span> var
-<span style="color: #F92672;">OLD</span> <span style="color: #F92672;">table</span> <span style="color: #F92672;">AS</span> var
-<span style="color: #F92672;">NEW</span> <span style="color: #F92672;">table</span> <span style="color: #F92672;">AS</span> var
+<pre class="src src-sql">DEPENDS <span style="color: #3a81c3; font-weight: bold;">ON</span> <span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">For</span> <span style="color: #3a81c3; font-weight: bold;">Each</span> <span style="color: #ba2f59; font-weight: bold;">Row</span><span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3; font-weight: bold;">OLD</span> <span style="color: #ba2f59; font-weight: bold;">row</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> var
+<span style="color: #3a81c3; font-weight: bold;">NEW</span> <span style="color: #ba2f59; font-weight: bold;">row</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> var
+<span style="color: #3a81c3; font-weight: bold;">OLD</span> <span style="color: #3a81c3; font-weight: bold;">table</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> var
+<span style="color: #3a81c3; font-weight: bold;">NEW</span> <span style="color: #3a81c3; font-weight: bold;">table</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> var
 </pre>
 </div></li>
 
@@ -1401,24 +1419,26 @@ In <i>when</i> or <i>where</i> clause depends on the SQL Implementation.
 </p></li>
 </ul>
 </div>
-</div>
+</li>
+</ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgdf18b50" class="outline-2">
-<h2 id="orgdf18b50"><span class="section-number-2">8</span> Indexes</h2>
+<div id="outline-container-org21a25f5" class="outline-2">
+<h2 id="org21a25f5"><span class="section-number-2">8</span> Indexes</h2>
 <div class="outline-text-2" id="text-8">
-</div><div id="outline-container-org071a0d5" class="outline-3">
-<h3 id="org071a0d5"><span class="section-number-3">8.1</span> Usage</h3>
+</div>
+<div id="outline-container-orgdc45637" class="outline-3">
+<h3 id="orgdc45637"><span class="section-number-3">8.1</span> Usage</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 Different between full table scans and immediate location of tuples.
 </p>
 </div>
 </div>
-<div id="outline-container-orga07b568" class="outline-3">
-<h3 id="orga07b568"><span class="section-number-3">8.2</span> Underlying Data Structures</h3>
+<div id="outline-container-org2a96b8b" class="outline-3">
+<h3 id="org2a96b8b"><span class="section-number-3">8.2</span> Underlying Data Structures</h3>
 <div class="outline-text-3" id="text-8-2">
 <ul class="org-ul">
 <li><p>
@@ -1439,19 +1459,19 @@ When uses "=" in query.
 </ul>
 </div>
 </div>
-<div id="outline-container-org7d61f15" class="outline-3">
-<h3 id="org7d61f15"><span class="section-number-3">8.3</span> SQL Syntax</h3>
+<div id="outline-container-org365f132" class="outline-3">
+<h3 id="org365f132"><span class="section-number-3">8.3</span> SQL Syntax</h3>
 <div class="outline-text-3" id="text-8-3">
 <div class="org-src-container">
-<pre class="src src-sql"><span style="color: #F92672;">CREATE</span> INDEX IndexName <span style="color: #F92672;">ON</span> T<span style="color: #AE81FF;">(</span>A1,A2...<span style="color: #AE81FF;">)</span>
-<span style="color: #F92672;">CREATE</span> <span style="color: #F92672;">UNIQUE</span> INDEX ...
-<span style="color: #F92672;">DROP</span> INDEX IndexName
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> INDEX IndexName <span style="color: #3a81c3; font-weight: bold;">ON</span> T<span style="color: #3a81c3;">(</span>A1,A2...<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">UNIQUE</span> INDEX ...
+<span style="color: #3a81c3; font-weight: bold;">DROP</span> INDEX IndexName
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org8df8c87" class="outline-3">
-<h3 id="org8df8c87"><span class="section-number-3">8.4</span> Downsides</h3>
+<div id="outline-container-orgd9faa94" class="outline-3">
+<h3 id="orgd9faa94"><span class="section-number-3">8.4</span> Downsides</h3>
 <div class="outline-text-3" id="text-8-4">
 <ul class="org-ul">
 <li>Extra space</li>
@@ -1466,8 +1486,8 @@ When updates database, indexes will also be updated.
 </ul>
 </div>
 </div>
-<div id="outline-container-org9ba8b9d" class="outline-3">
-<h3 id="org9ba8b9d"><span class="section-number-3">8.5</span> Upsides</h3>
+<div id="outline-container-org1499d83" class="outline-3">
+<h3 id="org1499d83"><span class="section-number-3">8.5</span> Upsides</h3>
 <div class="outline-text-3" id="text-8-5">
 <p>
 Benefits depends on:
@@ -1481,8 +1501,8 @@ Benefits depends on:
 </div>
 </div>
 
-<div id="outline-container-orgb8cfb47" class="outline-3">
-<h3 id="orgb8cfb47"><span class="section-number-3">8.6</span> Physical Design Advisors</h3>
+<div id="outline-container-org4b49f82" class="outline-3">
+<h3 id="org4b49f82"><span class="section-number-3">8.6</span> Physical Design Advisors</h3>
 <div class="outline-text-3" id="text-8-6">
 <ul class="org-ul">
 <li>Input (database statistics and workload)</li>
@@ -1498,11 +1518,12 @@ Benefits depends on:
 </div>
 </div>
 
-<div id="outline-container-org8cb4d26" class="outline-2">
-<h2 id="org8cb4d26"><span class="section-number-2">9</span> Transaction</h2>
+<div id="outline-container-org1961a48" class="outline-2">
+<h2 id="org1961a48"><span class="section-number-2">9</span> Transaction</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgef3b1d1" class="outline-3">
-<h3 id="orgef3b1d1"><span class="section-number-3">9.1</span> Motivation</h3>
+</div>
+<div id="outline-container-org15a642a" class="outline-3">
+<h3 id="org15a642a"><span class="section-number-3">9.1</span> Motivation</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>Concurrent database access</li>
@@ -1510,8 +1531,8 @@ Benefits depends on:
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc1a737e" class="outline-3">
-<h3 id="orgc1a737e"><span class="section-number-3">9.2</span> Properties</h3>
+<div id="outline-container-org3d30cee" class="outline-3">
+<h3 id="org3d30cee"><span class="section-number-3">9.2</span> Properties</h3>
 <div class="outline-text-3" id="text-9-2">
 <ul class="org-ul">
 <li><p>
@@ -1553,14 +1574,15 @@ all effects of transaction remain in database.
 </div>
 </div>
 
-<div id="outline-container-org7a53e4b" class="outline-3">
-<h3 id="org7a53e4b"><span class="section-number-3">9.3</span> Isolation levels</h3>
+<div id="outline-container-org737e8ae" class="outline-3">
+<h3 id="org737e8ae"><span class="section-number-3">9.3</span> Isolation levels</h3>
 <div class="outline-text-3" id="text-9-3">
-</div><div id="outline-container-org7400165" class="outline-4">
-<h4 id="org7400165"><span class="section-number-4">9.3.1</span> dirty data: written by an uncommitted transaction</h4>
 </div>
-<div id="outline-container-orgd2a9ef6" class="outline-4">
-<h4 id="orgd2a9ef6"><span class="section-number-4">9.3.2</span> nonrepeatable reads: an item read multiple times cannot change values</h4>
+<div id="outline-container-orgd66daba" class="outline-4">
+<h4 id="orgd66daba"><span class="section-number-4">9.3.1</span> dirty data: written by an uncommitted transaction</h4>
+</div>
+<div id="outline-container-org7fbc4f8" class="outline-4">
+<h4 id="org7fbc4f8"><span class="section-number-4">9.3.2</span> nonrepeatable reads: an item read multiple times cannot change values</h4>
 <div class="outline-text-4" id="text-9-3-2">
 <pre class="example">
 T1:    Update Student Set GPA=(1.1)*GPA
@@ -1574,8 +1596,8 @@ The GPAs in S1 and S2 are different, leads to a nonrepatable reads violation.
 </div>
 </div>
 
-<div id="outline-container-org7142a4a" class="outline-4">
-<h4 id="org7142a4a"><span class="section-number-4">9.3.3</span> phantoms</h4>
+<div id="outline-container-org22c5798" class="outline-4">
+<h4 id="org22c5798"><span class="section-number-4">9.3.3</span> phantoms</h4>
 <div class="outline-text-4" id="text-9-3-3">
 <pre class="example">
 T1:    Insert Into Student [100 new tuples]
@@ -1588,11 +1610,11 @@ T2.S1 may excute before T1, T2.S2 may excute after T1.
 </p>
 </div>
 </div>
-<div id="outline-container-orgd87346c" class="outline-4">
-<h4 id="orgd87346c"><span class="section-number-4">9.3.4</span> Standard default: <b>Serializable</b></h4>
+<div id="outline-container-org0dfdb27" class="outline-4">
+<h4 id="org0dfdb27"><span class="section-number-4">9.3.4</span> Standard default: <b>Serializable</b></h4>
 </div>
-<div id="outline-container-org6f633c1" class="outline-4">
-<h4 id="org6f633c1"><span class="section-number-4">9.3.5</span> Some systems have default <b>Repeatable Read</b></h4>
+<div id="outline-container-org156749b" class="outline-4">
+<h4 id="org156749b"><span class="section-number-4">9.3.5</span> Some systems have default <b>Repeatable Read</b></h4>
 <div class="outline-text-4" id="text-9-3-5">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 4:</span> Summry</caption>
