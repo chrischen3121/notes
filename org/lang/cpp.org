@@ -116,6 +116,13 @@
       fn *returnFn();           // OK
       auto returnFn() -> bool (*)(int)
     #+END_SRC
+*** 成员函数指针
+    三种形式：
+    #+BEGIN_SRC cpp
+      auto a = std::mem_fn<int&()>(&X::get ); //std::mem_fn 生成指向成员指针的包装对象
+      auto b  = [] (X& x) {return x.get();};
+      auto c = std::bind(&X::get, &x);
+    #+END_SRC
 ** std::bind
    接受一个可调用对象，绑定若干参数，生成一个新的可调用对象。(函数柯里化)
    引用类型参数需用 std::ref 包装，常量引用使用 std::cref。
@@ -197,6 +204,21 @@
    #+END_SRC
    - D 中只有一个 A 的基类部分
    - 在派生类的构造中，虚基类总是先于非虚基类构造
+** 嵌套类和局部类
+   - 嵌套类：定义在某类内部，与外层类为相互独立的类型
+   - 局部类：定义在函数内部，作用域很小，通常为小型数据类
+** mutable 数据成员
+   被 mutable 修饰的数据成员，可以在 const 成员函数中修改。
+   #+BEGIN_SRC cpp
+     class Test {
+      public:
+       void fn() const { count++; }; //count 可以被改变
+
+      private:
+       mutable int count = 0;
+     };
+   #+END_SRC
+   fn 是一个对于外部来说的逻辑 const 函数，它所改变的内部状态不为外部“所知”(非接口可获取，内部缓存)
 * 类型
 ** 类型别名
    以下两个语句等价：
@@ -213,6 +235,7 @@
      decltype((i)) b = 5; //错误：b 为 int &
      decltype((i)) c = i; //正确
    #+END_SRC
+
 *** 模板
     #+BEGIN_SRC cpp
       int x = 42;
@@ -375,8 +398,23 @@
 **** reinterpret_cast
      用来处理无关类型之间的转换，字面意思“重新解释（类型的比特位）”，避免使用。
 ** 运行时类型识别
-   - typeid
-   - dynamic_cast: 常用于将基类转换成派生类并执行派生类非虚函数的操作
+*** typeid 运算符
+    - typeid 用于指针类型，始终返回该指针静态编译时的类型
+    - typeid 作用于在继承体系中的类时，是否返回静态编译时类型取决于类是否包含虚函数
+
+*** dynamic_cast
+    常用于将基类转换成派生类并执行派生类非虚函数的操作，例如想对有继承关系的类实现相等运算符，由于形参不同无法使用虚函数
+    - 指针类型转换：失败返回空指针，不抛出异常；推荐用法：
+      #+BEGIN_SRC cpp
+        Base *bp = new Derived;
+        if (Derived *dp = dynamic_cast<Derived *>(bp)) { //转换和结果检查和并单个语句
+          // 使用 dp
+        } else {
+          // 使用 bp
+        }
+      #+END_SRC
+    - 引用类型转换：失败抛异常
+
 * 容器
 ** 数组
    - 声明
@@ -754,22 +792,6 @@
    - deallocate
    - construct
    - destroy
-
-* mutable & volatile
-** mutable
-   被 mutable 修饰的数据成员，可以在 const 成员函数中修改。
-   #+BEGIN_SRC cpp
-     class Test {
-      public:
-       void fn() const { count++; }; //count 可以被改变
-
-      private:
-       mutable int count = 0;
-     };
-   #+END_SRC
-   fn 是一个对于外部来说的逻辑 const 函数，它所改变的内部状态不为外部“所知”(非接口可获取，内部缓存)
-** volatile
-   打破编译器根据有限的上下文对某变量是不会发生改变的假设，从而作出错误的编译优化。
 * 异常
 ** 构造函数处理异常
    需要声明成函数 try 语句块，这样才能捕获构造函数的初始化过程
@@ -786,4 +808,37 @@
      for (std::size_t i = 0; i < 10; ++i) {
        std::cout << u(e) << "\n";
      }
+   #+END_SRC
+* 不可移植特性
+** 算术类型大小不一致
+** 位域
+   #+BEGIN_SRC cpp
+     using Bit = unsigned int; //位域必须是整型，通常使用无符号整形
+     class A {
+       Bit a: 2; //占两位
+       Bit b: 4;
+       Bit c: 8;
+     }
+   #+END_SRC
+   为了实现存储压缩，a,b,c 压缩在同一个 unsigned int 内
+** volatile
+   volatile 告诉编译器，不应该对其声明的对象进行优化。
+   - 打破编译器根据有限的上下文对某变量是不会发生改变的假设，从而作出错误的编译优化。
+** extern
+   extern 链接指示器声明其他语言编写的函数，也可以指示 C++代码为其他语言所用
+   #+BEGIN_SRC cpp
+     extern "C" size_t strlen(const char *);
+     extern "C" {
+     #include <string.h>
+       int acFn(int a);
+       //...
+     }
+   #+END_SRC
+** __cplusplus
+   与 C 编译器共享编译同一个源文件
+   #+BEGIN_SRC cpp
+     #ifdef __cplusplus
+     extern "C"
+     #endif // __cplusplus
+     int strcmp(const char *, const char *);
    #+END_SRC
