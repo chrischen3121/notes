@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2018-03-08 Thu 16:09 -->
+<!-- 2018-03-26 Mon 17:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++ 点滴</title>
@@ -247,7 +247,7 @@ for the JavaScript code in this tag.
 <li><a href="#org68d4b47">3. 表达式</a>
 <ul>
 <li><a href="#orgbd0a018">3.1. 输入输出求值顺序</a></li>
-<li><a href="#orgcbfcc58">3.2. 递增递减运算符</a></li>
+<li><a href="#org813f2df">3.2. 递增递减运算符</a></li>
 <li><a href="#orgb380955">3.3. sizeof 运算符</a></li>
 </ul>
 </li>
@@ -277,8 +277,11 @@ for the JavaScript code in this tag.
 <li><a href="#orgaf42cc3">5.8. 静态常量初始值</a></li>
 <li><a href="#orgd2483c6">5.9. 运算符重载</a></li>
 <li><a href="#org0b9440a">5.10. 虚析构函数</a></li>
-<li><a href="#org495c787">5.11. dynamic_cast</a></li>
+<li><a href="#orgd512ea1">5.11. dynamic_cast</a></li>
 <li><a href="#org0110289">5.12. 强制调用基类虚函数</a></li>
+<li><a href="#orgb73ea6f">5.13. 虚继承</a></li>
+<li><a href="#org1b74091">5.14. 嵌套类和局部类</a></li>
+<li><a href="#org327e99d">5.15. mutable 数据成员</a></li>
 </ul>
 </li>
 <li><a href="#orga513a56">6. 类型</a>
@@ -286,6 +289,7 @@ for the JavaScript code in this tag.
 <li><a href="#org1819d04">6.1. 类型别名</a></li>
 <li><a href="#org2009ae6">6.2. 类型推断</a></li>
 <li><a href="#orgafe58b7">6.3. 类型转换</a></li>
+<li><a href="#orgc14d9b1">6.4. 运行时类型识别</a></li>
 </ul>
 </li>
 <li><a href="#org5030bd9">7. 容器</a>
@@ -319,14 +323,15 @@ for the JavaScript code in this tag.
 <li><a href="#orgd63a2d2">10.2. mutable lambda</a></li>
 </ul>
 </li>
-<li><a href="#orgc1171ef">11. 模板</a>
+<li><a href="#orgfdb4b89">11. 模板</a>
 <ul>
 <li><a href="#org52b9f2b">11.1. 非类型参数模板</a></li>
 <li><a href="#org3dafceb">11.2. 模板参数的静态成员</a></li>
 <li><a href="#org26bf786">11.3. 显示实例化</a></li>
 <li><a href="#orgd48bf8e">11.4. 模板返回值</a></li>
 <li><a href="#orgdb75682">11.5. 标准类型转换模板</a></li>
-<li><a href="#org9ad70ed">11.6. 可变参数模板</a></li>
+<li><a href="#orgc1deb4f">11.6. 可变参数模板</a></li>
+<li><a href="#orge02ef33">11.7. 模板特例化</a></li>
 </ul>
 </li>
 <li><a href="#org27da650">12. 辅助调试</a>
@@ -346,10 +351,30 @@ for the JavaScript code in this tag.
 <li><a href="#orgccccfc1">14.2. 数值转换</a></li>
 </ul>
 </li>
-<li><a href="#org69f17df">15. mutable &amp; volatile</a>
+<li><a href="#org5b6a380">15. new &amp; delete</a>
 <ul>
-<li><a href="#orgf3d2556">15.1. mutable</a></li>
-<li><a href="#org3c66d7c">15.2. volatile</a></li>
+<li><a href="#org8559b6c">15.1. placement new</a></li>
+<li><a href="#orgca90d62">15.2. 标准库 allocator</a></li>
+</ul>
+</li>
+<li><a href="#orgb342239">16. 异常</a>
+<ul>
+<li><a href="#org2a64ba9">16.1. 构造函数处理异常</a></li>
+</ul>
+</li>
+<li><a href="#orgf2cbf9c">17. 标准库</a>
+<ul>
+<li><a href="#org7acded3">17.1. regex</a></li>
+<li><a href="#orgeea7f0e">17.2. random</a></li>
+</ul>
+</li>
+<li><a href="#org3fa57ad">18. 不可移植特性</a>
+<ul>
+<li><a href="#orgc07c061">18.1. 算术类型大小不一致</a></li>
+<li><a href="#org9bffc5a">18.2. 位域</a></li>
+<li><a href="#org3c66d7c">18.3. volatile</a></li>
+<li><a href="#org28b124e">18.4. extern</a></li>
+<li><a href="#orgc9cd178">18.5. __cplusplus</a></li>
 </ul>
 </li>
 </ul>
@@ -413,8 +438,8 @@ pi = &amp;val2; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </sp
 </div>
 </div>
 </div>
-<div id="outline-container-orgcbfcc58" class="outline-3">
-<h3 id="orgcbfcc58"><span class="section-number-3">3.2</span> 递增递减运算符</h3>
+<div id="outline-container-org813f2df" class="outline-3">
+<h3 id="org813f2df"><span class="section-number-3">3.2</span> 递增递减运算符</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 除非必须，否则不使用后置版本。后置版本需要存储原始值用于返回未修改的内容。
@@ -468,6 +493,9 @@ sizeof 运算符返回一条表达式或一个类型名字所占的字节数
 <span style="color: #3a81c3;">}</span>
 </pre>
 </div>
+<ul class="org-ul">
+<li>编译器保证局部静态变量线程安全，典型实现：Meyer's singleton</li>
+</ul>
 </div>
 </div>
 <div id="outline-container-orge4b8f52" class="outline-3">
@@ -499,8 +527,8 @@ f<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><sp
 </div>
 </div>
 </div>
-<div id="outline-container-orgff59e64" class="outline-4">
-<h4 id="orgff59e64"><span class="section-number-4">4.3.2</span> 可变参数模板</h4>
+<div id="outline-container-org9ad70ed" class="outline-4">
+<h4 id="org9ad70ed"><span class="section-number-4">4.3.2</span> 可变参数模板</h4>
 <div class="outline-text-4" id="text-4-3-2">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span>... Args<span style="color: #3a81c3;">&gt;</span>
@@ -572,6 +600,20 @@ pf<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">2</span><s
 <span style="color: #ba2f59; font-weight: bold;">fn</span> <span style="color: #6c3163; font-weight: bold;">returnFn</span><span style="color: #3a81c3;">()</span>;            <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Wrong</span>
 <span style="color: #ba2f59; font-weight: bold;">fn</span> *<span style="color: #6c3163; font-weight: bold;">returnFn</span><span style="color: #3a81c3;">()</span>;           <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">OK</span>
 <span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #6c3163; font-weight: bold;">returnFn</span><span style="color: #3a81c3;">()</span> -&gt; <span style="color: #ba2f59; font-weight: bold;">bool</span> <span style="color: #3a81c3;">(</span>*<span style="color: #3a81c3;">)(</span><span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd2585f9" class="outline-4">
+<h4 id="orgd2585f9"><span class="section-number-4">4.7.2</span> 成员函数指针</h4>
+<div class="outline-text-4" id="text-4-7-2">
+<p>
+三种形式：
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">a</span> = <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">mem_fn</span><span style="color: #3a81c3;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">int</span>&amp;<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">&gt;(</span>&amp;<span style="color: #4e3163;">X</span>::<span style="color: #715ab1;">get</span> <span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">std::mem_fn &#29983;&#25104;&#25351;&#21521;&#25104;&#21592;&#25351;&#38024;&#30340;&#21253;&#35013;&#23545;&#35937;</span>
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">b</span>  = <span style="color: #3a81c3;">[]</span> <span style="color: #3a81c3;">(</span>X&amp; x<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span><span style="color: #3a81c3; font-weight: bold;">return</span> x.get<span style="color: #6c3163;">()</span>;<span style="color: #3a81c3;">}</span>;
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">c</span> = <span style="color: #4e3163;">std</span>::bind<span style="color: #3a81c3;">(</span>&amp;<span style="color: #4e3163;">X</span>::get, &amp;x<span style="color: #3a81c3;">)</span>;
 </pre>
 </div>
 </div>
@@ -705,8 +747,8 @@ const 成员函数以引用形式返回的是 <b>常量引用</b>
 <h3 id="orgd2483c6"><span class="section-number-3">5.9</span> 运算符重载</h3>
 <div class="outline-text-3" id="text-5-9">
 </div>
-<div id="outline-container-org813f2df" class="outline-4">
-<h4 id="org813f2df"><span class="section-number-4">5.9.1</span> 递增递减运算符</h4>
+<div id="outline-container-org3f83b52" class="outline-4">
+<h4 id="org3f83b52"><span class="section-number-4">5.9.1</span> 递增递减运算符</h4>
 <div class="outline-text-4" id="text-5-9-1">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">MyClass</span> <span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">++</span><span style="color: #3a81c3;">()</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#21069;&#32622;&#29256;&#26412;</span>
@@ -735,8 +777,8 @@ const 成员函数以引用形式返回的是 <b>常量引用</b>
 </p>
 </div>
 </div>
-<div id="outline-container-org495c787" class="outline-3">
-<h3 id="org495c787"><span class="section-number-3">5.11</span> dynamic_cast</h3>
+<div id="outline-container-orgd512ea1" class="outline-3">
+<h3 id="orgd512ea1"><span class="section-number-3">5.11</span> dynamic_cast</h3>
 <div class="outline-text-3" id="text-5-11">
 <p>
 从父类转换成子类，使用 dynamic_cast 会在运行时检查转换是否有效，而 static_cast 不会
@@ -750,6 +792,56 @@ const 成员函数以引用形式返回的是 <b>常量引用</b>
 <pre class="src src-cpp">p_base-&gt;<span style="color: #4e3163;">Base</span>::fn<span style="color: #3a81c3;">()</span>;<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#20351;&#29992;&#20316;&#29992;&#22495;&#25351;&#23450;</span>
 </pre>
 </div>
+</div>
+</div>
+<div id="outline-container-orgb73ea6f" class="outline-3">
+<h3 id="orgb73ea6f"><span class="section-number-3">5.13</span> 虚继承</h3>
+<div class="outline-text-3" id="text-5-13">
+<p>
+菱形结构
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">A</span> <span style="color: #3a81c3;">{}</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#34394;&#22522;&#31867;&#65292;&#34987; D &#32487;&#25215;&#20102;&#20004;&#27425;</span>
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">B</span> : <span style="color: #3a81c3; font-weight: bold;">public</span> <span style="color: #3a81c3; font-weight: bold;">virtual</span> <span style="color: #ba2f59; font-weight: bold;">A</span> <span style="color: #3a81c3;">{}</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#22768;&#26126;&#34394;&#32487;&#25215;</span>
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">C</span> : <span style="color: #3a81c3; font-weight: bold;">public</span> <span style="color: #3a81c3; font-weight: bold;">virtual</span> <span style="color: #ba2f59; font-weight: bold;">A</span> <span style="color: #3a81c3;">{}</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#22768;&#26126;&#34394;&#32487;&#25215;</span>
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">D</span> : <span style="color: #3a81c3; font-weight: bold;">public</span> <span style="color: #ba2f59; font-weight: bold;">B</span> <span style="color: #3a81c3;">{}</span>;
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">D</span> : <span style="color: #3a81c3; font-weight: bold;">public</span> <span style="color: #ba2f59; font-weight: bold;">C</span> <span style="color: #3a81c3;">{}</span>;
+</pre>
+</div>
+<ul class="org-ul">
+<li>D 中只有一个 A 的基类部分</li>
+<li>在派生类的构造中，虚基类总是先于非虚基类构造</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1b74091" class="outline-3">
+<h3 id="org1b74091"><span class="section-number-3">5.14</span> 嵌套类和局部类</h3>
+<div class="outline-text-3" id="text-5-14">
+<ul class="org-ul">
+<li>嵌套类：定义在某类内部，与外层类为相互独立的类型</li>
+<li>局部类：定义在函数内部，作用域很小，通常为小型数据类</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org327e99d" class="outline-3">
+<h3 id="org327e99d"><span class="section-number-3">5.15</span> mutable 数据成员</h3>
+<div class="outline-text-3" id="text-5-15">
+<p>
+被 mutable 修饰的数据成员，可以在 const 成员函数中修改。
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Test</span> <span style="color: #3a81c3;">{</span>
+ <span style="color: #3a81c3; font-weight: bold;">public</span>:
+  <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">fn</span><span style="color: #6c3163;">()</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #6c3163;">{</span> count++; <span style="color: #6c3163;">}</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">count &#21487;&#20197;&#34987;&#25913;&#21464;</span>
+
+ <span style="color: #3a81c3; font-weight: bold;">private</span>:
+  <span style="color: #3a81c3; font-weight: bold;">mutable</span> <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">count</span> = <span style="color: #4e3163;">0</span>;
+<span style="color: #3a81c3;">}</span>;
+</pre>
+</div>
+<p>
+fn 是一个对于外部来说的逻辑 const 函数，它所改变的内部状态不为外部“所知”(非接口可获取，内部缓存)
+</p>
 </div>
 </div>
 </div>
@@ -785,8 +877,9 @@ decltype<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</s
 </pre>
 </div>
 </div>
-<div id="outline-container-orge1724f5" class="outline-4">
-<h4 id="orge1724f5"><span class="section-number-4">6.2.1</span> 模板</h4>
+
+<div id="outline-container-orgc1171ef" class="outline-4">
+<h4 id="orgc1171ef"><span class="section-number-4">6.2.1</span> 模板</h4>
 <div class="outline-text-4" id="text-6-2-1">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">x</span> = <span style="color: #4e3163;">42</span>;
@@ -1017,8 +1110,8 @@ decltype<span style="color: #3a81c3;">(</span>*pi<span style="color: #3a81c3;">)
 </div>
 </div>
 </li>
-<li><a id="orgd512ea1"></a>dynamic_cast<br />
-<div class="outline-text-5" id="text-orgd512ea1">
+<li><a id="orgfc17eca"></a>dynamic_cast<br />
+<div class="outline-text-5" id="text-orgfc17eca">
 <p>
 多态指针转换
 </p>
@@ -1049,7 +1142,46 @@ decltype<span style="color: #3a81c3;">(</span>*pi<span style="color: #3a81c3;">)
 </ul>
 </div>
 </div>
+<div id="outline-container-orgc14d9b1" class="outline-3">
+<h3 id="orgc14d9b1"><span class="section-number-3">6.4</span> 运行时类型识别</h3>
+<div class="outline-text-3" id="text-6-4">
 </div>
+<div id="outline-container-orgdc9fbca" class="outline-4">
+<h4 id="orgdc9fbca"><span class="section-number-4">6.4.1</span> typeid 运算符</h4>
+<div class="outline-text-4" id="text-6-4-1">
+<ul class="org-ul">
+<li>typeid 用于指针类型，始终返回该指针静态编译时的类型</li>
+<li>typeid 作用于在继承体系中的类时，是否返回静态编译时类型取决于类是否包含虚函数</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga5753eb" class="outline-4">
+<h4 id="orga5753eb"><span class="section-number-4">6.4.2</span> dynamic_cast</h4>
+<div class="outline-text-4" id="text-6-4-2">
+<p>
+常用于将基类转换成派生类并执行派生类非虚函数的操作，例如想对有继承关系的类实现相等运算符，由于形参不同无法使用虚函数
+</p>
+<ul class="org-ul">
+<li><p>
+指针类型转换：失败返回空指针，不抛出异常；推荐用法：
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">Base</span> *<span style="color: #715ab1;">bp</span> = <span style="color: #3a81c3; font-weight: bold;">new</span> <span style="color: #ba2f59; font-weight: bold;">Derived</span>;
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">Derived</span> *<span style="color: #715ab1;">dp</span> = <span style="color: #3a81c3; font-weight: bold;">dynamic_cast</span>&lt;Derived *&gt;<span style="color: #6c3163;">(</span>bp<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#36716;&#25442;&#21644;&#32467;&#26524;&#26816;&#26597;&#21644;&#24182;&#21333;&#20010;&#35821;&#21477;</span>
+  <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#20351;&#29992; dp</span>
+<span style="color: #3a81c3;">}</span> <span style="color: #3a81c3; font-weight: bold;">else</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#20351;&#29992; bp</span>
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div></li>
+<li>引用类型转换：失败抛异常</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
 <div id="outline-container-org5030bd9" class="outline-2">
 <h2 id="org5030bd9"><span class="section-number-2">7</span> 容器</h2>
 <div class="outline-text-2" id="text-7">
@@ -1502,8 +1634,8 @@ forward_test<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">
 </div>
 </div>
 
-<div id="outline-container-orgc1171ef" class="outline-2">
-<h2 id="orgc1171ef"><span class="section-number-2">11</span> 模板</h2>
+<div id="outline-container-orgfdb4b89" class="outline-2">
+<h2 id="orgfdb4b89"><span class="section-number-2">11</span> 模板</h2>
 <div class="outline-text-2" id="text-11">
 </div>
 <div id="outline-container-org52b9f2b" class="outline-3">
@@ -1569,8 +1701,8 @@ add_pointer, make_signed, make_unsigned, remove_extent, remove_all_extents
 </div>
 </div>
 
-<div id="outline-container-org9ad70ed" class="outline-3">
-<h3 id="org9ad70ed"><span class="section-number-3">11.6</span> 可变参数模板</h3>
+<div id="outline-container-orgc1deb4f" class="outline-3">
+<h3 id="orgc1deb4f"><span class="section-number-3">11.6</span> 可变参数模板</h3>
 <div class="outline-text-3" id="text-11-6">
 <p>
 可不同类型多参数，使用 typename&#x2026;来指定多个类型的列表，对于参数包，我们只能做两件事情
@@ -1599,8 +1731,18 @@ add_pointer, make_signed, make_unsigned, remove_extent, remove_all_extents
 <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">f</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">T</span>&amp; <span style="color: #715ab1;">t</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">Args</span>&amp;... args<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
   <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">sizeof</span>...<span style="color: #2d9574;">(</span>args<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#25193;&#23637;&#29983;&#25104;&#20989;&#25968;&#21442;&#25968;&#21015;&#34920;</span>
     <span style="color: #4e3163;">std</span>::cout &lt;&lt; t &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
-    f<span style="color: #2d9574;">(</span>args...<span style="color: #2d9574;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#25193;&#23637;&#29983;&#25104;&#23454;&#21442;&#21015;&#34920;</span>
+    f<span style="color: #2d9574;">(</span>args...<span style="color: #2d9574;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#25193;&#23637;&#29983;&#25104;&#23454;&#21442;&#21015;&#34920;</span>
   <span style="color: #6c3163;">}</span>
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">T</span> &amp;<span style="color: #715ab1;">t</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #4e3163;">std</span>::cout &lt;&lt; t &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span>... Args<span style="color: #3a81c3;">&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">f2</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">Args</span>&amp;... args<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  print<span style="color: #6c3163;">(</span>args<span style="color: #6c3163;">)</span>...; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#23545;&#27599;&#19968;&#20010; args &#35843;&#29992; print</span>
 <span style="color: #3a81c3;">}</span>
 </pre>
 </div></li>
@@ -1620,6 +1762,60 @@ add_pointer, make_signed, make_unsigned, remove_extent, remove_all_extents
 <span style="color: #ba2f59; font-weight: bold;">ostream</span> &amp;<span style="color: #6c3163; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">ostream</span> &amp;<span style="color: #715ab1;">os</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">T</span> &amp;<span style="color: #715ab1;">t</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">Args</span>&amp;... rest<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
   os &lt;&lt; t &lt;&lt; <span style="color: #2d9574;">", "</span>;
   <span style="color: #3a81c3; font-weight: bold;">return</span> print<span style="color: #6c3163;">(</span>os, rest...<span style="color: #6c3163;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#36882;&#24402;&#65292;&#27599;&#27425;&#35843;&#29992;&#33258;&#24049;&#25171;&#21360;&#21097;&#20313; rest &#20013;&#30340;&#31532;&#19968;&#20010;</span>
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge863af5" class="outline-4">
+<h4 id="orge863af5"><span class="section-number-4">11.6.2</span> emplace_back 的实现</h4>
+<div class="outline-text-4" id="text-11-6-2">
+<p>
+结合可变参数及 forward 机制实现 emplace_back
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span>... Args<span style="color: #3a81c3;">&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #4e3163;">SomeVector</span>::<span style="color: #6c3163; font-weight: bold;">emplace_back</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">Args</span> &amp;&amp;... args<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  chk_n_alloc<span style="color: #6c3163;">()</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#22914;&#26524;&#38656;&#35201;&#37325;&#26032;&#20998;&#37197; SomeVector &#30340;&#20869;&#23384;&#31354;&#38388;</span>
+  alloc.construct<span style="color: #6c3163;">(</span>first_free++, <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">forward</span><span style="color: #2d9574;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">Args</span><span style="color: #2d9574;">&gt;(</span><span style="color: #715ab1;">args</span><span style="color: #2d9574;">)</span>...<span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge02ef33" class="outline-3">
+<h3 id="orge02ef33"><span class="section-number-3">11.7</span> 模板特例化</h3>
+<div class="outline-text-3" id="text-11-7">
+<p>
+模板特例化指为原模板中的每个模板参数都提供实参，本质上接管了编译器的工作
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span><span style="color: #3a81c3;">&lt;&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">compare</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span>* <span style="color: #3a81c3; font-weight: bold;">const</span> &amp;<span style="color: #715ab1;">p1</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span>* <span style="color: #3a81c3; font-weight: bold;">const</span> &amp;<span style="color: #715ab1;">p2</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">return</span> strcmp<span style="color: #6c3163;">(</span>p1, p2<span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>特例化本质是实例化一个模板，非重载；不影响函数匹配</li>
+</ul>
+</div>
+<div id="outline-container-orgc012254" class="outline-4">
+<h4 id="orgc012254"><span class="section-number-4">11.7.1</span> 类模板可以部分特例化</h4>
+<div class="outline-text-4" id="text-11-7-1">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span> <span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">remove_reference</span> <span style="color: #3a81c3;">{</span> <span style="color: #3a81c3; font-weight: bold;">typedef</span> <span style="color: #ba2f59; font-weight: bold;">T</span> <span style="color: #ba2f59; font-weight: bold;">type</span>; <span style="color: #3a81c3;">}</span>;
+
+<span style="color: #3a81c3; font-weight: bold;">template</span> <span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">remove_reference</span><span style="color: #3a81c3;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">T</span> &amp;<span style="color: #3a81c3;">&gt;</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">typedef</span> <span style="color: #ba2f59; font-weight: bold;">T</span> <span style="color: #ba2f59; font-weight: bold;">type</span>;
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #3a81c3; font-weight: bold;">template</span> <span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span>
+<span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">remove_reference</span>&lt;<span style="color: #ba2f59; font-weight: bold;">T</span> &amp;&amp;&gt; <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">typedef</span> <span style="color: #ba2f59; font-weight: bold;">T</span> <span style="color: #ba2f59; font-weight: bold;">type</span>;
 <span style="color: #3a81c3;">}</span>
 </pre>
 </div>
@@ -1701,37 +1897,156 @@ std::to_string, stoXXX
 </div>
 </div>
 </div>
-<div id="outline-container-org69f17df" class="outline-2">
-<h2 id="org69f17df"><span class="section-number-2">15</span> mutable &amp; volatile</h2>
+<div id="outline-container-org5b6a380" class="outline-2">
+<h2 id="org5b6a380"><span class="section-number-2">15</span> new &amp; delete</h2>
 <div class="outline-text-2" id="text-15">
+<ul class="org-ul">
+<li>可重载 new 和 delete 操作符以控制 <b>内存分配</b></li>
+<li>无法改变 <b>运算符</b> new 和 delete 的行为
+<ul class="org-ul">
+<li>运算符 new 的操作：1) 调用 operator new 获取内存空间 2) 在内存空间中使用构造函数构造对象</li>
+<li>运算符 delete：1) 调用析构销毁对象 2) 调用 operator delete 回收内存空间</li>
+</ul></li>
+</ul>
 </div>
-<div id="outline-container-orgf3d2556" class="outline-3">
-<h3 id="orgf3d2556"><span class="section-number-3">15.1</span> mutable</h3>
+<div id="outline-container-org8559b6c" class="outline-3">
+<h3 id="org8559b6c"><span class="section-number-3">15.1</span> placement new</h3>
 <div class="outline-text-3" id="text-15-1">
-<p>
-被 mutable 修饰的数据成员，可以在 const 成员函数中修改。
-</p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Test</span> <span style="color: #3a81c3;">{</span>
- <span style="color: #3a81c3; font-weight: bold;">public</span>:
-  <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">fn</span><span style="color: #6c3163;">()</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #6c3163;">{</span> count++; <span style="color: #6c3163;">}</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">count &#21487;&#20197;&#34987;&#25913;&#21464;</span>
-
- <span style="color: #3a81c3; font-weight: bold;">private</span>:
-  <span style="color: #3a81c3; font-weight: bold;">mutable</span> <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">count</span> = <span style="color: #4e3163;">0</span>;
-<span style="color: #3a81c3;">}</span>;
+<pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">p</span> = <span style="color: #3a81c3; font-weight: bold;">new</span> <span style="color: #3a81c3;">(</span>nothrow<span style="color: #3a81c3;">)</span> <span style="color: #ba2f59; font-weight: bold;">int</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">placement new, &#19981;&#25243;&#20986;&#24322;&#24120;&#65292;&#21019;&#24314;&#22833;&#36133;&#21017;&#36820;&#22238; nullptr</span>
 </pre>
 </div>
 <p>
-fn 是一个对于外部来说的逻辑 const 函数，它所改变的内部状态不为外部“所知”(非接口可获取，内部缓存)
+也可以是如下形式：
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">new</span> <span style="color: #3a81c3;">(</span>place_address<span style="color: #3a81c3;">)</span> <span style="color: #ba2f59; font-weight: bold;">type</span>
+</pre>
+</div>
+<p>
+place_address 指定一个事先分配好内存的指针
+</p>
+<ul class="org-ul">
+<li>placement new 类似于 allocator 的 construct 成员</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgca90d62" class="outline-3">
+<h3 id="orgca90d62"><span class="section-number-3">15.2</span> 标准库 allocator</h3>
+<div class="outline-text-3" id="text-15-2">
+<ul class="org-ul">
+<li>allocate</li>
+<li>deallocate</li>
+<li>construct</li>
+<li>destroy</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb342239" class="outline-2">
+<h2 id="orgb342239"><span class="section-number-2">16</span> 异常</h2>
+<div class="outline-text-2" id="text-16">
+</div>
+<div id="outline-container-org2a64ba9" class="outline-3">
+<h3 id="org2a64ba9"><span class="section-number-3">16.1</span> 构造函数处理异常</h3>
+<div class="outline-text-3" id="text-16-1">
+<p>
+需要声明成函数 try 语句块，这样才能捕获构造函数的初始化过程
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">Foo</span>::Foo<span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">i</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">try</span> : i_<span style="color: #3a81c3;">(</span>i<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf2cbf9c" class="outline-2">
+<h2 id="orgf2cbf9c"><span class="section-number-2">17</span> 标准库</h2>
+<div class="outline-text-2" id="text-17">
+</div>
+<div id="outline-container-org7acded3" class="outline-3">
+<h3 id="org7acded3"><span class="section-number-3">17.1</span> regex</h3>
+</div>
+<div id="outline-container-orgeea7f0e" class="outline-3">
+<h3 id="orgeea7f0e"><span class="section-number-3">17.2</span> random</h3>
+<div class="outline-text-3" id="text-17-2">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">uniform_int_distribution</span><span style="color: #3a81c3;">&lt;&gt;</span> <span style="color: #6c3163; font-weight: bold;">u</span><span style="color: #3a81c3;">(</span><span style="color: #4e3163;">0</span>, <span style="color: #4e3163;">9</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">default_random_engine</span> <span style="color: #715ab1;">e</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">e{some_seed}</span>
+<span style="color: #4e3163;">std</span>::cout &lt;&lt; e.min<span style="color: #3a81c3;">()</span> &lt;&lt; <span style="color: #2d9574;">" "</span> &lt;&lt; e.max<span style="color: #3a81c3;">()</span> &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
+<span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">size_t</span> <span style="color: #715ab1;">i</span> = <span style="color: #4e3163;">0</span>; i &lt; <span style="color: #4e3163;">10</span>; ++i<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #4e3163;">std</span>::cout &lt;&lt; u<span style="color: #6c3163;">(</span>e<span style="color: #6c3163;">)</span> &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org3fa57ad" class="outline-2">
+<h2 id="org3fa57ad"><span class="section-number-2">18</span> 不可移植特性</h2>
+<div class="outline-text-2" id="text-18">
+</div>
+<div id="outline-container-orgc07c061" class="outline-3">
+<h3 id="orgc07c061"><span class="section-number-3">18.1</span> 算术类型大小不一致</h3>
+</div>
+<div id="outline-container-org9bffc5a" class="outline-3">
+<h3 id="org9bffc5a"><span class="section-number-3">18.2</span> 位域</h3>
+<div class="outline-text-3" id="text-18-2">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">using</span> <span style="color: #ba2f59; font-weight: bold;">Bit</span> = <span style="color: #ba2f59; font-weight: bold;">unsigned</span> <span style="color: #ba2f59; font-weight: bold;">int</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#20301;&#22495;&#24517;&#39035;&#26159;&#25972;&#22411;&#65292;&#36890;&#24120;&#20351;&#29992;&#26080;&#31526;&#21495;&#25972;&#24418;</span>
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">A</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #ba2f59; font-weight: bold;">Bit</span> <span style="color: #715ab1;">a</span>: <span style="color: #4e3163;">2</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#21344;&#20004;&#20301;</span>
+  <span style="color: #ba2f59; font-weight: bold;">Bit</span> <span style="color: #715ab1;">b</span>: <span style="color: #4e3163;">4</span>;
+  <span style="color: #ba2f59; font-weight: bold;">Bit</span> <span style="color: #715ab1;">c</span>: <span style="color: #4e3163;">8</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<p>
+为了实现存储压缩，a,b,c 压缩在同一个 unsigned int 内
 </p>
 </div>
 </div>
 <div id="outline-container-org3c66d7c" class="outline-3">
-<h3 id="org3c66d7c"><span class="section-number-3">15.2</span> volatile</h3>
-<div class="outline-text-3" id="text-15-2">
+<h3 id="org3c66d7c"><span class="section-number-3">18.3</span> volatile</h3>
+<div class="outline-text-3" id="text-18-3">
 <p>
-打破编译器根据有限的上下文对某变量是不会发生改变的假设，从而作出错误的编译优化。
+volatile 告诉编译器，不应该对其声明的对象进行优化。
 </p>
+<ul class="org-ul">
+<li>打破编译器根据有限的上下文对某变量是不会发生改变的假设，从而作出错误的编译优化。</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org28b124e" class="outline-3">
+<h3 id="org28b124e"><span class="section-number-3">18.4</span> extern</h3>
+<div class="outline-text-3" id="text-18-4">
+<p>
+extern 链接指示器声明其他语言编写的函数，也可以指示 C++代码为其他语言所用
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">extern</span> <span style="color: #2d9574;">"C"</span> <span style="color: #ba2f59; font-weight: bold;">size_t</span> <span style="color: #6c3163; font-weight: bold;">strlen</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">extern</span> <span style="color: #2d9574;">"C"</span> <span style="color: #3a81c3;">{</span>
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;string.h&gt;</span>
+  <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">acFn</span><span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">a</span><span style="color: #6c3163;">)</span>;
+  <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">...</span>
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc9cd178" class="outline-3">
+<h3 id="orgc9cd178"><span class="section-number-3">18.5</span> __cplusplus</h3>
+<div class="outline-text-3" id="text-18-5">
+<p>
+与 C 编译器共享编译同一个源文件
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #6c3163;">#ifdef</span> __cplusplus
+<span style="color: #3a81c3; font-weight: bold;">extern</span> <span style="color: #2d9574;">"C"</span>
+<span style="color: #6c3163;">#endif</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">__cplusplus</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">strcmp</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
 </div>
 </div>
 </div>
