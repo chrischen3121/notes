@@ -1,0 +1,2544 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2018-03-27 Tue 17:32 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Operating Systems</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="OS" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="../styles/demo/css/demo.css"/>
+<link href="https://fonts.proxy.ustclug.org/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2017 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "left",
+        displayIndent: "5em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "left",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Operating Systems</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8516c06">1. Represeting Infomation</a>
+<ul>
+<li><a href="#org491e631">1.1. Integer</a></li>
+<li><a href="#orgac89dd8">1.2. Floating Point</a></li>
+</ul>
+</li>
+<li><a href="#orga4e74fd">2. Manipulating Infomation</a>
+<ul>
+<li><a href="#org2737cb5">2.1. Integer arithmatic</a></li>
+<li><a href="#org38b40fb">2.2. Floating Operation</a></li>
+</ul>
+</li>
+<li><a href="#org860a929">3. Program Structure</a>
+<ul>
+<li><a href="#org989320d">3.1. Data Formats</a></li>
+<li><a href="#orgc179377">3.2. Interger Registers</a></li>
+<li><a href="#org169b2d8">3.3. Accessing Information</a></li>
+<li><a href="#org0c14404">3.4. Basic Operations</a></li>
+<li><a href="#org5cb42f3">3.5. Control</a></li>
+<li><a href="#org66a7787">3.6. Procedure</a></li>
+<li><a href="#orgee7acff">3.7. Array Allocation</a></li>
+</ul>
+</li>
+<li><a href="#org7e9fac8">4. Storage</a>
+<ul>
+<li><a href="#org2fe3633">4.1. Disk</a></li>
+<li><a href="#org805cd60">4.2. Locality</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8516c06" class="outline-2">
+<h2 id="org8516c06"><span class="section-number-2">1</span> Represeting Infomation</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org491e631" class="outline-3">
+<h3 id="org491e631"><span class="section-number-3">1.1</span> Integer</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org2f2979b" class="outline-4">
+<h4 id="org2f2979b"><span class="section-number-4">1.1.1</span> Integer Limits</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+\[TMax_w = 2^{w-1}-1\quad TMin_w = - 2^{w-1}\quad UMax_w = 2^w-1\quad UMin_w = 0\]
+</p>
+</div>
+</div>
+<div id="outline-container-orge9e04d0" class="outline-4">
+<h4 id="orge9e04d0"><span class="section-number-4">1.1.2</span> Binary2Integer</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+\[B2U_w(\overrightarrow{x})\doteq\sum_{i=0}^{w-1}x_i2^i\]
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org51cd710"></a>Twos' Complement<br />
+<div class="outline-text-5" id="text-org51cd710">
+<p>
+\[B2T_w(\overrightarrow{x})\doteq-x_{w-1}2^{w-1}+\sum_{i=0}^{w-2}x_i2^i\]
+</p>
+</div>
+</li>
+<li><a id="orgddb0e49"></a>Sign-Magnitude<br />
+<div class="outline-text-5" id="text-orgddb0e49">
+<ul class="org-ul">
+<li>used in floating number</li>
+</ul>
+<p>
+\[B2S_w(\overrightarrow{x})\doteq(-1)^{x_{w-1}}\cdot(\sum_{i=0}^{w-2}x_i2^i)\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgb83fd7a" class="outline-4">
+<h4 id="orgb83fd7a"><span class="section-number-4">1.1.3</span> Transform between signed and unsigned</h4>
+<div class="outline-text-4" id="text-1-1-3">
+</div>
+<ul class="org-ul">
+<li><a id="org5a9cd08"></a>\(T2U_w(x)\)<br />
+<div class="outline-text-5" id="text-org5a9cd08">
+<p>
+\[B2U_w(\overrightarrow{x})-B2T_w(\overrightarrow{x})=x_{w-1}(2^{w-1}+2^{w-1})=x_{w-1}2^w\]
+\[B2U_w(\overrightarrow{x})=x_{w-1}2^w + B2T_w(\overrightarrow{x})\]
+Let \(\overrightarrow{x}=T2B_w(x)\) , Then：
+\[T2U_w(x)=B2U_w(T2B_w(x)) = x_{w-1}2^w + B2T_w(T2B_w(x)) = x_{w-1}2^w + x\]
+bit \(x_{w-1}\) is the sign bit, giving:
+\[T2U_w(x) = \begin{cases}
+     x+2^w, & x\le 0 \\
+     x, & x>0 \\
+     \end{cases}\]
+</p>
+</div>
+</li>
+<li><a id="org2c95edf"></a>\(U2T_w(x)\)<br />
+<div class="outline-text-5" id="text-org2c95edf">
+<p>
+\[U2T_w(u)=B2T_w(U2B_w(u))=-u_{w-1}2^w+u\]
+\[U2T_w(u) = \begin{cases}
+     u, & u<2^{w-1} \\
+     u - 2^w, & u\ge2^{w-1} \\
+     \end{cases}\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org69c03cf" class="outline-4">
+<h4 id="org69c03cf"><span class="section-number-4">1.1.4</span> Small size to big size</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<ol class="org-ol">
+<li>Change the size(fill 0 or 1 depends on signed/unsigned)</li>
+<li>Convert signed/unsigned</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org2caf6a1" class="outline-4">
+<h4 id="org2caf6a1"><span class="section-number-4">1.1.5</span> Big size to small size</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<ul class="org-ul">
+<li>Unsigned big2small：\(B2U_k([x_{k-1},x_{k-2},\cdots,x_0])=B2U_w([x_{w-1},x_{w-2},\cdots,x_0])\mod 2^k\)</li>
+<li>Signed big2small：\(B2T_k([x_{k-1}, x_{k-2}, \cdots, x_0])=U2T_k(B2U_k([x_{k-1},x_{k-2},\cdots,x_0])\)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgac89dd8" class="outline-3">
+<h3 id="orgac89dd8"><span class="section-number-3">1.2</span> Floating Point</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org4ac31fd" class="outline-4">
+<h4 id="org4ac31fd"><span class="section-number-4">1.2.1</span> Fractional Binary Numbers</h4>
+<div class="outline-text-4" id="text-1-2-1">
+</div>
+<ul class="org-ul">
+<li><a id="orgbbe71ab"></a>Fractional Decimal<br />
+<div class="outline-text-5" id="text-orgbbe71ab">
+<p>
+\[d=\sum_{i=-n}^m10^i\times{d_i}\]
+Consider Fractional decimal \(12.34_{10}\)
+\[ 1\times{10^1} + 2\times{10^0} + 3\times{10^{-1}} + 4\times{10^{-2}}=12\frac{34}{100}\]
+</p>
+</div>
+</li>
+<li><a id="org530c038"></a>Fractional Binary<br />
+<div class="outline-text-5" id="text-org530c038">
+<p>
+\[b=\sum_{i=-n}^m2^i\times{b_i}\]
+eg:  \(101.11_2\)
+\[ 1\times{2^2} + 0\times{2^1} + 1\times{2^0} + 1\times{2^{-1}} + 1\times{2^{-2}} = 5\frac{3}{4}\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-orgeec5cef" class="outline-4">
+<h4 id="orgeec5cef"><span class="section-number-4">1.2.2</span> IEEE Floating-Point</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+\[V=(-1)^{s}\times{M}\times{2^E}\]
+</p>
+<ul class="org-ul">
+<li>sign s: negative(s=1) positive(s=0)</li>
+<li>significand M: a fractional binary number</li>
+<li>exponent E: weights the value by a power of 2</li>
+</ul>
+<p class="verse">
+Three fields represent: 1-bit s, k-bit exp(encode E), n-bit frac(encode M)<br />
+Using in C:<br />
+float(single-precision) s=1, k=8, n=23 yielding a 32-bit representation<br />
+double(double-precision) s=1, k=11, n=52, yielding a 64-bit representation<br />
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org58cce40"></a>Nomalized Values<br />
+<div class="outline-text-5" id="text-org58cce40">
+<p class="verse">
+Condition: exp is not all zeros(0) &amp; not all ones(255 for single, 2047 for double)<br />
+<br />
+Cal:<br />
+E=e-Bias<br />
+e is the unsigned number having bit representation \(e_{k-1}...e_1e_0\)<br />
+Bias is bias value equal to \(2^{k-1}-1\) (127 for single 1023 for double)<br />
+Hance, \(-126\leq{E}\leq{+127}\) for single \(-1022\leq{E}\leq{+1023}\) for double<br />
+M=1+f<br />
+where \(0\leq{f}<1\) having binary representation \(0.f_{n-1}...f_1f_0\)<br />
+so that, M is in the range \(1\leq{M}<2\)<br />
+This implied leading 1 is a trick for getting an additional bit of precision for free.<br />
+</p>
+</div>
+</li>
+<li><a id="org23f577b"></a>Denormalized Values<br />
+<div class="outline-text-5" id="text-org23f577b">
+<p class="verse">
+Condition: exp is all zeros<br />
+Cal: E=1-Bias, M=f<br />
+Serve two purposes:<br />
+</p>
+<ul class="org-ul">
+<li>represent 0 (all bits are zero)</li>
+<li>represent numbers that are very close to 0.0</li>
+</ul>
+</div>
+</li>
+<li><a id="org7afba39"></a>Spacial Values<br />
+<div class="outline-text-5" id="text-org7afba39">
+<p class="verse">
+Condition: exp is all ones<br />
+</p>
+<ul class="org-ul">
+<li>frac is all zeros: represent infinity, infinity represent operation overflow or divide by zero.</li>
+<li>frac is nonzero: resulting value called "NaN"(Not a number)</li>
+</ul>
+<p class="verse">
+When the result can not be given as a real number or as a infinity, use NaN or inf<br />
+eg:<br />
+\(\sqrt{-1}:  NaN\)<br />
+\(1.0/0.0:  +\infty\)<br />
+</p>
+</div>
+</li>
+
+<li><a id="orgb2903db"></a>Examples<br />
+<div class="outline-text-5" id="text-orgb2903db">
+<p>
+8-bit floating-point format
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Description</th>
+<th scope="col" class="org-left">bits</th>
+<th scope="col" class="org-right">e</th>
+<th scope="col" class="org-right">E</th>
+<th scope="col" class="org-left">\(2^E\)</th>
+<th scope="col" class="org-left">f</th>
+<th scope="col" class="org-left">M</th>
+<th scope="col" class="org-left">\(2^E\times{M}\)</th>
+<th scope="col" class="org-left">V</th>
+<th scope="col" class="org-right">Decimal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Zero</td>
+<td class="org-left">0 0000 000</td>
+<td class="org-right">0</td>
+<td class="org-right">-6</td>
+<td class="org-left">\(\frac{1}{64}\)</td>
+<td class="org-left">\(\frac{0}{8}\)</td>
+<td class="org-left">\(\frac{0}{8}\)</td>
+<td class="org-left">\(\frac{0}{512}\)</td>
+<td class="org-left">0</td>
+<td class="org-right">0.0</td>
+</tr>
+
+<tr>
+<td class="org-left">Smallest pos.</td>
+<td class="org-left">0 0000 001</td>
+<td class="org-right">0</td>
+<td class="org-right">-6</td>
+<td class="org-left">\(\frac{1}{64}\)</td>
+<td class="org-left">\(\frac{1}{8}\)</td>
+<td class="org-left">\(\frac{1}{8}\)</td>
+<td class="org-left">\(\frac{1}{512}\)</td>
+<td class="org-left">\(\frac{1}{512}\)</td>
+<td class="org-right">0.001953</td>
+</tr>
+
+<tr>
+<td class="org-left">Largest denorm.</td>
+<td class="org-left">0 0000 111</td>
+<td class="org-right">0</td>
+<td class="org-right">-6</td>
+<td class="org-left">\(\frac{1}{64}\)</td>
+<td class="org-left">\(\frac{7}{8}\)</td>
+<td class="org-left">\(\frac{7}{8}\)</td>
+<td class="org-left">\(\frac{7}{512}\)</td>
+<td class="org-left">\(\frac{7}{512}\)</td>
+<td class="org-right">0.005859</td>
+</tr>
+
+<tr>
+<td class="org-left">Smallest norm.</td>
+<td class="org-left">0 0001 000</td>
+<td class="org-right">1</td>
+<td class="org-right">-6</td>
+<td class="org-left">\(\frac{1}{64}\)</td>
+<td class="org-left">\(\frac{0}{8}\)</td>
+<td class="org-left">\(\frac{8}{8}\)</td>
+<td class="org-left">\(\frac{8}{512}\)</td>
+<td class="org-left">\(\frac{1}{64}\)</td>
+<td class="org-right">0.013672</td>
+</tr>
+
+<tr>
+<td class="org-left">One</td>
+<td class="org-left">0 0111 000</td>
+<td class="org-right">7</td>
+<td class="org-right">0</td>
+<td class="org-left">1</td>
+<td class="org-left">\(\frac{0}{8}\)</td>
+<td class="org-left">\(\frac{8}{8}\)</td>
+<td class="org-left">\(\frac{8}{8}\)</td>
+<td class="org-left">1</td>
+<td class="org-right">1.0</td>
+</tr>
+
+<tr>
+<td class="org-left">Largest norm.</td>
+<td class="org-left">0 1110 111</td>
+<td class="org-right">14</td>
+<td class="org-right">7</td>
+<td class="org-left">128</td>
+<td class="org-left">\(\frac{7}{8}\)</td>
+<td class="org-left">\(\frac{15}{8}\)</td>
+<td class="org-left">\(\frac{1920}{8}\)</td>
+<td class="org-left">240</td>
+<td class="org-right">240.0</td>
+</tr>
+
+<tr>
+<td class="org-left">Infinity</td>
+<td class="org-left">0 1111 000</td>
+<td class="org-right">-</td>
+<td class="org-right">-</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">\(\infty\)</td>
+<td class="org-right">-</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga4e74fd" class="outline-2">
+<h2 id="orga4e74fd"><span class="section-number-2">2</span> Manipulating Infomation</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org2737cb5" class="outline-3">
+<h3 id="org2737cb5"><span class="section-number-3">2.1</span> Integer arithmatic</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-orgbd04db5" class="outline-4">
+<h4 id="orgbd04db5"><span class="section-number-4">2.1.1</span> Unsigned Addition</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+\[ x+^u_wy= \left\{
+  \begin{array}{l l}
+    x+y & \quad x+y<2^w\\
+    x+y-2^w & \quad 2^w\le x+y<2^{w-1}
+   \end{array} \right.\]
+Same as  \(x+^u_wy=(x+y) \mod 2^w\)
+</p>
+<p class="verse">
+When overflow occured, \(sum=x+y-2^w\)<br />
+Because \(y < 2^w\)<br />
+We have \(sum = x +(y-2^w) < x\)<br />
+sum &lt; x means it did overflow.<br />
+</p>
+</div>
+</div>
+<div id="outline-container-orge5a6269" class="outline-4">
+<h4 id="orge5a6269"><span class="section-number-4">2.1.2</span> Unsigned Negation</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+\[ -^u_wx= \left\{
+  \begin{array}{l l}
+    x & \quad x=0\\
+    2^w-x & \quad x>0
+   \end{array} \right.\]
+</p>
+</div>
+</div>
+<div id="outline-container-orgf658e7b" class="outline-4">
+<h4 id="orgf658e7b"><span class="section-number-4">2.1.3</span> Two's Complement Addition</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<ol class="org-ol">
+<li>from signed operand to unsigned</li>
+<li>excute unsigned addition(truncate the overflow)</li>
+</ol>
+<p>
+\[x+^t_wy\doteq U2T_w(T2U_w(x)+^u_wT2U_w(y))\]
+\[=U2T_w[(x_{w-1}2^w+x+y_{w-1}2^w+y) \mod 2^w]\]
+\[ x+^t_wy= \left\{
+  \begin{array}{l l}
+    x+y-2^w & \qquad x+y\ge 2^{w-1} \quad Positive \ overflow\\
+    x+y & \qquad -2^{w-1}\le x+y<2^{w-1} \quad Normal\\
+    x+y+2^w & \qquad x+y<-2^{w-1} \quad Negative \ overflow
+   \end{array} \right.\]
+Example:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">\(x\)</th>
+<th scope="col" class="org-right">\(y\)</th>
+<th scope="col" class="org-right">\(x+y\)</th>
+<th scope="col" class="org-right">\(x+^t_4y\)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">-8(1000)</td>
+<td class="org-right">-5(1011)</td>
+<td class="org-right">-13(10011)</td>
+<td class="org-right">3(0011)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org84a52cd" class="outline-4">
+<h4 id="org84a52cd"><span class="section-number-4">2.1.4</span> Two's Complement Negation</h4>
+<div class="outline-text-4" id="text-2-1-4">
+<p>
+\[ -^t_wx= \left\{
+  \begin{array}{l l}
+    -2^{w-1} & \qquad x=-2^{w-1} \\
+    -x & \qquad x>-2^{w-1} \\
+   \end{array} \right.\]
+Two Clever Ways:
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org0e052b2"></a>One Way<br />
+<div class="outline-text-5" id="text-org0e052b2">
+<ol class="org-ol">
+<li>complement the bits</li>
+<li>increment by 1</li>
+</ol>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">x</th>
+<th scope="col" class="org-right">~x</th>
+<th scope="col" class="org-right">incr(~x)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0101(5)</td>
+<td class="org-right">1010(-6)</td>
+<td class="org-right">1011(-5)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li><a id="org9c82074"></a>Another Way<br />
+<div class="outline-text-5" id="text-org9c82074">
+<p>
+Condition: \(x\neq 0\)
+</p>
+<ol class="org-ol">
+<li>Split the bit vector into two parts.(the boundary is the rightmost 1)</li>
+<li>Complement each bit on the left part.</li>
+</ol>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">x</th>
+<th scope="col" class="org-left">-x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><i>101</i> 1 (-5)</td>
+<td class="org-left"><i>010</i> 1 (5)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org87366e5" class="outline-4">
+<h4 id="org87366e5"><span class="section-number-4">2.1.5</span> Unsigned Mutliplication</h4>
+<div class="outline-text-4" id="text-2-1-5">
+<p>
+\(0\le x,y\le 2^{w}-1\) Hence,
+\[0\le x\cdot y\le2^{2w}-2^{w+1}+1\]
+This could require as many as 2w bits to represent.
+\[ x \times ^u_wy=(x\cdot y)\ mod\ 2^w\]
+</p>
+</div>
+</div>
+<div id="outline-container-org3b1f87c" class="outline-4">
+<h4 id="org3b1f87c"><span class="section-number-4">2.1.6</span> Two's Complement Multiplication</h4>
+<div class="outline-text-4" id="text-2-1-6">
+<p>
+\(-2^{w-1}\le x,y \le 2^{w-1}-1\) Hence,
+\[ -2^{2w-2}+2^{w-1} \le x\cdot y \le 2^{2w-2}\]
+Also need 2w bits to represent.
+\[ x \times ^t_wy = U2T_w((x\cdot y)\ mod\ 2^w) \]
+</p>
+</div>
+</div>
+<div id="outline-container-org384abe7" class="outline-4">
+<h4 id="org384abe7"><span class="section-number-4">2.1.7</span> Reduce Mutiplication by shift and addition</h4>
+<div class="outline-text-4" id="text-2-1-7">
+<p>
+Motivation Mutiplication requires 10 or more clock cycles. shift and addition requires 1 clock cycle.
+\[ x \times ^t_w2^k  = x << k\]
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org9544a36"></a>two forms:<br />
+<div class="outline-text-5" id="text-org9544a36">
+<p>
+\[(x << n) + (x << n-1) + \dots + (x << m)\]
+\[(x << n+1) - (x << m)\]
+</p>
+<ul class="org-ul">
+<li>eg: \(14\) can be rewrite as \((x<<4) - (x<<1)\) or \((x<<3) + (x<<2) + (x<<1)\)</li>
+</ul>
+
+<p>
+Assuming additions and subtractions have comparable cost, then we have:
+</p>
+<ul class="org-ul">
+<li>\(n = m\) , use Form1.</li>
+<li>\(n = m+1\) , use either Form1 or Form2.</li>
+<li>\(n > m+1\) , use Form2.</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org860dee6" class="outline-4">
+<h4 id="org860dee6"><span class="section-number-4">2.1.8</span> Reduce Division by shift</h4>
+<div class="outline-text-4" id="text-2-1-8">
+<p>
+Division require 30 or more clock cycles.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org72f3507"></a>Logical Shift<br />
+<div class="outline-text-5" id="text-org72f3507">
+<p>
+\(x \div 2^k = x>>k\) where \(0 \le{k} < w\) and \(x\ge 0\)
+</p>
+</div>
+</li>
+
+<li><a id="org084b2a2"></a>Arithmatic Shift<br />
+<div class="outline-text-5" id="text-org084b2a2">
+<p>
+\(x \div 2^k = x>>k\) where \(0\le{k} < w\)
+Follow the above, we'll find -7/2 yield -4 not -3, corrected by 'biasing' the value before shifting.
+</p>
+<ul class="org-ul">
+<li>\(x \div 2^k = (x+ 2^k - 1) >> k\) where \(x < 0\)</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org38b40fb" class="outline-3">
+<h3 id="org38b40fb"><span class="section-number-3">2.2</span> Floating Operation</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-org6c93378" class="outline-4">
+<h4 id="org6c93378"><span class="section-number-4">2.2.1</span> Round</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p class="verse">
+4 Modes:<br />
+Round-to-even eg: 1.5 approximate 2, 2.5 approximate 2 (DEFAULT)<br />
+Round-toward-zero eg:-1.5 approximate -1, 1.5 approximate 1<br />
+Round-down eg: 1.5 approximate 1<br />
+Round-up eg: 1.5 approximate 2<br />
+</p>
+</div>
+</div>
+<div id="outline-container-org7bee764" class="outline-4">
+<h4 id="org7bee764"><span class="section-number-4">2.2.2</span> Arithmatic Operation</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+Round(x?y)
+\[x+^fy=Round(x+y)\]
+Floating arithmatic doesn't satisfied associativity, distributivity.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org860a929" class="outline-2">
+<h2 id="org860a929"><span class="section-number-2">3</span> Program Structure</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org989320d" class="outline-3">
+<h3 id="org989320d"><span class="section-number-3">3.1</span> Data Formats</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+<b>sizes in IA32.</b>
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">C declaration</th>
+<th scope="col" class="org-left">Intel</th>
+<th scope="col" class="org-left">Assembly code suffix</th>
+<th scope="col" class="org-right">Size(bytes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">char</td>
+<td class="org-left">Byte</td>
+<td class="org-left">b</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">short</td>
+<td class="org-left">Word</td>
+<td class="org-left">w</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-left">int</td>
+<td class="org-left">Double word</td>
+<td class="org-left">l</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-left">long int</td>
+<td class="org-left">Double word</td>
+<td class="org-left">l</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-left">long long int</td>
+<td class="org-left">—</td>
+<td class="org-left">—</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-left">char *</td>
+<td class="org-left">Double word</td>
+<td class="org-left">l</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-left">float</td>
+<td class="org-left">Single precision</td>
+<td class="org-left">s</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-left">double</td>
+<td class="org-left">Double precision</td>
+<td class="org-left">l</td>
+<td class="org-right">8</td>
+</tr>
+
+<tr>
+<td class="org-left">long double</td>
+<td class="org-left">Extend precision</td>
+<td class="org-left">t</td>
+<td class="org-right">10/12</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgc179377" class="outline-3">
+<h3 id="orgc179377"><span class="section-number-3">3.2</span> Interger Registers</h3>
+<div class="outline-text-3" id="text-3-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">31</td>
+<td class="org-left">16</td>
+<td class="org-left">15&#x2014;8</td>
+<td class="org-left">7&#x2014;0</td>
+</tr>
+
+<tr>
+<td class="org-left">%eax</td>
+<td class="org-left">%ax</td>
+<td class="org-left">%ah</td>
+<td class="org-left">%al</td>
+</tr>
+
+<tr>
+<td class="org-left">%ecx</td>
+<td class="org-left">%cx</td>
+<td class="org-left">%ch</td>
+<td class="org-left">%cl</td>
+</tr>
+
+<tr>
+<td class="org-left">%edx</td>
+<td class="org-left">%dx</td>
+<td class="org-left">%dh</td>
+<td class="org-left">%dl</td>
+</tr>
+
+<tr>
+<td class="org-left">%ebx</td>
+<td class="org-left">%bx</td>
+<td class="org-left">%bh</td>
+<td class="org-left">%bl</td>
+</tr>
+
+<tr>
+<td class="org-left">%esi</td>
+<td class="org-left">%si</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">%edi</td>
+<td class="org-left">%di</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">%esp</td>
+<td class="org-left">%sp</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">%ebp</td>
+<td class="org-left">%bp</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org169b2d8" class="outline-3">
+<h3 id="org169b2d8"><span class="section-number-3">3.3</span> Accessing Information</h3>
+<div class="outline-text-3" id="text-3-3">
+<p class="verse">
+\(R[E_a]\) indicate the value of register a.<br />
+\(M[Addr]\) indicate the memory location<br />
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Form</th>
+<th scope="col" class="org-left">Operand Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">\(\textit{\$ Imm}\)</td>
+<td class="org-left">\(\textit{Imm}\)</td>
+</tr>
+
+<tr>
+<td class="org-left">\(E_a\)</td>
+<td class="org-left">\(R[E_a]\)</td>
+</tr>
+
+<tr>
+<td class="org-left">\(\textit{Imm}\)</td>
+<td class="org-left">\(M[\textit{Imm}]\)</td>
+</tr>
+
+<tr>
+<td class="org-left">\((E_a)\)</td>
+<td class="org-left">\(M[R[E_a]]\)</td>
+</tr>
+
+<tr>
+<td class="org-left">\(\textit{Imm}(E_b)\)</td>
+<td class="org-left">\(M[\textit{Imm}+R[E_b]]\)</td>
+</tr>
+
+<tr>
+<td class="org-left">\((E_b,E_i)\)</td>
+<td class="org-left">\(M[R[E_b]+R[E_i]]\)</td>
+</tr>
+
+<tr>
+<td class="org-left">\(\textit{Imm}(E_b,E_i)\)</td>
+<td class="org-left">\(M[\textit{Imm}+R[E_b]+R[E_i]]\)</td>
+</tr>
+
+<tr>
+<td class="org-left">\((,E_i,s)\)</td>
+<td class="org-left">\(M[R[E_i]\cdot{s}]\)</td>
+</tr>
+
+<tr>
+<td class="org-left">\(\textit{Imm}(E_b,E_i,s)\)</td>
+<td class="org-left">\(M[\textit{Imm}+R[E_b]+R[E_i]\cdot{s}]\)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org0c14404" class="outline-3">
+<h3 id="org0c14404"><span class="section-number-3">3.4</span> Basic Operations</h3>
+<div class="outline-text-3" id="text-3-4">
+</div>
+<div id="outline-container-orgac8f5ec" class="outline-4">
+<h4 id="orgac8f5ec"><span class="section-number-4">3.4.1</span> Data Movement</h4>
+<div class="outline-text-4" id="text-3-4-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Instruction</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">mov  S,D</td>
+<td class="org-left">D &lt;- S</td>
+</tr>
+
+<tr>
+<td class="org-left">movs S,D</td>
+<td class="org-left">D &lt;- SignExtend(S)</td>
+</tr>
+
+<tr>
+<td class="org-left">movz S,D</td>
+<td class="org-left">D &lt;- ZeroExtend(S)</td>
+</tr>
+
+<tr>
+<td class="org-left">push &amp; pop</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">pushl S</td>
+<td class="org-left">R[%esp] &lt;- R[%esp]-4; M[R[%esp]] &lt;- S</td>
+</tr>
+
+<tr>
+<td class="org-left">popl D</td>
+<td class="org-left">D &lt;- M[R[%esp]]; R[%esp] &lt;- R[%esp]+4</td>
+</tr>
+</tbody>
+</table>
+<p class="verse">
+movs include: movsbw,movsbl,movswl<br />
+the same for movz.<br />
+</p>
+<p>
+pushl %ebp is equivalent to the following pair of instuctions:
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">subl</span> <span style="color: #3a81c3; font-weight: bold;">$4</span>,<span style="color: #715ab1;">%esp</span>
+<span style="color: #6c3163; font-weight: bold;">movl</span> <span style="color: #3a81c3; font-weight: bold;">%ebp</span>,<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%esp</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+popl %eax:
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">movl</span> <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%esp</span><span style="color: #3a81c3;">)</span>,<span style="color: #715ab1;">%esp</span>
+<span style="color: #6c3163; font-weight: bold;">addl</span> <span style="color: #3a81c3; font-weight: bold;">$4</span>,<span style="color: #715ab1;">%esp</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgde9f221" class="outline-4">
+<h4 id="orgde9f221"><span class="section-number-4">3.4.2</span> Arithmetic &amp; Logical Operations</h4>
+<div class="outline-text-4" id="text-3-4-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Instruction</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">lea  S,D</td>
+<td class="org-left">D &lt;- &amp;S</td>
+</tr>
+
+<tr>
+<td class="org-left">unary op</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">inc D</td>
+<td class="org-left">D &lt;- D+1</td>
+</tr>
+
+<tr>
+<td class="org-left">dec D</td>
+<td class="org-left">D &lt;- D-1</td>
+</tr>
+
+<tr>
+<td class="org-left">neg D</td>
+<td class="org-left">D &lt;- -D</td>
+</tr>
+
+<tr>
+<td class="org-left">not D</td>
+<td class="org-left">D &lt;- ~D(complement)</td>
+</tr>
+
+<tr>
+<td class="org-left">binary op</td>
+<td class="org-left">second operand: src &amp; dest</td>
+</tr>
+
+<tr>
+<td class="org-left">add S,D</td>
+<td class="org-left">D &lt;- D+S</td>
+</tr>
+
+<tr>
+<td class="org-left">sub S,D</td>
+<td class="org-left">D &lt;- D-S</td>
+</tr>
+
+<tr>
+<td class="org-left">imul S,D</td>
+<td class="org-left">D &lt;- D*S  (use \(*^u_{32} *^t_{32}\))</td>
+</tr>
+
+<tr>
+<td class="org-left">xor S,D</td>
+<td class="org-left">D &lt;- D^S</td>
+</tr>
+
+<tr>
+<td class="org-left">or S,D</td>
+<td class="org-left">D &lt;- D&vert;S</td>
+</tr>
+
+<tr>
+<td class="org-left">and S,D</td>
+<td class="org-left">D &lt;- D&amp;S</td>
+</tr>
+
+<tr>
+<td class="org-left">shift op</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">sal k,D</td>
+<td class="org-left">D &lt;- D&lt;&lt;k</td>
+</tr>
+
+<tr>
+<td class="org-left">shl k,D</td>
+<td class="org-left">D &lt;- D&lt;&lt;k(same as sal)</td>
+</tr>
+
+<tr>
+<td class="org-left">sar k,D</td>
+<td class="org-left">D &lt;- D&gt;&gt;k(arithmetic shift)</td>
+</tr>
+
+<tr>
+<td class="org-left">shr k,D</td>
+<td class="org-left">D &lt;- D&gt;&gt;k(logical shift)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org10ea509" class="outline-4">
+<h4 id="org10ea509"><span class="section-number-4">3.4.3</span> About xorl x, x</h4>
+<div class="outline-text-4" id="text-3-4-3">
+<p>
+For c code:
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">x</span>=<span style="color: #4e3163;">1</span>;
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">GCC</span> -O1:
+<span style="color: #6c3163; font-weight: bold;">movl</span> <span style="color: #3a81c3; font-weight: bold;">$0x00</span>, <span style="color: #715ab1;">%eax</span> <span style="color: #3a81c3;">(</span>binary b8 00 00 00 00<span style="color: #3a81c3;">)</span>
+
+<span style="color: #6c3163; font-weight: bold;">GCC</span> -O2:
+<span style="color: #6c3163; font-weight: bold;">xorl</span> <span style="color: #3a81c3; font-weight: bold;">$edx</span>,<span style="color: #715ab1;">%edx</span> <span style="color: #3a81c3;">(</span>binary 31 c0<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org83fce24" class="outline-4">
+<h4 id="org83fce24"><span class="section-number-4">3.4.4</span> Special Arithmetic Operations</h4>
+<div class="outline-text-4" id="text-3-4-4">
+<p>
+imul also support one-operand operaion.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Instruction</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">imull S</td>
+<td class="org-left">R[%edx]:R[%eax] &lt;- S*R[%eax] (Signed)</td>
+</tr>
+
+<tr>
+<td class="org-left">mull S</td>
+<td class="org-left">R[%edx]:R[%eax] &lt;- S*R[%eax] (Unsigned)</td>
+</tr>
+
+<tr>
+<td class="org-left">cltd</td>
+<td class="org-left">R[%edx]:R[%eax] &lt;- SignExtend(R[%eax])</td>
+</tr>
+
+<tr>
+<td class="org-left">idivl S</td>
+<td class="org-left">R[%edx] &lt;- R[%edx]:R[%eax] mod S;(Signed)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">R[%eax] &lt;- R[%edx]:R[%eax] / S;(Signed)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5cb42f3" class="outline-3">
+<h3 id="org5cb42f3"><span class="section-number-3">3.5</span> Control</h3>
+<div class="outline-text-3" id="text-3-5">
+</div>
+<div id="outline-container-org773ea5e" class="outline-4">
+<h4 id="org773ea5e"><span class="section-number-4">3.5.1</span> Condiction Register</h4>
+<div class="outline-text-4" id="text-3-5-1">
+<p>
+Four flags:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">CF</td>
+<td class="org-left">carry flag</td>
+</tr>
+
+<tr>
+<td class="org-left">ZF</td>
+<td class="org-left">zero flag</td>
+</tr>
+
+<tr>
+<td class="org-left">SF</td>
+<td class="org-left">sign flag</td>
+</tr>
+
+<tr>
+<td class="org-left">OF</td>
+<td class="org-left">overflow flag</td>
+</tr>
+</tbody>
+</table>
+<p>
+For t=a+b
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">CF</td>
+<td class="org-left">(unsigned)t &lt; (unsigned)a</td>
+<td class="org-left">Unsigned Overflow</td>
+</tr>
+
+<tr>
+<td class="org-left">ZF</td>
+<td class="org-left">(t == 0)</td>
+<td class="org-left">Zero</td>
+</tr>
+
+<tr>
+<td class="org-left">SF</td>
+<td class="org-left">(t &lt; 0)</td>
+<td class="org-left">Negative</td>
+</tr>
+
+<tr>
+<td class="org-left">OF</td>
+<td class="org-left">(a&lt;0 <code>= b&lt;0)&amp;&amp;(t&lt;0 !</code> a&lt;0)</td>
+<td class="org-left">Signed Overflow</td>
+</tr>
+</tbody>
+</table>
+<p>
+instructions that set the condiction code without updating their destination.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Instruction</td>
+<td class="org-left">Effect</td>
+<td class="org-left">Like</td>
+</tr>
+
+<tr>
+<td class="org-left">cmp \(S_2, S_1\)</td>
+<td class="org-left">\(S_1-S_2\)</td>
+<td class="org-left">sub</td>
+</tr>
+
+<tr>
+<td class="org-left">test \(S_2,S_1\)</td>
+<td class="org-left">\(S_1\) &amp; \(S_2\)</td>
+<td class="org-left">and</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org75d5587" class="outline-4">
+<h4 id="org75d5587"><span class="section-number-4">3.5.2</span> Accessing the Condition Codes</h4>
+<div class="outline-text-4" id="text-3-5-2">
+<p>
+Three common ways of using the condition codes:
+</p>
+<ol class="org-ol">
+<li>set a single byte to 0 or 1 depending on some combination of the condition codes.</li>
+<li>conditionally jump to some other part of the program</li>
+<li>conditionally transfer data.</li>
+</ol>
+<p>
+for (1), we use set instruction:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Instruction</td>
+<td class="org-left">Synonym</td>
+<td class="org-left">Effect</td>
+<td class="org-left">Set condition</td>
+</tr>
+
+<tr>
+<td class="org-left">sete D</td>
+<td class="org-left">setz</td>
+<td class="org-left">D &lt;- ZF</td>
+<td class="org-left">Equal/zero</td>
+</tr>
+
+<tr>
+<td class="org-left">setne D</td>
+<td class="org-left">setnz</td>
+<td class="org-left">D &lt;- ~ZF</td>
+<td class="org-left">Not Equal/not zero</td>
+</tr>
+
+<tr>
+<td class="org-left">sets D</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">D &lt;- SF</td>
+<td class="org-left">Negative</td>
+</tr>
+
+<tr>
+<td class="org-left">setns D</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">D &lt;- ~SF</td>
+<td class="org-left">Nonnegative</td>
+</tr>
+</tbody>
+</table>
+<p>
+Signed Group:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">setg D</td>
+<td class="org-left">setnle</td>
+<td class="org-left">D &lt;- ~(SF^OF) &amp; ~ZF</td>
+<td class="org-left">&gt;</td>
+</tr>
+
+<tr>
+<td class="org-left">setge D</td>
+<td class="org-left">setnl</td>
+<td class="org-left">D &lt;- ~(SF^OF)</td>
+<td class="org-left">&gt;=</td>
+</tr>
+
+<tr>
+<td class="org-left">setl D</td>
+<td class="org-left">setnge</td>
+<td class="org-left">D &lt;- SF^OF</td>
+<td class="org-left">&lt;</td>
+</tr>
+
+<tr>
+<td class="org-left">setle D</td>
+<td class="org-left">setnge</td>
+<td class="org-left">D &lt;- (SF^OF) &vert; ZF</td>
+<td class="org-left">&lt;=</td>
+</tr>
+</tbody>
+</table>
+<p>
+Unsigned Group:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">seta D</td>
+<td class="org-left">setnbe</td>
+<td class="org-left">D &lt;- ~CF &amp; ~ZF</td>
+<td class="org-left">&gt;</td>
+</tr>
+
+<tr>
+<td class="org-left">setae D</td>
+<td class="org-left">setnb</td>
+<td class="org-left">D &lt;- ~CF</td>
+<td class="org-left">&gt;=</td>
+</tr>
+
+<tr>
+<td class="org-left">setb D</td>
+<td class="org-left">setnae</td>
+<td class="org-left">D &lt;- CF</td>
+<td class="org-left">&lt;</td>
+</tr>
+
+<tr>
+<td class="org-left">setbe D</td>
+<td class="org-left">setna</td>
+<td class="org-left">D &lt;- CF &vert;  ZF</td>
+<td class="org-left">&lt;=</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org891ebf8" class="outline-4">
+<h4 id="org891ebf8"><span class="section-number-4">3.5.3</span> Jump Instruction</h4>
+<div class="outline-text-4" id="text-3-5-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Instruction</td>
+<td class="org-left">Synonym</td>
+<td class="org-left">Condition</td>
+</tr>
+
+<tr>
+<td class="org-left">jmp Label</td>
+<td class="org-left">direct jump</td>
+<td class="org-left">1</td>
+</tr>
+
+<tr>
+<td class="org-left">jmp *Operand</td>
+<td class="org-left">indirect jump</td>
+<td class="org-left">1</td>
+</tr>
+
+<tr>
+<td class="org-left">je L</td>
+<td class="org-left">jz</td>
+<td class="org-left">ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">jne L</td>
+<td class="org-left">jnz</td>
+<td class="org-left">~ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">js L</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">SF</td>
+</tr>
+
+<tr>
+<td class="org-left">jns L</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">~SF</td>
+</tr>
+</tbody>
+</table>
+<p>
+Signed Group:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">jg L</td>
+<td class="org-left">jnle</td>
+<td class="org-left">~(SF^OF)&amp;~ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">jge L</td>
+<td class="org-left">jnl</td>
+<td class="org-left">~(SF^OF)</td>
+</tr>
+
+<tr>
+<td class="org-left">jl L</td>
+<td class="org-left">jnge</td>
+<td class="org-left">SF^OF</td>
+</tr>
+
+<tr>
+<td class="org-left">jle L</td>
+<td class="org-left">jng</td>
+<td class="org-left">(SF^OF)&vert;ZF</td>
+</tr>
+</tbody>
+</table>
+<p>
+Unsigned Group:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ja L</td>
+<td class="org-left">jnbe</td>
+<td class="org-left">~CF &amp; ~ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">jae L</td>
+<td class="org-left">jnb</td>
+<td class="org-left">~CF</td>
+</tr>
+
+<tr>
+<td class="org-left">jb L</td>
+<td class="org-left">jnae</td>
+<td class="org-left">CF</td>
+</tr>
+
+<tr>
+<td class="org-left">jbe L</td>
+<td class="org-left">jna</td>
+<td class="org-left">CF&vert;ZF</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org16d803b" class="outline-4">
+<h4 id="org16d803b"><span class="section-number-4">3.5.4</span> If Statement</h4>
+<div class="outline-text-4" id="text-3-5-4">
+<p>
+General in C:
+</p>
+<pre class="example">
+if (test-expr)
+   then-statement
+else
+   else-statement
+</pre>
+<p>
+nomal form with goto statement:
+</p>
+<pre class="example">
+    t = test-expr;
+    if (t)
+       goto true;
+    else-statement
+    goto done;
+true:
+    then-statement
+done:
+</pre>
+<p>
+assembly form:
+</p>
+<pre class="example">
+    t = test-expr;
+    if (!t)
+       goto false-label;
+    then-statement
+    goto done;
+false-label:
+    else-statement
+done:
+</pre>
+<p>
+major difference: when there is no else-statement.
+</p>
+<pre class="example">
+    t = test-expr;
+    if (!t)
+       goto done;
+    then-statement
+done:
+</pre>
+</div>
+<ul class="org-ul">
+<li><a id="org647d842"></a>example<br />
+<div class="outline-text-5" id="text-org647d842">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">test</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">x</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">y</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">{</span>
+    <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">val</span> = x^y;
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #6c3163;">(</span>x &lt; -<span style="color: #4e3163;">3</span><span style="color: #6c3163;">)</span>
+    <span style="color: #6c3163;">{</span>
+        <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>y &lt; x<span style="color: #2d9574;">)</span>
+            val = x*y;
+        <span style="color: #3a81c3; font-weight: bold;">else</span>
+            val = x+y;
+    <span style="color: #6c3163;">}</span>
+    <span style="color: #3a81c3; font-weight: bold;">else</span> <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #6c3163;">(</span>x &gt; <span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span>
+        val = x-y;
+    <span style="color: #3a81c3; font-weight: bold;">return</span> val;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-asm">    <span style="color: #3a81c3; font-weight: bold;">movl</span>    12<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%eax</span>
+    <span style="color: #3a81c3; font-weight: bold;">movl</span>    8<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%edx</span>
+    <span style="color: #3a81c3; font-weight: bold;">cmpl</span>    $-3, <span style="color: #715ab1;">%eax</span>
+    <span style="color: #3a81c3; font-weight: bold;">jge</span> .L2
+    <span style="color: #3a81c3; font-weight: bold;">cmpl</span>    <span style="color: #715ab1;">%edx</span>, <span style="color: #715ab1;">%eax</span>
+    <span style="color: #3a81c3; font-weight: bold;">jle</span> .L3
+    <span style="color: #3a81c3; font-weight: bold;">imull</span>   <span style="color: #715ab1;">%edx</span>, <span style="color: #715ab1;">%eax</span>
+    <span style="color: #3a81c3; font-weight: bold;">jmp</span> .L4
+<span style="color: #6c3163; font-weight: bold;">.L3</span>:
+    <span style="color: #3a81c3; font-weight: bold;">leal</span>    <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%edx</span>,<span style="color: #715ab1;">%eax</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%eax</span>
+    <span style="color: #3a81c3; font-weight: bold;">jmp</span> .L4
+<span style="color: #6c3163; font-weight: bold;">.L2</span>:
+    <span style="color: #3a81c3; font-weight: bold;">cmpl</span>    $2, <span style="color: #715ab1;">%eax</span>
+    <span style="color: #3a81c3; font-weight: bold;">jg</span> .L5
+    <span style="color: #3a81c3; font-weight: bold;">xorl</span>    <span style="color: #715ab1;">%edx</span>, <span style="color: #715ab1;">%eax</span>
+    <span style="color: #3a81c3; font-weight: bold;">jmp</span> .L4
+<span style="color: #6c3163; font-weight: bold;">.L5</span>:
+    <span style="color: #3a81c3; font-weight: bold;">subl</span> <span style="color: #715ab1;">%edx</span>, <span style="color: #715ab1;">%eax</span>
+<span style="color: #6c3163; font-weight: bold;">.L4</span>:
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org9ea154a" class="outline-4">
+<h4 id="org9ea154a"><span class="section-number-4">3.5.5</span> Loops</h4>
+<div class="outline-text-4" id="text-3-5-5">
+</div>
+<ul class="org-ul">
+<li><a id="org063c80f"></a>do&#x2026;while<br />
+<div class="outline-text-5" id="text-org063c80f">
+<pre class="example">
+do
+    body-statement
+while (test-expr)
+</pre>
+<p>
+goto version:
+</p>
+<pre class="example">
+loop:
+    body-statement
+    t = test-expr;
+    if (t)
+       goto loop;
+done:
+</pre>
+</div>
+</li>
+<li><a id="org10eab65"></a>while<br />
+<div class="outline-text-5" id="text-org10eab65">
+<pre class="example">
+while (test-expr)
+    body-statement
+</pre>
+<p>
+goto version:
+</p>
+<pre class="example">
+t = test-expr
+if (!t)
+   goto done;
+loop:
+   body-statement
+   if (t)
+      goto loop;
+done:
+</pre>
+</div>
+</li>
+<li><a id="org8fab6a4"></a>for<br />
+<div class="outline-text-5" id="text-org8fab6a4">
+<pre class="example">
+for (init-expr; test-expr; update-expr)
+    body-statement
+</pre>
+<p>
+Equivalent to while loop
+</p>
+<pre class="example">
+init-expr;
+while (test-expr)
+    body-statement
+    update-expr;
+</pre>
+<p>
+goto vesion:
+</p>
+<pre class="example">
+init-expr;
+t = test-expr;
+if (!t)
+   goto done;
+
+loop:
+   body-statement
+   update-expr;
+   if (t)
+      goto loop;
+done:
+</pre>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org915dc1b" class="outline-4">
+<h4 id="org915dc1b"><span class="section-number-4">3.5.6</span> Conditional Move Instructions</h4>
+<div class="outline-text-4" id="text-3-5-6">
+</div>
+<ul class="org-ul">
+<li><a id="orgcee97c9"></a>Why use?<br />
+<div class="outline-text-5" id="text-orgcee97c9">
+<p class="verse">
+Processors achieve high performance by overlapping the steps of the<br />
+successive instructions, such as fetching one instruction while<br />
+performing the arithmetic operations for a previous instruction.<br />
+</p>
+</div>
+</li>
+<li><a id="orgb9fc398"></a>Instructions<br />
+<div class="outline-text-5" id="text-orgb9fc398">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Instruction</th>
+<th scope="col" class="org-left">Synonym</th>
+<th scope="col" class="org-left">Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">cmove S, R</td>
+<td class="org-left">cmovz</td>
+<td class="org-left">ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovne</td>
+<td class="org-left">cmovnz</td>
+<td class="org-left">~ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovs</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">SF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovns</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">~SF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovg</td>
+<td class="org-left">cmovnle</td>
+<td class="org-left">~(SF^OF)&amp;~ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovge</td>
+<td class="org-left">cmovnl</td>
+<td class="org-left">~(SF^OF)</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovl</td>
+<td class="org-left">cmovnge</td>
+<td class="org-left">SF^OF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovle</td>
+<td class="org-left">cmovng</td>
+<td class="org-left">(SF^OF)&vert;ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmova</td>
+<td class="org-left">cmovnbe</td>
+<td class="org-left">~CF&amp;~ZF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovae</td>
+<td class="org-left">cmovnb</td>
+<td class="org-left">~CF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovb</td>
+<td class="org-left">cmovnae</td>
+<td class="org-left">CF</td>
+</tr>
+
+<tr>
+<td class="org-left">cmovbe</td>
+<td class="org-left">cmovna</td>
+<td class="org-left">CF&vert;ZF</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+
+<li><a id="orge3a9cae"></a>example<br />
+<div class="outline-text-5" id="text-orge3a9cae">
+<p>
+Expression:
+</p>
+<pre class="example">
+v = test-expr ? then-expr : else-expr;
+</pre>
+<p>
+Traditional IA32:
+</p>
+<pre class="example">
+    if (!test-expr)
+        goto false;
+    v = then-expr;
+    goto done;
+false:
+    v = else-expr;
+done:
+</pre>
+<p>
+Base the on conditional move:
+</p>
+<pre class="example">
+vt = then-expr;
+v = else-expr;
+t = test-expr;
+if (t) v = vt;
+</pre>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-orgfb61f6a" class="outline-4">
+<h4 id="orgfb61f6a"><span class="section-number-4">3.5.7</span> Switch Statement</h4>
+<div class="outline-text-4" id="text-3-5-7">
+<p>
+Using the jump table
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">.L8</span>:
+        <span style="color: #3a81c3; font-weight: bold;">.long</span>   .L3 <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">index 0</span>
+        <span style="color: #3a81c3; font-weight: bold;">.long</span>   .L2<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">1</span>
+        <span style="color: #3a81c3; font-weight: bold;">.long</span>   .L4<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">2</span>
+        <span style="color: #3a81c3; font-weight: bold;">.long</span>   .L5<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">3</span>
+        <span style="color: #3a81c3; font-weight: bold;">.long</span>   .L6<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">4</span>
+        <span style="color: #3a81c3; font-weight: bold;">.long</span>   .L6<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">5</span>
+        <span style="color: #3a81c3; font-weight: bold;">.long</span>   .L7<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">6</span>
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">movl</span>    <span style="color: #3a81c3; font-weight: bold;">8</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>,    <span style="color: #715ab1;">%eax</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">x at %ebp+8</span>
+<span style="color: #6c3163; font-weight: bold;">addl</span>    <span style="color: #3a81c3; font-weight: bold;">$2</span>, <span style="color: #715ab1;">%eax</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">index = x+2. when index = 0, x(min)=-2.</span>
+<span style="color: #6c3163; font-weight: bold;">cmpl</span>    <span style="color: #3a81c3; font-weight: bold;">$6</span>, <span style="color: #715ab1;">%eax</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">index compare with 6</span>
+<span style="color: #6c3163; font-weight: bold;">ja</span>      .L2 <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">index &gt; 6 goto default. Such that, x(max)=4.</span>
+<span style="color: #6c3163; font-weight: bold;">jmp</span> *.L8<span style="color: #3a81c3;">(</span>,<span style="color: #715ab1;">%eax</span>,4<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+x case 2, 3 goes to .L6
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org66a7787" class="outline-3">
+<h3 id="org66a7787"><span class="section-number-3">3.6</span> Procedure</h3>
+<div class="outline-text-3" id="text-3-6">
+</div>
+<div id="outline-container-orgcb33104" class="outline-4">
+<h4 id="orgcb33104"><span class="section-number-4">3.6.1</span> Stack Frame</h4>
+<div class="outline-text-4" id="text-3-6-1">
+<p>
+caller's frame:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">arg n</td>
+</tr>
+
+<tr>
+<td class="org-left">&#x2026;</td>
+</tr>
+
+<tr>
+<td class="org-left">arg 1</td>
+</tr>
+
+<tr>
+<td class="org-left">return address</td>
+</tr>
+</tbody>
+</table>
+<p>
+callee's frame:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Saved %ebp</td>
+</tr>
+
+<tr>
+<td class="org-left">Saved registers, local var, temporaries</td>
+</tr>
+
+<tr>
+<td class="org-left">Argument build area    (%esp)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org354d11e" class="outline-4">
+<h4 id="org354d11e"><span class="section-number-4">3.6.2</span> Procedure Call</h4>
+<div class="outline-text-4" id="text-3-6-2">
+<p>
+Instructions:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">call Label</td>
+<td class="org-left">procedure call</td>
+</tr>
+
+<tr>
+<td class="org-left">call *Operand</td>
+<td class="org-left">procedure call</td>
+</tr>
+
+<tr>
+<td class="org-left">leave</td>
+<td class="org-left">prepare stack for return</td>
+</tr>
+
+<tr>
+<td class="org-left">ret</td>
+<td class="org-left">return from call</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>call</li>
+</ul>
+<p class="verse">
+A <i>call</i> instruction is to push a return address on the stack<br />
+and jump to the start of the called procedure.<br />
+</p>
+<ul class="org-ul">
+<li>ret</li>
+</ul>
+<p class="verse">
+The <i>ret</i> instruction pops an address off the stack and jumps<br />
+to return address of the caller procedure.<br />
+</p>
+<ul class="org-ul">
+<li>leave</li>
+</ul>
+<p class="verse">
+equilvalent to the following:<br />
+movl %ebp, %esp<br />
+popl %ebp<br />
+</p>
+</div>
+</div>
+<div id="outline-container-org870bacb" class="outline-4">
+<h4 id="org870bacb"><span class="section-number-4">3.6.3</span> Registers</h4>
+<div class="outline-text-4" id="text-3-6-3">
+<p class="verse">
+%eax, %edx and %ecx are classified as caller-save registers.<br />
+callee can overwrite them without destroying any data required by P.<br />
+<br />
+%ebx, %esi and %edi : callee-save registers.<br />
+callee must save the values on the stack before overwriting them,<br />
+and restore them before returning.<br />
+Because caller may need them for its future computations.<br />
+</p>
+</div>
+</div>
+<div id="outline-container-org0c740d5" class="outline-4">
+<h4 id="org0c740d5"><span class="section-number-4">3.6.4</span> Example</h4>
+<div class="outline-text-4" id="text-3-6-4">
+<div class="org-src-container">
+<pre class="src src-c++"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">swap_add</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">xp</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">yp</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">{</span>
+    <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">x</span> = *xp;
+    <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">y</span> = *yp;
+
+    *xp = y;
+    *yp = x;
+    <span style="color: #3a81c3; font-weight: bold;">return</span> x + y;
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">caller</span><span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3;">{</span>
+    <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">arg1</span> = <span style="color: #4e3163;">534</span>;
+    <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">arg2</span> = <span style="color: #4e3163;">1057</span>;
+    <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">sum</span> = swap_add<span style="color: #6c3163;">(</span>&amp;arg1, &amp;arg2<span style="color: #6c3163;">)</span>;
+    <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">diff</span> = arg1 - arg2;
+
+    <span style="color: #3a81c3; font-weight: bold;">return</span> sum * diff;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="orgb09b4ee"></a>Caller<br />
+<div class="outline-text-5" id="text-orgb09b4ee">
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">caller</span>:
+    <span style="color: #3a81c3; font-weight: bold;">pushl</span> <span style="color: #715ab1;">%ebp</span>              <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Save old %ebp</span>
+    <span style="color: #3a81c3; font-weight: bold;">movl</span> <span style="color: #715ab1;">%esp</span>, <span style="color: #715ab1;">%ebp</span>         <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Set %ebp as frame pointer</span>
+    <span style="color: #3a81c3; font-weight: bold;">subl</span> $24, <span style="color: #715ab1;">%esp</span>          <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Allocate 24 bytes on stack</span>
+    <span style="color: #3a81c3; font-weight: bold;">movl</span> $534, -4<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>     <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Set arg1 to 534</span>
+    <span style="color: #3a81c3; font-weight: bold;">movl</span> $1057, -8<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Set arg2 to 1057</span>
+    <span style="color: #3a81c3; font-weight: bold;">leal</span> -8<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%eax</span>     <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Compute &amp;arg2</span>
+    <span style="color: #3a81c3; font-weight: bold;">movl</span> <span style="color: #715ab1;">%eax</span>, 4<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%esp</span><span style="color: #3a81c3;">)</span>      <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Store on stack</span>
+    <span style="color: #3a81c3; font-weight: bold;">leal</span> -4<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%eax</span>         <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Compute &amp;arg1</span>
+    <span style="color: #3a81c3; font-weight: bold;">movl</span> <span style="color: #715ab1;">%eax</span>, <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%esp</span><span style="color: #3a81c3;">)</span>       <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Store on stack</span>
+    <span style="color: #3a81c3; font-weight: bold;">call</span> swap_add               <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Call the swap_add function</span>
+    <span style="color: #3a81c3; font-weight: bold;">movl</span> -4<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%edx</span>
+    <span style="color: #3a81c3; font-weight: bold;">subl</span> -8<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%edx</span>
+    <span style="color: #3a81c3; font-weight: bold;">imull</span> <span style="color: #715ab1;">%edx</span>, <span style="color: #715ab1;">%eax</span>
+    <span style="color: #3a81c3; font-weight: bold;">leave</span>
+    <span style="color: #3a81c3; font-weight: bold;">ret</span>
+</pre>
+</div>
+<p>
+Stack Frame:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Saved %ebp(%ebp)</td>
+</tr>
+
+<tr>
+<td class="org-left">arg1</td>
+</tr>
+
+<tr>
+<td class="org-left">arg2</td>
+</tr>
+
+<tr>
+<td class="org-left"><i>Unused</i></td>
+</tr>
+
+<tr>
+<td class="org-left">&amp;arg2</td>
+</tr>
+
+<tr>
+<td class="org-left">&amp;arg1 (%esp)</td>
+</tr>
+</tbody>
+</table>
+<p>
+After call:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Saved %ebp</td>
+</tr>
+
+<tr>
+<td class="org-left">arg1</td>
+</tr>
+
+<tr>
+<td class="org-left">arg2</td>
+</tr>
+
+<tr>
+<td class="org-left">/Unused</td>
+</tr>
+
+<tr>
+<td class="org-left">&amp;arg2</td>
+</tr>
+
+<tr>
+<td class="org-left">&amp;arg1</td>
+</tr>
+
+<tr>
+<td class="org-left">Return address</td>
+</tr>
+
+<tr>
+<td class="org-left">Saved %ebp(%ebp)</td>
+</tr>
+
+<tr>
+<td class="org-left">Saved %ebx(%esp)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li><a id="orgd813cd0"></a>Callee<br />
+<div class="outline-text-5" id="text-orgd813cd0">
+<ul class="org-ul">
+<li>setup</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">swap_add</span>:
+    <span style="color: #3a81c3; font-weight: bold;">pushl</span> <span style="color: #715ab1;">%ebp</span>
+    <span style="color: #3a81c3; font-weight: bold;">movl</span> <span style="color: #715ab1;">%esp</span>, <span style="color: #715ab1;">%ebp</span>
+    <span style="color: #3a81c3; font-weight: bold;">pushl</span> <span style="color: #715ab1;">%ebx</span>          <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">for temporary storage</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>body</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">movl</span>    <span style="color: #3a81c3; font-weight: bold;">8</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%edx</span>   <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Get xp</span>
+<span style="color: #6c3163; font-weight: bold;">movl</span>    <span style="color: #3a81c3; font-weight: bold;">12</span><span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ebp</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%ecx</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Get yp</span>
+<span style="color: #6c3163; font-weight: bold;">movl</span>    <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%edx</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%ebx</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Get x</span>
+<span style="color: #6c3163; font-weight: bold;">movl</span>    <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ecx</span><span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%eax</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Get y</span>
+<span style="color: #6c3163; font-weight: bold;">movl</span>    <span style="color: #3a81c3; font-weight: bold;">%eax</span>, <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%edx</span><span style="color: #3a81c3;">)</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Store y at xp</span>
+<span style="color: #6c3163; font-weight: bold;">movl</span>    <span style="color: #3a81c3; font-weight: bold;">%ebx</span>, <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%ecx</span><span style="color: #3a81c3;">)</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Store x at yp</span>
+<span style="color: #6c3163; font-weight: bold;">addl</span>    <span style="color: #3a81c3; font-weight: bold;">%ebx</span>, <span style="color: #715ab1;">%eax</span>      <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Return value = x + y</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>finish</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">popl</span>    <span style="color: #3a81c3; font-weight: bold;">%ebx</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Restore %ebx</span>
+<span style="color: #6c3163; font-weight: bold;">popl</span>    <span style="color: #3a81c3; font-weight: bold;">%ebp</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Restore %ebp</span>
+<span style="color: #6c3163; font-weight: bold;">ret</span>                 <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Return</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgee7acff" class="outline-3">
+<h3 id="orgee7acff"><span class="section-number-3">3.7</span> Array Allocation</h3>
+<div class="outline-text-3" id="text-3-7">
+<ul class="org-ul">
+<li>\[\&A[i] = x_a + i\cdot sizeof(type)\]</li>
+<li>for an array declare as D[R][C],</li>
+</ul>
+<p>
+\[\&D[i][j] = x_d + sizeof(type)\cdot (C\cdot i + j)\]
+</p>
+<pre class="example">
+s: start address  t: type size  declaration: A[R][C]
+A[0]   A[0][0]    s
+A[0]   A[0][1]    s+t
+A[1]   A[1][0]    s+Ct
+A[1]   A[1][2]    s+(C+2)t
+A[3]   A[3][4]    s+(3C+4)t
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org7e9fac8" class="outline-2">
+<h2 id="org7e9fac8"><span class="section-number-2">4</span> Storage</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org2fe3633" class="outline-3">
+<h3 id="org2fe3633"><span class="section-number-3">4.1</span> Disk</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+terms: track, sector, cylinder
+</p>
+</div>
+
+<div id="outline-container-orgf4e0571" class="outline-4">
+<h4 id="orgf4e0571"><span class="section-number-4">4.1.1</span> Access time</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<ul class="org-ul">
+<li>seek time 3~9ms</li>
+<li>rotational latency \(T_{max}=\frac{1}{RPM}\cdot60\cdot1000 ms\)</li>
+<li>transfer time \(T{avg}=\frac{1}{RPM}\cdot\frac{1}{avg sectors/track}\cdot60\cdot1000 ms\)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org805cd60" class="outline-3">
+<h3 id="org805cd60"><span class="section-number-3">4.2</span> Locality</h3>
+<div class="outline-text-3" id="text-4-2">
+<p class="verse">
+Programs that repeatedly reference the same variables enjoy good temporal locality.<br />
+<br />
+For programs with stride-k reference patterns, the smaller the stride the better<br />
+the spatial locality. Programs with stride-1 reference patterns have good spatial<br />
+locality. Programs that hop around memory with large strides have poor spatial locality.<br />
+<br />
+Loops have good temporal and spatial locality with respect to instruction<br />
+fetches. The smaller the loop body and the greater the number of loop iterations,<br />
+the better the locality.<br />
+</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

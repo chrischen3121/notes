@@ -1,0 +1,735 @@
+#+TITLE: Operating Systems
+#+KEYWORDS: OS
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SETUPFILE: ../../org-templates/level-1.org
+* Represeting Infomation
+** Integer
+*** Integer Limits
+$$TMax_w = 2^{w-1}-1\quad TMin_w = - 2^{w-1}\quad UMax_w = 2^w-1\quad UMin_w = 0$$
+*** Binary2Integer
+    $$B2U_w(\overrightarrow{x})\doteq\sum_{i=0}^{w-1}x_i2^i$$
+**** Twos' Complement
+     $$B2T_w(\overrightarrow{x})\doteq-x_{w-1}2^{w-1}+\sum_{i=0}^{w-2}x_i2^i$$
+**** Sign-Magnitude
+     - used in floating number
+     $$B2S_w(\overrightarrow{x})\doteq(-1)^{x_{w-1}}\cdot(\sum_{i=0}^{w-2}x_i2^i)$$
+
+*** Transform between signed and unsigned
+**** $T2U_w(x)$
+     $$B2U_w(\overrightarrow{x})-B2T_w(\overrightarrow{x})=x_{w-1}(2^{w-1}+2^{w-1})=x_{w-1}2^w$$
+     $$B2U_w(\overrightarrow{x})=x_{w-1}2^w + B2T_w(\overrightarrow{x})$$
+     Let $\overrightarrow{x}=T2B_w(x)$ , Then：
+     $$T2U_w(x)=B2U_w(T2B_w(x)) = x_{w-1}2^w + B2T_w(T2B_w(x)) = x_{w-1}2^w + x$$
+     bit $x_{w-1}$ is the sign bit, giving:
+     $$T2U_w(x) = \begin{cases}
+     x+2^w, & x\le 0 \\
+     x, & x>0 \\
+     \end{cases}$$
+**** $U2T_w(x)$
+     $$U2T_w(u)=B2T_w(U2B_w(u))=-u_{w-1}2^w+u$$
+     $$U2T_w(u) = \begin{cases}
+     u, & u<2^{w-1} \\
+     u - 2^w, & u\ge2^{w-1} \\
+     \end{cases}$$
+
+*** Small size to big size
+     1) Change the size(fill 0 or 1 depends on signed/unsigned)
+     2) Convert signed/unsigned
+
+*** Big size to small size
+    - Unsigned big2small：$B2U_k([x_{k-1},x_{k-2},\cdots,x_0])=B2U_w([x_{w-1},x_{w-2},\cdots,x_0])\mod 2^k$
+    - Signed big2small：$B2T_k([x_{k-1}, x_{k-2}, \cdots, x_0])=U2T_k(B2U_k([x_{k-1},x_{k-2},\cdots,x_0])$
+
+** Floating Point
+*** Fractional Binary Numbers
+**** Fractional Decimal
+     $$d=\sum_{i=-n}^m10^i\times{d_i}$$
+     Consider Fractional decimal $12.34_{10}$
+     $$ 1\times{10^1} + 2\times{10^0} + 3\times{10^{-1}} + 4\times{10^{-2}}=12\frac{34}{100}$$
+**** Fractional Binary
+     $$b=\sum_{i=-n}^m2^i\times{b_i}$$
+     eg:  $101.11_2$
+     $$ 1\times{2^2} + 0\times{2^1} + 1\times{2^0} + 1\times{2^{-1}} + 1\times{2^{-2}} = 5\frac{3}{4}$$
+*** IEEE Floating-Point
+$$V=(-1)^{s}\times{M}\times{2^E}$$
+- sign s: negative(s=1) positive(s=0)
+- significand M: a fractional binary number
+- exponent E: weights the value by a power of 2
+#+BEGIN_VERSE
+Three fields represent: 1-bit s, k-bit exp(encode E), n-bit frac(encode M)
+Using in C:
+float(single-precision) s=1, k=8, n=23 yielding a 32-bit representation
+double(double-precision) s=1, k=11, n=52, yielding a 64-bit representation
+#+END_VERSE
+**** Nomalized Values
+#+BEGIN_VERSE
+Condition: exp is not all zeros(0) & not all ones(255 for single, 2047 for double)
+
+Cal:
+E=e-Bias
+e is the unsigned number having bit representation $e_{k-1}...e_1e_0$
+Bias is bias value equal to $2^{k-1}-1$ (127 for single 1023 for double)
+Hance, $-126\leq{E}\leq{+127}$ for single $-1022\leq{E}\leq{+1023}$ for double
+M=1+f
+where $0\leq{f}<1$ having binary representation $0.f_{n-1}...f_1f_0$
+so that, M is in the range $1\leq{M}<2$
+This implied leading 1 is a trick for getting an additional bit of precision for free.
+#+END_VERSE
+**** Denormalized Values
+#+BEGIN_VERSE
+Condition: exp is all zeros
+Cal: E=1-Bias, M=f
+Serve two purposes:
+#+END_VERSE
+- represent 0 (all bits are zero)
+- represent numbers that are very close to 0.0
+**** Spacial Values
+#+BEGIN_VERSE
+Condition: exp is all ones
+#+END_VERSE
+- frac is all zeros: represent infinity, infinity represent operation overflow or divide by zero.
+- frac is nonzero: resulting value called "NaN"(Not a number)
+#+BEGIN_VERSE
+When the result can not be given as a real number or as a infinity, use NaN or inf
+eg:
+$\sqrt{-1}:  NaN$
+$1.0/0.0:  +\infty$
+#+END_VERSE
+
+**** Examples
+8-bit floating-point format
+| Description      | bits       |  e |  E | $2^E$          | f             | M              | $2^E\times{M}$   | V               |  Decimal |
+|------------------+------------+----+----+----------------+---------------+----------------+------------------+-----------------+----------|
+| Zero             | 0 0000 000 |  0 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{0}{8}$  | $\frac{0}{512}$  | 0               |      0.0 |
+| Smallest pos. | 0 0000 001 |  0 | -6 | $\frac{1}{64}$ | $\frac{1}{8}$ | $\frac{1}{8}$  | $\frac{1}{512}$  | $\frac{1}{512}$ | 0.001953 |
+| Largest denorm.  | 0 0000 111 |  0 | -6 | $\frac{1}{64}$ | $\frac{7}{8}$ | $\frac{7}{8}$  | $\frac{7}{512}$  | $\frac{7}{512}$ | 0.005859 |
+| Smallest norm.   | 0 0001 000 |  1 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{512}$  | $\frac{1}{64}$  | 0.013672 |
+| One              | 0 0111 000 |  7 |  0 | 1              | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{8}$    | 1               |      1.0 |
+| Largest norm.    | 0 1110 111 | 14 |  7 | 128            | $\frac{7}{8}$ | $\frac{15}{8}$ | $\frac{1920}{8}$ | 240             |    240.0 |
+| Infinity         | 0 1111 000 |  - |  - | -              | -             | -              | -                | $\infty$        |        - |
+
+* Manipulating Infomation
+** Integer arithmatic
+*** Unsigned Addition
+\[ x+^u_wy= \left\{
+  \begin{array}{l l}
+    x+y & \quad x+y<2^w\\
+    x+y-2^w & \quad 2^w\le x+y<2^{w-1}
+   \end{array} \right.\]
+Same as  $x+^u_wy=(x+y) \mod 2^w$
+#+BEGIN_VERSE
+When overflow occured, $sum=x+y-2^w$
+Because $y < 2^w$
+We have $sum = x +(y-2^w) < x$
+sum < x means it did overflow.
+#+END_VERSE
+*** Unsigned Negation
+\[ -^u_wx= \left\{
+  \begin{array}{l l}
+    x & \quad x=0\\
+    2^w-x & \quad x>0
+   \end{array} \right.\]
+*** Two's Complement Addition
+1) from signed operand to unsigned
+2) excute unsigned addition(truncate the overflow)
+$$x+^t_wy\doteq U2T_w(T2U_w(x)+^u_wT2U_w(y))$$
+$$=U2T_w[(x_{w-1}2^w+x+y_{w-1}2^w+y) \mod 2^w]$$
+\[ x+^t_wy= \left\{
+  \begin{array}{l l}
+    x+y-2^w & \qquad x+y\ge 2^{w-1} \quad Positive \ overflow\\
+    x+y & \qquad -2^{w-1}\le x+y<2^{w-1} \quad Normal\\
+    x+y+2^w & \qquad x+y<-2^{w-1} \quad Negative \ overflow
+   \end{array} \right.\]
+Example:
+|      $x$ |      $y$ |      $x+y$ | $x+^t_4y$ |
+|----------+----------+------------+-----------|
+| -8(1000) | -5(1011) | -13(10011) |   3(0011) |
+*** Two's Complement Negation
+\[ -^t_wx= \left\{
+  \begin{array}{l l}
+    -2^{w-1} & \qquad x=-2^{w-1} \\
+    -x & \qquad x>-2^{w-1} \\
+   \end{array} \right.\]
+Two Clever Ways:
+**** One Way
+1) complement the bits
+2) increment by 1
+|       x |       ~x | incr(~x) |
+|---------+----------+----------|
+| 0101(5) | 1010(-6) | 1011(-5) |
+**** Another Way
+Condition: $x\neq 0$
+1) Split the bit vector into two parts.(the boundary is the rightmost 1)
+2) Complement each bit on the left part.
+| x            | -x          |
+|--------------+-------------|
+| /101/ 1 (-5) | /010/ 1 (5) |
+*** Unsigned Mutliplication
+    $0\le x,y\le 2^{w}-1$ Hence,
+    $$0\le x\cdot y\le2^{2w}-2^{w+1}+1$$
+    This could require as many as 2w bits to represent.
+    $$ x \times ^u_wy=(x\cdot y)\ mod\ 2^w$$
+*** Two's Complement Multiplication
+    $-2^{w-1}\le x,y \le 2^{w-1}-1$ Hence,
+    $$ -2^{2w-2}+2^{w-1} \le x\cdot y \le 2^{2w-2}$$
+    Also need 2w bits to represent.
+    $$ x \times ^t_wy = U2T_w((x\cdot y)\ mod\ 2^w) $$
+*** Reduce Mutiplication by shift and addition
+    Motivation Mutiplication requires 10 or more clock cycles. shift and addition requires 1 clock cycle.
+    $$ x \times ^t_w2^k  = x << k$$
+**** two forms:
+    $$(x << n) + (x << n-1) + \dots + (x << m)$$
+    $$(x << n+1) - (x << m)$$
+    - eg: $14$ can be rewrite as $(x<<4) - (x<<1)$ or $(x<<3) + (x<<2) + (x<<1)$
+
+    Assuming additions and subtractions have comparable cost, then we have:
+    - $n = m$ , use Form1.
+    - $n = m+1$ , use either Form1 or Form2.
+    - $n > m+1$ , use Form2.
+*** Reduce Division by shift
+    Division require 30 or more clock cycles.
+**** Logical Shift
+     $x \div 2^k = x>>k$ where $0 \le{k} < w$ and $x\ge 0$
+
+**** Arithmatic Shift
+     $x \div 2^k = x>>k$ where $0\le{k} < w$
+     Follow the above, we'll find -7/2 yield -4 not -3, corrected by 'biasing' the value before shifting.
+     - $x \div 2^k = (x+ 2^k - 1) >> k$ where $x < 0$
+** Floating Operation
+*** Round
+#+BEGIN_VERSE
+4 Modes:
+Round-to-even eg: 1.5 approximate 2, 2.5 approximate 2 (DEFAULT)
+Round-toward-zero eg:-1.5 approximate -1, 1.5 approximate 1
+Round-down eg: 1.5 approximate 1
+Round-up eg: 1.5 approximate 2
+#+END_VERSE
+*** Arithmatic Operation
+Round(x?y)
+$$x+^fy=Round(x+y)$$
+Floating arithmatic doesn't satisfied associativity, distributivity.
+* Program Structure
+** Data Formats
+*sizes in IA32.*
+| C declaration | Intel            | Assembly code suffix | Size(bytes) |
+|---------------+------------------+----------------------+-------------|
+| char          | Byte             | b                    |           1 |
+| short         | Word             | w                    |           2 |
+| int           | Double word      | l                    |           4 |
+| long int      | Double word      | l                    |           4 |
+| long long int | —                | —                    |           4 |
+| char *        | Double word      | l                    |           4 |
+| float         | Single precision | s                    |           4 |
+| double        | Double precision | l                    |           8 |
+| long double   | Extend precision | t                    |       10/12 |
+** Interger Registers
+| 31   | 16  | 15---8 | 7---0 |
+| %eax | %ax | %ah    | %al   |
+| %ecx | %cx | %ch    | %cl   |
+| %edx | %dx | %dh    | %dl   |
+| %ebx | %bx | %bh    | %bl   |
+| %esi | %si |        |       |
+| %edi | %di |        |       |
+| %esp | %sp |        |       |
+| %ebp | %bp |        |       |
+** Accessing Information
+#+BEGIN_VERSE
+$R[E_a]$ indicate the value of register a.
+$M[Addr]$ indicate the memory location
+#+END_VERSE
+| Form                      | Operand Value                           |
+|---------------------------+-----------------------------------------|
+| \(\textit{\$ Imm}\)       | $\textit{Imm}$                          |
+| $E_a$                     | $R[E_a]$                                |
+| $\textit{Imm}$            | $M[\textit{Imm}]$                       |
+| $(E_a)$                   | $M[R[E_a]]$                             |
+| $\textit{Imm}(E_b)$       | $M[\textit{Imm}+R[E_b]]$                |
+| $(E_b,E_i)$               | $M[R[E_b]+R[E_i]]$                      |
+| $\textit{Imm}(E_b,E_i)$   | $M[\textit{Imm}+R[E_b]+R[E_i]]$         |
+| $(,E_i,s)$                | $M[R[E_i]\cdot{s}]$                     |
+| $\textit{Imm}(E_b,E_i,s)$ | $M[\textit{Imm}+R[E_b]+R[E_i]\cdot{s}]$ |
+** Basic Operations
+*** Data Movement
+| Instruction | Description                           |
+|-------------+---------------------------------------|
+| mov  S,D    | D <- S                                |
+| movs S,D    | D <- SignExtend(S)                    |
+| movz S,D    | D <- ZeroExtend(S)                    |
+| push & pop  |                                       |
+| pushl S     | R[%esp] <- R[%esp]-4; M[R[%esp]] <- S |
+| popl D      | D <- M[R[%esp]]; R[%esp] <- R[%esp]+4 |
+#+BEGIN_VERSE
+movs include: movsbw,movsbl,movswl
+the same for movz.
+#+END_VERSE
+pushl %ebp is equivalent to the following pair of instuctions:
+#+BEGIN_SRC asm
+subl $4,%esp
+movl %ebp,(%esp)
+#+END_SRC
+popl %eax:
+#+BEGIN_SRC asm
+movl (%esp),%esp
+addl $4,%esp
+#+END_SRC
+*** Arithmetic & Logical Operations
+| Instruction | Description                         |
+|-------------+-------------------------------------|
+| lea  S,D    | D <- &S                             |
+| unary op    |                                     |
+| inc D       | D <- D+1                            |
+| dec D       | D <- D-1                            |
+| neg D       | D <- -D                             |
+| not D       | D <- ~D(complement)                 |
+| binary op   | second operand: src & dest          |
+| add S,D     | D <- D+S                            |
+| sub S,D     | D <- D-S                            |
+| imul S,D    | D <- D*S  (use $*^u_{32} *^t_{32}$) |
+| xor S,D     | D <- D^S                            |
+| or S,D      | D <- D\vert{}S                      |
+| and S,D     | D <- D&S                            |
+| shift op    |                                     |
+| sal k,D     | D <- D<<k                           |
+| shl k,D     | D <- D<<k(same as sal)              |
+| sar k,D     | D <- D>>k(arithmetic shift)         |
+| shr k,D     | D <- D>>k(logical shift)            |
+*** About xorl x, x
+For c code:
+#+BEGIN_SRC c
+int x=1;
+#+END_SRC
+#+BEGIN_SRC asm
+GCC -O1:
+movl $0x00, %eax (binary b8 00 00 00 00)
+
+GCC -O2:
+xorl $edx,%edx (binary 31 c0)
+#+END_SRC
+*** Special Arithmetic Operations
+imul also support one-operand operaion.
+| Instruction | Description                               |
+|-------------+-------------------------------------------|
+| imull S     | R[%edx]:R[%eax] <- S*R[%eax] (Signed)     |
+| mull S      | R[%edx]:R[%eax] <- S*R[%eax] (Unsigned)   |
+| cltd        | R[%edx]:R[%eax] <- SignExtend(R[%eax])    |
+| idivl S     | R[%edx] <- R[%edx]:R[%eax] mod S;(Signed) |
+|             | R[%eax] <- R[%edx]:R[%eax] / S;(Signed)   |
+
+** Control
+*** Condiction Register
+Four flags:
+| CF | carry flag    |
+| ZF | zero flag     |
+| SF | sign flag     |
+| OF | overflow flag |
+For t=a+b
+| CF | (unsigned)t < (unsigned)a  | Unsigned Overflow |
+| ZF | (t == 0)                   | Zero              |
+| SF | (t < 0)                    | Negative          |
+| OF | (a<0 == b<0)&&(t<0 != a<0) | Signed Overflow   |
+instructions that set the condiction code without updating their destination.
+| Instruction    | Effect        | Like |
+| cmp $S_2, S_1$ | $S_1-S_2$     | sub  |
+| test $S_2,S_1$ | $S_1$ & $S_2$ | and  |
+*** Accessing the Condition Codes
+Three common ways of using the condition codes:
+1) set a single byte to 0 or 1 depending on some combination of the condition codes.
+2) conditionally jump to some other part of the program
+3) conditionally transfer data.
+for (1), we use set instruction:
+| Instruction | Synonym | Effect   | Set condition      |
+| sete D      | setz    | D <- ZF  | Equal/zero         |
+| setne D     | setnz   | D <- ~ZF | Not Equal/not zero |
+| sets D      |         | D <- SF  | Negative           |
+| setns D     |         | D <- ~SF | Nonnegative        |
+Signed Group:
+| setg D  | setnle | D <- ~(SF^OF) & ~ZF   | >  |
+| setge D | setnl  | D <- ~(SF^OF)         | >= |
+| setl D  | setnge | D <- SF^OF            | <  |
+| setle D | setnge | D <- (SF^OF) \vert ZF | <= |
+Unsigned Group:
+| seta D  | setnbe | D <- ~CF & ~ZF    | >  |
+| setae D | setnb  | D <- ~CF          | >= |
+| setb D  | setnae | D <- CF           | <  |
+| setbe D | setna  | D <- CF \vert  ZF | <= |
+
+*** Jump Instruction
+| Instruction  | Synonym       | Condition |
+| jmp Label    | direct jump   | 1         |
+| jmp *Operand | indirect jump | 1         |
+| je L         | jz            | ZF        |
+| jne L        | jnz           | ~ZF       |
+| js L         |               | SF        |
+| jns L        |               | ~SF       |
+Signed Group:
+| jg L  | jnle | ~(SF^OF)&~ZF     |
+| jge L | jnl  | ~(SF^OF)         |
+| jl L  | jnge | SF^OF            |
+| jle L | jng  | (SF^OF)\vert{}ZF |
+Unsigned Group:
+| ja L  | jnbe | ~CF & ~ZF   |
+| jae L | jnb  | ~CF         |
+| jb L  | jnae | CF          |
+| jbe L | jna  | CF\vert{}ZF |
+
+*** If Statement
+General in C:
+#+BEGIN_EXAMPLE
+  if (test-expr)
+     then-statement
+  else
+     else-statement
+#+END_EXAMPLE
+nomal form with goto statement:
+#+BEGIN_EXAMPLE
+      t = test-expr;
+      if (t)
+         goto true;
+      else-statement
+      goto done;
+  true:
+      then-statement
+  done:
+#+END_EXAMPLE
+assembly form:
+#+BEGIN_EXAMPLE
+      t = test-expr;
+      if (!t)
+         goto false-label;
+      then-statement
+      goto done;
+  false-label:
+      else-statement
+  done:
+#+END_EXAMPLE
+major difference: when there is no else-statement.
+#+BEGIN_EXAMPLE
+      t = test-expr;
+      if (!t)
+         goto done;
+      then-statement
+  done:
+#+END_EXAMPLE
+**** example
+#+BEGIN_SRC c
+  int test(int x, int y)
+  {
+      int val = x^y;
+      if (x < -3)
+      {
+          if (y < x)
+              val = x*y;
+          else
+              val = x+y;
+      }
+      else if (x > 2)
+          val = x-y;
+      return val;
+  }
+#+END_SRC
+#+BEGIN_SRC asm
+      movl    12(%ebp), %eax
+      movl    8(%ebp), %edx
+      cmpl    $-3, %eax
+      jge .L2
+      cmpl    %edx, %eax
+      jle .L3
+      imull   %edx, %eax
+      jmp .L4
+  .L3:
+      leal    (%edx,%eax), %eax
+      jmp .L4
+  .L2:
+      cmpl    $2, %eax
+      jg .L5
+      xorl    %edx, %eax
+      jmp .L4
+  .L5:
+      subl %edx, %eax
+  .L4:
+#+END_SRC
+*** Loops
+**** do...while
+#+BEGIN_EXAMPLE
+  do
+      body-statement
+  while (test-expr)
+#+END_EXAMPLE
+goto version:
+#+BEGIN_EXAMPLE
+  loop:
+      body-statement
+      t = test-expr;
+      if (t)
+         goto loop;
+  done:
+#+END_EXAMPLE
+**** while
+#+BEGIN_EXAMPLE
+  while (test-expr)
+      body-statement
+#+END_EXAMPLE
+goto version:
+#+BEGIN_EXAMPLE
+  t = test-expr
+  if (!t)
+     goto done;
+  loop:
+     body-statement
+     if (t)
+        goto loop;
+  done:
+#+END_EXAMPLE
+**** for
+#+BEGIN_EXAMPLE
+  for (init-expr; test-expr; update-expr)
+      body-statement
+#+END_EXAMPLE
+Equivalent to while loop
+#+BEGIN_EXAMPLE
+  init-expr;
+  while (test-expr)
+      body-statement
+      update-expr;
+#+END_EXAMPLE
+goto vesion:
+#+BEGIN_EXAMPLE
+  init-expr;
+  t = test-expr;
+  if (!t)
+     goto done;
+
+  loop:
+     body-statement
+     update-expr;
+     if (t)
+        goto loop;
+  done:
+#+END_EXAMPLE
+*** Conditional Move Instructions
+**** Why use?
+#+BEGIN_VERSE
+Processors achieve high performance by overlapping the steps of the
+successive instructions, such as fetching one instruction while
+performing the arithmetic operations for a previous instruction.
+#+END_VERSE
+**** Instructions
+| Instruction | Synonym | Condition        |
+|-------------+---------+------------------|
+| cmove S, R  | cmovz   | ZF               |
+| cmovne      | cmovnz  | ~ZF              |
+| cmovs       |         | SF               |
+| cmovns      |         | ~SF              |
+| cmovg       | cmovnle | ~(SF^OF)&~ZF     |
+| cmovge      | cmovnl  | ~(SF^OF)         |
+| cmovl       | cmovnge | SF^OF            |
+| cmovle      | cmovng  | (SF^OF)\vert{}ZF |
+| cmova       | cmovnbe | ~CF&~ZF          |
+| cmovae      | cmovnb  | ~CF              |
+| cmovb       | cmovnae | CF               |
+| cmovbe      | cmovna  | CF\vert{}ZF      |
+
+**** example
+Expression:
+#+BEGIN_EXAMPLE
+  v = test-expr ? then-expr : else-expr;
+#+END_EXAMPLE
+Traditional IA32:
+#+BEGIN_EXAMPLE
+      if (!test-expr)
+          goto false;
+      v = then-expr;
+      goto done;
+  false:
+      v = else-expr;
+  done:
+#+END_EXAMPLE
+Base the on conditional move:
+#+BEGIN_EXAMPLE
+  vt = then-expr;
+  v = else-expr;
+  t = test-expr;
+  if (t) v = vt;
+#+END_EXAMPLE
+*** Switch Statement
+Using the jump table
+#+BEGIN_SRC asm
+  .L8:
+          .long   .L3 //index 0
+          .long   .L2//1
+          .long   .L4//2
+          .long   .L5//3
+          .long   .L6//4
+          .long   .L6//5
+          .long   .L7//6
+#+END_SRC
+#+BEGIN_SRC asm
+  movl    8(%ebp),    %eax //x at %ebp+8
+  addl    $2, %eax //index = x+2. when index = 0, x(min)=-2.
+  cmpl    $6, %eax //index compare with 6
+  ja      .L2 //index > 6 goto default. Such that, x(max)=4.
+  jmp *.L8(,%eax,4)
+#+END_SRC
+x case 2, 3 goes to .L6
+** Procedure
+*** Stack Frame
+caller's frame:
+| arg n |
+| ...   |
+| arg 1 |
+| return address |
+callee's frame:
+| Saved %ebp                              |
+| Saved registers, local var, temporaries |
+| Argument build area    (%esp)           |
+*** Procedure Call
+Instructions:
+| call Label    | procedure call           |
+| call *Operand | procedure call           |
+| leave         | prepare stack for return |
+| ret           | return from call         |
+
+- call
+#+BEGIN_VERSE
+A /call/ instruction is to push a return address on the stack
+and jump to the start of the called procedure.
+#+END_VERSE
+- ret
+#+BEGIN_VERSE
+The /ret/ instruction pops an address off the stack and jumps
+to return address of the caller procedure.
+#+END_VERSE
+- leave
+#+BEGIN_VERSE
+equilvalent to the following:
+movl %ebp, %esp
+popl %ebp
+#+END_VERSE
+*** Registers
+#+BEGIN_VERSE
+%eax, %edx and %ecx are classified as caller-save registers.
+callee can overwrite them without destroying any data required by P.
+
+%ebx, %esi and %edi : callee-save registers.
+callee must save the values on the stack before overwriting them,
+and restore them before returning.
+Because caller may need them for its future computations.
+#+END_VERSE
+*** Example
+#+BEGIN_SRC c++
+  int swap_add(int *xp, int *yp)
+  {
+      int x = *xp;
+      int y = *yp;
+
+      ,*xp = y;
+      ,*yp = x;
+      return x + y;
+  }
+
+  int caller()
+  {
+      int arg1 = 534;
+      int arg2 = 1057;
+      int sum = swap_add(&arg1, &arg2);
+      int diff = arg1 - arg2;
+
+      return sum * diff;
+  }
+#+END_SRC
+**** Caller
+#+BEGIN_SRC asm
+  caller:
+      pushl %ebp              //Save old %ebp
+      movl %esp, %ebp         //Set %ebp as frame pointer
+      subl $24, %esp          //Allocate 24 bytes on stack
+      movl $534, -4(%ebp)     //Set arg1 to 534
+      movl $1057, -8(%ebp)        //Set arg2 to 1057
+      leal -8(%ebp), %eax     //Compute &arg2
+      movl %eax, 4(%esp)      //Store on stack
+      leal -4(%ebp), %eax         //Compute &arg1
+      movl %eax, (%esp)       //Store on stack
+      call swap_add               //Call the swap_add function
+      movl -4(%ebp), %edx
+      subl -8(%ebp), %edx
+      imull %edx, %eax
+      leave
+      ret
+#+END_SRC
+Stack Frame:
+| Saved %ebp(%ebp) |
+| arg1             |
+| arg2             |
+| /Unused/         |
+| &arg2            |
+| &arg1 (%esp)     |
+After call:
+| Saved %ebp       |
+| arg1             |
+| arg2             |
+| /Unused          |
+| &arg2            |
+| &arg1            |
+| Return address   |
+| Saved %ebp(%ebp) |
+| Saved %ebx(%esp) |
+**** Callee
+- setup
+#+BEGIN_SRC asm
+  swap_add:
+      pushl %ebp
+      movl %esp, %ebp
+      pushl %ebx          //for temporary storage
+#+END_SRC
+- body
+#+BEGIN_SRC asm
+  movl    8(%ebp), %edx   //Get xp
+  movl    12(%ebp), %ecx  //Get yp
+  movl    (%edx), %ebx        //Get x
+  movl    (%ecx), %eax        //Get y
+  movl    %eax, (%edx)        //Store y at xp
+  movl    %ebx, (%ecx)        //Store x at yp
+  addl    %ebx, %eax      //Return value = x + y
+#+END_SRC
+- finish
+#+BEGIN_SRC asm
+  popl    %ebx        //Restore %ebx
+  popl    %ebp        //Restore %ebp
+  ret                 //Return
+#+END_SRC
+** Array Allocation
+- $$\&A[i] = x_a + i\cdot sizeof(type)$$
+- for an array declare as D[R][C],
+$$\&D[i][j] = x_d + sizeof(type)\cdot (C\cdot i + j)$$
+#+BEGIN_EXAMPLE
+s: start address  t: type size  declaration: A[R][C]
+A[0]   A[0][0]    s
+A[0]   A[0][1]    s+t
+A[1]   A[1][0]    s+Ct
+A[1]   A[1][2]    s+(C+2)t
+A[3]   A[3][4]    s+(3C+4)t
+#+END_EXAMPLE
+* Storage
+** Disk
+terms: track, sector, cylinder
+
+*** Access time
+- seek time 3~9ms
+- rotational latency $T_{max}=\frac{1}{RPM}\cdot60\cdot1000 ms$
+- transfer time $T{avg}=\frac{1}{RPM}\cdot\frac{1}{avg sectors/track}\cdot60\cdot1000 ms$
+
+** Locality
+#+BEGIN_VERSE
+Programs that repeatedly reference the same variables enjoy good temporal locality.
+
+For programs with stride-k reference patterns, the smaller the stride the better
+the spatial locality. Programs with stride-1 reference patterns have good spatial
+locality. Programs that hop around memory with large strides have poor spatial locality.
+
+Loops have good temporal and spatial locality with respect to instruction
+fetches. The smaller the loop body and the greater the number of loop iterations,
+the better the locality.
+#+END_VERSE
