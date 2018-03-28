@@ -54,62 +54,50 @@ $$TMax_w = 2^{w-1}-1\quad TMin_w = - 2^{w-1}\quad UMax_w = 2^w-1\quad UMin_w = 0
      eg:  $101.11_2$
      $$ 1\times{2^2} + 0\times{2^1} + 1\times{2^0} + 1\times{2^{-1}} + 1\times{2^{-2}} = 5\frac{3}{4}$$
 *** IEEE Floating-Point
-$$V=(-1)^{s}\times{M}\times{2^E}$$
-- sign s: negative(s=1) positive(s=0)
-- significand M: a fractional binary number
-- exponent E: weights the value by a power of 2
-#+BEGIN_VERSE
-Three fields represent: 1-bit s, k-bit exp(encode E), n-bit frac(encode M)
-Using in C:
-float(single-precision) s=1, k=8, n=23 yielding a 32-bit representation
-double(double-precision) s=1, k=11, n=52, yielding a 64-bit representation
-#+END_VERSE
+    $$V=(-1)^{s}\times{M}\times{2^E}$$
+    - sign s: negative(s=1) positive(s=0), Sign-Magnitude
+    - significand M: a fractional binary number, /n/ bits
+    - exponent E: weights the value by a power of 2, /k/ bits
+    - $Bias = 2^{k-1} -1$
+**** float(single-precision)
+     s=1, k=8, n=23 yielding a 32-bit representation, Bias = 127
+**** double(double-precision)
+     s=1, k=11, n=52, yielding a 64-bit representation, Bias = 1023
 **** Nomalized Values
-#+BEGIN_VERSE
-Condition: exp is not all zeros(0) & not all ones(255 for single, 2047 for double)
+     Condition: exp is not all zeros(0) & not all ones(255 for single, 2047 for double)
+     | s | exp neither all 1 nor all 0 | frac |
+     $E = e - Bias$, e is the unsigned number, Hance, the range of $E$ is
+     - $-126\leq{E}\leq{+127}$ for single
+     - $-1022\leq{E}\leq{+1023}$ for double
 
-Cal:
-E=e-Bias
-e is the unsigned number having bit representation $e_{k-1}...e_1e_0$
-Bias is bias value equal to $2^{k-1}-1$ (127 for single 1023 for double)
-Hance, $-126\leq{E}\leq{+127}$ for single $-1022\leq{E}\leq{+1023}$ for double
-M=1+f
-where $0\leq{f}<1$ having binary representation $0.f_{n-1}...f_1f_0$
-so that, M is in the range $1\leq{M}<2$
-This implied leading 1 is a trick for getting an additional bit of precision for free.
-#+END_VERSE
+     $M=1+f$ where $0\leq{f}<1$ having binary representation $0.f_{n-1}...f_1f_0$
+     so that, M is in the range $1\leq{M}<2$ This implied leading 1 is a trick
+     for getting an additional bit of precision for free.
 **** Denormalized Values
-#+BEGIN_VERSE
-Condition: exp is all zeros
-Cal: E=1-Bias, M=f
-Serve two purposes:
-#+END_VERSE
-- represent 0 (all bits are zero)
-- represent numbers that are very close to 0.0
+     Condition: exp is all zeros
+     | s | all 0 | frac |
+     Serve two purposes:
+     - represent 0 (all bits are zero)
+     - represent numbers that are very close to 0.0
+
 **** Spacial Values
-#+BEGIN_VERSE
-Condition: exp is all ones
-#+END_VERSE
-- frac is all zeros: represent infinity, infinity represent operation overflow or divide by zero.
-- frac is nonzero: resulting value called "NaN"(Not a number)
-#+BEGIN_VERSE
-When the result can not be given as a real number or as a infinity, use NaN or inf
-eg:
-$\sqrt{-1}:  NaN$
-$1.0/0.0:  +\infty$
-#+END_VERSE
+     Condition: exp is all ones
+     - infinity
+       | s | all 1 | 0 |
+     - NaN
+       | s | all 1 | $\ne 0$ |
 
 **** Examples
-8-bit floating-point format
-| Description      | bits       |  e |  E | $2^E$          | f             | M              | $2^E\times{M}$   | V               |  Decimal |
-|------------------+------------+----+----+----------------+---------------+----------------+------------------+-----------------+----------|
-| Zero             | 0 0000 000 |  0 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{0}{8}$  | $\frac{0}{512}$  | 0               |      0.0 |
-| Smallest pos. | 0 0000 001 |  0 | -6 | $\frac{1}{64}$ | $\frac{1}{8}$ | $\frac{1}{8}$  | $\frac{1}{512}$  | $\frac{1}{512}$ | 0.001953 |
-| Largest denorm.  | 0 0000 111 |  0 | -6 | $\frac{1}{64}$ | $\frac{7}{8}$ | $\frac{7}{8}$  | $\frac{7}{512}$  | $\frac{7}{512}$ | 0.005859 |
-| Smallest norm.   | 0 0001 000 |  1 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{512}$  | $\frac{1}{64}$  | 0.013672 |
-| One              | 0 0111 000 |  7 |  0 | 1              | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{8}$    | 1               |      1.0 |
-| Largest norm.    | 0 1110 111 | 14 |  7 | 128            | $\frac{7}{8}$ | $\frac{15}{8}$ | $\frac{1920}{8}$ | 240             |    240.0 |
-| Infinity         | 0 1111 000 |  - |  - | -              | -             | -              | -                | $\infty$        |        - |
+     8-bit floating-point format
+| Description     | bits       |  e |  E | $2^E$          | f             | M              | $2^E\times{M}$   | V               |  Decimal |
+|-----------------+------------+----+----+----------------+---------------+----------------+------------------+-----------------+----------|
+| Zero            | 0 0000 000 |  0 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{0}{8}$  | $\frac{0}{512}$  | 0               |      0.0 |
+| Smallest pos.   | 0 0000 001 |  0 | -6 | $\frac{1}{64}$ | $\frac{1}{8}$ | $\frac{1}{8}$  | $\frac{1}{512}$  | $\frac{1}{512}$ | 0.001953 |
+| Largest denorm. | 0 0000 111 |  0 | -6 | $\frac{1}{64}$ | $\frac{7}{8}$ | $\frac{7}{8}$  | $\frac{7}{512}$  | $\frac{7}{512}$ | 0.005859 |
+| Smallest norm.  | 0 0001 000 |  1 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{512}$  | $\frac{1}{64}$  | 0.013672 |
+| One             | 0 0111 000 |  7 |  0 | 1              | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{8}$    | 1               |      1.0 |
+| Largest norm.   | 0 1110 111 | 14 |  7 | 128            | $\frac{7}{8}$ | $\frac{15}{8}$ | $\frac{1920}{8}$ | 240             |    240.0 |
+| Infinity        | 0 1111 000 |  - |  - | -              | -             | -              | -                | $\infty$        |        - |
 
 * Manipulating Infomation
 ** Integer arithmatic
@@ -200,17 +188,13 @@ Condition: $x\neq 0$
      - $x \div 2^k = (x+ 2^k - 1) >> k$ where $x < 0$
 ** Floating Operation
 *** Round
-#+BEGIN_VERSE
-4 Modes:
-Round-to-even eg: 1.5 approximate 2, 2.5 approximate 2 (DEFAULT)
-Round-toward-zero eg:-1.5 approximate -1, 1.5 approximate 1
-Round-down eg: 1.5 approximate 1
-Round-up eg: 1.5 approximate 2
-#+END_VERSE
+    - Round-to-even eg: 1.5 approximate 2, 2.5 approximate 2 (DEFAULT) avoid statistical bias
+    - Round-toward-zero eg:-1.5 approximate -1, 1.5 approximate 1
+    - Round-down eg: 1.5 approximate 1
+    - Round-up eg: 1.5 approximate 2
 *** Arithmatic Operation
-Round(x?y)
-$$x+^fy=Round(x+y)$$
-Floating arithmatic doesn't satisfied associativity, distributivity.
+    $$x+^fy=Round(x+y)$$
+    - Compute $x+y$ first, then round
 * Program Structure
 ** Data Formats
 *sizes in IA32.*

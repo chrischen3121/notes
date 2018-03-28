@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-03-27 Tue 17:32 -->
+<!-- 2018-03-28 Wed 14:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -426,41 +426,90 @@ eg:  \(101.11_2\)
 \[V=(-1)^{s}\times{M}\times{2^E}\]
 </p>
 <ul class="org-ul">
-<li>sign s: negative(s=1) positive(s=0)</li>
-<li>significand M: a fractional binary number</li>
-<li>exponent E: weights the value by a power of 2</li>
+<li>sign s: negative(s=1) positive(s=0), Sign-Magnitude</li>
+<li>significand M: a fractional binary number, <i>n</i> bits</li>
+<li>exponent E: weights the value by a power of 2, <i>k</i> bits</li>
+<li>\(Bias = 2^{k-1} -1\)</li>
 </ul>
-<p class="verse">
-Three fields represent: 1-bit s, k-bit exp(encode E), n-bit frac(encode M)<br />
-Using in C:<br />
-float(single-precision) s=1, k=8, n=23 yielding a 32-bit representation<br />
-double(double-precision) s=1, k=11, n=52, yielding a 64-bit representation<br />
-</p>
 </div>
 <ul class="org-ul">
+<li><a id="orgb974e6a"></a>float(single-precision)<br />
+<div class="outline-text-5" id="text-orgb974e6a">
+<p>
+s=1, k=8, n=23 yielding a 32-bit representation, Bias = 127
+</p>
+</div>
+</li>
+<li><a id="org661128b"></a>double(double-precision)<br />
+<div class="outline-text-5" id="text-org661128b">
+<p>
+s=1, k=11, n=52, yielding a 64-bit representation, Bias = 1023
+</p>
+</div>
+</li>
 <li><a id="org58cce40"></a>Nomalized Values<br />
 <div class="outline-text-5" id="text-org58cce40">
-<p class="verse">
-Condition: exp is not all zeros(0) &amp; not all ones(255 for single, 2047 for double)<br />
-<br />
-Cal:<br />
-E=e-Bias<br />
-e is the unsigned number having bit representation \(e_{k-1}...e_1e_0\)<br />
-Bias is bias value equal to \(2^{k-1}-1\) (127 for single 1023 for double)<br />
-Hance, \(-126\leq{E}\leq{+127}\) for single \(-1022\leq{E}\leq{+1023}\) for double<br />
-M=1+f<br />
-where \(0\leq{f}<1\) having binary representation \(0.f_{n-1}...f_1f_0\)<br />
-so that, M is in the range \(1\leq{M}<2\)<br />
-This implied leading 1 is a trick for getting an additional bit of precision for free.<br />
+<p>
+Condition: exp is not all zeros(0) &amp; not all ones(255 for single, 2047 for double)
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">exp neither all 1 nor all 0</td>
+<td class="org-left">frac</td>
+</tr>
+</tbody>
+</table>
+<p>
+\(E = e - Bias\), e is the unsigned number, Hance, the range of \(E\) is
+</p>
+<ul class="org-ul">
+<li>\(-126\leq{E}\leq{+127}\) for single</li>
+<li>\(-1022\leq{E}\leq{+1023}\) for double</li>
+</ul>
+
+<p>
+\(M=1+f\) where \(0\leq{f}<1\) having binary representation \(0.f_{n-1}...f_1f_0\)
+so that, M is in the range \(1\leq{M}<2\) This implied leading 1 is a trick
+for getting an additional bit of precision for free.
 </p>
 </div>
 </li>
 <li><a id="org23f577b"></a>Denormalized Values<br />
 <div class="outline-text-5" id="text-org23f577b">
-<p class="verse">
-Condition: exp is all zeros<br />
-Cal: E=1-Bias, M=f<br />
-Serve two purposes:<br />
+<p>
+Condition: exp is all zeros
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">all 0</td>
+<td class="org-left">frac</td>
+</tr>
+</tbody>
+</table>
+<p>
+Serve two purposes:
 </p>
 <ul class="org-ul">
 <li>represent 0 (all bits are zero)</li>
@@ -468,21 +517,56 @@ Serve two purposes:<br />
 </ul>
 </div>
 </li>
+
 <li><a id="org7afba39"></a>Spacial Values<br />
 <div class="outline-text-5" id="text-org7afba39">
-<p class="verse">
-Condition: exp is all ones<br />
+<p>
+Condition: exp is all ones
 </p>
 <ul class="org-ul">
-<li>frac is all zeros: represent infinity, infinity represent operation overflow or divide by zero.</li>
-<li>frac is nonzero: resulting value called "NaN"(Not a number)</li>
-</ul>
-<p class="verse">
-When the result can not be given as a real number or as a infinity, use NaN or inf<br />
-eg:<br />
-\(\sqrt{-1}:  NaN\)<br />
-\(1.0/0.0:  +\infty\)<br />
+<li><p>
+infinity
 </p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">all 1</td>
+<td class="org-right">0</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>
+NaN
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">all 1</td>
+<td class="org-left">\(\ne 0\)</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
 </div>
 </li>
 
@@ -518,7 +602,7 @@ eg:<br />
 <thead>
 <tr>
 <th scope="col" class="org-left">Description</th>
-<th scope="col" class="org-left">bits</th>
+<th scope="col" class="org-left">bits(1s 4e 3f)</th>
 <th scope="col" class="org-right">e</th>
 <th scope="col" class="org-right">E</th>
 <th scope="col" class="org-left">\(2^E\)</th>
@@ -1872,8 +1956,8 @@ done:
 </pre>
 </div>
 <ul class="org-ul">
-<li><a id="org647d842"></a>example<br />
-<div class="outline-text-5" id="text-org647d842">
+<li><a id="org114be61"></a>example<br />
+<div class="outline-text-5" id="text-org114be61">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">test</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">x</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">y</span><span style="color: #3a81c3;">)</span>
 <span style="color: #3a81c3;">{</span>
@@ -2108,8 +2192,8 @@ performing the arithmetic operations for a previous instruction.<br />
 </div>
 </li>
 
-<li><a id="orge3a9cae"></a>example<br />
-<div class="outline-text-5" id="text-orge3a9cae">
+<li><a id="org938ff46"></a>example<br />
+<div class="outline-text-5" id="text-org938ff46">
 <p>
 Expression:
 </p>
