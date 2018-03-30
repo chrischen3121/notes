@@ -249,11 +249,11 @@ P_X(a < x \le b) & = CDF_X(b)-CDF_X(a)\\
    $$Var(X_1+X_2+...X_n) = nVar(X)$$
 
 ** Independent Variables
-   X and Y are independent random variables
+   X and Y are *independent* random variables
    $$E(X+Y)=E(X)+E(Y)$$
    $$E(X-Y)=E(X)-E(Y)$$
    $$Var(X+Y)=Var(X)+Var(Y)$$
-   $$Var(X-Y)=Var(X)-Var(Y)$$
+   $$Var(X-Y)=Var(X)+Var(Y)$$
    - linear transforms
      $$E(aX+bY)=aE(X)+bE(Y)$$
      $$E(aX-bY)=aE(X)-bE(Y)$$
@@ -426,30 +426,6 @@ $$CDF_X(x)= \begin{cases}
 *** simplify the special Binomial distribution case
     If $X\sim B(n, p)$ where $n$ is large and $p$ is small, you can approximate it with $X \sim Po(np)$.
 
-
-# ** normal distribution
-#    $$X\sim N(\mu, \sigma^2)$$
-# *** probability density function
-#     $$f(X)=\frac{1}{\sigma\sqrt{2\pi}^e}^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$$
-
-# *** standard score
-#     $$z=\frac{x-\mu}{\sigma}$$
-
-# *** probability $P(X\le x)$
-#     $$P(X\le c) = \int_{-\inf}^{c}f(x)dx=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\inf}^{c}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}dx$$
-
-# *** linear transforms
-#     - $X\pm Y\sim N(\mu_x\pm \mu_y, \sigma_x^2+\sigma_y^2)$ if $X\sim N(\mu_x, \sigma_x^2)$ and $Y\sim N(\mu_y, \sigma_y^2)$ are independent
-#     - $aX+b\sim N(a\mu+b, a^2\sigma^2)$
-#     - if $X_1,X_2,...,X_n$ are independent observations of X, then $X_1+X_2+...+X_n\sim N(n\mu, n\sigma^2)$
-
-# *** approximate the Binomial
-#     - if $X\sim B(n, p)$ and $np>5$ and $nq>5$, use $X\sim N(np, npq)$ to approximate it
-#     - also need a *continuity correction* adjustment. (round to discrete value)
-
-# *** approximate the Poisson
-#     - if $X\sim Po(\lambda)$ and $\lambda>15$, use $X\sim N(\lambda, \lambda)$ to approximate it
-
 * Continuous distributions
 ** Uniform distribution
    A continuous random variable has a uniform distribution if all the values belonging to its support have the same probability density.
@@ -519,5 +495,21 @@ $$CDF_X(x)=\begin{cases}
 1-\sum_{k=0}^{n-1}\frac{(\lambda x)^k}{k!}e^{-\lambda x}, & x\ge 0\\
 0, & otherwise
 \end{cases}$$
+** Normal distribution
+   $$X\sim N(\mu, \sigma^2)$$
+*** PDF
+    $$PDF_X(x)=\frac{1}{\sigma\sqrt{2\pi}}\cdot e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+
+*** CDF
+    $$CDF_X(x) = \int_{-\inf}^{x}PDF_X(x)dx=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\inf}^{x}e^{-\frac{(x-\mu)^2}{2\sigma^2}}dx$$
+
+*** approximate Binomial distribution
+    if $X\sim B(n, p)$  and $np>15$ and $nq>5$ , use $X\sim N(np, npq)$ to approximate it.
+    - need to apply a *continuity correction* (round to discrete value)
+
+*** approximate Poisson distribution
+    if $X\sim Po(\lambda)$ and $\lambda>15$, use $X\sim N(\lambda, \lambda)$ to approximate it.
+    - need to apply a *continuity correction* (round to discrete value)
+
 * Binomial Theorem
    $$(x+y)^n = \sum_{k=0}^{n} \dbinom{n}{k}x^{n-k}y^{k}$$
