@@ -196,90 +196,128 @@ Condition: $x\neq 0$
     $$x+^fy=Round(x+y)$$
     - Compute $x+y$ first, then round
 * Program Structure
+** Processor State
+*** program counter(%eip)
+    Indicates the address in memory of the next instruction to be executed
+*** integer register
+    Contain eight named locations storing 32-bit values
+*** condition code register
+    Hold status information about the most recently executed arithmetic or logical instruction
+*** floating-point register
+    Store floating-point data
+
+** Asm
+   #+BEGIN_SRC sh
+     gcc -Og -S xxx.c # c -> asm
+     objdump -d xxx.o # obj -> asm: disassemble
+   #+END_SRC
+
 ** Data Formats
-*sizes in IA32.*
-| C declaration | Intel            | Assembly code suffix | Size(bytes) |
-|---------------+------------------+----------------------+-------------|
-| char          | Byte             | b                    |           1 |
-| short         | Word             | w                    |           2 |
-| int           | Double word      | l                    |           4 |
-| long int      | Double word      | l                    |           4 |
-| long long int | —                | —                    |           4 |
-| char *        | Double word      | l                    |           4 |
-| float         | Single precision | s                    |           4 |
-| double        | Double precision | l                    |           8 |
-| long double   | Extend precision | t                    |       10/12 |
+   | C declaration | Intel            | Assembly code suffix | Size(bytes) |
+   |---------------+------------------+----------------------+-------------|
+   | char          | Byte             | b                    |           1 |
+   | short         | Word             | w                    |           2 |
+   | int           | Double word      | l                    |           4 |
+   | long          | Quad word        | q                    |           8 |
+   | char *        | Quad word        | q                    |           8 |
+   | float         | Single precision | s                    |           4 |
+   | double        | Double precision | l                    |           8 |
+
 ** Interger Registers
-| 31   | 16  | 15---8 | 7---0 |
-| %eax | %ax | %ah    | %al   |
-| %ecx | %cx | %ch    | %cl   |
-| %edx | %dx | %dh    | %dl   |
-| %ebx | %bx | %bh    | %bl   |
-| %esi | %si |        |       |
-| %edi | %di |        |       |
-| %esp | %sp |        |       |
-| %ebp | %bp |        |       |
-** Accessing Information
-#+BEGIN_VERSE
-$R[E_a]$ indicate the value of register a.
-$M[Addr]$ indicate the memory location
-#+END_VERSE
-| Form                      | Operand Value                           |
-|---------------------------+-----------------------------------------|
-| \(\textit{\$ Imm}\)       | $\textit{Imm}$                          |
-| $E_a$                     | $R[E_a]$                                |
-| $\textit{Imm}$            | $M[\textit{Imm}]$                       |
-| $(E_a)$                   | $M[R[E_a]]$                             |
-| $\textit{Imm}(E_b)$       | $M[\textit{Imm}+R[E_b]]$                |
-| $(E_b,E_i)$               | $M[R[E_b]+R[E_i]]$                      |
-| $\textit{Imm}(E_b,E_i)$   | $M[\textit{Imm}+R[E_b]+R[E_i]]$         |
-| $(,E_i,s)$                | $M[R[E_i]\cdot{s}]$                     |
-| $\textit{Imm}(E_b,E_i,s)$ | $M[\textit{Imm}+R[E_b]+R[E_i]\cdot{s}]$ |
+   | 63-32 | 31-16 | 15---8 | 7---0 | use             |
+   |-------+-------+--------+-------+-----------------|
+   | %rax  | %eax  | %ax    | %al   | return value    |
+   | %rbx  | %ebx  | %bx    | %bl   | callee reserved |
+   | %rcx  | %ecx  | %cx    | %cl   | 4th argument    |
+   | %rdx  | %edx  | %dx    | %dl   | 3th argument    |
+   | %rsi  | %esi  | %si    | %sil  | 2nd argument    |
+   | %rdi  | %edi  | %di    | %dil  | 1st argument    |
+   | %rbp  | %ebp  | %bp    | %bpl  | callee reserved |
+   | %rsp  | %esp  | %sp    | %spl  | stack pointer   |
+   | %r8   | $r8d  | %r8w   | %r8b  | 5th argument    |
+   | %r9   | ...   | ...    | ...   | 6th argument    |
+   | %r10  | ...   | ...    | ...   | caller reserved |
+   | %r11  | ...   | ...    | ...   | caller reserved |
+   | %r12  | ...   | ...    | ...   | callee reserved |
+   | %r13  | ...   | ...    | ...   | callee reserved |
+   | %r14  | ...   | ...    | ...   | callee reserved |
+   | %r15  | ...   | ...    | ...   | callee reserved |
+
+** Operand Specifiers
+*** Access from three sources
+    1. immediate: for constant values
+    2. register: denotes the contents of one of the registers. $R[E_a]$
+    3. memory: memory location. $M[Addr]$
+
+    | Form               | Operand Value                 | Access way          |
+    |--------------------+-------------------------------+---------------------|
+    | \(\$Imm\)          | $Imm$                         | Immediate           |
+    | $r_a$              | $R[r_a]$                      | Register            |
+    | $Imm$              | $M[Imm]$                      | Absolute            |
+    | $(r_a)$            | $M[R[r_a]]$                   | Indirect            |
+    | $Imm(r_b)$         | $M[Imm+R[r_b]]$               | Base + displacement |
+    | $(r_b,r_i)$        | $M[R[r_b]+R[r_i]]$            | Indexed             |
+    | $Imm(r_b,r_i)$     | $M[Imm+R[r_b]+R[r_i]]$        | Indexed             |
+    | $(,r_i,s)$         | $M[R[r_i]\cdot s]$            | Scaled Indexed      |
+    | $Imm(,r_i,s)$      | $M[Imm+R[r_i]\cdot s]$        | Scaled Indexed      |
+    | $(r_b, r_i, s)$    | $M[R[r_b]+R[r_i]\cdot s]$     | Scaled Indexed      |
+    | $Imm(r_b, r_i, s)$ | $M[Imm+R[r_b]+R[r_i]\cdot s]$ | Scaled Indexed      |
+
 ** Basic Operations
 *** Data Movement
-| Instruction | Description                           |
-|-------------+---------------------------------------|
-| mov  S,D    | D <- S                                |
-| movs S,D    | D <- SignExtend(S)                    |
-| movz S,D    | D <- ZeroExtend(S)                    |
-| push & pop  |                                       |
-| pushl S     | R[%esp] <- R[%esp]-4; M[R[%esp]] <- S |
-| popl D      | D <- M[R[%esp]]; R[%esp] <- R[%esp]+4 |
-#+BEGIN_VERSE
-movs include: movsbw,movsbl,movswl
-the same for movz.
-#+END_VERSE
-pushl %ebp is equivalent to the following pair of instuctions:
-#+BEGIN_SRC asm
-subl $4,%esp
-movl %ebp,(%esp)
-#+END_SRC
-popl %eax:
-#+BEGIN_SRC asm
-movl (%esp),%esp
-addl $4,%esp
-#+END_SRC
+    | *MOV*  S,D | D \leftarrow S |
+    |------------+----------------|
+    | movb       | byte           |
+    | movw       | word           |
+    | movl       | double word    |
+    | movq       | quad word      |
+    | movabsq    | abs quad word  |
+**** small src $\to$ large dest
+     - ZeroExtend
+       | *MOVZ*  S, R | R\leftarrow ZeroExtend(S) |
+       eg: movzbl, movzbw, movzwl, movzbq, movzwq
+     - SignExtend
+       | *MOVS*  S, R | R\leftarrow SignExtend(S) |
+       eg: movsbw, movsbl, movswl, movsbq, movswq, movslq, cltq
+       - cltq: %rax $\leftarrow$ SignExtend(%eax)
+**** push onto the program stack
+     *pushq S*
+     1. R[%rsp] $\leftarrow$ R[%rsp] - 8
+     2. M[R[%rsp]] $\leftarrow$ S
+     #+BEGIN_SRC asm
+       subq $8,%rsp // Decrement stack pointer
+       movq %rbp,(%rsp) //Store %rbp on stack
+     #+END_SRC
+**** pop from the program stack
+     *popq D*
+     1. D $\leftarrow$ M[R[%rsp]]
+     2. R[%rsp] $\leftarrow$ R[%rsp + 8]
+     #+BEGIN_SRC asm
+       movq (%rsp),%rax //Read %rax from stack
+       addl $4,%esp  //Increment stack pointer
+     #+END_SRC
+
 *** Arithmetic & Logical Operations
-| Instruction | Description                         |
-|-------------+-------------------------------------|
-| lea  S,D    | D <- &S                             |
-| unary op    |                                     |
-| inc D       | D <- D+1                            |
-| dec D       | D <- D-1                            |
-| neg D       | D <- -D                             |
-| not D       | D <- ~D(complement)                 |
-| binary op   | second operand: src & dest          |
-| add S,D     | D <- D+S                            |
-| sub S,D     | D <- D-S                            |
-| imul S,D    | D <- D*S  (use $*^u_{32} *^t_{32}$) |
-| xor S,D     | D <- D^S                            |
-| or S,D      | D <- D\vert{}S                      |
-| and S,D     | D <- D&S                            |
-| shift op    |                                     |
-| sal k,D     | D <- D<<k                           |
-| shl k,D     | D <- D<<k(same as sal)              |
-| sar k,D     | D <- D>>k(arithmetic shift)         |
-| shr k,D     | D <- D>>k(logical shift)            |
+    | Instruction | Description                         |
+    |-------------+-------------------------------------|
+    | lea  S,D    | D <- &S                             |
+    | unary op    |                                     |
+    | inc D       | D <- D+1                            |
+    | dec D       | D <- D-1                            |
+    | neg D       | D <- -D                             |
+    | not D       | D <- ~D(complement)                 |
+    | binary op   | second operand: src & dest          |
+    | add S,D     | D <- D+S                            |
+    | sub S,D     | D <- D-S                            |
+    | imul S,D    | D <- D*S  (use $*^u_{32} *^t_{32}$) |
+    | xor S,D     | D <- D^S                            |
+    | or S,D      | D <- D\vert{}S                      |
+    | and S,D     | D <- D&S                            |
+    | shift op    |                                     |
+    | sal k,D     | D <- D<<k                           |
+    | shl k,D     | D <- D<<k(same as sal)              |
+    | sar k,D     | D <- D>>k(arithmetic shift)         |
+    | shr k,D     | D <- D>>k(logical shift)            |
 *** About xorl x, x
 For c code:
 #+BEGIN_SRC c
