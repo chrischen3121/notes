@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-03-27 Tue 17:32 -->
+<!-- 2018-03-30 Fri 16:01 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -273,13 +273,15 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#org860a929">3. Program Structure</a>
 <ul>
-<li><a href="#org989320d">3.1. Data Formats</a></li>
-<li><a href="#orgc179377">3.2. Interger Registers</a></li>
-<li><a href="#org169b2d8">3.3. Accessing Information</a></li>
-<li><a href="#org0c14404">3.4. Basic Operations</a></li>
-<li><a href="#org5cb42f3">3.5. Control</a></li>
-<li><a href="#org66a7787">3.6. Procedure</a></li>
-<li><a href="#orgee7acff">3.7. Array Allocation</a></li>
+<li><a href="#orgbe2a90c">3.1. Processor State</a></li>
+<li><a href="#orga65518f">3.2. Asm</a></li>
+<li><a href="#org989320d">3.3. Data Formats</a></li>
+<li><a href="#orgc179377">3.4. Interger Registers</a></li>
+<li><a href="#org101d708">3.5. Operand Specifiers</a></li>
+<li><a href="#org0c14404">3.6. Basic Operations</a></li>
+<li><a href="#org5cb42f3">3.7. Control</a></li>
+<li><a href="#org66a7787">3.8. Procedure</a></li>
+<li><a href="#orgee7acff">3.9. Array Allocation</a></li>
 </ul>
 </li>
 <li><a href="#org7e9fac8">4. Storage</a>
@@ -426,41 +428,90 @@ eg:  \(101.11_2\)
 \[V=(-1)^{s}\times{M}\times{2^E}\]
 </p>
 <ul class="org-ul">
-<li>sign s: negative(s=1) positive(s=0)</li>
-<li>significand M: a fractional binary number</li>
-<li>exponent E: weights the value by a power of 2</li>
+<li>sign s: negative(s=1) positive(s=0), Sign-Magnitude</li>
+<li>significand M: a fractional binary number, <i>n</i> bits</li>
+<li>exponent E: weights the value by a power of 2, <i>k</i> bits</li>
+<li>\(Bias = 2^{k-1} -1\)</li>
 </ul>
-<p class="verse">
-Three fields represent: 1-bit s, k-bit exp(encode E), n-bit frac(encode M)<br />
-Using in C:<br />
-float(single-precision) s=1, k=8, n=23 yielding a 32-bit representation<br />
-double(double-precision) s=1, k=11, n=52, yielding a 64-bit representation<br />
-</p>
 </div>
 <ul class="org-ul">
+<li><a id="orgb974e6a"></a>float(single-precision)<br />
+<div class="outline-text-5" id="text-orgb974e6a">
+<p>
+s=1, k=8, n=23 yielding a 32-bit representation, Bias = 127
+</p>
+</div>
+</li>
+<li><a id="org661128b"></a>double(double-precision)<br />
+<div class="outline-text-5" id="text-org661128b">
+<p>
+s=1, k=11, n=52, yielding a 64-bit representation, Bias = 1023
+</p>
+</div>
+</li>
 <li><a id="org58cce40"></a>Nomalized Values<br />
 <div class="outline-text-5" id="text-org58cce40">
-<p class="verse">
-Condition: exp is not all zeros(0) &amp; not all ones(255 for single, 2047 for double)<br />
-<br />
-Cal:<br />
-E=e-Bias<br />
-e is the unsigned number having bit representation \(e_{k-1}...e_1e_0\)<br />
-Bias is bias value equal to \(2^{k-1}-1\) (127 for single 1023 for double)<br />
-Hance, \(-126\leq{E}\leq{+127}\) for single \(-1022\leq{E}\leq{+1023}\) for double<br />
-M=1+f<br />
-where \(0\leq{f}<1\) having binary representation \(0.f_{n-1}...f_1f_0\)<br />
-so that, M is in the range \(1\leq{M}<2\)<br />
-This implied leading 1 is a trick for getting an additional bit of precision for free.<br />
+<p>
+Condition: exp is not all zeros(0) &amp; not all ones(255 for single, 2047 for double)
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">exp neither all 1 nor all 0</td>
+<td class="org-left">frac</td>
+</tr>
+</tbody>
+</table>
+<p>
+\(E = e - Bias\), e is the unsigned number, Hance, the range of \(E\) is
+</p>
+<ul class="org-ul">
+<li>\(-126\leq{E}\leq{+127}\) for single</li>
+<li>\(-1022\leq{E}\leq{+1023}\) for double</li>
+</ul>
+
+<p>
+\(M=1+f\) where \(0\leq{f}<1\) having binary representation \(0.f_{n-1}...f_1f_0\)
+so that, M is in the range \(1\leq{M}<2\) This implied leading 1 is a trick
+for getting an additional bit of precision for free.
 </p>
 </div>
 </li>
 <li><a id="org23f577b"></a>Denormalized Values<br />
 <div class="outline-text-5" id="text-org23f577b">
-<p class="verse">
-Condition: exp is all zeros<br />
-Cal: E=1-Bias, M=f<br />
-Serve two purposes:<br />
+<p>
+Condition: exp is all zeros
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">all 0</td>
+<td class="org-left">frac</td>
+</tr>
+</tbody>
+</table>
+<p>
+Serve two purposes:
 </p>
 <ul class="org-ul">
 <li>represent 0 (all bits are zero)</li>
@@ -468,21 +519,56 @@ Serve two purposes:<br />
 </ul>
 </div>
 </li>
+
 <li><a id="org7afba39"></a>Spacial Values<br />
 <div class="outline-text-5" id="text-org7afba39">
-<p class="verse">
-Condition: exp is all ones<br />
+<p>
+Condition: exp is all ones
 </p>
 <ul class="org-ul">
-<li>frac is all zeros: represent infinity, infinity represent operation overflow or divide by zero.</li>
-<li>frac is nonzero: resulting value called "NaN"(Not a number)</li>
-</ul>
-<p class="verse">
-When the result can not be given as a real number or as a infinity, use NaN or inf<br />
-eg:<br />
-\(\sqrt{-1}:  NaN\)<br />
-\(1.0/0.0:  +\infty\)<br />
+<li><p>
+infinity
 </p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">all 1</td>
+<td class="org-right">0</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>
+NaN
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">all 1</td>
+<td class="org-left">\(\ne 0\)</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
 </div>
 </li>
 
@@ -887,23 +973,23 @@ Follow the above, we'll find -7/2 yield -4 not -3, corrected by 'biasing' the va
 <div id="outline-container-org6c93378" class="outline-4">
 <h4 id="org6c93378"><span class="section-number-4">2.2.1</span> Round</h4>
 <div class="outline-text-4" id="text-2-2-1">
-<p class="verse">
-4 Modes:<br />
-Round-to-even eg: 1.5 approximate 2, 2.5 approximate 2 (DEFAULT)<br />
-Round-toward-zero eg:-1.5 approximate -1, 1.5 approximate 1<br />
-Round-down eg: 1.5 approximate 1<br />
-Round-up eg: 1.5 approximate 2<br />
-</p>
+<ul class="org-ul">
+<li>Round-to-even eg: 1.5 approximate 2, 2.5 approximate 2 (DEFAULT) avoid statistical bias</li>
+<li>Round-toward-zero eg:-1.5 approximate -1, 1.5 approximate 1</li>
+<li>Round-down eg: 1.5 approximate 1</li>
+<li>Round-up eg: 1.5 approximate 2</li>
+</ul>
 </div>
 </div>
 <div id="outline-container-org7bee764" class="outline-4">
 <h4 id="org7bee764"><span class="section-number-4">2.2.2</span> Arithmatic Operation</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <p>
-Round(x?y)
 \[x+^fy=Round(x+y)\]
-Floating arithmatic doesn't satisfied associativity, distributivity.
 </p>
+<ul class="org-ul">
+<li>Compute \(x+y\) first, then round</li>
+</ul>
 </div>
 </div>
 </div>
@@ -912,12 +998,58 @@ Floating arithmatic doesn't satisfied associativity, distributivity.
 <h2 id="org860a929"><span class="section-number-2">3</span> Program Structure</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org989320d" class="outline-3">
-<h3 id="org989320d"><span class="section-number-3">3.1</span> Data Formats</h3>
+<div id="outline-container-orgbe2a90c" class="outline-3">
+<h3 id="orgbe2a90c"><span class="section-number-3">3.1</span> Processor State</h3>
 <div class="outline-text-3" id="text-3-1">
+</div>
+<div id="outline-container-orga20b910" class="outline-4">
+<h4 id="orga20b910"><span class="section-number-4">3.1.1</span> program counter(%eip)</h4>
+<div class="outline-text-4" id="text-3-1-1">
 <p>
-<b>sizes in IA32.</b>
+Indicates the address in memory of the next instruction to be executed
 </p>
+</div>
+</div>
+<div id="outline-container-orgdb4e178" class="outline-4">
+<h4 id="orgdb4e178"><span class="section-number-4">3.1.2</span> integer register</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+Contain eight named locations storing 32-bit values
+</p>
+</div>
+</div>
+<div id="outline-container-orge0ae056" class="outline-4">
+<h4 id="orge0ae056"><span class="section-number-4">3.1.3</span> condition code register</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<p>
+Hold status information about the most recently executed arithmetic or logical instruction
+</p>
+</div>
+</div>
+<div id="outline-container-org7b179e4" class="outline-4">
+<h4 id="org7b179e4"><span class="section-number-4">3.1.4</span> floating-point register</h4>
+<div class="outline-text-4" id="text-3-1-4">
+<p>
+Store floating-point data
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga65518f" class="outline-3">
+<h3 id="orga65518f"><span class="section-number-3">3.2</span> Asm</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-sh">gcc -Og -S xxx.c <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c -&gt; asm</span>
+objdump -d xxx.o <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">obj -&gt; asm: disassemble</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org989320d" class="outline-3">
+<h3 id="org989320d"><span class="section-number-3">3.3</span> Data Formats</h3>
+<div class="outline-text-3" id="text-3-3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -961,24 +1093,17 @@ Floating arithmatic doesn't satisfied associativity, distributivity.
 </tr>
 
 <tr>
-<td class="org-left">long int</td>
-<td class="org-left">Double word</td>
-<td class="org-left">l</td>
-<td class="org-right">4</td>
-</tr>
-
-<tr>
-<td class="org-left">long long int</td>
-<td class="org-left">—</td>
-<td class="org-left">—</td>
-<td class="org-right">4</td>
+<td class="org-left">long</td>
+<td class="org-left">Quad word</td>
+<td class="org-left">q</td>
+<td class="org-right">8</td>
 </tr>
 
 <tr>
 <td class="org-left">char *</td>
-<td class="org-left">Double word</td>
-<td class="org-left">l</td>
-<td class="org-right">4</td>
+<td class="org-left">Quad word</td>
+<td class="org-left">q</td>
+<td class="org-right">8</td>
 </tr>
 
 <tr>
@@ -994,24 +1119,20 @@ Floating arithmatic doesn't satisfied associativity, distributivity.
 <td class="org-left">l</td>
 <td class="org-right">8</td>
 </tr>
-
-<tr>
-<td class="org-left">long double</td>
-<td class="org-left">Extend precision</td>
-<td class="org-left">t</td>
-<td class="org-right">10/12</td>
-</tr>
 </tbody>
 </table>
 </div>
 </div>
+
 <div id="outline-container-orgc179377" class="outline-3">
-<h3 id="orgc179377"><span class="section-number-3">3.2</span> Interger Registers</h3>
-<div class="outline-text-3" id="text-3-2">
+<h3 id="orgc179377"><span class="section-number-3">3.4</span> Interger Registers</h3>
+<div class="outline-text-3" id="text-3-4">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
 <colgroup>
+<col  class="org-left" />
+
 <col  class="org-left" />
 
 <col  class="org-left" />
@@ -1020,84 +1141,167 @@ Floating arithmatic doesn't satisfied associativity, distributivity.
 
 <col  class="org-left" />
 </colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">63-32</th>
+<th scope="col" class="org-left">31-16</th>
+<th scope="col" class="org-left">15&#x2014;8</th>
+<th scope="col" class="org-left">7&#x2014;0</th>
+<th scope="col" class="org-left">use</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="org-left">31</td>
-<td class="org-left">16</td>
-<td class="org-left">15&#x2014;8</td>
-<td class="org-left">7&#x2014;0</td>
-</tr>
-
-<tr>
+<td class="org-left">%rax</td>
 <td class="org-left">%eax</td>
 <td class="org-left">%ax</td>
-<td class="org-left">%ah</td>
 <td class="org-left">%al</td>
+<td class="org-left">return value</td>
 </tr>
 
 <tr>
-<td class="org-left">%ecx</td>
-<td class="org-left">%cx</td>
-<td class="org-left">%ch</td>
-<td class="org-left">%cl</td>
-</tr>
-
-<tr>
-<td class="org-left">%edx</td>
-<td class="org-left">%dx</td>
-<td class="org-left">%dh</td>
-<td class="org-left">%dl</td>
-</tr>
-
-<tr>
+<td class="org-left">%rbx</td>
 <td class="org-left">%ebx</td>
 <td class="org-left">%bx</td>
-<td class="org-left">%bh</td>
 <td class="org-left">%bl</td>
+<td class="org-left">callee reserved</td>
 </tr>
 
 <tr>
+<td class="org-left">%rcx</td>
+<td class="org-left">%ecx</td>
+<td class="org-left">%cx</td>
+<td class="org-left">%cl</td>
+<td class="org-left">4th argument</td>
+</tr>
+
+<tr>
+<td class="org-left">%rdx</td>
+<td class="org-left">%edx</td>
+<td class="org-left">%dx</td>
+<td class="org-left">%dl</td>
+<td class="org-left">3th argument</td>
+</tr>
+
+<tr>
+<td class="org-left">%rsi</td>
 <td class="org-left">%esi</td>
 <td class="org-left">%si</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">%sil</td>
+<td class="org-left">2nd argument</td>
 </tr>
 
 <tr>
+<td class="org-left">%rdi</td>
 <td class="org-left">%edi</td>
 <td class="org-left">%di</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">%dil</td>
+<td class="org-left">1st argument</td>
 </tr>
 
 <tr>
-<td class="org-left">%esp</td>
-<td class="org-left">%sp</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">&#xa0;</td>
-</tr>
-
-<tr>
+<td class="org-left">%rbp</td>
 <td class="org-left">%ebp</td>
 <td class="org-left">%bp</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">%bpl</td>
+<td class="org-left">callee reserved</td>
+</tr>
+
+<tr>
+<td class="org-left">%rsp</td>
+<td class="org-left">%esp</td>
+<td class="org-left">%sp</td>
+<td class="org-left">%spl</td>
+<td class="org-left">stack pointer</td>
+</tr>
+
+<tr>
+<td class="org-left">%r8</td>
+<td class="org-left">$r8d</td>
+<td class="org-left">%r8w</td>
+<td class="org-left">%r8b</td>
+<td class="org-left">5th argument</td>
+</tr>
+
+<tr>
+<td class="org-left">%r9</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">6th argument</td>
+</tr>
+
+<tr>
+<td class="org-left">%r10</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">caller reserved</td>
+</tr>
+
+<tr>
+<td class="org-left">%r11</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">caller reserved</td>
+</tr>
+
+<tr>
+<td class="org-left">%r12</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">callee reserved</td>
+</tr>
+
+<tr>
+<td class="org-left">%r13</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">callee reserved</td>
+</tr>
+
+<tr>
+<td class="org-left">%r14</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">callee reserved</td>
+</tr>
+
+<tr>
+<td class="org-left">%r15</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">callee reserved</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div id="outline-container-org169b2d8" class="outline-3">
-<h3 id="org169b2d8"><span class="section-number-3">3.3</span> Accessing Information</h3>
-<div class="outline-text-3" id="text-3-3">
-<p class="verse">
-\(R[E_a]\) indicate the value of register a.<br />
-\(M[Addr]\) indicate the memory location<br />
-</p>
+
+<div id="outline-container-org101d708" class="outline-3">
+<h3 id="org101d708"><span class="section-number-3">3.5</span> Operand Specifiers</h3>
+<div class="outline-text-3" id="text-3-5">
+</div>
+<div id="outline-container-org23eafe1" class="outline-4">
+<h4 id="org23eafe1"><span class="section-number-4">3.5.1</span> Access from three sources</h4>
+<div class="outline-text-4" id="text-3-5-1">
+<ol class="org-ol">
+<li>immediate: for constant values</li>
+<li>register: denotes the contents of one of the registers. \(R[E_a]\)</li>
+<li>memory: memory location. \(M[Addr]\)</li>
+</ol>
+
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
 <colgroup>
+<col  class="org-left" />
+
 <col  class="org-left" />
 
 <col  class="org-left" />
@@ -1106,64 +1310,88 @@ Floating arithmatic doesn't satisfied associativity, distributivity.
 <tr>
 <th scope="col" class="org-left">Form</th>
 <th scope="col" class="org-left">Operand Value</th>
+<th scope="col" class="org-left">Access way</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">\(\textit{\$ Imm}\)</td>
-<td class="org-left">\(\textit{Imm}\)</td>
+<td class="org-left">\(\$Imm\)</td>
+<td class="org-left">\(Imm\)</td>
+<td class="org-left">Immediate</td>
 </tr>
 
 <tr>
-<td class="org-left">\(E_a\)</td>
-<td class="org-left">\(R[E_a]\)</td>
+<td class="org-left">\(r_a\)</td>
+<td class="org-left">\(R[r_a]\)</td>
+<td class="org-left">Register</td>
 </tr>
 
 <tr>
-<td class="org-left">\(\textit{Imm}\)</td>
-<td class="org-left">\(M[\textit{Imm}]\)</td>
+<td class="org-left">\(Imm\)</td>
+<td class="org-left">\(M[Imm]\)</td>
+<td class="org-left">Absolute</td>
 </tr>
 
 <tr>
-<td class="org-left">\((E_a)\)</td>
-<td class="org-left">\(M[R[E_a]]\)</td>
+<td class="org-left">\((r_a)\)</td>
+<td class="org-left">\(M[R[r_a]]\)</td>
+<td class="org-left">Indirect</td>
 </tr>
 
 <tr>
-<td class="org-left">\(\textit{Imm}(E_b)\)</td>
-<td class="org-left">\(M[\textit{Imm}+R[E_b]]\)</td>
+<td class="org-left">\(Imm(r_b)\)</td>
+<td class="org-left">\(M[Imm+R[r_b]]\)</td>
+<td class="org-left">Base + displacement</td>
 </tr>
 
 <tr>
-<td class="org-left">\((E_b,E_i)\)</td>
-<td class="org-left">\(M[R[E_b]+R[E_i]]\)</td>
+<td class="org-left">\((r_b,r_i)\)</td>
+<td class="org-left">\(M[R[r_b]+R[r_i]]\)</td>
+<td class="org-left">Indexed</td>
 </tr>
 
 <tr>
-<td class="org-left">\(\textit{Imm}(E_b,E_i)\)</td>
-<td class="org-left">\(M[\textit{Imm}+R[E_b]+R[E_i]]\)</td>
+<td class="org-left">\(Imm(r_b,r_i)\)</td>
+<td class="org-left">\(M[Imm+R[r_b]+R[r_i]]\)</td>
+<td class="org-left">Indexed</td>
 </tr>
 
 <tr>
-<td class="org-left">\((,E_i,s)\)</td>
-<td class="org-left">\(M[R[E_i]\cdot{s}]\)</td>
+<td class="org-left">\((,r_i,s)\)</td>
+<td class="org-left">\(M[R[r_i]\cdot s]\)</td>
+<td class="org-left">Scaled Indexed</td>
 </tr>
 
 <tr>
-<td class="org-left">\(\textit{Imm}(E_b,E_i,s)\)</td>
-<td class="org-left">\(M[\textit{Imm}+R[E_b]+R[E_i]\cdot{s}]\)</td>
+<td class="org-left">\(Imm(,r_i,s)\)</td>
+<td class="org-left">\(M[Imm+R[r_i]\cdot s]\)</td>
+<td class="org-left">Scaled Indexed</td>
+</tr>
+
+<tr>
+<td class="org-left">\((r_b, r_i, s)\)</td>
+<td class="org-left">\(M[R[r_b]+R[r_i]\cdot s]\)</td>
+<td class="org-left">Scaled Indexed</td>
+</tr>
+
+<tr>
+<td class="org-left">\(Imm(r_b, r_i, s)\)</td>
+<td class="org-left">\(M[Imm+R[r_b]+R[r_i]\cdot s]\)</td>
+<td class="org-left">Scaled Indexed</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+</div>
+
 <div id="outline-container-org0c14404" class="outline-3">
-<h3 id="org0c14404"><span class="section-number-3">3.4</span> Basic Operations</h3>
-<div class="outline-text-3" id="text-3-4">
+<h3 id="org0c14404"><span class="section-number-3">3.6</span> Basic Operations</h3>
+<div class="outline-text-3" id="text-3-6">
 </div>
 <div id="outline-container-orgac8f5ec" class="outline-4">
-<h4 id="orgac8f5ec"><span class="section-number-4">3.4.1</span> Data Movement</h4>
-<div class="outline-text-4" id="text-3-4-1">
+<h4 id="orgac8f5ec"><span class="section-number-4">3.6.1</span> Data Movement</h4>
+<div class="outline-text-4" id="text-3-6-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -1174,67 +1402,127 @@ Floating arithmatic doesn't satisfied associativity, distributivity.
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">Instruction</th>
-<th scope="col" class="org-left">Description</th>
+<th scope="col" class="org-left"><b>MOV</b>  S,D</th>
+<th scope="col" class="org-left">D &larr; S</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">mov  S,D</td>
-<td class="org-left">D &lt;- S</td>
+<td class="org-left">movb</td>
+<td class="org-left">byte</td>
 </tr>
 
 <tr>
-<td class="org-left">movs S,D</td>
-<td class="org-left">D &lt;- SignExtend(S)</td>
+<td class="org-left">movw</td>
+<td class="org-left">word</td>
 </tr>
 
 <tr>
-<td class="org-left">movz S,D</td>
-<td class="org-left">D &lt;- ZeroExtend(S)</td>
+<td class="org-left">movl</td>
+<td class="org-left">double word</td>
 </tr>
 
 <tr>
-<td class="org-left">push &amp; pop</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">movq</td>
+<td class="org-left">quad word</td>
 </tr>
 
 <tr>
-<td class="org-left">pushl S</td>
-<td class="org-left">R[%esp] &lt;- R[%esp]-4; M[R[%esp]] &lt;- S</td>
-</tr>
-
-<tr>
-<td class="org-left">popl D</td>
-<td class="org-left">D &lt;- M[R[%esp]]; R[%esp] &lt;- R[%esp]+4</td>
+<td class="org-left">movabsq</td>
+<td class="org-left">abs quad word</td>
 </tr>
 </tbody>
 </table>
-<p class="verse">
-movs include: movsbw,movsbl,movswl<br />
-the same for movz.<br />
+</div>
+<ul class="org-ul">
+<li><a id="org0a3770e"></a>small src \(\to\) large dest<br />
+<div class="outline-text-5" id="text-org0a3770e">
+<ul class="org-ul">
+<li><p>
+ZeroExtend
 </p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><b>MOVZ</b>  S, R</td>
+<td class="org-left">R&larr; ZeroExtend(S)</td>
+</tr>
+</tbody>
+</table>
 <p>
-pushl %ebp is equivalent to the following pair of instuctions:
+eg: movzbl, movzbw, movzwl, movzbq, movzwq
+</p></li>
+<li><p>
+SignExtend
 </p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><b>MOVS</b>  S, R</td>
+<td class="org-left">R&larr; SignExtend(S)</td>
+</tr>
+</tbody>
+</table>
+<p>
+eg: movsbw, movsbl, movswl, movsbq, movswq, movslq, cltq
+</p>
+<ul class="org-ul">
+<li>cltq: %rax \(\leftarrow\) SignExtend(%eax)</li>
+</ul></li>
+</ul>
+</div>
+</li>
+<li><a id="orgd5c8bbd"></a>push onto the program stack<br />
+<div class="outline-text-5" id="text-orgd5c8bbd">
+<p>
+<b>pushq S</b>
+</p>
+<ol class="org-ol">
+<li>R[%rsp] \(\leftarrow\) R[%rsp] - 8</li>
+<li>M[R[%rsp]] \(\leftarrow\) S</li>
+</ol>
 <div class="org-src-container">
-<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">subl</span> <span style="color: #3a81c3; font-weight: bold;">$4</span>,<span style="color: #715ab1;">%esp</span>
-<span style="color: #6c3163; font-weight: bold;">movl</span> <span style="color: #3a81c3; font-weight: bold;">%ebp</span>,<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%esp</span><span style="color: #3a81c3;">)</span>
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">subq</span> <span style="color: #3a81c3; font-weight: bold;">$8</span>,<span style="color: #715ab1;">%rsp</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Decrement stack pointer</span>
+<span style="color: #6c3163; font-weight: bold;">movq</span> <span style="color: #3a81c3; font-weight: bold;">%rbp</span>,<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%rsp</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Store %rbp on stack</span>
 </pre>
 </div>
+</div>
+</li>
+<li><a id="orgcf03fb3"></a>pop from the program stack<br />
+<div class="outline-text-5" id="text-orgcf03fb3">
 <p>
-popl %eax:
+<b>popq D</b>
 </p>
+<ol class="org-ol">
+<li>D \(\leftarrow\) M[R[%rsp]]</li>
+<li>R[%rsp] \(\leftarrow\) R[%rsp + 8]</li>
+</ol>
 <div class="org-src-container">
-<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">movl</span> <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%esp</span><span style="color: #3a81c3;">)</span>,<span style="color: #715ab1;">%esp</span>
-<span style="color: #6c3163; font-weight: bold;">addl</span> <span style="color: #3a81c3; font-weight: bold;">$4</span>,<span style="color: #715ab1;">%esp</span>
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">movq</span> <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%rsp</span><span style="color: #3a81c3;">)</span>,<span style="color: #715ab1;">%rax</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Read %rax from stack</span>
+<span style="color: #6c3163; font-weight: bold;">addl</span> <span style="color: #3a81c3; font-weight: bold;">$4</span>,<span style="color: #715ab1;">%esp</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Increment stack pointer</span>
 </pre>
 </div>
 </div>
+</li>
+</ul>
 </div>
 <div id="outline-container-orgde9f221" class="outline-4">
-<h4 id="orgde9f221"><span class="section-number-4">3.4.2</span> Arithmetic &amp; Logical Operations</h4>
-<div class="outline-text-4" id="text-3-4-2">
+<h4 id="orgde9f221"><span class="section-number-4">3.6.2</span> Arithmetic &amp; Logical Operations</h4>
+<div class="outline-text-4" id="text-3-6-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -1344,8 +1632,8 @@ popl %eax:
 </div>
 </div>
 <div id="outline-container-org10ea509" class="outline-4">
-<h4 id="org10ea509"><span class="section-number-4">3.4.3</span> About xorl x, x</h4>
-<div class="outline-text-4" id="text-3-4-3">
+<h4 id="org10ea509"><span class="section-number-4">3.6.3</span> About xorl x, x</h4>
+<div class="outline-text-4" id="text-3-6-3">
 <p>
 For c code:
 </p>
@@ -1364,8 +1652,8 @@ For c code:
 </div>
 </div>
 <div id="outline-container-org83fce24" class="outline-4">
-<h4 id="org83fce24"><span class="section-number-4">3.4.4</span> Special Arithmetic Operations</h4>
-<div class="outline-text-4" id="text-3-4-4">
+<h4 id="org83fce24"><span class="section-number-4">3.6.4</span> Special Arithmetic Operations</h4>
+<div class="outline-text-4" id="text-3-6-4">
 <p>
 imul also support one-operand operaion.
 </p>
@@ -1415,12 +1703,12 @@ imul also support one-operand operaion.
 </div>
 
 <div id="outline-container-org5cb42f3" class="outline-3">
-<h3 id="org5cb42f3"><span class="section-number-3">3.5</span> Control</h3>
-<div class="outline-text-3" id="text-3-5">
+<h3 id="org5cb42f3"><span class="section-number-3">3.7</span> Control</h3>
+<div class="outline-text-3" id="text-3-7">
 </div>
 <div id="outline-container-org773ea5e" class="outline-4">
-<h4 id="org773ea5e"><span class="section-number-4">3.5.1</span> Condiction Register</h4>
-<div class="outline-text-4" id="text-3-5-1">
+<h4 id="org773ea5e"><span class="section-number-4">3.7.1</span> Condiction Register</h4>
+<div class="outline-text-4" id="text-3-7-1">
 <p>
 Four flags:
 </p>
@@ -1529,8 +1817,8 @@ instructions that set the condiction code without updating their destination.
 </div>
 </div>
 <div id="outline-container-org75d5587" class="outline-4">
-<h4 id="org75d5587"><span class="section-number-4">3.5.2</span> Accessing the Condition Codes</h4>
-<div class="outline-text-4" id="text-3-5-2">
+<h4 id="org75d5587"><span class="section-number-4">3.7.2</span> Accessing the Condition Codes</h4>
+<div class="outline-text-4" id="text-3-7-2">
 <p>
 Three common ways of using the condition codes:
 </p>
@@ -1685,8 +1973,8 @@ Unsigned Group:
 </div>
 
 <div id="outline-container-org891ebf8" class="outline-4">
-<h4 id="org891ebf8"><span class="section-number-4">3.5.3</span> Jump Instruction</h4>
-<div class="outline-text-4" id="text-3-5-3">
+<h4 id="org891ebf8"><span class="section-number-4">3.7.3</span> Jump Instruction</h4>
+<div class="outline-text-4" id="text-3-7-3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -1823,8 +2111,8 @@ Unsigned Group:
 </div>
 
 <div id="outline-container-org16d803b" class="outline-4">
-<h4 id="org16d803b"><span class="section-number-4">3.5.4</span> If Statement</h4>
-<div class="outline-text-4" id="text-3-5-4">
+<h4 id="org16d803b"><span class="section-number-4">3.7.4</span> If Statement</h4>
+<div class="outline-text-4" id="text-3-7-4">
 <p>
 General in C:
 </p>
@@ -1872,8 +2160,8 @@ done:
 </pre>
 </div>
 <ul class="org-ul">
-<li><a id="org647d842"></a>example<br />
-<div class="outline-text-5" id="text-org647d842">
+<li><a id="org9cd3628"></a>example<br />
+<div class="outline-text-5" id="text-org9cd3628">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">test</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">x</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">y</span><span style="color: #3a81c3;">)</span>
 <span style="color: #3a81c3;">{</span>
@@ -1918,8 +2206,8 @@ done:
 </ul>
 </div>
 <div id="outline-container-org9ea154a" class="outline-4">
-<h4 id="org9ea154a"><span class="section-number-4">3.5.5</span> Loops</h4>
-<div class="outline-text-4" id="text-3-5-5">
+<h4 id="org9ea154a"><span class="section-number-4">3.7.5</span> Loops</h4>
+<div class="outline-text-4" id="text-3-7-5">
 </div>
 <ul class="org-ul">
 <li><a id="org063c80f"></a>do&#x2026;while<br />
@@ -1999,8 +2287,8 @@ done:
 </ul>
 </div>
 <div id="outline-container-org915dc1b" class="outline-4">
-<h4 id="org915dc1b"><span class="section-number-4">3.5.6</span> Conditional Move Instructions</h4>
-<div class="outline-text-4" id="text-3-5-6">
+<h4 id="org915dc1b"><span class="section-number-4">3.7.6</span> Conditional Move Instructions</h4>
+<div class="outline-text-4" id="text-3-7-6">
 </div>
 <ul class="org-ul">
 <li><a id="orgcee97c9"></a>Why use?<br />
@@ -2108,8 +2396,8 @@ performing the arithmetic operations for a previous instruction.<br />
 </div>
 </li>
 
-<li><a id="orge3a9cae"></a>example<br />
-<div class="outline-text-5" id="text-orge3a9cae">
+<li><a id="orgda52de4"></a>example<br />
+<div class="outline-text-5" id="text-orgda52de4">
 <p>
 Expression:
 </p>
@@ -2142,8 +2430,8 @@ if (t) v = vt;
 </ul>
 </div>
 <div id="outline-container-orgfb61f6a" class="outline-4">
-<h4 id="orgfb61f6a"><span class="section-number-4">3.5.7</span> Switch Statement</h4>
-<div class="outline-text-4" id="text-3-5-7">
+<h4 id="orgfb61f6a"><span class="section-number-4">3.7.7</span> Switch Statement</h4>
+<div class="outline-text-4" id="text-3-7-7">
 <p>
 Using the jump table
 </p>
@@ -2173,12 +2461,12 @@ x case 2, 3 goes to .L6
 </div>
 </div>
 <div id="outline-container-org66a7787" class="outline-3">
-<h3 id="org66a7787"><span class="section-number-3">3.6</span> Procedure</h3>
-<div class="outline-text-3" id="text-3-6">
+<h3 id="org66a7787"><span class="section-number-3">3.8</span> Procedure</h3>
+<div class="outline-text-3" id="text-3-8">
 </div>
 <div id="outline-container-orgcb33104" class="outline-4">
-<h4 id="orgcb33104"><span class="section-number-4">3.6.1</span> Stack Frame</h4>
-<div class="outline-text-4" id="text-3-6-1">
+<h4 id="orgcb33104"><span class="section-number-4">3.8.1</span> Stack Frame</h4>
+<div class="outline-text-4" id="text-3-8-1">
 <p>
 caller's frame:
 </p>
@@ -2232,8 +2520,8 @@ callee's frame:
 </div>
 </div>
 <div id="outline-container-org354d11e" class="outline-4">
-<h4 id="org354d11e"><span class="section-number-4">3.6.2</span> Procedure Call</h4>
-<div class="outline-text-4" id="text-3-6-2">
+<h4 id="org354d11e"><span class="section-number-4">3.8.2</span> Procedure Call</h4>
+<div class="outline-text-4" id="text-3-8-2">
 <p>
 Instructions:
 </p>
@@ -2293,8 +2581,8 @@ popl %ebp<br />
 </div>
 </div>
 <div id="outline-container-org870bacb" class="outline-4">
-<h4 id="org870bacb"><span class="section-number-4">3.6.3</span> Registers</h4>
-<div class="outline-text-4" id="text-3-6-3">
+<h4 id="org870bacb"><span class="section-number-4">3.8.3</span> Registers</h4>
+<div class="outline-text-4" id="text-3-8-3">
 <p class="verse">
 %eax, %edx and %ecx are classified as caller-save registers.<br />
 callee can overwrite them without destroying any data required by P.<br />
@@ -2307,8 +2595,8 @@ Because caller may need them for its future computations.<br />
 </div>
 </div>
 <div id="outline-container-org0c740d5" class="outline-4">
-<h4 id="org0c740d5"><span class="section-number-4">3.6.4</span> Example</h4>
-<div class="outline-text-4" id="text-3-6-4">
+<h4 id="org0c740d5"><span class="section-number-4">3.8.4</span> Example</h4>
+<div class="outline-text-4" id="text-3-8-4">
 <div class="org-src-container">
 <pre class="src src-c++"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">swap_add</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">xp</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">yp</span><span style="color: #3a81c3;">)</span>
 <span style="color: #3a81c3;">{</span>
@@ -2478,8 +2766,8 @@ After call:
 </div>
 </div>
 <div id="outline-container-orgee7acff" class="outline-3">
-<h3 id="orgee7acff"><span class="section-number-3">3.7</span> Array Allocation</h3>
-<div class="outline-text-3" id="text-3-7">
+<h3 id="orgee7acff"><span class="section-number-3">3.9</span> Array Allocation</h3>
+<div class="outline-text-3" id="text-3-9">
 <ul class="org-ul">
 <li>\[\&A[i] = x_a + i\cdot sizeof(type)\]</li>
 <li>for an array declare as D[R][C],</li>

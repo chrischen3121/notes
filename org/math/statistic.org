@@ -1,7 +1,6 @@
 #+TITLE: Statistic
 #+KEYWORDS: math, statistic
 #+OPTIONS: H:3 toc:2 num:3 ^:nil
-#+LaTeX: t
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
@@ -13,17 +12,17 @@
 - Controlled Experiment
 - Survey
 * Central tendency
-- mean
-  $$\mu = \frac{\sum_{i=1}^{n}x_i}{n}$$
-  $$\mu = \frac{\sum_{i=1}^{n}freq_i \cdot x_i}{\sum_{i=1}^{n}freq_i}$$
-  $$\mu = \sum_{i=1}^{n}p_i\cdot x_i$$
-- mode
-- median
-  - even
-    $$\frac{x_\frac{n}{2} + x_{\frac{n}{2}+1}}{2}$$
+** mean
+   $$\mu = \frac{\sum_{i=1}^{n}x_i}{n}$$
+   $$\mu = \frac{\sum_{i=1}^{n}freq_i \cdot x_i}{\sum_{i=1}^{n}freq_i}$$
+   $$\mu = \sum_{i=1}^{n}p_i\cdot x_i$$
+** mode
+** median
+   - even
+     $$\frac{x_\frac{n}{2} + x_{\frac{n}{2}+1}}{2}$$
 
-  - odd
-    $$x_\frac{n+1}{2}$$
+   - odd
+     $$x_\frac{n+1}{2}$$
 
 * Variability
 ** range
@@ -31,9 +30,6 @@
 
 ** quartile
    | lower bound(lowest) | lower quartile(Q1) | median(Q2) | upper quartile(Q3) | upper bound(highest) |
-
-*** mini range
-    may cut off the upper 25% and lower 25% tails of the distribution
 
 *** IQR(Interquartile Range)
     $$Q_3 - Q_1$$
@@ -47,51 +43,61 @@
     $$> Q_3 + whiskers\cdot(IQR)$$
 
 ** deviation
-*** MAD
-    mean absolute deviation, average absolute distances to the mean
+*** Average Absolute Deviation
+    average absolute distances to the mean
+    - The value far away from mean isn't penalized
+
+    eg: set A: 4 4 6 8 8, set B: 2 6 6 6 10, average absolute deviations are the same.
+
+*** MAD(median absolute deviation)
+    more robust than variance
 
 *** Variance
     $$\sigma^2 = \frac{\sum_{i=1}^n(x_i-\mu)^2}{n}$$
     $$\sigma^2 = \frac{\sum_{i=1}^n x_i^2}{n} - \mu^2$$
+    $$\sigma^2 = \frac{\sum_{i=1}^n(x_i-\mu)^2}p_i$$
 
 *** Standard deviation
     - standard deviation $\sigma$
-    - approximately 68% lie within 1SD of the mean
-    - approximately 95% lie within 2SD of the mean
+**** For Normal Distribution
+     - approximately 68% lie within 1SD of the mean
+     - approximately 95% lie within 2SD of the mean
 
-*** Standandize(z-score)
-    $$z=\frac{x-\mu}{\sigma}$$
-    Standard scores work by transforming sets of data into a new, theoretical distribution
-    with a mean of 0 and a standard deviation of 1.
+*** Standardize(z-score)
+    $$z=\frac{X-\mu}{\sigma}$$
+    Standardize to $X\sim Norm(0, 1)$
 
 * Sampling Distribution
 ** Central limit theorem
-1. The distribution of sample means is approximately normal distribution
-2. The standard deviation of the sample(standard error) means $\approx\frac{\sigma}{\sqrt{n}}$
+1. The distribution of sample mean is approximately normal distribution
+2. The standard deviation of the sample means $SD \approx\frac{\sigma}{\sqrt{N}}$ (standard error)
 3. The mean of the sample means $\approx\mu$
+
 ** Confidence Interval
-- z score:
+   - Estimate population mean of Y% confidence interval
 
-  $z=\frac{x-\mu}{\sigma}$
+    $$(\bar{x}-z\frac{\sigma}{\sqrt{N}}, \bar{x}+z\frac{\sigma}{\sqrt{N}})$$
+    $\pm{z}$ are the critical values of Y% confidence interval
 
-- Y% confidence interval:
-  $$(\bar{x}-z\frac{\sigma}{\sqrt{N}}, \bar{x}+z\frac{\sigma}{\sqrt{n}})$$
-  $\pm{z}$ are the critical values of Y% confidence interval
+   - $z\frac{\sigma}{\sqrt{n}}$ is the margin of error
 
-- Margin of error $z\frac{\sigma}{\sqrt{n}}$
+** Sample Variance
+*** Sample variance of sample
+     $$s^2 = \frac{\sum_{i=1}^N(x_i-\bar{x})^2}{N}$$
+
+*** Sample variance of population
+    Because population distribution is steeper than sample distribution, use Bessel's Correction to get a better estimate of population
+    $$\sigma^2 = \frac{\sum_{i=1}^N(x_i-\bar{x})^2}{N-1}$$
+
 ** Terms
-  - Sample Variance
-
-    Bessel's Correction a better estimate of population
-    $$\sigma^2 = \frac{\sum_{i=1}^N(x_i-\mu)^2}{N-1}$$
-
-| population mean       | $\mu$                                         |
-| population sd         | $\sigma$                                      |
-| sample mean           | $\bar{x}$                                     |
-| sample sd             | $s$                                           |
-| z-score               | number of standard deviations away from $\mu$ |
-| sampling distribution | distribution of sample means                  |
-| standard error        | the SD of the sampling distribution           |
+| population mean       | $\mu$                                                             |
+| population sd         | $\sigma$                                                          |
+| sample mean           | $\bar{x}$                                                         |
+| sample sd             | $s$                                                               |
+| sample size           | $N$                                                               |
+| z-score               | number of standard deviations away from $\mu$                     |
+| sampling distribution | distribution of sample means                                      |
+| standard error        | $SD$ the standard deviation of means of the sampling distribution |
 
 * Hypothesis testing
 - $\alpha$ levels
@@ -103,15 +109,18 @@
 - critical value: the z-score of the $\alpha$ level
 
 ** null hypothesis $H_0$
-- type 1 error
+*** Reject null hypothesis
+    - Sample mean falls within the *critical region*
+    - z-score of sample mean is *greater than* the z-critical value
+    - the probability of obtaining the sample mean is *less than* the $\alpha$ level
 
-  Reject $H_0$, but in the real world $H_0$ is true.
-  We think our hypothesis is correct, but it is wrong.
+*** type 1 error
+    Reject $H_0$, but in the real world $H_0$ is true.
+    We think our hypothesis is correct, but it is wrong.
 
-- type 2 error
-
-  Retain $H_0$, but in the real world $H_0$ is false.
-  We think our hypothesis is wrong, but it is true.
+*** type 2 error
+    Retain $H_0$, but in the real world $H_0$ is false.
+    We think our hypothesis is wrong, but it is true.
 
 ** alternative hypothesis $H_A$
 - assume $H_0$ is
@@ -119,6 +128,12 @@ $$\mu\approx\mu_I$$
 
 - then $H_A$ is
 $$\mu\neq\mu_I, \mu<\mu_I, \mu>\mu_I$$
+
+
+
+* Z-Tests
+  - known $\sigma$
+  - the sample size is large(often $n \ge 30$)
 * T-Tests
   Compare the difference between two means
 ** SEM(standard error of mean)

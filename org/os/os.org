@@ -54,62 +54,50 @@ $$TMax_w = 2^{w-1}-1\quad TMin_w = - 2^{w-1}\quad UMax_w = 2^w-1\quad UMin_w = 0
      eg:  $101.11_2$
      $$ 1\times{2^2} + 0\times{2^1} + 1\times{2^0} + 1\times{2^{-1}} + 1\times{2^{-2}} = 5\frac{3}{4}$$
 *** IEEE Floating-Point
-$$V=(-1)^{s}\times{M}\times{2^E}$$
-- sign s: negative(s=1) positive(s=0)
-- significand M: a fractional binary number
-- exponent E: weights the value by a power of 2
-#+BEGIN_VERSE
-Three fields represent: 1-bit s, k-bit exp(encode E), n-bit frac(encode M)
-Using in C:
-float(single-precision) s=1, k=8, n=23 yielding a 32-bit representation
-double(double-precision) s=1, k=11, n=52, yielding a 64-bit representation
-#+END_VERSE
+    $$V=(-1)^{s}\times{M}\times{2^E}$$
+    - sign s: negative(s=1) positive(s=0), Sign-Magnitude
+    - significand M: a fractional binary number, /n/ bits
+    - exponent E: weights the value by a power of 2, /k/ bits
+    - $Bias = 2^{k-1} -1$
+**** float(single-precision)
+     s=1, k=8, n=23 yielding a 32-bit representation, Bias = 127
+**** double(double-precision)
+     s=1, k=11, n=52, yielding a 64-bit representation, Bias = 1023
 **** Nomalized Values
-#+BEGIN_VERSE
-Condition: exp is not all zeros(0) & not all ones(255 for single, 2047 for double)
+     Condition: exp is not all zeros(0) & not all ones(255 for single, 2047 for double)
+     | s | exp neither all 1 nor all 0 | frac |
+     $E = e - Bias$, e is the unsigned number, Hance, the range of $E$ is
+     - $-126\leq{E}\leq{+127}$ for single
+     - $-1022\leq{E}\leq{+1023}$ for double
 
-Cal:
-E=e-Bias
-e is the unsigned number having bit representation $e_{k-1}...e_1e_0$
-Bias is bias value equal to $2^{k-1}-1$ (127 for single 1023 for double)
-Hance, $-126\leq{E}\leq{+127}$ for single $-1022\leq{E}\leq{+1023}$ for double
-M=1+f
-where $0\leq{f}<1$ having binary representation $0.f_{n-1}...f_1f_0$
-so that, M is in the range $1\leq{M}<2$
-This implied leading 1 is a trick for getting an additional bit of precision for free.
-#+END_VERSE
+     $M=1+f$ where $0\leq{f}<1$ having binary representation $0.f_{n-1}...f_1f_0$
+     so that, M is in the range $1\leq{M}<2$ This implied leading 1 is a trick
+     for getting an additional bit of precision for free.
 **** Denormalized Values
-#+BEGIN_VERSE
-Condition: exp is all zeros
-Cal: E=1-Bias, M=f
-Serve two purposes:
-#+END_VERSE
-- represent 0 (all bits are zero)
-- represent numbers that are very close to 0.0
+     Condition: exp is all zeros
+     | s | all 0 | frac |
+     Serve two purposes:
+     - represent 0 (all bits are zero)
+     - represent numbers that are very close to 0.0
+
 **** Spacial Values
-#+BEGIN_VERSE
-Condition: exp is all ones
-#+END_VERSE
-- frac is all zeros: represent infinity, infinity represent operation overflow or divide by zero.
-- frac is nonzero: resulting value called "NaN"(Not a number)
-#+BEGIN_VERSE
-When the result can not be given as a real number or as a infinity, use NaN or inf
-eg:
-$\sqrt{-1}:  NaN$
-$1.0/0.0:  +\infty$
-#+END_VERSE
+     Condition: exp is all ones
+     - infinity
+       | s | all 1 | 0 |
+     - NaN
+       | s | all 1 | $\ne 0$ |
 
 **** Examples
-8-bit floating-point format
-| Description      | bits       |  e |  E | $2^E$          | f             | M              | $2^E\times{M}$   | V               |  Decimal |
-|------------------+------------+----+----+----------------+---------------+----------------+------------------+-----------------+----------|
-| Zero             | 0 0000 000 |  0 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{0}{8}$  | $\frac{0}{512}$  | 0               |      0.0 |
-| Smallest pos. | 0 0000 001 |  0 | -6 | $\frac{1}{64}$ | $\frac{1}{8}$ | $\frac{1}{8}$  | $\frac{1}{512}$  | $\frac{1}{512}$ | 0.001953 |
-| Largest denorm.  | 0 0000 111 |  0 | -6 | $\frac{1}{64}$ | $\frac{7}{8}$ | $\frac{7}{8}$  | $\frac{7}{512}$  | $\frac{7}{512}$ | 0.005859 |
-| Smallest norm.   | 0 0001 000 |  1 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{512}$  | $\frac{1}{64}$  | 0.013672 |
-| One              | 0 0111 000 |  7 |  0 | 1              | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{8}$    | 1               |      1.0 |
-| Largest norm.    | 0 1110 111 | 14 |  7 | 128            | $\frac{7}{8}$ | $\frac{15}{8}$ | $\frac{1920}{8}$ | 240             |    240.0 |
-| Infinity         | 0 1111 000 |  - |  - | -              | -             | -              | -                | $\infty$        |        - |
+     8-bit floating-point format
+| Description     | bits       |  e |  E | $2^E$          | f             | M              | $2^E\times{M}$   | V               |  Decimal |
+|-----------------+------------+----+----+----------------+---------------+----------------+------------------+-----------------+----------|
+| Zero            | 0 0000 000 |  0 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{0}{8}$  | $\frac{0}{512}$  | 0               |      0.0 |
+| Smallest pos.   | 0 0000 001 |  0 | -6 | $\frac{1}{64}$ | $\frac{1}{8}$ | $\frac{1}{8}$  | $\frac{1}{512}$  | $\frac{1}{512}$ | 0.001953 |
+| Largest denorm. | 0 0000 111 |  0 | -6 | $\frac{1}{64}$ | $\frac{7}{8}$ | $\frac{7}{8}$  | $\frac{7}{512}$  | $\frac{7}{512}$ | 0.005859 |
+| Smallest norm.  | 0 0001 000 |  1 | -6 | $\frac{1}{64}$ | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{512}$  | $\frac{1}{64}$  | 0.013672 |
+| One             | 0 0111 000 |  7 |  0 | 1              | $\frac{0}{8}$ | $\frac{8}{8}$  | $\frac{8}{8}$    | 1               |      1.0 |
+| Largest norm.   | 0 1110 111 | 14 |  7 | 128            | $\frac{7}{8}$ | $\frac{15}{8}$ | $\frac{1920}{8}$ | 240             |    240.0 |
+| Infinity        | 0 1111 000 |  - |  - | -              | -             | -              | -                | $\infty$        |        - |
 
 * Manipulating Infomation
 ** Integer arithmatic
@@ -200,104 +188,139 @@ Condition: $x\neq 0$
      - $x \div 2^k = (x+ 2^k - 1) >> k$ where $x < 0$
 ** Floating Operation
 *** Round
-#+BEGIN_VERSE
-4 Modes:
-Round-to-even eg: 1.5 approximate 2, 2.5 approximate 2 (DEFAULT)
-Round-toward-zero eg:-1.5 approximate -1, 1.5 approximate 1
-Round-down eg: 1.5 approximate 1
-Round-up eg: 1.5 approximate 2
-#+END_VERSE
+    - Round-to-even eg: 1.5 approximate 2, 2.5 approximate 2 (DEFAULT) avoid statistical bias
+    - Round-toward-zero eg:-1.5 approximate -1, 1.5 approximate 1
+    - Round-down eg: 1.5 approximate 1
+    - Round-up eg: 1.5 approximate 2
 *** Arithmatic Operation
-Round(x?y)
-$$x+^fy=Round(x+y)$$
-Floating arithmatic doesn't satisfied associativity, distributivity.
+    $$x+^fy=Round(x+y)$$
+    - Compute $x+y$ first, then round
 * Program Structure
+** Processor State
+*** program counter(%eip)
+    Indicates the address in memory of the next instruction to be executed
+*** integer register
+    Contain eight named locations storing 32-bit values
+*** condition code register
+    Hold status information about the most recently executed arithmetic or logical instruction
+*** floating-point register
+    Store floating-point data
+
+** Asm
+   #+BEGIN_SRC sh
+     gcc -Og -S xxx.c # c -> asm
+     objdump -d xxx.o # obj -> asm: disassemble
+   #+END_SRC
+
 ** Data Formats
-*sizes in IA32.*
-| C declaration | Intel            | Assembly code suffix | Size(bytes) |
-|---------------+------------------+----------------------+-------------|
-| char          | Byte             | b                    |           1 |
-| short         | Word             | w                    |           2 |
-| int           | Double word      | l                    |           4 |
-| long int      | Double word      | l                    |           4 |
-| long long int | —                | —                    |           4 |
-| char *        | Double word      | l                    |           4 |
-| float         | Single precision | s                    |           4 |
-| double        | Double precision | l                    |           8 |
-| long double   | Extend precision | t                    |       10/12 |
+   | C declaration | Intel            | Assembly code suffix | Size(bytes) |
+   |---------------+------------------+----------------------+-------------|
+   | char          | Byte             | b                    |           1 |
+   | short         | Word             | w                    |           2 |
+   | int           | Double word      | l                    |           4 |
+   | long          | Quad word        | q                    |           8 |
+   | char *        | Quad word        | q                    |           8 |
+   | float         | Single precision | s                    |           4 |
+   | double        | Double precision | l                    |           8 |
+
 ** Interger Registers
-| 31   | 16  | 15---8 | 7---0 |
-| %eax | %ax | %ah    | %al   |
-| %ecx | %cx | %ch    | %cl   |
-| %edx | %dx | %dh    | %dl   |
-| %ebx | %bx | %bh    | %bl   |
-| %esi | %si |        |       |
-| %edi | %di |        |       |
-| %esp | %sp |        |       |
-| %ebp | %bp |        |       |
-** Accessing Information
-#+BEGIN_VERSE
-$R[E_a]$ indicate the value of register a.
-$M[Addr]$ indicate the memory location
-#+END_VERSE
-| Form                      | Operand Value                           |
-|---------------------------+-----------------------------------------|
-| \(\textit{\$ Imm}\)       | $\textit{Imm}$                          |
-| $E_a$                     | $R[E_a]$                                |
-| $\textit{Imm}$            | $M[\textit{Imm}]$                       |
-| $(E_a)$                   | $M[R[E_a]]$                             |
-| $\textit{Imm}(E_b)$       | $M[\textit{Imm}+R[E_b]]$                |
-| $(E_b,E_i)$               | $M[R[E_b]+R[E_i]]$                      |
-| $\textit{Imm}(E_b,E_i)$   | $M[\textit{Imm}+R[E_b]+R[E_i]]$         |
-| $(,E_i,s)$                | $M[R[E_i]\cdot{s}]$                     |
-| $\textit{Imm}(E_b,E_i,s)$ | $M[\textit{Imm}+R[E_b]+R[E_i]\cdot{s}]$ |
+   | 63-32 | 31-16 | 15---8 | 7---0 | use             |
+   |-------+-------+--------+-------+-----------------|
+   | %rax  | %eax  | %ax    | %al   | return value    |
+   | %rbx  | %ebx  | %bx    | %bl   | callee reserved |
+   | %rcx  | %ecx  | %cx    | %cl   | 4th argument    |
+   | %rdx  | %edx  | %dx    | %dl   | 3th argument    |
+   | %rsi  | %esi  | %si    | %sil  | 2nd argument    |
+   | %rdi  | %edi  | %di    | %dil  | 1st argument    |
+   | %rbp  | %ebp  | %bp    | %bpl  | callee reserved |
+   | %rsp  | %esp  | %sp    | %spl  | stack pointer   |
+   | %r8   | $r8d  | %r8w   | %r8b  | 5th argument    |
+   | %r9   | ...   | ...    | ...   | 6th argument    |
+   | %r10  | ...   | ...    | ...   | caller reserved |
+   | %r11  | ...   | ...    | ...   | caller reserved |
+   | %r12  | ...   | ...    | ...   | callee reserved |
+   | %r13  | ...   | ...    | ...   | callee reserved |
+   | %r14  | ...   | ...    | ...   | callee reserved |
+   | %r15  | ...   | ...    | ...   | callee reserved |
+
+** Operand Specifiers
+*** Access from three sources
+    1. immediate: for constant values
+    2. register: denotes the contents of one of the registers. $R[E_a]$
+    3. memory: memory location. $M[Addr]$
+
+    | Form               | Operand Value                 | Access way          |
+    |--------------------+-------------------------------+---------------------|
+    | \(\$Imm\)          | $Imm$                         | Immediate           |
+    | $r_a$              | $R[r_a]$                      | Register            |
+    | $Imm$              | $M[Imm]$                      | Absolute            |
+    | $(r_a)$            | $M[R[r_a]]$                   | Indirect            |
+    | $Imm(r_b)$         | $M[Imm+R[r_b]]$               | Base + displacement |
+    | $(r_b,r_i)$        | $M[R[r_b]+R[r_i]]$            | Indexed             |
+    | $Imm(r_b,r_i)$     | $M[Imm+R[r_b]+R[r_i]]$        | Indexed             |
+    | $(,r_i,s)$         | $M[R[r_i]\cdot s]$            | Scaled Indexed      |
+    | $Imm(,r_i,s)$      | $M[Imm+R[r_i]\cdot s]$        | Scaled Indexed      |
+    | $(r_b, r_i, s)$    | $M[R[r_b]+R[r_i]\cdot s]$     | Scaled Indexed      |
+    | $Imm(r_b, r_i, s)$ | $M[Imm+R[r_b]+R[r_i]\cdot s]$ | Scaled Indexed      |
+
 ** Basic Operations
 *** Data Movement
-| Instruction | Description                           |
-|-------------+---------------------------------------|
-| mov  S,D    | D <- S                                |
-| movs S,D    | D <- SignExtend(S)                    |
-| movz S,D    | D <- ZeroExtend(S)                    |
-| push & pop  |                                       |
-| pushl S     | R[%esp] <- R[%esp]-4; M[R[%esp]] <- S |
-| popl D      | D <- M[R[%esp]]; R[%esp] <- R[%esp]+4 |
-#+BEGIN_VERSE
-movs include: movsbw,movsbl,movswl
-the same for movz.
-#+END_VERSE
-pushl %ebp is equivalent to the following pair of instuctions:
-#+BEGIN_SRC asm
-subl $4,%esp
-movl %ebp,(%esp)
-#+END_SRC
-popl %eax:
-#+BEGIN_SRC asm
-movl (%esp),%esp
-addl $4,%esp
-#+END_SRC
+    | *MOV*  S,D | D \leftarrow S |
+    |------------+----------------|
+    | movb       | byte           |
+    | movw       | word           |
+    | movl       | double word    |
+    | movq       | quad word      |
+    | movabsq    | abs quad word  |
+**** small src $\to$ large dest
+     - ZeroExtend
+       | *MOVZ*  S, R | R\leftarrow ZeroExtend(S) |
+       eg: movzbl, movzbw, movzwl, movzbq, movzwq
+     - SignExtend
+       | *MOVS*  S, R | R\leftarrow SignExtend(S) |
+       eg: movsbw, movsbl, movswl, movsbq, movswq, movslq, cltq
+       - cltq: %rax $\leftarrow$ SignExtend(%eax)
+**** push onto the program stack
+     *pushq S*
+     1. R[%rsp] $\leftarrow$ R[%rsp] - 8
+     2. M[R[%rsp]] $\leftarrow$ S
+     #+BEGIN_SRC asm
+       subq $8,%rsp // Decrement stack pointer
+       movq %rbp,(%rsp) //Store %rbp on stack
+     #+END_SRC
+**** pop from the program stack
+     *popq D*
+     1. D $\leftarrow$ M[R[%rsp]]
+     2. R[%rsp] $\leftarrow$ R[%rsp + 8]
+     #+BEGIN_SRC asm
+       movq (%rsp),%rax //Read %rax from stack
+       addl $4,%esp  //Increment stack pointer
+     #+END_SRC
+
 *** Arithmetic & Logical Operations
-| Instruction | Description                         |
-|-------------+-------------------------------------|
-| lea  S,D    | D <- &S                             |
-| unary op    |                                     |
-| inc D       | D <- D+1                            |
-| dec D       | D <- D-1                            |
-| neg D       | D <- -D                             |
-| not D       | D <- ~D(complement)                 |
-| binary op   | second operand: src & dest          |
-| add S,D     | D <- D+S                            |
-| sub S,D     | D <- D-S                            |
-| imul S,D    | D <- D*S  (use $*^u_{32} *^t_{32}$) |
-| xor S,D     | D <- D^S                            |
-| or S,D      | D <- D\vert{}S                      |
-| and S,D     | D <- D&S                            |
-| shift op    |                                     |
-| sal k,D     | D <- D<<k                           |
-| shl k,D     | D <- D<<k(same as sal)              |
-| sar k,D     | D <- D>>k(arithmetic shift)         |
-| shr k,D     | D <- D>>k(logical shift)            |
+    | Instruction | Description                         |
+    |-------------+-------------------------------------|
+    | lea  S,D    | D <- &S                             |
+    | unary op    |                                     |
+    | inc D       | D <- D+1                            |
+    | dec D       | D <- D-1                            |
+    | neg D       | D <- -D                             |
+    | not D       | D <- ~D(complement)                 |
+    | binary op   | second operand: src & dest          |
+    | add S,D     | D <- D+S                            |
+    | sub S,D     | D <- D-S                            |
+    | imul S,D    | D <- D*S  (use $*^u_{32} *^t_{32}$) |
+    | xor S,D     | D <- D^S                            |
+    | or S,D      | D <- D\vert{}S                      |
+    | and S,D     | D <- D&S                            |
+    | shift op    |                                     |
+    | sal k,D     | D <- D<<k                           |
+    | shl k,D     | D <- D<<k(same as sal)              |
+    | sar k,D     | D <- D>>k(arithmetic shift)         |
+    | shr k,D     | D <- D>>k(logical shift)            |
+
 *** About xorl x, x
-For c code:
+    For c code:
 #+BEGIN_SRC c
 int x=1;
 #+END_SRC
@@ -308,6 +331,7 @@ movl $0x00, %eax (binary b8 00 00 00 00)
 GCC -O2:
 xorl $edx,%edx (binary 31 c0)
 #+END_SRC
+
 *** Special Arithmetic Operations
 imul also support one-operand operaion.
 | Instruction | Description                               |
