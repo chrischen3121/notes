@@ -8,7 +8,7 @@
 * Represeting Infomation
 ** Integer
 *** Integer Limits
-$$TMax_w = 2^{w-1}-1\quad TMin_w = - 2^{w-1}\quad UMax_w = 2^w-1\quad UMin_w = 0$$
+    $$TMax_w = 2^{w-1}-1\quad TMin_w = - 2^{w-1}\quad UMax_w = 2^w-1\quad UMin_w = 0$$
 *** Binary2Integer
     $$B2U_w(\overrightarrow{x})\doteq\sum_{i=0}^{w-1}x_i2^i$$
 **** Twos' Complement
@@ -234,7 +234,7 @@ Condition: $x\neq 0$
    | %rdi  | %edi  | %di    | %dil  | 1st argument    |
    | %rbp  | %ebp  | %bp    | %bpl  | callee reserved |
    | %rsp  | %esp  | %sp    | %spl  | stack pointer   |
-   | %r8   | $r8d  | %r8w   | %r8b  | 5th argument    |
+   | %r8   | %r8d  | %r8w   | %r8b  | 5th argument    |
    | %r9   | ...   | ...    | ...   | 6th argument    |
    | %r10  | ...   | ...    | ...   | caller reserved |
    | %r11  | ...   | ...    | ...   | caller reserved |
@@ -272,6 +272,7 @@ Condition: $x\neq 0$
     | movl       | double word    |
     | movq       | quad word      |
     | movabsq    | abs quad word  |
+
 **** small src $\to$ large dest
      - ZeroExtend
        | *MOVZ*  S, R | R\leftarrow ZeroExtend(S) |
@@ -280,6 +281,7 @@ Condition: $x\neq 0$
        | *MOVS*  S, R | R\leftarrow SignExtend(S) |
        eg: movsbw, movsbl, movswl, movsbq, movswq, movslq, cltq
        - cltq: %rax $\leftarrow$ SignExtend(%eax)
+
 **** push onto the program stack
      *pushq S*
      1. R[%rsp] $\leftarrow$ R[%rsp] - 8
@@ -288,6 +290,7 @@ Condition: $x\neq 0$
        subq $8,%rsp // Decrement stack pointer
        movq %rbp,(%rsp) //Store %rbp on stack
      #+END_SRC
+
 **** pop from the program stack
      *popq D*
      1. D $\leftarrow$ M[R[%rsp]]
@@ -298,444 +301,356 @@ Condition: $x\neq 0$
      #+END_SRC
 
 *** Arithmetic & Logical Operations
-    | Instruction | Description                         |
-    |-------------+-------------------------------------|
-    | lea  S,D    | D <- &S                             |
-    | unary op    |                                     |
-    | inc D       | D <- D+1                            |
-    | dec D       | D <- D-1                            |
-    | neg D       | D <- -D                             |
-    | not D       | D <- ~D(complement)                 |
-    | binary op   | second operand: src & dest          |
-    | add S,D     | D <- D+S                            |
-    | sub S,D     | D <- D-S                            |
-    | imul S,D    | D <- D*S  (use $*^u_{32} *^t_{32}$) |
-    | xor S,D     | D <- D^S                            |
-    | or S,D      | D <- D\vert{}S                      |
-    | and S,D     | D <- D&S                            |
-    | shift op    |                                     |
-    | sal k,D     | D <- D<<k                           |
-    | shl k,D     | D <- D<<k(same as sal)              |
-    | sar k,D     | D <- D>>k(arithmetic shift)         |
-    | shr k,D     | D <- D>>k(logical shift)            |
-
-*** About xorl x, x
-    For c code:
-#+BEGIN_SRC c
-int x=1;
-#+END_SRC
-#+BEGIN_SRC asm
-GCC -O1:
-movl $0x00, %eax (binary b8 00 00 00 00)
-
-GCC -O2:
-xorl $edx,%edx (binary 31 c0)
-#+END_SRC
+**** unary operations
+     | leaq  S,D | D <- &S             |
+     | inc D     | D <- D+1            |
+     | dec D     | D <- D-1            |
+     | neg D     | D <- -D             |
+     | not D     | D <- ~D(complement) |
+**** binary operations
+     | binary op | second operand: src & dest |
+     | add S,D   | D <- D+S                   |
+     | sub S,D   | D <- D-S                   |
+     | imul S,D  | D <- D*S                   |
+     | xor S,D   | D <- D^S                   |
+     | or S,D    | D <- D\vert{}S             |
+     | and S,D   | D <- D&S                   |
+**** shift operations
+     | sal k,D | D <- D<<k                   |
+     | shl k,D | D <- D<<k(same as sal)      |
+     | sar k,D | D <- D>>k(arithmetic shift) |
+     | shr k,D | D <- D>>k(logical shift)    |
 
 *** Special Arithmetic Operations
-imul also support one-operand operaion.
-| Instruction | Description                               |
-|-------------+-------------------------------------------|
-| imull S     | R[%edx]:R[%eax] <- S*R[%eax] (Signed)     |
-| mull S      | R[%edx]:R[%eax] <- S*R[%eax] (Unsigned)   |
-| cltd        | R[%edx]:R[%eax] <- SignExtend(R[%eax])    |
-| idivl S     | R[%edx] <- R[%edx]:R[%eax] mod S;(Signed) |
-|             | R[%eax] <- R[%edx]:R[%eax] / S;(Signed)   |
+    imul also support one-operand operaion.
+    | imulq S | R[%edx]:R[%eax] <- S*R[%eax] (Signed)                |
+    | mulq S  | R[%edx]:R[%eax] <- S*R[%eax] (Unsigned)              |
+    | clto    | R[%edx]:R[%eax] <- SignExtend(R[%eax]) (-> 16 bytes) |
+    | idivq S | R[%edx] <- R[%edx]:R[%eax] mod S;(Signed)            |
+    |         | R[%eax] <- R[%edx]:R[%eax] / S;(Signed)              |
+    | divq S  | like idivq S (Unsigned)                              |
 
 ** Control
 *** Condiction Register
-Four flags:
-| CF | carry flag    |
-| ZF | zero flag     |
-| SF | sign flag     |
-| OF | overflow flag |
-For t=a+b
-| CF | (unsigned)t < (unsigned)a  | Unsigned Overflow |
-| ZF | (t == 0)                   | Zero              |
-| SF | (t < 0)                    | Negative          |
-| OF | (a<0 == b<0)&&(t<0 != a<0) | Signed Overflow   |
-instructions that set the condiction code without updating their destination.
-| Instruction    | Effect        | Like |
-| cmp $S_2, S_1$ | $S_1-S_2$     | sub  |
-| test $S_2,S_1$ | $S_1$ & $S_2$ | and  |
+**** condiction flags
+     | CF | carry flag            |
+     | ZF | zero flag             |
+     | SF | sign flag(neg number) |
+     | OF | overflow flag         |
+     - Example: For t=a+b,
+      | CF | (unsigned)t < (unsigned)a  | Unsigned Overflow |
+      | ZF | (t == 0)                   | Zero              |
+      | SF | (t < 0)                    | Negative          |
+      | OF | (a<0 == b<0)&&(t<0 != a<0) | Signed Overflow   |
+**** CMP & TEST instructions
+     These two instructions that set the condiction code without updating their destination.
+     | cmp $S_1,S_2$  | $S_2-S_1$     | cmpb, cmpw, cmpl, cmpq     |
+     | test $S_1,S_2$ | $S_1$ & $S_2$ | testb, testw, testl, testq |
 *** Accessing the Condition Codes
-Three common ways of using the condition codes:
-1) set a single byte to 0 or 1 depending on some combination of the condition codes.
-2) conditionally jump to some other part of the program
-3) conditionally transfer data.
-for (1), we use set instruction:
-| Instruction | Synonym | Effect   | Set condition      |
-| sete D      | setz    | D <- ZF  | Equal/zero         |
-| setne D     | setnz   | D <- ~ZF | Not Equal/not zero |
-| sets D      |         | D <- SF  | Negative           |
-| setns D     |         | D <- ~SF | Nonnegative        |
-Signed Group:
-| setg D  | setnle | D <- ~(SF^OF) & ~ZF   | >  |
-| setge D | setnl  | D <- ~(SF^OF)         | >= |
-| setl D  | setnge | D <- SF^OF            | <  |
-| setle D | setnge | D <- (SF^OF) \vert ZF | <= |
-Unsigned Group:
-| seta D  | setnbe | D <- ~CF & ~ZF    | >  |
-| setae D | setnb  | D <- ~CF          | >= |
-| setb D  | setnae | D <- CF           | <  |
-| setbe D | setna  | D <- CF \vert  ZF | <= |
+    There are three common ways of using the condition codes.
+**** SET Instruntions
+     - set directly
+       | Instruction	 | Synonym	 | Effect   | Set condition      |
+       |---------------+-----------+----------+--------------------|
+       | sete D        | setz      | D <- ZF  | Equal/zero         |
+       | setne D       | setnz     | D <- ~ZF | Not Equal/not zero |
+       | sets D        |           | D <- SF  | Negative           |
+       | setns D       |           | D <- ~SF | Nonnegative        |
+     - signed group
+       | setg D  | setnle | D <- ~(SF^OF) & ~ZF   | >  |
+       | setge D | setnl  | D <- ~(SF^OF)         | >= |
+       | setl D  | setnge | D <- SF^OF            | <  |
+       | setle D | setnge | D <- (SF^OF) \vert ZF | <= |
+     - unsigned group
+       | seta D  | setnbe | D <- ~CF & ~ZF    | >  |
+       | setae D | setnb  | D <- ~CF          | >= |
+       | setb D  | setnae | D <- CF           | <  |
+       | setbe D | setna  | D <- CF \vert  ZF | <= |
+**** JUMP instructions
+     - jump
+       | Instruction  | Synonym       | Condition |
+       |--------------+---------------+-----------|
+       | jmp Label    | direct jump   | 1         |
+       | jmp *Operand | indirect jump | 1         |
+       | je L         | jz            | ZF        |
+       | jne L        | jnz           | ~ZF       |
+       | js L         |               | SF        |
+       | jns L        |               | ~SF       |
+     - signed group
+       | jg L  | jnle | ~(SF^OF)&~ZF     | >  |
+       | jge L | jnl  | ~(SF^OF)         | >= |
+       | jl L  | jnge | SF^OF            | <  |
+       | jle L | jng  | (SF^OF)\vert{}ZF | <= |
+     - unsigned group
+       | ja L  | jnbe | ~CF & ~ZF   | >  |
+       | jae L | jnb  | ~CF         | >= |
+       | jb L  | jnae | CF          | <  |
+       | jbe L | jna  | CF\vert{}ZF | <= |
+**** conditional MOVE instructions
+     | Instruction | Synonym | Condition        |
+     |-------------+---------+------------------|
+     | cmove S, R  | cmovz   | ZF               |
+     | cmovne      | cmovnz  | ~ZF              |
+     | cmovs       |         | SF               |
+     | cmovns      |         | ~SF              |
+     | cmovg       | cmovnle | ~(SF^OF)&~ZF     |
+     | cmovge      | cmovnl  | ~(SF^OF)         |
+     | cmovl       | cmovnge | SF^OF            |
+     | cmovle      | cmovng  | (SF^OF)\vert{}ZF |
+     | cmova       | cmovnbe | ~CF&~ZF          |
+     | cmovae      | cmovnb  | ~CF              |
+     | cmovb       | cmovnae | CF               |
+     | cmovbe      | cmovna  | CF\vert{}ZF      |
 
-*** Jump Instruction
-| Instruction  | Synonym       | Condition |
-| jmp Label    | direct jump   | 1         |
-| jmp *Operand | indirect jump | 1         |
-| je L         | jz            | ZF        |
-| jne L        | jnz           | ~ZF       |
-| js L         |               | SF        |
-| jns L        |               | ~SF       |
-Signed Group:
-| jg L  | jnle | ~(SF^OF)&~ZF     |
-| jge L | jnl  | ~(SF^OF)         |
-| jl L  | jnge | SF^OF            |
-| jle L | jng  | (SF^OF)\vert{}ZF |
-Unsigned Group:
-| ja L  | jnbe | ~CF & ~ZF   |
-| jae L | jnb  | ~CF         |
-| jb L  | jnae | CF          |
-| jbe L | jna  | CF\vert{}ZF |
+*** Statements in C
+**** if
+     - General in C
+       #+BEGIN_SRC text
+         if (test-expr)
+            then-statement
+         else
+            else-statement
+       #+END_SRC
+     - normal form with goto statement
+       #+BEGIN_SRC text
+             t = test-expr;
+             if (t)
+                goto true;
+             else-statement
+             goto done;
+         true:
+             then-statement
+         done:
+       #+END_SRC
+     - assembly form
+       #+BEGIN_SRC text
+             t = test-expr;
+             if (!t)
+                goto false-label;
+             then-statement
+             goto done;
+         false-label:
+             else-statement
+         done:
+       #+END_SRC
+     - when there is no else-statement.
+       #+BEGIN_SRC text
+             t = test-expr;
+             if (!t)
+                goto done;
+             then-statement
+         done:
+       #+END_SRC
 
-*** If Statement
-General in C:
-#+BEGIN_EXAMPLE
-  if (test-expr)
-     then-statement
-  else
-     else-statement
-#+END_EXAMPLE
-nomal form with goto statement:
-#+BEGIN_EXAMPLE
-      t = test-expr;
-      if (t)
-         goto true;
-      else-statement
-      goto done;
-  true:
-      then-statement
-  done:
-#+END_EXAMPLE
-assembly form:
-#+BEGIN_EXAMPLE
-      t = test-expr;
-      if (!t)
-         goto false-label;
-      then-statement
-      goto done;
-  false-label:
-      else-statement
-  done:
-#+END_EXAMPLE
-major difference: when there is no else-statement.
-#+BEGIN_EXAMPLE
-      t = test-expr;
-      if (!t)
-         goto done;
-      then-statement
-  done:
-#+END_EXAMPLE
-**** example
-#+BEGIN_SRC c
-  int test(int x, int y)
-  {
-      int val = x^y;
-      if (x < -3)
-      {
-          if (y < x)
-              val = x*y;
-          else
-              val = x+y;
-      }
-      else if (x > 2)
-          val = x-y;
-      return val;
-  }
-#+END_SRC
-#+BEGIN_SRC asm
-      movl    12(%ebp), %eax
-      movl    8(%ebp), %edx
-      cmpl    $-3, %eax
-      jge .L2
-      cmpl    %edx, %eax
-      jle .L3
-      imull   %edx, %eax
-      jmp .L4
-  .L3:
-      leal    (%edx,%eax), %eax
-      jmp .L4
-  .L2:
-      cmpl    $2, %eax
-      jg .L5
-      xorl    %edx, %eax
-      jmp .L4
-  .L5:
-      subl %edx, %eax
-  .L4:
-#+END_SRC
-*** Loops
+**** ? condtion
+     #+BEGIN_SRC text
+       v = test-expr ? then-expr : else-expr;
+     #+END_SRC
+     - standard form
+      #+BEGIN_SRC text
+            if (!test-expr)
+                goto false;
+            v = then-expr;
+            goto done;
+        false:
+            v = else-expr;
+        done:
+      #+END_SRC
+    - more abstract form
+      #+BEGIN_SRC text
+        vt = then-expr;
+        v = else-expr;
+        t = test-expr;
+        if (t) v = vt;
+      #+END_SRC
+
 **** do...while
-#+BEGIN_EXAMPLE
-  do
-      body-statement
-  while (test-expr)
-#+END_EXAMPLE
-goto version:
-#+BEGIN_EXAMPLE
-  loop:
-      body-statement
-      t = test-expr;
-      if (t)
-         goto loop;
-  done:
-#+END_EXAMPLE
+     #+BEGIN_SRC text
+       do
+           body-statement
+       while (test-expr)
+     #+END_SRC
+     - goto version
+      #+BEGIN_SRC text
+        loop:
+            body-statement
+            t = test-expr;
+            if (t)
+               goto loop;
+        done:
+      #+END_SRC
+
 **** while
-#+BEGIN_EXAMPLE
-  while (test-expr)
-      body-statement
-#+END_EXAMPLE
-goto version:
-#+BEGIN_EXAMPLE
-  t = test-expr
-  if (!t)
-     goto done;
-  loop:
-     body-statement
-     if (t)
-        goto loop;
-  done:
-#+END_EXAMPLE
+     #+BEGIN_SRC text
+       while (test-expr)
+           body-statement
+     #+END_SRC
+     - goto version
+      #+BEGIN_SRC text
+        t = test-expr
+        if (!t)
+           goto done;
+        loop:
+           body-statement
+           if (t)
+              goto loop;
+        done:
+      #+END_SRC
+
 **** for
-#+BEGIN_EXAMPLE
-  for (init-expr; test-expr; update-expr)
-      body-statement
-#+END_EXAMPLE
-Equivalent to while loop
-#+BEGIN_EXAMPLE
-  init-expr;
-  while (test-expr)
-      body-statement
-      update-expr;
-#+END_EXAMPLE
-goto vesion:
-#+BEGIN_EXAMPLE
-  init-expr;
-  t = test-expr;
-  if (!t)
-     goto done;
+     #+BEGIN_SRC text
+       for (init-expr; test-expr; update-expr)
+           body-statement
+     #+END_SRC
+     - Equivalent to while loop
+      #+BEGIN_SRC text
+        init-expr;
+        while (test-expr)
+            body-statement
+            update-expr;
+      #+END_SRC
+     - goto vesion:
+      #+BEGIN_SRC text
+        init-expr;
+        t = test-expr;
+        if (!t)
+           goto done;
 
-  loop:
-     body-statement
-     update-expr;
-     if (t)
-        goto loop;
-  done:
-#+END_EXAMPLE
-*** Conditional Move Instructions
-**** Why use?
-#+BEGIN_VERSE
-Processors achieve high performance by overlapping the steps of the
-successive instructions, such as fetching one instruction while
-performing the arithmetic operations for a previous instruction.
-#+END_VERSE
-**** Instructions
-| Instruction | Synonym | Condition        |
-|-------------+---------+------------------|
-| cmove S, R  | cmovz   | ZF               |
-| cmovne      | cmovnz  | ~ZF              |
-| cmovs       |         | SF               |
-| cmovns      |         | ~SF              |
-| cmovg       | cmovnle | ~(SF^OF)&~ZF     |
-| cmovge      | cmovnl  | ~(SF^OF)         |
-| cmovl       | cmovnge | SF^OF            |
-| cmovle      | cmovng  | (SF^OF)\vert{}ZF |
-| cmova       | cmovnbe | ~CF&~ZF          |
-| cmovae      | cmovnb  | ~CF              |
-| cmovb       | cmovnae | CF               |
-| cmovbe      | cmovna  | CF\vert{}ZF      |
+        loop:
+           body-statement
+           update-expr;
+           if (t)
+              goto loop;
+        done:
+      #+END_SRC
+**** switch
+     Compilers uses the *jump table* to achieve conditional jumping. Think of jump table as an array of function pointers.
+     #+BEGIN_SRC c
+       switch (n) {
+         case 100:
+           ...;
+           break;
+         case 102:
+           ...;
+           break;
+         case 103:
+           ...;
+           break;
+         case 105:
+           ...;
+           break;
+         default:
+           break;
+       }
+     #+END_SRC
 
-**** example
-Expression:
-#+BEGIN_EXAMPLE
-  v = test-expr ? then-expr : else-expr;
-#+END_EXAMPLE
-Traditional IA32:
-#+BEGIN_EXAMPLE
-      if (!test-expr)
-          goto false;
-      v = then-expr;
-      goto done;
-  false:
-      v = else-expr;
-  done:
-#+END_EXAMPLE
-Base the on conditional move:
-#+BEGIN_EXAMPLE
-  vt = then-expr;
-  v = else-expr;
-  t = test-expr;
-  if (t) v = vt;
-#+END_EXAMPLE
-*** Switch Statement
-Using the jump table
-#+BEGIN_SRC asm
-  .L8:
-          .long   .L3 //index 0
-          .long   .L2//1
-          .long   .L4//2
-          .long   .L5//3
-          .long   .L6//4
-          .long   .L6//5
-          .long   .L7//6
-#+END_SRC
-#+BEGIN_SRC asm
-  movl    8(%ebp),    %eax //x at %ebp+8
-  addl    $2, %eax //index = x+2. when index = 0, x(min)=-2.
-  cmpl    $6, %eax //index compare with 6
-  ja      .L2 //index > 6 goto default. Such that, x(max)=4.
-  jmp *.L8(,%eax,4)
-#+END_SRC
-x case 2, 3 goes to .L6
+     - impl
+       #+BEGIN_SRC c
+         loc_A:
+           ...
+         loc_B:
+           ...
+         ...
+
+         static void *jt[5] = {
+           &&loc_A, &&Loc_B, &&loc_C, &&loc_def, &&loc_D
+         };
+         unsigned long index = n-100;
+         if (index > 4)
+           goto loc_def;
+         goto *it[index];
+
+       #+END_SRC
+
+     - jump table in asm
+       #+BEGIN_SRC asm
+           .section .rodata
+           .align 8 // Align address to multiple of 8
+         .L4:
+           .quad .L3 // case 100: loc_A
+           .quad .L8 // case 101: default
+           .quad .L5 // case 102: loc_B
+           .quda .L6 // case 103: loc_C
+           .quda .L7 // case 105: loc_D
+           .quda .L8 // default
+       #+END_SRC
+
 ** Procedure
+   Suppose procedure P(the caller) calls procedure Q(the callee).
 *** Stack Frame
-caller's frame:
-| arg n |
-| ...   |
-| arg 1 |
-| return address |
-callee's frame:
-| Saved %ebp                              |
-| Saved registers, local var, temporaries |
-| Argument build area    (%esp)           |
+    - caller's frame:
+      | arg n                                                 |
+      | ...                                                   |
+      | arg 1                                                 |
+      | return address(push callee's return address to stack) |
+      | callee's frame                                        |
+
+    - callee's frame:
+      | Saved %rbp  |
+      | Saved registers, local var, temporaries   |
+      | Argument build area (%rsp stack pointer)  |
+      | *-stack top-*                             |
 *** Procedure Call
-Instructions:
-| call Label    | procedure call           |
-| call *Operand | procedure call           |
-| leave         | prepare stack for return |
-| ret           | return from call         |
+    Instructions:
+    | call Label    | procedure call           |
+    | call *Operand | procedure call           |
+    | ret           | return from call         |
 
-- call
-#+BEGIN_VERSE
-A /call/ instruction is to push a return address on the stack
-and jump to the start of the called procedure.
-#+END_VERSE
-- ret
-#+BEGIN_VERSE
-The /ret/ instruction pops an address off the stack and jumps
-to return address of the caller procedure.
-#+END_VERSE
-- leave
-#+BEGIN_VERSE
-equilvalent to the following:
-movl %ebp, %esp
-popl %ebp
-#+END_VERSE
-*** Registers
-#+BEGIN_VERSE
-%eax, %edx and %ecx are classified as caller-save registers.
-callee can overwrite them without destroying any data required by P.
+    Example:
+    #+BEGIN_SRC text
+      400540 <multstore>:
+        400540: 53        push %rbx
+        400541: 48 89 d3  mov  %rdx,%rbx
+        ...
+        40054d: c3        retq
 
-%ebx, %esi and %edi : callee-save registers.
-callee must save the values on the stack before overwriting them,
-and restore them before returning.
-Because caller may need them for its future computations.
-#+END_VERSE
-*** Example
-#+BEGIN_SRC c++
-  int swap_add(int *xp, int *yp)
-  {
-      int x = *xp;
-      int y = *yp;
+      .caller:
+        400563: e8 d8 ff ff ff      callq   400540 <multstore>
+        400568: 48 8b 54 24 08      mov     0x8(%rsp),%rdx
+    #+END_SRC
 
-      ,*xp = y;
-      ,*yp = x;
-      return x + y;
-  }
+**** call
+     <before>%rip(PC counter): 0x400563, %rsp: 0x7fffffffe840
+     1. push a return address on the P's stack
+     2. set %rip to the start of Q
 
-  int caller()
-  {
-      int arg1 = 534;
-      int arg2 = 1057;
-      int sum = swap_add(&arg1, &arg2);
-      int diff = arg1 - arg2;
+     <after>%rip: 0x400540, %rsp: 0x7fffffffe838(-8bytes)
 
-      return sum * diff;
-  }
-#+END_SRC
-**** Caller
-#+BEGIN_SRC asm
-  caller:
-      pushl %ebp              //Save old %ebp
-      movl %esp, %ebp         //Set %ebp as frame pointer
-      subl $24, %esp          //Allocate 24 bytes on stack
-      movl $534, -4(%ebp)     //Set arg1 to 534
-      movl $1057, -8(%ebp)        //Set arg2 to 1057
-      leal -8(%ebp), %eax     //Compute &arg2
-      movl %eax, 4(%esp)      //Store on stack
-      leal -4(%ebp), %eax         //Compute &arg1
-      movl %eax, (%esp)       //Store on stack
-      call swap_add               //Call the swap_add function
-      movl -4(%ebp), %edx
-      subl -8(%ebp), %edx
-      imull %edx, %eax
-      leave
-      ret
-#+END_SRC
-Stack Frame:
-| Saved %ebp(%ebp) |
-| arg1             |
-| arg2             |
-| /Unused/         |
-| &arg2            |
-| &arg1 (%esp)     |
-After call:
-| Saved %ebp       |
-| arg1             |
-| arg2             |
-| /Unused          |
-| &arg2            |
-| &arg1            |
-| Return address   |
-| Saved %ebp(%ebp) |
-| Saved %ebx(%esp) |
-**** Callee
-- setup
-#+BEGIN_SRC asm
-  swap_add:
-      pushl %ebp
-      movl %esp, %ebp
-      pushl %ebx          //for temporary storage
-#+END_SRC
-- body
-#+BEGIN_SRC asm
-  movl    8(%ebp), %edx   //Get xp
-  movl    12(%ebp), %ecx  //Get yp
-  movl    (%edx), %ebx        //Get x
-  movl    (%ecx), %eax        //Get y
-  movl    %eax, (%edx)        //Store y at xp
-  movl    %ebx, (%ecx)        //Store x at yp
-  addl    %ebx, %eax      //Return value = x + y
-#+END_SRC
-- finish
-#+BEGIN_SRC asm
-  popl    %ebx        //Restore %ebx
-  popl    %ebp        //Restore %ebp
-  ret                 //Return
-#+END_SRC
+**** ret
+     1. pop value from return address
+
+     <after>%rip: 0x400568, %rsp: 0x7fffffffe840
+
+     - use 0x8(%rsp) to access return value from callee.
+
 ** Array Allocation
-- $$\&A[i] = x_a + i\cdot sizeof(type)$$
-- for an array declare as D[R][C],
-$$\&D[i][j] = x_d + sizeof(type)\cdot (C\cdot i + j)$$
-#+BEGIN_EXAMPLE
-s: start address  t: type size  declaration: A[R][C]
-A[0]   A[0][0]    s
-A[0]   A[0][1]    s+t
-A[1]   A[1][0]    s+Ct
-A[1]   A[1][2]    s+(C+2)t
-A[3]   A[3][4]    s+(3C+4)t
-#+END_EXAMPLE
+*** 1d-array
+    $$\&A[i] = \&A[0] + i\cdot sizeof(type)$$
+*** 2d-array
+    for an array declare as D[R][C],
+    $$\&D[i][j] = \&D[0] + sizeof(type)\cdot (C\cdot i + j)$$
+    - Example
+      s: start address  t: type size  declaration: A[R][C]
+      | A[0][0] | s         |
+      | A[0][1] | s+t       |
+      | A[1][0] | s+Ct      |
+      | A[1][2] | s+(C+2)t  |
+      | A[3][4] | s+(3C+4)t |
+*** variable-size array
+    #+BEGIN_SRC c
+      int var_ele(long n, int A[n][n], long i, long j) {
+        return A[i][j];
+      }
+    #+END_SRC
+    #+BEGIN_SRC asm
+      //n in %rdi, A in %rsi, i in %rdx, j in %rcx
+      var_ele:
+        imulq	%rdx, %rdi  // Compute n*i -> %rdi
+        leaq	(%rsi,%rdi,4), %rax // Compute &A[0]+4(n*i) -> %rax
+        movl	(%rax,%rcx,4), %eax // Read from M[&A[0]+4(n*i)+4j] -> %eax
+        ret
+    #+END_SRC
+
 * Storage
 ** Disk
 terms: track, sector, cylinder
