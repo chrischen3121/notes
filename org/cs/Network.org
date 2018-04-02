@@ -8,97 +8,92 @@
 * Physical Layer
 Concerns how signals are used to transfer message bits over a link.
 ** Latency
-Message Latency is the delay to send a message over a link.
-- Transmission Delay
-  Time to put M-bit message "on the wire"
-  $$T-delay = \frac{M(bits)}{Rate(bits/sec)} = \frac{M}{R}\ seconds$$
-- Propagation Delay
-  Time for bits to propagate across the wire
-  $$P-delay = \frac{Length}{speed\ of\ signals} \approx \frac{Length}{\frac{2}{3}C} = D\ seconds$$
-  C is the speed of light.
-  #+BEGIN_VERSE
-  In wireless communication, s=c, i.e. the speed of light.
-  In copper wire, the speed s generally ranges from .59c to .77c
-  #+END_VERSE
+   Message Latency is the delay to send a message over a link.
+*** Transmission Delay
+    Time to put M-bit message "on the wire"
+    $$T-delay = \frac{M(bits)}{Rate(bits/sec)} = \frac{M}{R}\ seconds$$
 
+*** Propagation Delay
+    Time for bits to propagate across the wire
+    $$P-delay = \frac{Length}{speed\ of\ signals} \approx \frac{Length}{\frac{2}{3}C} = D\ seconds$$
+    C is the speed of light.
+    In copper wire, the speed s generally ranges from .59c to .77c
 
-so $$L = \frac{M}{R} + D$$
-Often one delay component dominates.
+*** summary
+    $$L = \frac{M}{R} + D$$
+    Often one delay component dominates.
+
 *** Bandwidth-Delay
-BD is the amount of data in flight. Reperesents the data "in the network".
-$$BD = R\times D$$
-Small for LANs, big for "long fat" pipes.
+    BD is the maxmium amount of data in flight. Reperesents the data "in the network".
+    $$BD = R\times D$$
+    Small for LANs, big for "long fat" pipes(LFN "elephen").
+    - An important example of a system where the bandwidth-delay product is large is that of geostationary satellite connections
+    - TCP related option: TCP window scale option
+
 ** Media
-Media propagate signals that carry bits of information
+   Media propagate signals that carry bits of information
 *** Wires
-- Twisted Pair
-  #+BEGIN_VERSE
-  Widely used in LANs and telephone lines
-  Twist reduce radiated signal.
-  #+END_VERSE
-- Coaxial Cable
+    - Twisted Pair
+
+      Widely used in LANs and telephone lines. Twist reduce radiated signal.
+
+    - Coaxial Cable
+
 *** Fiber
-    Long, thin, pure strands of glass. Properties:
-    - Enormous bandwidth
+    Long, thin, pure strands of glass. Properties: Enormous bandwidth
+
 *** Wireless
     Sender radiates signal over a region. Properties:
     - In many directions, to potentially many receivers
     - Receiver need to coordinate use(choose a sender)
-** Signal
-Analog signals encode digital bits.
-*** Frequency Representation
-A signal over time can be represented by its frequency components.(Fourier analysis)
-$$g(t)=\frac{1}{2}c+\sum_{n=1}^\infty a_n sin(2\pi nft) + \sum b_n cos(2\pi nft)$$
-** Modulation
-- NRZ(Non-Return to Zero)
-  Let a high voltage(+V) represent a 1, and low voltage(-V)represent a 0.
-- Passband
 
-  Carriers is simply a signal oscillatiog at a desired frequency.
-  To modulate these signal, we can change amplitude, frequency, or phase.
-  #+CAPTION: Modulations
-  #+ATTR_HTML: align="center"
+** Signal
+   Analog signals encode digital bits.
+*** Frequency Representation
+    A signal over time can be represented by its frequency components.(Fourier analysis)
+    $$g(t)=\frac{1}{2}c+\sum_{n=1}^\infty a_n sin(2\pi nft) + \sum b_n cos(2\pi nft)$$
+** Modulation
+*** NRZ(Non-Return to Zero)
+  Let a high voltage(+V) represent a 1, and low voltage(-V)represent a 0.
+**** 4B/5B
+     Map every 4 bits into 5bits without long runs of zeros/ones.(called NRZI)
+     eg: 0000->11110, 0001->01001, 1110->11100, 1111->11101
+     Not work for fiber/wireless. Need to send at higher frequencies.
+
+*** Passband
+    Carriers is simply a signal oscillatiog at a desired frequency.
+    To modulate these signal, we can change amplitude, frequency, or phase.
+    #+CAPTION: Modulations
+    #+ATTR_HTML: align="center"
   [[file:../resources/network/SignalModulation.png]]
 
-- more signal levels
+    - more signal levels
 
-  eg: voltage splits into four levels. reperents 2bits per symbol.
+    eg: voltage splits into four levels. reperents 2bits per symbol.
 
-- Clock Recovery
+    - Clock Recovery
 
-  Clock recovery is designed for the case like 1000000000...0
-
-- 4B/5B
-
-  The baseband for wires.
-
-  Map every 4 bits into 5bits without long runs of zeros/ones.(called NRZI)
-  eg: 0000->11110, 0001->01001, 1110->11100, 1111->11101
-  Not work for fiber/wireless.Need to send at higher frequencies.
+    Clock recovery is designed for the case like 1000000000...0
 
 ** Limit
 *** Nyquist Limit
-$$Maximum\ data\ rate = 2Hlog_{2}V\ bits/sec$$
-#+BEGIN_VERSE
-V is the discrete levels the signal consists.
-H is the bandwidth
-#+END_VERSE
+    $$Maximum\ data\ rate = 2Hlog_{2}V\ bits/sec$$
+    - V is the discrete levels the signal consists.
+    - H is the bandwidth
+
 *** Shannon Capacity
-$$Maximum\ data\ rate = Hlog_{2}(1+S/N)\ bits/sec$$
-#+BEGIN_VERSE
-S/N is the signal-to-noise ratio, S is the signal power, N is the noise power.
-S/N in db unit $=10log_{10}(S/N)$
-#+END_VERSE
+    $$Maximum\ data\ rate = Hlog_{2}(1+S/N)\ bits/sec$$
+    - S/N is the signal-to-noise ratio, S is the signal power, N is the noise power.
+    - S/N in db unit $=10log_{10}(S/N)$
 
 ** Other Hints
 *** Metric Units
-#+BEGIN_VERSE
-Use power of 10 for rates, 2 for storage.
-$Mbps=1,000,000bps, 1KB = 2^{10}bytes$
-"B" is for bytes, "b" is for bits
-#+END_VERSE
+    Use power of 10 for rates, 2 for storage.
+    $$Mbps=1,000,000bps, 1KB = 2^{10}bytes$$
+    "B" is for bytes, "b" is for bits
+
 *** BandWidth
-The range of frequencies transmitted without being strongly attenuated is called the bandwidth
+    The range of frequencies transmitted without being strongly attenuated is called the bandwidth
 
 * Data Link Layer
 ** Frame
