@@ -15,18 +15,52 @@
   | g             | Application context | An object can use for temporary storage. reset with each request         |
   | request       | Request context     | The request object, which encapsulates a http request                    |
   | session       | Request context     | The user session, a dictionary storage shared by requests within session |
+
 * Request hooks
-  - before_first_request: register a function to run before the first request
-  - before_request: register a function to run before each request
-  - after_request: register a function to run after each request if no unhandled exceptions occurred
-  - teardown_request: register a function to run after each request even if unhandled exceptions occurred
+  hook decorators
+  - *before_first_request*: register a function to run before the first request
+  - *before_request*: register a function to run before each request
+  - *after_request*: register a function to run after each request if no unhandled exceptions occurred
+  - *teardown_request*: register a function to run after each request even if unhandled exceptions occurred
+
+* Response
+** tuple
+   - Form: (html, status_code, headerdict)
+
+** *response* object
+    #+BEGIN_SRC python
+      from flask import make_response
+
+      @app.route('/')
+      def index():
+          response = make_response('<h1>This document carries a cookie!</h1>')
+          response.set_cookie('answer', '42')
+          return response
+    #+END_SRC
+
+** redirect
+   #+BEGIN_SRC python
+     return redirect('http://www.example.com')
+   #+END_SRC
+
+** abort
+   used for error handling
+   - abort does not return control back to the function that calls it but gives control back to the web server by raising an exception.
+   #+BEGIN_SRC python
+     abort(404)
+   #+END_SRC
+
 * Jinja2 template engine
-  #+BEGIN_EXAMPLE
-    <p>A value from a dictionary: {{ mydict['key'] }}.</p>
-    <p>A value from a list: {{ mylist[3] }}.</p>
-    <p>A value from a list, with a variable index: {{ mylist[myintvar] }}.</p>
-    <p>A value from an object's method: {{ myobj.somemethod() }}.</p>
-  #+END_EXAMPLE
+** Variable
+   - Form: ={{ name }}=
+   - Jinja2 recognizes variables of any typ
+   #+BEGIN_SRC web
+     <p>A value from a dictionary: {{ mydict['key'] }}.</p>
+     <p>A value from a list: {{ mylist[3] }}.</p>
+     <p>A value from a list, with a variable index: {{ mylist[myintvar] }}.</p>
+     <p>A value from an object's method: {{ myobj.somemethod() }}.</p>
+   #+END_SRC
+
 ** Filters
    | Filter name | Description                                 |
    |-------------+---------------------------------------------|
@@ -37,30 +71,35 @@
    | title       |                                             |
    | trim        | Removes leading and trailing whitespace     |
    | striptags   | Removes any HTML tags                       |
-   #+BEGIN_SRC html
+   #+BEGIN_SRC web
      <h1>Hello, {{ name|capitalize }}!</h1>
    #+END_SRC
+
 *** safe
     - Never use the safe filter on values that aren’t trusted, such as text entered by users on web forms.
+
 ** Control structures
 *** if
-    #+BEGIN_EXAMPLE
+    #+BEGIN_SRC web
       {% if user %}
           Hello, {{ user }}!
       {% else %}
           Hello, Stranger!
       {% endif %}
-    #+END_EXAMPLE
-*** loop
-    #+BEGIN_EXAMPLE
+    #+END_SRC
+
+*** for loop
+    #+BEGIN_SRC web
       <ul>
           {% for comment in comments %}
               <li>{{ comment }}</li>
           {% endfor %}
       </ul>
-    #+END_EXAMPLE
+    #+END_SRC
+
 *** macro
-    #+BEGIN_EXAMPLE
+    macro are similar to functions in Python code
+    #+BEGIN_SRC web
       {% macro render_comment(comment) %}
           <li>{{ comment }}</li>
       {% endmacro %}
@@ -70,20 +109,25 @@
               {{ render_comment(comment) }}
           {% endfor %}
       </ul>
-    #+END_EXAMPLE
-    - import macro from file
-    #+BEGIN_EXAMPLE
+    #+END_SRC
+
+**** import macro from standalone macro file
+    #+BEGIN_SRC web
       {% import 'macros.html' as macros %}
       <ul>
           {% for comment in comments %}
               {{ macros.render_comment(comment) }}
           {% endfor %}
       </ul>
-    #+END_EXAMPLE
-    - {% include 'common.html' %}
+    #+END_SRC
+
+*** include common file
+    {% include 'common.html' %}
+
 ** Inheritance
-   - base
-     #+BEGIN_SRC html
+   Block tags define elements that a derived template can change.
+*** base template
+     #+BEGIN_SRC web
        <html>
        <head>
            {% block head %}
@@ -96,8 +140,11 @@
        </body>
        </html>
      #+END_SRC
-   - extendsion
-     #+BEGIN_SRC html
+
+*** extendsion template
+    If the application needs to add its own content to a block that already has some content,
+    then Jinja2’s super() function must be used.
+     #+BEGIN_SRC web
        {% extends "base.html" %}
        {% block title %}Index{% endblock %}
        {% block head %}
@@ -126,17 +173,308 @@
    #+BEGIN_SRC python
      url_for('user', name='john', _external=True) # return http://localhost:5000/user/john
    #+END_SRC
+   - arg1: view function name
+   - args: view function args
+   - =_external=: return an absolute URL
+
 ** Static files
+   Flask looks for static files in a subdirectory called /static/ located in the application’s root folder.
    #+BEGIN_SRC python
      url_for('static', filename='css/styles.css', _external=True)
    #+END_SRC
 
-* ext
+* Web forms
+  Form data from clients is in request.form (POST)
+** flask_wtf
+   /flask_wtf/ wraps the *WTForms* packages, handles two things:
+   - generate HTML code for forms
+   - validate the submitted form data
+
+*** CSRF protection
+    /flask_wtf/ uses token to verify the authenticity of requests with form data
+    #+BEGIN_SRC python
+      app = Flask(__name__)
+      app.config['SECRET_KEY'] = 'hard to guess string'
+    #+END_SRC
+    - the *SECRET_KEY* configuration is aslo used by Flask and other third-party extendsions
+    - For added security, the secret key should be stored in an environment variable
+    instead of being embedded in the code.
+
+*** Form class
+    #+BEGIN_SRC python
+      from flask_wtf import FlaskForm
+      from wtforms import StringField, SubmitField
+      from wtforms.validators import Required
+
+      class NameForm(Form):
+          name = StringField('What is your name?', validators=[Required()])
+          submit = SubmitField('Submit')
+    #+END_SRC
+    - the *StringField* class represents an <input> element with a type="text" attribute
+    - the *SubmitField* class represents an <input> element with a type="submit" attribute
+
+**** Fields
+     - Text field: StringField, TextAreaField, PasswordField, HiddenField, DateField, DateTimeField,
+     IntegerField, DecimalField, FloatField
+     - BooleanField: Checkbox with True and False values
+     - RadioField: List of radio buttons
+     - SelectField: Drop-down list of choices
+     - SelectMultipleField: Drop-down list of choices with multiple selection
+     - FileField: File upload field
+     - SubmitField: Form submission button
+     - FormField: Embed a form as a field in a container form
+     - FieldList: List of fields of a given type
+
+**** Validators
+     Email, IPAddress, Length, NumberRange, Optional, Required, Regexp, URL, AnyOf, NoneOf
+     - EqualTo: useful when requesting a password to be entered twice for confirmation
+
+**** Template
+     #+BEGIN_SRC web
+       {% import "bootstrap/wtf.html" as wtf %}
+       {{ wtf.quick_form(form) }}
+     #+END_SRC
+
+**** View function
+     #+BEGIN_SRC python
+       @app.route('/', methods=['GET', 'POST'])
+       def index():
+           name = None
+           form = NameForm()
+           if form.validate_on_submit():
+               name = form.name.data
+               form.name.data = ''
+           return render_template('index.html', form=form, name=name)
+     #+END_SRC
+     - *methods* argument register the view function as a handler for GET and POST requests, default GET only.
+     - *validate_on_submit* is True when the form was submitted and the data has been accepted by all the field validators
+
+** redirect issue
+   Browsers repeat the last request they have sent when they are asked to refresh the page.
+   When the last request sent is a POST request with form data, a refresh would cause a duplicate
+   form submission.
+   - Good practice: never leave a POST request as a last request sent by the browser. Respond to POST requests with a redirect instead of a normal response.
+   - The trick is known as the *Post/Redirect/Get* pattern.
+
+** Sessions
+   #+BEGIN_SRC python
+     from flask import Flask, render_template, session, redirect, url_for
+
+     @app.route('/', methods=['GET', 'POST'])
+     def index():
+         form = NameForm()
+         if form.validate_on_submit():
+             session['name'] = form.name.data
+             return redirect(url_for('index'))
+         return render_template('index.html', form=form, name=session.get('name'))
+   #+END_SRC
+
+** flash
+   - To give the user a confirmation message after a request is completed
+   #+BEGIN_SRC python
+     from flask import flash
+
+     old_name = session.get('name')
+     if old_name is not None and old_name != form.name.data:
+         flash('Looks like you have changed your name!')
+   #+END_SRC
+
+*** render messages
+    The best place to render flashed messages is the /base/ template.
+    - use get_flashed_messages() to retrieve the messages and render them
+      #+BEGIN_SRC web
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+        {% endfor %}
+      #+END_SRC
+
+* Databases
+** ORMs/ODMs
+   - SQLAlchemy
+   - MongoEngine
+
+** flask_sqlalchemy
+   #+BEGIN_SRC python
+     from flask.ext.sqlalchemy import SQLAlchemy
+
+     basedir = os.path.abspath(os.path.dirname(__file__))
+
+     app = Flask(__name__)
+     app.config['SQLALCHEMY_DATABASE_URI'] =\
+         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+
+     db = SQLAlchemy(app)
+   #+END_SRC
+
+*** Model
+    #+BEGIN_SRC python
+      class Role(db.Model):
+          __tablename__ = 'roles'
+          id = db.Column(db.Integer, primary_key=True)
+          name = db.Column(db.String(64), unique=True)
+          users = db.relationship('User', backref='role', laze='dynamic')
+
+          def __repr__(self):
+              return '<Role %r>' % self.name
+
+      class User(db.Model):
+          __tablename__ = 'users'
+          id = db.Column(db.Integer, primary_key=True)
+          username = db.Column(db.String(64), unique=True, index=True)
+          role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
+          def __repr__(self):
+              return '<User %r>' % self.username
+    #+END_SRC
+
+*** Relationship
+    SQLAlchemy relationship options: backref, primaryjoin, lazy, uselist, order_by, secondary, secondaryjoin
+
+*** Ops
+**** Creating
+     #+BEGIN_SRC python
+     db = SQLAlchemy(app)
+
+     db.drop_all()
+     db.create_all()
+     #+END_SRC
+
+**** Inserting
+     #+BEGIN_SRC python
+       admin_role = Role(name='Admin')
+       user_john = User(username='john', role=admin_role)
+       db.session.add(admin_role)
+       db.session.add(user_john)
+     #+END_SRC
+     or
+     #+BEGIN_SRC python
+       db.session.add_all([admin_role, user_john])
+     #+END_SRC
+     - commit
+       #+BEGIN_SRC python
+         db.session.commit()
+       #+END_SRC
+     - check
+       #+BEGIN_SRC python
+         print(admin_role.id)
+       #+END_SRC
+
+     - db.session.rollback()
+
+**** Modifying
+     #+BEGIN_SRC python
+       admin_role.name = 'Administrator'
+       db.session.add(admin_role)
+       db.session.commit()
+     #+END_SRC
+
+**** Deleting
+     #+BEGIN_SRC python
+       db.session.delete(mod_role)
+       db.session.commit()
+     #+END_SRC
+
+**** Querying
+     #+BEGIN_SRC python
+       Role.query.all()
+       User.query.filter_by(role=admin_role).all()
+       str(User.query.filter_by(role=user_role)) # check SQL query
+     #+END_SRC
+
+*** Integration with the Python Shell
+    #+BEGIN_SRC python
+      from flask_script import Shell
+      from flask.ext.script import Manager
+      manager = Manager(app)
+      def make_shell_context():
+          return dict(app=app, db=db, User=User, Role=Role)
+      manager.add_command("shell", Shell(make_context=make_shell_context))
+    #+END_SRC
+*** Database Migrations
+    use flask-migrate
+    #+BEGIN_SRC python
+      from flask_migrate import Migrate, MigrateCommand
+      migrate = Migrate(app, db)
+      manager.add_command('db', MigrateCommand)
+    #+END_SRC
+    #+BEGIN_SRC sh
+      python main.py db init
+      python main.py db migrate -m "initial migration"
+      python main.py db upgrade
+    #+END_SRC
+
+* Application Structure
+  #+BEGIN_SRC text
+        ├── __init__.py
+        ├── main/
+            ├── __init__.py
+            ├── errors.py
+            ├── forms.py
+            └── views.py
+        ├── static/
+        ├── templates/
+        ├── email.py
+        ├── models.py
+        ├── migrations/
+        ├── venv/
+        ├── tests/
+        ├── requirements.txt
+        ├── config.py
+        └── manage.py        launches the application and other application tasks.
+  #+END_SRC
+
+* Extensions
 ** flask_script
+   Command-Line Options
+
 ** flask_bootstrap
    base template blocks
    - doc, html_attribs, html, head, title, metas, styles, body_attribs, body, navbar, content, scripts
+
 ** flask_moment
-   Localization of dates and times
+   - Localization of dates and times
+
+   client-side moment.js do the localization. /flask_moment/ module integrates moment.js into Jinja2 templates.
+
+** flask_mail
+   #+BEGIN_SRC python
+     from flask_mail import Mail
+     mail = Mail(app)
+
+     msg = Message('test subject', sender='you@example.com',
+                   recipients=['you@example.com'])
+     msg.body = 'text body'
+     msg.html = '<b>HTML</b> body'
+
+     with app.app_context(): # send() uses current_app, so it needs to be executed with an activated application context.
+         mail.send(msg)
+   #+END_SRC
+*** Simplify Mail Sending
+    #+BEGIN_SRC python
+      from flask_mail import Message
+
+      app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]' #application-specific configuration
+      app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <flasky@example.com>' # application-specific configuration
+
+      def send_email(to, subject, template, **kwargs):
+          msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject,
+                        sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
+          msg.body = render_template(template + '.txt', **kwargs) # content can be rendered!
+          msg.html = render_template(template + '.html', **kwargs)
+          mail.send(msg)
+    #+END_SRC
+
+*** Configuration
+    MAIL_HOSTNAME, MAIL_PORT, MAIL_USE_TLS, MAIL_USE_SSL, MAIL_USERNAME, MAIL_PASSWORD
+
+*** Asynchronous Sending
+    #+BEGIN_SRC python
+      thr = Thread(target=send_async_email, args=[app, msg])
+          thr.start()
+    #+END_SRC
+
 ** flask_restful
-** flask_pymongo
