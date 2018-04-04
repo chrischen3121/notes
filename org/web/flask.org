@@ -426,6 +426,287 @@
         ├── config.py
         └── manage.py        launches the application and other application tasks.
   #+END_SRC
+** Configuration Example
+    #+BEGIN_SRC python
+      import os
+      basedir = os.path.abspath(os.path.dirname(__file__))
+
+      class Config:
+          SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+          SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+          FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
+          FLASKY_MAIL_SENDER = 'Flasky Admin <flasky@example.com>'
+          FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+
+          @staticmethod
+          def init_app(app):
+              pass
+
+      class DevelopmentConfig(Config):
+          DEBUG = True
+          MAIL_SERVER = 'smtp.googlemail.com'
+          MAIL_PORT = 587
+          MAIL_USE_TLS = True
+          MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+          MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+          SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+              'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+
+      class TestingConfig(Config):
+          TESTING = True
+          SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+              'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
+
+      class ProductionConfig(Config):
+          SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+              'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+
+      config = {
+          'development': DevelopmentConfig,
+          'testing': TestingConfig,
+          'production': ProductionConfig,
+
+          'default': DevelopmentConfig
+      }
+    #+END_SRC
+
+** Dynamic App Creation
+    - /app/__init__.py/
+    #+BEGIN_SRC python
+      from flask import Flask, render_template
+      from flask_bootstrap import Bootstrap
+      from flask_mail import Mail
+      from flask_moment import Moment
+      from flask_sqlalchemy import SQLAlchemy
+      from config import config
+
+      bootstrap = Bootstrap()
+      mail = Mail()
+      moment = Moment()
+      db = SQLAlchemy()
+
+      def create_app(config_name):
+          app = Flask(__name__)
+          app.config.from_object(config[config_name])
+          config[config_name].init_app(app)
+
+          bootstrap.init_app(app)
+          mail.init_app(app)
+          moment.init_app(app)
+          db.init_app(app)
+
+          from main import main as main_blueprint # see below
+          app.register_blueprint(main_blueprint)
+
+          return app
+    #+END_SRC
+
+**** Blueprint
+     A blueprint is similar to an application in that it can also define routes
+     - /app/main/__init__.py/
+     #+BEGIN_SRC python
+       from flask import Blueprint
+       main = Blueprint('main', __name__)
+       from . import views, errors
+     #+END_SRC
+     - /app/main/error.py/
+     #+BEGIN_SRC python
+       from flask import render_template
+       from . import main
+
+       @main.app_errorhandler(404)
+       def page_not_found(e):
+           return render_template('404.html'), 404
+
+       @main.app_errorhandler(500)
+       def internal_server_error(e):
+           return render_template('500.html'), 500
+     #+END_SRC
+
+** Launch Script
+    - /app/manage.py/
+      #+BEGIN_SRC python
+        #!/usr/bin/env python
+        import os
+        from app import create_app, db
+        from app.models import User, Role
+        from flask_script import Manager, Shell
+        from flask_migrate import Migrate, MigrateCommand
+
+        app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+        manager = Manager(app)
+        migrate = Migrate(app, db)
+
+        def make_shell_context():
+            return dict(app=app, db=db, User=User, Role=Role)
+        manager.add_command("shell", Shell(make_context=make_shell_context))
+        manager.add_command('db', MigrateCommand)
+
+        if __name__ == '__main__':
+            manager.run()
+      #+END_SRC
+    - add test command
+      #+BEGIN_SRC python
+        @manager.command
+        def test():
+            """Run the unit tests."""
+            import unittest
+            tests = unittest.TestLoader().discover('tests')
+            unittest.TextTestRunner(verbosity=2).run(tests)
+      #+END_SRC
+      the function’s docstring is displayed in the help messages
+
+* RESTful API
+** characteristics
+*** Stateless
+    A client request must contain all the information that is necessary to carry it out.
+    The server must not store any state about the client that persists from one request to the next.
+*** Cache
+    Responses from the server can be labeled as *cacheable* or *noncacheable* so that
+    clients (or intermediaries between clients and servers) can use a cache for optimization purposes.
+*** Uniform Interface
+    often HTTP, HTTPs
+*** Layered System
+    Proxy servers, caches, or gateways can be inserted between clients and servers
+    as necessary to improve performance, reliability, and scalability.
+*** Code-on-Demand
+    Clients can optionally download code from the server to execute in their context.
+
+** Request Methods
+   | Request method | Target                  | Description                                        | HTTP status code |
+   |----------------+-------------------------+----------------------------------------------------+------------------|
+   | GET            | Individual resource URL | Obtain the resource                                |              200 |
+   | GET            | Resource collection URL | Obtain the collection of resources                 |              200 |
+   | POST           | Resource collection URL | Create a new resource and add it to the collection |              201 |
+   | PUT            | Individual resource URL | Create/Modify an existing resource                 |              200 |
+   | DELETE         | Individual resource URL | Delete a resource                                  |              200 |
+   | DELETE         | Resource collection URL | Delete all resources in the collection             |              200 |
+** URL
+   =/api/v1.0/[collection]/[individual]=
+
+** Error Handling
+   - 200: OK
+   - 201: Created
+   - 400: Bad request
+   - 403: Forbidden
+   - 404: Not found
+   - 405: Method not allowed
+   - 500: internal server error
+*** rehandle 404, 500
+    404/500 are generated by Flask on its own and will usually return an HTML response
+    #+BEGIN_SRC python
+      @main.app_errorhandler(404)
+      def page_not_found(e):
+          if request.accept_mimetypes.accept_json and \
+             not request.accept_mimetypes.accept_html:
+              response = jsonify({'error': 'not found'})
+              response.status_code = 404
+              return response
+          return render_template('404.html'), 404
+    #+END_SRC
+    - implement rest of errors
+      #+BEGIN_SRC python
+        # app/api/errors.py: API error handler for status code 403
+        def forbidden(message):
+            response = jsonify({'error': 'forbidden', 'message': message})
+            response.status_code = 403
+            return response
+      #+END_SRC
+** Authentication
+*** flask-httpauth Usage
+    #+BEGIN_SRC python
+      from flask_httpauth import HTTPBasicAuth
+      auth = HTTPBasicAuth()
+
+      @auth.verify_password
+      def verify_password(email, password):
+          if email == '':
+              g.current_user = AnonymousUser()
+              return True
+          user = User.query.filter_by(email = email).first()
+          if not user:
+              return False
+          g.current_user = user
+          return user.verify_password(password)
+    #+END_SRC
+    - protect a route with the *auth.login_required* decorator
+
+*** Token-based Authentication
+    #+BEGIN_SRC python
+      class User(db.Model):
+          # ...
+          def generate_auth_token(self, expiration):
+              s = Serializer(current_app.config['SECRET_KEY'],
+                             expires_in=expiration)
+              return s.dumps({'id': self.id})
+
+          @staticmethod
+          def verify_auth_token(token):
+              s = Serializer(current_app.config['SECRET_KEY'])
+              try:
+                  data = s.loads(token)
+              except:
+                  return None
+              return User.query.get(data['id'])
+    #+END_SRC
+**** Verification
+     - /app/api_1_0/authentication.py/
+    #+BEGIN_SRC python
+      @auth.verify_password
+      def verify_password(email_or_token, password):
+          if email_or_token == '':
+              g.current_user = AnonymousUser()
+              return True
+          if password == '':
+              g.current_user = User.verify_auth_token(email_or_token)
+              g.token_used = True
+              return g.current_user is not None
+          user = User.query.filter_by(email=email_or_token).first()
+          if not user:
+              return False
+          g.current_user = user
+          g.token_used = False
+          return user.verify_password(password)
+
+      @api.route('/token')
+      def get_token():
+          if g.current_user.is_anonymous() or g.token_used:
+              return unauthorized('Invalid credentials')
+          return jsonify({'token': g.current_user.generate_auth_token(
+              expiration=3600), 'expiration': 3600})
+    #+END_SRC
+
+*** Serializing
+    Model should implement *to_json* method and @staticmethod *from_json*
+
+*** Pagination of Large Resource
+    Example:
+    #+BEGIN_SRC python
+      @api.route('/posts/')
+      def get_posts():
+          page = request.args.get('page', 1, type=int)
+          pagination = Post.query.paginate(
+              page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+              error_out=False)
+          posts = pagination.items
+          prev = None
+          if pagination.has_prev:
+              prev = url_for('api.get_posts', page=page-1, _external=True)
+          next = None
+          if pagination.has_next:
+              next = url_for('api.get_posts', page=page+1, _external=True)
+          return jsonify({
+              'posts': [post.to_json() for post in posts],
+              'prev': prev,
+              'next': next,
+              'count': pagination.total
+          })
+    #+END_SRC
+
+*** Use httpie to test API
+    #+BEGIN_SRC sh
+      http --json --auth : GET http://127.0.0.1:5000/api/v1.0/posts/
+    #+END_SRC
 
 * Extensions
 ** flask_script
