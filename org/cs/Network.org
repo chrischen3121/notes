@@ -97,190 +97,147 @@ Concerns how signals are used to transfer message bits over a link.
 
 * Data Link Layer
 ** Frame
-| FLAG | Header | Payload field | Trailer | FLAG |
-*** Bit Stuffing
-After five 1s in the data, insert a 0.
-*** Example(PPP)
-#+BEGIN_VERSE
-PPP is a Point-to-Point Protocal.
-FLAG in PPP is 0x7E, ESC is 0x7D.
-To stuff(unstuff) a byte, add(remove) ESC(0x7D),
-and XOR byte with 0x20.
-#+END_VERSE
+    | FLAG | Header | Payload field | Trailer | FLAG |
 
-** Error Detection
-*** Keywords
-**** Codeword
-An n-bit unit containing data and check bits is often referred to as an n-bit codeword.
-**** Hamming distance
-The number of bit positions in which two codewords differ is called the Hamming distance.
+*** PPP(Point-to-Point Protocol)
+    | FLAG(0x7E) | Address(0xFF) | Control(0x03) | Protocol ID(2-byte) | Payload | Frame Check Sequence(3-byte) | FLAG |
+    - MRU(maximum receive unit): 1500 bytes(Payload part)
+    - ESC(escape character) is 0x7D
 
-- To detect *d* errors, we need *d+1* distance.
-#+BEGIN_EXAMPLE
-000, 111
-001, 101 are both wrong.
-#+END_EXAMPLE
+*** CSMA/CD(Broadcast Protocol)
 
-- To correct *d* errors, we need *2d+1* distance.
-#+BEGIN_EXAMPLE
-0000000000, 0000011111, 1111100000, 1111111111
-Hamming distance: 5
-Number of errors will be corrected: 2
-When we get 0000000111,
-If 2 errors occured, the rec
-When we get 0000000111(2 errors occured), we can correct it: 0000011111
-if three errors happen(0000000011), this code doesn't work.
-#+END_EXAMPLE
+* Error Detection
+** Terms
+*** Codeword
+     check bits of *n*-bit data is often referred to as an n-bit codeword.
 
-*** Parity
-#+BEGIN_VERSE
-Take D data bits, add 1 check bit.
-Check bit is the sum of the D bits module 2.(diff by even sum or odd)
-Distance: 2
-Detect 1 error
-#+END_VERSE
+*** Hamming distance
+     The number of bit positions in which two codewords differ is called the Hamming distance.
+     eg: The hamming distance between 1011101 and 1001001 is 2
 
-*** Checksums
-- Sending
+     - To detect *d* errors, we need *d+1* distance.
+     - To correct *d* errors, we need *2d+1* distance.
 
-Sum is defined in 1s complement.
-1) Arrange data in 16-bit words
-2) Add all
-3) Add with the carryover back to get 16bits
-4) Trans to 1s Complement
+** Parity Verification
+    - Simple Verification
+      #+BEGIN_SRC text
+        Take D data bits, add 1 check bit.
+        Check bit is the sum of the D bits module 2.(diff by even sum or odd)
+        Distance: 2
+        Detect 1 error
+      #+END_SRC
 
-#+BEGIN_EXAMPLE
-0001+f203+f4f5+f6f7=2ddf0
-ddf0+2=ddf2
-ddf2->220d
-#+END_EXAMPLE
+** Checksums
+*** Sending
+     Sum is defined in 1s complement.
+     1. Arrange data in 16-bit words
+     2. Add all
+     3. Add with the carryover back to get 16bits
+     4. Trans to 1s Complement
 
-- Receiving
+     #+BEGIN_SRC text
+       0001+f203+f4f5+f6f7=2ddf0
+       ddf0+2=ddf2
+       ddf2->220d
+     #+END_SRC
 
+*** Receiving
+     1. Arrange data in 16-bit words
+     2. Add all + checksum
+     3. Add any carryover back to get 16bits.
+     4. Negate the result and check if it is 0.
 
-1) Arrange data in 16-bit words
-2) Add all + checksum
-3) Add any carryover back to get 16bits.
-4) Negate the result and check it is 0.
+     #+BEGIN_SRC text
+       0001+f203+f4f5+f6f7+220d=2fffd
+       fffd+2 = ffff
+       ffff->0
+     #+END_SRC
 
-#+BEGIN_EXAMPLE
-0001+f203+f4f5+f6f7+220d=2fffd
-fffd+2 = ffff
-ffff->0
-#+END_EXAMPLE
+*** Conclusion
+     - Distance: 2
+     - Detect 1 error
 
-- Conclusion
-#+BEGIN_VERSE
-Distance: 2
-Detect 1 error
-#+END_VERSE
+** CRC(Cyclic Redundancy Check)
+    Given *n*-bit data, generate *k* check bits such that the *n+k* bits are evenly divisible by a generator C.
+    - C(x) use the polynomial code. eg: 10011010 is $x^7+x^4+x^3+x^1$
 
-*** CRC(Cyclic Redundancy Check)
-#+BEGIN_VERSE
-Given n data bits, generate k check bits such that the n+k bits are evenly
-divisible by a generator C.
-C(x) use the polynomial code:
-eg: 10011010 is $x^7+x^4+x^3+x^1$
-Both the high- and low-order bits of the generator must be 1
-#+END_VERSE
+    Both the high- and low-order bits of the generator must be 1
 
-- Sending
+*** Sending
+     1. Extend the n data bits with k zeros
+     2. Divide by the generator value C
+     3. Keep remainder, ignore quotient
+     4. Adjust k check bits by remainder
 
-  1) Extend the n data bits with k zeros
-  2) Divide by the generator value C
-  3) Keep remainder, ignore quotient
-  4) Adjust k check bits by remainder
-  #+BEGIN_EXAMPLE
-  Frame: 1101011011
-  Generator: 10011
-  K: 4 bits
-  11010110110000 devided by 10011
-  Reminder: 0010
-  #+END_EXAMPLE
+     #+BEGIN_SRC text
+       Frame: 1101011011
+       Generator: 10011
+       K: 4 bits
+       11010110110000 devided by 10011
+       Reminder: 0010
+     #+END_SRC
 
-  #+BEGIN_VERSE
-  Note that: There are no carries for addition or borrows
-  for subtraction. Both addition and subtraction are
-  identical to exclusive OR.
-  #+END_VERSE
+*** Receiving
+     1. Divide and check for zero remainder
 
+*** Conclusion
+     Protection depends on generator.
 
-- Receiving
+     Standard CRC-32 is: 1111 0000 0100 1100 0001 0001 1101 1011 0111
+     - Distance: 4
+     - Detect 3 errors
 
-  1) Divide and check for zero remainder
+** In Practice
+    - Parity is little used
+    - Checksum used in Internet: IP, TCP, UDP
+    - CRCs are widely used on links: Ethernet, 802.11, ADSL, Cable, etc.
 
+* Error Correction
+** Hamming Code
+    - Uses $n=2^k-k-1$
+    - n: data bits
+    - k: check bits
 
-- Conclusion
-  #+BEGIN_VERSE
-  Protection depends on generator.
-  Standard CRC-32 is: 1 0000 0100 1100 0001 0001 1101 1011 0111
-  Distance: 4
-  Detect 3 errors
-  #+END_VERSE
+    eg: n=4, k=3
 
-*** In Practice
-CRCs are widely used on links
-- Ethernet, 802.11, ADSL, Cable...
-Checksum used in Internet
-- IP, TCP, UDP
-Parity
-- Is little used
-
-** Error Correction
-*** Hamming Code
-#+BEGIN_VERSE
-Uses $n=2^k-k-1$
-n: data bits
-k: check bits
-eg: n=4, k=3
-#+END_VERSE
-- Put check bits in positions p that are powers of 2, starting with position 1
-- Check bit in position p is parity of positions with a p term in their values
+    1. Put check bits in positions p that are powers of 2, starting with position 1
+    2. Check bit in position *p* is parity of positions with a *p* term in their values
 
 #+ATTR_HTML: align="center"
 [[file:../resources/network/HammingCodeModel.png]]
 
-- Encoding
-#+BEGIN_EXAMPLE
-data=0101, 3 check bits
-__0_101
-P1=0+1+1=0
-P2=0+0+1=1
-P4=1+0+1=0
-After encoded: 0100101
-#+END_EXAMPLE
+*** Encoding
+    #+BEGIN_SRC text
+      data=0101, 3 check bits
+      __0_101
+      P1=0+1+1=0
+      P2=0+0+1=1
+      P4=1+0+1=0
+      After encoded: 0100101
+    #+END_SRC
 
-- Decoding
-#+BEGIN_EXAMPLE
-0100101
-P1=P1+D3+D5+D7=0+0+1+1=0
-P2=P2+D3+D6+D7=1+0+0+1=0
-P4=P4+D5+D6+D7=0+1+0+1=0
-Syndrome=000, no error
+*** Decoding
+    #+BEGIN_SRC text
+      0100101
+      P1=P1+D3+D5+D7=0+0+1+1=0
+      P2=P2+D3+D6+D7=1+0+0+1=0
+      P4=P4+D5+D6+D7=0+1+0+1=0
+      Syndrome=000, no error
 
-0100111
-P1=0, P2=1, P4=1
-Syndrome=110->6
-The 6th bit is wrong.
-#+END_EXAMPLE
+      0100111
+      P1=0, P2=1, P4=1
+      Syndrome=110->6
+      The 6th bit is wrong.
+    #+END_SRC
+
 ** Detection vs. Correction
-Error correction:
-- Needed when errors are expected
-- When no time for retransmission
+   Error correction:
+   - Needed when errors are expected
+   - When no time for retransmission
 
-Error dection:
-- More efficient when errors are not expected
-- When errors are large when they do occur
-** ARP(Address Resolution Protocol)
-Node uses ARP to map a local IP address to its Link layer address
-#+ATTR_HTML: align="center"
-[[file:../resources/network/ARPPurpose.png]]
-
-- No servers, just asks node with target IP.
-- Uses *broadcast* to reach all nodes.
-
-#+ATTR_HTML: align="center"
-[[file:../resources/network/ARPSeq.png]]
+   Error dection:
+   - More efficient when errors are not expected
+   - When errors are large when they do occur
 
 * Medium Access Control Sublayer
 ** Retransmissions
@@ -879,6 +836,16 @@ When router encounters an error while forwarding:
     #+ATTR_HTML: align="center"
     [[file:../resources/network/IPv6Tunneling.png]]
 
+** ARP(Address Resolution Protocol)
+   Node uses ARP to map a local IP address to its Link layer address
+#+ATTR_HTML: align="center"
+[[file:../resources/network/ARPPurpose.png]]
+
+- No servers, just asks node with target IP.
+- Uses *broadcast* to reach all nodes.
+
+#+ATTR_HTML: align="center"
+[[file:../resources/network/ARPSeq.png]]
 ** Traceroute
 Uses TTL(Time to live) field in IP header.
 #+ATTR_HTML: align="center"
@@ -1075,3 +1042,14 @@ broadcast address is all 1s.
 #+END_VERSE
 #+ATTR_HTML: align="center"
 [[file:../resources/network/DHCPSeq.png]]
+* Devices
+  #+ATTR_HTML: align="center"
+  [[file:../resources/network/osi.png]]
+** Hub
+   - on physical layer. broadcast forwarding
+
+** Switch
+   - on link layer. use MAC address.
+
+** Router
+   - on network layer. use IP.
