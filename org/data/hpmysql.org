@@ -1,0 +1,130 @@
+#+TITLE: High Performance MySQL
+#+KEYWORDS: database, mysql, performance
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ../../org-templates/level-1.org
+* Special SQL
+** AUTOCOMMIT
+   #+BEGIN_SRC sql
+     SHOW VARIABLES LIKE 'AUTOCOMMIT';
+     SET AUTOCOMMIT = 1;
+   #+END_SRC
+** Set isolation level
+    #+BEGIN_SRC sql
+      SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
+    #+END_SRC
+* Storage Engine
+   - InnoDB
+   - MyISAM
+   - Archive
+   - OLTP: XtraDB, TokuDB, like InnoDB
+   - Infobright: Column-oriented
+   - Aria: successor to MyISAM, crash-safe
+   - MySQL Cluster
+
+** Change engine
+*** ALTER TABLE
+     #+BEGIN_SRC sql
+       ALTER TABLE mytable ENGINE = InnoDB;
+     #+END_SRC
+     - row-by-row copy
+     - inplace and slow
+*** Dump and import
+     Use *mysqldump*
+     1. dump to text
+     2. change create sql
+     3. import
+*** CREATE and SELECT
+     #+BEGIN_SRC sql
+       CREATE TABLE innodb_table LIKE myisam_table;
+       ALTER TABLE innodb_table ENGINE=InnoDB;
+       INSERT INTO innodb_table SELECT * FROM myisam_table;
+     #+END_SRC
+     For large volume data:
+     #+BEGIN_SRC sql
+       START TRANSACTION;
+       INSERT INTO innodb_table SELECT * FROM myisam_table WHERE id BETWEEN x AND y;
+       COMMIT;
+     #+END_SRC
+*** Online schema change
+     /pt-online-schema-change/ (based on Facebook’s online schema change technique)
+* Benchmark
+** What to Measure
+*** Throughput
+    Throughput is defined as the number of transactions per unit of time. The usual unit of measurement is
+    transactions per second(TPS), although it is sometimes transactions per minute(TPM).
+
+*** Response time or latency
+    This measures the total time a task requires.
+
+*** Concurrency
+    Concurrency is an important but frequently misused and misunderstood metric. Concurrency benchmark shoud be
+    the number of threads or connections doing work simultaneously.
+
+*** Scalability
+
+** Gathering Data on MySQL
+   - specify user to execute *mysql* command
+     =mysql_config_editor set  --user=username  --host=127.0.0.1 --port=3306 --password=
+
+   - a sample shell script that you can use to gather data on MySQL during benchmarks
+   #+BEGIN_SRC sh
+     #!/bin/sh
+     INTERVAL=5
+     PREFIX=$INTERVAL-sec-status
+     RUNFILE=/home/benchmark/running
+     mysql -e 'SHOW GLOBAL VARIABLES' >> mysql-variables
+     while test -e $RUNFILE; do
+         file=$(date +%F_%I)
+         sleep=$(date +%s.%N | awk "{print $INTERVAL - (\$1 % $INTERVAL)}")
+         sleep $sleep
+         ts="$(date +"TS %s.%N %F %T")"
+         loadavg="$(uptime)"
+         echo "$ts $loadavg" >> $PREFIX-${file}-status
+         mysql -e 'SHOW GLOBAL STATUS' >> $PREFIX-${file}-status &
+         echo "$ts $loadavg" >> $PREFIX-${file}-innodbstatus
+         mysql -e 'SHOW ENGINE INNODB STATUS\G' >> $PREFIX-${file}-innodbstatus &
+         echo "$ts $loadavg" >> $PREFIX-${file}-processlist
+         mysql -e 'SHOW FULL PROCESSLIST\G' >> $PREFIX-${file}-processlist &
+         echo $ts
+     done
+     echo Exiting because $RUNFILE does not exist.
+
+   #+END_SRC
+
+** Analyzing Results
+   #+BEGIN_SRC awk
+     #!/bin/sh
+     awk '
+     BEGIN {
+       printf "#ts date time load QPS";
+       fmt = " %.2f";
+     }
+     /^TS/ { # The timestamp lines begin with TS.
+       ts = substr($2, 1, index($2, ".") - 1);
+       load = NF - 2;
+       diff = ts - prev_ts;
+       prev_ts = ts;
+       printf "\n%s %s %s %s", ts, $3, $4, substr($load, 1, length($load)-1);
+     }
+     /Queries/ {
+       printf fmt, ($2-Queries)/diff;
+       Queries=$2
+     }
+     ' "$@"
+   #+END_SRC
+*** plot
+    #+BEGIN_SRC sh
+      gnuplot> plot "filename" using 5 w lines title "QPS"
+    #+END_SRC
+
+** Tools
+*** http_load
+*** MySQL Benchmark Suite
+*** *sysbench*
+*** dbt2
+*** TPPC-MySQL
