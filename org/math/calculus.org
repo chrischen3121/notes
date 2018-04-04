@@ -116,6 +116,9 @@ which means $f(x)$ is continuous at $a$.
     $f(x) = |x|$ is continuous at 0, but is not differentiable at 0.
 
 ** Rules
+*** Constant Multiple Rule
+    $$\frac{d}{dx}kf(x)=k\frac{d}{dx}f(x)$$
+
 *** Power Rule
     $$\frac{d}{dx}(x^n)=nx^{n-1}$$
 **** Proof
@@ -240,57 +243,27 @@ f^\prime(x) & =\lim_{h\to 0}\frac{(x+h)^n-x^n}{h} \\
      - prove $f(x)$ is constant if $f^\prime(x)=0$ on whole interval
      - prove $f(x)$ is increasing if $f^\prime(x)>0$
 
+* Integration
+** Antiderivative
+   if $F$ is an antiderivative of $f$, then
+   $$\int f(x) dx=F(x)+C$$
+** Rules
+*** Constant Multiple Rule
+    $$\int kf(x) = k\int f(x)$$
 
-* 导数
-** 链式法则(chain rule)
-*** 广义幂法则
-$h(x)=(g(x))^n$ Let $f(x)=x^n$, h(x) is the combination of f(x) and g(x)
-$$h'(x)=f'(g(x))g'(x) = n(g(x))^{n-1}g'(x)$$
-↑广义幂法则
-- Example
-  $$\frac{d}{dx}(\sqrt 3x^5)=\frac{d}{dx}((3x^5){\frac{1}{2}} = \frac{1}{2}(3x^5)^{-\frac{1}{2}}(15x^4)$$
-- More complex example
-  $$k(x) = [cos(\sqrt x - x)]^3$$
-  Let $f(x)=\sqrt x - x$, $g(x)=cosx$, $h(x)=x^3$
-  $$k'(x)=(h(g(f(x))))' = h'(g(f(x)))g'(f(x))f'(x) = 3(cos(\sqrt x - x))^2[-sin(\sqrt x - x)][\frac{1}{2\sqrt 2} - 1]$$
-** 对数微分法(乘积变求和)
-核心思想：利用对数将几个数的乘积化为这些数的和
-- Example
-  $$f(x) = (x+1)(x^2+2)$$
-  $$\ln f(x) = \ln(x+1) + \ln(x^2+2)$$
-  $$\frac{f'(x)}{f(x)} = \frac{1}{x+1} +\frac{2x}{x^2+2}$$
-  $$f'(x) = (\frac{1}{x+1} +\frac{2x}{x^2+2})\times (x+1)(x^2+2)$$
-- 另一种用法
-  $$f(x) = 2^x \to \ln f(x) = x\ln 2^x \to \frac{f'(x)}{f(x)} = \ln 2 \to f'(x) = 2^x\ln 2 $$
-** 极大值和极小值
-*** 一般推导
-1) x=a, f'(x) = 0
-2) x<a, f'(x) > 0
-3) x>a, f'(x) < 0
+*** Substitution Rule
+    if $u=g(x)$,
+    $$\int f(g(x))g^\prime(x)dx=\int f(u)du$$
 
-x=a 时，f(x)有局部最大值
-*** 二阶导数推导
-1) x=a, f'(a)=0
-2) f''(a)>0，则函数在 x=a 有局部最小值
-3) f''(a)<0，则函数在 x=a 有局部最大值
+*** Sum Rule
+    $$\int(f(x)+g(x))dx=\int f(x)dx + \int g(x)dx=F(x)+G(x)+C$$
 
-Easy way to rember:
-$$-\cap - \space +\cup +$$
-原理：f''(a)>0 => f'(a)在上升，结合 f'(a) = 0 所以 x>a 时，f'(x)>0 => f(x)在上升，即 a 点为极小值
-** 二阶导数
-二阶导数为了表示 f(x)的切线斜率的变化率。
-- f''(x)>0 表示递增中，凹口向上
-- f''(x)<0 表示递减中，凹口向下
-- f''(x)=0 表示正在凹口拐点，当然 f''(x)经常不存在
-  #+ATTR_HTML: align="center"
-  [[file:../resources/calculus/SecondDerivativeMeaning.png]]
+*** Power Rule
+    $$\int x^n dx=\frac{x^{n+1}}{n+1} + C$$
 
-** 隐函数微分
-$$y^2+xy+3x = 9$$
-y 可以写成关于 x 的函数，有时不太容易变成 y=f(x)的形式，则把 y 当成关于 x 的隐函数
-$$2y\frac{dy}{dx} +(y + x\frac{dy}{dx}) +3 = 0$$
-$$\frac{dy}{dx}=\frac{-y-3}{2y+x}$$
-由此可算出，(2, 1)点的斜率则为-1
+*** Toolbox
+    - $\int\frac{1}{x}dx=ln|x| + C(x)$, $C(x)$ is *locally constant function*
+    - $\int f(mx+b)dx=\frac{F(mx+b)}{m}+C$
 
 * 积分
 ** 积分定义
@@ -516,27 +489,3 @@ $$ r = a(1\pm{sin\theta})$$ OR
 $$ r= a(1\pm{cos\theta})$$
 a 代表心脏的大小。正负号代表心脏的凹进部分方向。sin/cos 代表是横着的还是竖着的。
 ** 求面积
-* 一些定理
-** 介质定理
-#+BEGIN_VERSE
-若在区间[a, b]上有一连续的函数 f, 且 p 是介于 f(a)跟 f(b)之间的
-任何一个函数值，则在该区间上必定存在一个数 c 使 f(c)=p
-Example:
-f(x) = 2x 问 f(x)在[-1, 1]的区间上是否可能为 0
-f(x)连续且在区间[-1, 1]的 f(x)为[-2, 2]，0 在该区间内。
-所以必定有一个函数值为 0(注意我们在这不太关心函数值为 0 时 x 的取值)
-#+END_VERSE
-** 中值定理(MVT)
-- 罗尔定理
-  #+BEGIN_VERSE
-  若函数在[a, b]上连续且可微，且若 f(a)=0, f(b)=0，则在
-  区间[a, b]内必须存在一点 c, 使得 f'(c)=0。
-  另一种描述：在函数 f(x)的曲线上必有一条切线，与该曲线
-  两端点的连线平行。
-  #+END_VERSE
-- 中值定理
-  #+BEGIN_VERSE
-  中值定理只是罗尔定理转了个角度。
-  定义：若函数 f(x)在区间[a, b]区间上连续且可微，则在该区
-  间内必定存在一点 c，使 $f'(c)=\frac{f(b)-f(a)}{b-a}$
-  #+END_VERSE
