@@ -285,6 +285,26 @@ $$CDF_X(x)= \begin{cases}
 1, & \mbox{if }x\ge 1 \\
 \end{cases}$$
 
+** Uniform distribution
+   $$X\sim Uniform(a, b)$$
+   A discrete random variable has a uniform distribution if all the values belonging to its support have the same probability density.
+   Let $X$ be a discrete random variable. Let its support be $R_X=\{a, a+k, a+2k \dots b\}$. Let the number of $R_X$ be $N$, then $N=\frac{b-a}{k}+1=\frac{b-a+k}{k}$
+*** PMF
+    $$PMF_X(x)=\frac{1}{N}=\frac{k}{b-a+k}$$
+
+*** E(X)
+    $$E(X)=\frac{a+b}{2}$$
+
+*** Var(X)
+    $$Var(X)=k^2(\frac{N^2-1}{12})$$
+
+*** CDF
+$$CDF_X(x)= \begin{cases}
+0,  & \mbox{if }x < a\\
+\frac{\lfloor x\rfloor -a+k}{b-a+k}, & \mbox{if }a \le x \le b \\
+1, & \mbox{if }x > b \\
+\end{cases}$$
+
 ** Binomial distribution
    1. You’re running a series of *independent* trials.
    2. There can be either a success or failure for each trial, and the probability of success is the same for each trial.
@@ -307,7 +327,7 @@ $$CDF_X(x)= \begin{cases}
     $$Var(X)=np(1-p)$$
 
 *** CDF
-    $$CDF_X(x)=\sum_{m=-\infty}^{\lfloor x \rfloor}{n \choose m}p^m(1-p)^{n-m}$$
+    $$CDF_X(x)=\sum_{m=0}^{\lfloor x \rfloor}{n \choose m}p^m(1-p)^{n-m}$$
 
 ** Geometric distribution
    1. You run a series of *independent* trials.
@@ -333,26 +353,7 @@ $$CDF_X(x)= \begin{cases}
 *** CDF
     $$CDF_X(x)=1-(1-p)^{\lfloor x \rfloor}$$
 
-** Uniform distribution
-   $$X\sim Uniform(a, b)$$
-   A discrete random variable has a uniform distribution if all the values belonging to its support have the same probability density.
-   Let $X$ be a discrete random variable. Let its support be $R_X=\{a, a+k, a+2k \dots b\}$. Let the number of $R_X$ be $N$, then $N=\frac{b-a}{k}+1=\frac{b-a+k}{k}$
-*** PMF
-    $$PMF_X(x)=\frac{1}{N}=\frac{k}{b-a+k}$$
-
-*** E(X)
-    $$E(X)=\frac{a+b}{2}$$
-
-*** Var(X)
-    $$Var(X)=k^2(\frac{N^2-1}{12})$$
-
-*** CDF
-$$CDF_X(x)= \begin{cases}
-0,  & \mbox{if }x < a\\
-\frac{\lfloor x\rfloor -a+k}{b-a+k}, & \mbox{if }a \le x \le b \\
-1, & \mbox{if }x > b \\
-\end{cases}$$
-
+*** memorylessness
 ** Pascal distribution
    aslo known as *Negative binomial distribution*
 
@@ -399,8 +400,8 @@ This is why *pascal* is aslo called *negative binomial*.
    3. The purpose is to know the number of occurrences in another particular interval.
 
    Let:
-   - $X$ be the number of occurrences in a particular interval
-   - $\lambda$ be the rate of occurrences, should be $\mu T$
+   - $X$ be the number of occurrences in a particular interval $T$
+   - $\lambda$ be the rate of occurrences, should be $uT$, $u$ is the frequency of occurrences
 
    $$X\sim Po(\lambda)$$
 
@@ -427,6 +428,8 @@ $$CDF_X(x)= \begin{cases}
     If $X\sim B(n, p)$ where $n$ is large and $p$ is small, you can approximate it with $X \sim Po(np)$.
 
 * Continuous distributions
+** Relationship between PDF & CDF
+   $$\frac{dy}{dx}CDF(x)=\int PDF(x)dx$$
 ** Uniform distribution
    A continuous random variable has a uniform distribution if all the values belonging to its support have the same probability density.
    $$X\sim Uniform(a, b)$$
