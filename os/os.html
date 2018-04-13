@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-02 Mon 16:34 -->
+<!-- 2018-04-13 Fri 17:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -282,6 +282,7 @@ for the JavaScript code in this tag.
 <li><a href="#org5cb42f3">3.7. Control</a></li>
 <li><a href="#org66a7787">3.8. Procedure</a></li>
 <li><a href="#orgee7acff">3.9. Array Allocation</a></li>
+<li><a href="#org4f7bb04">3.10. Float Operations</a></li>
 </ul>
 </li>
 <li><a href="#org7e9fac8">4. Storage</a>
@@ -2647,26 +2648,24 @@ Example:
 <h3 id="orgee7acff"><span class="section-number-3">3.9</span> Array Allocation</h3>
 <div class="outline-text-3" id="text-3-9">
 </div>
-<ul class="org-ul">
-<li><a id="org9f26535"></a>1d-array<br />
-<div class="outline-text-5" id="text-org9f26535">
+<div id="outline-container-org9f26535" class="outline-4">
+<h4 id="org9f26535"><span class="section-number-4">3.9.1</span> 1d-array</h4>
+<div class="outline-text-4" id="text-3-9-1">
 <p>
-\[\&A[i] = \&A + i\cdot sizeof(type)\]
+\[\&A[i] = \&A[0] + i\cdot sizeof(type)\]
 </p>
 </div>
-</li>
-<li><a id="org17b765f"></a>2d-array<br />
-<div class="outline-text-5" id="text-org17b765f">
+</div>
+<div id="outline-container-org17b765f" class="outline-4">
+<h4 id="org17b765f"><span class="section-number-4">3.9.2</span> 2d-array</h4>
+<div class="outline-text-4" id="text-3-9-2">
 <p>
 for an array declare as D[R][C],
-\[\&D[i][j] = \&D + sizeof(type)\cdot (C\cdot i + j)\]
+\[\&D[i][j] = \&D[0] + sizeof(type)\cdot (C\cdot i + j)\]
 </p>
 <ul class="org-ul">
 <li><p>
 Example
-</p>
-
-<p>
 s: start address  t: type size  declaration: A[R][C]
 </p>
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
@@ -2706,10 +2705,75 @@ s: start address  t: type size  declaration: A[R][C]
 </table></li>
 </ul>
 </div>
-</li>
+</div>
+<div id="outline-container-org5a64cad" class="outline-4">
+<h4 id="org5a64cad"><span class="section-number-4">3.9.3</span> variable-size array</h4>
+<div class="outline-text-4" id="text-3-9-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">var_ele</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #715ab1;">n</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">A</span><span style="color: #6c3163;">[</span>n<span style="color: #6c3163;">][</span>n<span style="color: #6c3163;">]</span>, <span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #715ab1;">i</span>, <span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #715ab1;">j</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">return</span> A<span style="color: #6c3163;">[</span>i<span style="color: #6c3163;">][</span>j<span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">n in %rdi, A in %rsi, i in %rdx, j in %rcx</span>
+<span style="color: #6c3163; font-weight: bold;">var_ele</span>:
+  <span style="color: #3a81c3; font-weight: bold;">imulq</span> <span style="color: #715ab1;">%rdx</span>, <span style="color: #715ab1;">%rdi</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Compute n*i -&gt; %rdi</span>
+  <span style="color: #3a81c3; font-weight: bold;">leaq</span>  <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%rsi</span>,<span style="color: #715ab1;">%rdi</span>,4<span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%rax</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Compute &amp;A[0]+4(n*i) -&gt; %rax</span>
+  <span style="color: #3a81c3; font-weight: bold;">movl</span>  <span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%rax</span>,<span style="color: #715ab1;">%rcx</span>,4<span style="color: #3a81c3;">)</span>, <span style="color: #715ab1;">%eax</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Read from M[&amp;A[0]+4(n*i)+4j] -&gt; %eax</span>
+  <span style="color: #3a81c3; font-weight: bold;">ret</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4f7bb04" class="outline-3">
+<h3 id="org4f7bb04"><span class="section-number-3">3.10</span> Float Operations</h3>
+<div class="outline-text-3" id="text-3-10">
+</div>
+<div id="outline-container-org9c7732b" class="outline-4">
+<h4 id="org9c7732b"><span class="section-number-4">3.10.1</span> Move</h4>
+<div class="outline-text-4" id="text-3-10-1">
+<p>
+vmovss, vmovsd
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga867a59" class="outline-4">
+<h4 id="orga867a59"><span class="section-number-4">3.10.2</span> Conversion</h4>
+<div class="outline-text-4" id="text-3-10-2">
+<ul class="org-ul">
+<li>vcvtsi2ss, vcvtsi2sd</li>
+<li>vcvtsi2ssq(64bit int to single), vcvsi2sdq(64bit int to double)</li>
 </ul>
 </div>
 </div>
+
+<div id="outline-container-org2201642" class="outline-4">
+<h4 id="org2201642"><span class="section-number-4">3.10.3</span> In Procedure</h4>
+<div class="outline-text-4" id="text-3-10-3">
+<ul class="org-ul">
+<li>%xmm0~%xmm7: store float args</li>
+<li>%xmm0: return float</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0d4d28e" class="outline-4">
+<h4 id="org0d4d28e"><span class="section-number-4">3.10.4</span> Operand</h4>
+<div class="outline-text-4" id="text-3-10-4">
+<ul class="org-ul">
+<li>vaddss, vsubss, vmulss, vdivss, vmaxss, vminss, sqrtss</li>
+<li>XOR&amp;AND: vxorps, vandps, vorpd(double), andpd(double)</li>
+<li>Comparation: ucomiss, ucomisd(double)</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
 
 <div id="outline-container-org7e9fac8" class="outline-2">
 <h2 id="org7e9fac8"><span class="section-number-2">4</span> Storage</h2>
