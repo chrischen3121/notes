@@ -160,3 +160,79 @@
     TPC-C is a specification published by the TPC organization that emulates a complex online transaction-processing load.
 **** dbt2
 **** TPPC-MySQL
+* Profiling
+  - execution-time profiling
+  - wait analysis
+** slow query log
+   related variables: =slow_query_log=, =long_query_time=
+   - low-overhead on I/O-bound workloads
+   - high-fidelity
+*** pt-query-diges
+    =pt-query-diges [log_file]=
+
+** Single Query Profiling
+*** performance_schema
+    #+BEGIN_SRC sql
+      UPDATE performance_schema.setup_instruments SET ENABLED = 'YES', TIMED = 'YES' WHERE NAME LIKE '%statement/%';
+      UPDATE performance_schema.setup_instruments SET ENABLED = 'YES', TIMED = 'YES' WHERE NAME LIKE '%stage/%';
+      UPDATE performance_schema.setup_consumers SET ENABLED = 'YES' WHERE NAME LIKE '%events_statements_%';
+      UPDATE performance_schema.setup_consumers SET ENABLED = 'YES' WHERE NAME LIKE '%events_stages_%';
+
+      SELECT EVENT_ID, TRUNCATE(TIMER_WAIT/1000000000000,6) as Duration, SQL_TEXT
+      FROM performance_schema.events_statements_history_long
+      WHERE ... /*same as SHOW PROFILES*/
+
+      SELECT event_name AS Stage, TRUNCATE(TIMER_WAIT/1000000000000,6) AS Duration
+      FROM performance_schema.events_stages_history_long
+      WHERE NESTING_EVENT_ID=... /*same as SHOW PROFILE FOR QUERY*/
+    #+END_SRC
+    results in =performance_schema.events_statements_history_long=
+
+*** SHOW PROFILE[deprecated]
+    #+BEGIN_SRC sql
+      SET profiling=1;
+
+      SHOW PROFILES;
+      SHOW PROFILE FOR QUERY [Query_ID];
+    #+END_SRC
+
+*** SHOW STATUS
+   #+BEGIN_SRC sql
+     FLUSH STATUS;
+     SHOW STATUS WHERE Variable_name LIKE 'Handler%' OR Variable_name LIKE 'Created%';
+   #+END_SRC
+*** EXPLAIN
+   #+BEGIN_SRC sql
+     EXPLAIN [SQL_QUERY]
+   #+END_SRC
+** Server-Wide Problem Detection
+*** SHOW GLOBAL STATUS
+    Run =SHOW GLOBAL STATUS= periodically, gather Threads_running, Threads_connected, Questions, and Queries.
+    #+BEGIN_SRC sh
+      mysqladmin ext -i1 -p | awk '
+          /Queries/{q=$4-qp;qp=$4}
+          /Threads_connected/{tc=$4}
+          /Threads_running/{printf "%5d %5d %5d\n", q, tc, $4}'
+    #+END_SRC
+*** SHOW PROCESSLIST
+    #+BEGIN_SRC sh
+      mysql -e 'SHOW PROCESSLIST\G' -p | grep State: | sort | uniq -c | sort -rn
+    #+END_SRC
+**** other approaches
+     - PROCESSLIST table
+    #+BEGIN_SRC sql
+      SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST;
+    #+END_SRC
+    - =innotop= command
+*** analyze slow log
+    #+BEGIN_SRC sh
+      awk '/^# Time:/{print $3, $4, c;c=0}/^# User/{c++}' slow-query.log
+    #+END_SRC
+** Tools
+*** USER_STATISTICS
+    =SHOW TABLES FROM INFORMATION_SCHEMA LIKE '%_STATISTICS';= in MariaDB
+*** strace
+    Use =strace= to intercepts system calls
+    #+BEGIN_SRC sh
+      strace -cfp [PID]
+    #+END_SRC

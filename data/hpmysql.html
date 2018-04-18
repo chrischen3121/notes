@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-16 Mon 18:01 -->
+<!-- 2018-04-18 Wed 16:01 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance MySQL</title>
@@ -254,6 +254,14 @@ for the JavaScript code in this tag.
 <li><a href="#org73e3c48">3.2. Gathering Data on MySQL</a></li>
 <li><a href="#org42ff9e0">3.3. Analyzing Results</a></li>
 <li><a href="#orgbad8421">3.4. Tools</a></li>
+</ul>
+</li>
+<li><a href="#orgbd40361">4. Profiling</a>
+<ul>
+<li><a href="#orgbb02c05">4.1. slow query log</a></li>
+<li><a href="#orgc895f05">4.2. Single Query Profiling</a></li>
+<li><a href="#orgc084146">4.3. Server-Wide Problem Detection</a></li>
+<li><a href="#org5d4867e">4.4. Tools</a></li>
 </ul>
 </li>
 </ul>
@@ -583,6 +591,176 @@ TPC-C is a specification published by the TPC organization that emulates a compl
 <li><a id="orgb582305"></a>dbt2<br /></li>
 <li><a id="org3709d43"></a>TPPC-MySQL<br /></li>
 </ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbd40361" class="outline-2">
+<h2 id="orgbd40361"><span class="section-number-2">4</span> Profiling</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>execution-time profiling</li>
+<li>wait analysis</li>
+</ul>
+</div>
+<div id="outline-container-orgbb02c05" class="outline-3">
+<h3 id="orgbb02c05"><span class="section-number-3">4.1</span> slow query log</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+related variables: <code>slow_query_log</code>, <code>long_query_time</code>
+</p>
+<ul class="org-ul">
+<li>low-overhead on I/O-bound workloads</li>
+<li>high-fidelity</li>
+</ul>
+</div>
+<div id="outline-container-orga820946" class="outline-4">
+<h4 id="orga820946"><span class="section-number-4">4.1.1</span> pt-query-diges</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+<code>pt-query-diges [log_file]</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc895f05" class="outline-3">
+<h3 id="orgc895f05"><span class="section-number-3">4.2</span> Single Query Profiling</h3>
+<div class="outline-text-3" id="text-4-2">
+</div>
+<div id="outline-container-org1c263cb" class="outline-4">
+<h4 id="org1c263cb"><span class="section-number-4">4.2.1</span> performance_schema</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">UPDATE</span> performance_schema.setup_instruments <span style="color: #3a81c3; font-weight: bold;">SET</span> ENABLED = <span style="color: #2d9574;">'YES'</span>, TIMED = <span style="color: #2d9574;">'YES'</span> <span style="color: #3a81c3; font-weight: bold;">WHERE</span> <span style="color: #3a81c3; font-weight: bold;">NAME</span> <span style="color: #3a81c3; font-weight: bold;">LIKE</span> <span style="color: #2d9574;">'%statement/%'</span>;
+<span style="color: #3a81c3; font-weight: bold;">UPDATE</span> performance_schema.setup_instruments <span style="color: #3a81c3; font-weight: bold;">SET</span> ENABLED = <span style="color: #2d9574;">'YES'</span>, TIMED = <span style="color: #2d9574;">'YES'</span> <span style="color: #3a81c3; font-weight: bold;">WHERE</span> <span style="color: #3a81c3; font-weight: bold;">NAME</span> <span style="color: #3a81c3; font-weight: bold;">LIKE</span> <span style="color: #2d9574;">'%stage/%'</span>;
+<span style="color: #3a81c3; font-weight: bold;">UPDATE</span> performance_schema.setup_consumers <span style="color: #3a81c3; font-weight: bold;">SET</span> ENABLED = <span style="color: #2d9574;">'YES'</span> <span style="color: #3a81c3; font-weight: bold;">WHERE</span> <span style="color: #3a81c3; font-weight: bold;">NAME</span> <span style="color: #3a81c3; font-weight: bold;">LIKE</span> <span style="color: #2d9574;">'%events_statements_%'</span>;
+<span style="color: #3a81c3; font-weight: bold;">UPDATE</span> performance_schema.setup_consumers <span style="color: #3a81c3; font-weight: bold;">SET</span> ENABLED = <span style="color: #2d9574;">'YES'</span> <span style="color: #3a81c3; font-weight: bold;">WHERE</span> <span style="color: #3a81c3; font-weight: bold;">NAME</span> <span style="color: #3a81c3; font-weight: bold;">LIKE</span> <span style="color: #2d9574;">'%events_stages_%'</span>;
+
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> EVENT_ID, TRUNCATE<span style="color: #3a81c3;">(</span>TIMER_WAIT/<span style="color: #4e3163;">1000000000000</span>,<span style="color: #4e3163;">6</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> Duration, SQL_TEXT
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> performance_schema.events_statements_history_long
+<span style="color: #3a81c3; font-weight: bold;">WHERE</span> ... <span style="color: #2aa1ae; background-color: #ecf3ec;">/*same as SHOW PROFILES*/</span>
+
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> event_name <span style="color: #3a81c3; font-weight: bold;">AS</span> Stage, TRUNCATE<span style="color: #3a81c3;">(</span>TIMER_WAIT/<span style="color: #4e3163;">1000000000000</span>,<span style="color: #4e3163;">6</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> Duration
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> performance_schema.events_stages_history_long
+<span style="color: #3a81c3; font-weight: bold;">WHERE</span> NESTING_EVENT_ID=... <span style="color: #2aa1ae; background-color: #ecf3ec;">/*same as SHOW PROFILE FOR QUERY*/</span>
+</pre>
+</div>
+<p>
+results in <code>performance_schema.events_statements_history_long</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd64d542" class="outline-4">
+<h4 id="orgd64d542"><span class="section-number-4">4.2.2</span> SHOW PROFILE[deprecated]</h4>
+<div class="outline-text-4" id="text-4-2-2">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SET</span>&#160;profiling=<span style="color: #4e3163;">1</span>;
+
+SHOW PROFILES;
+SHOW PROFILE <span style="color: #3a81c3; font-weight: bold;">FOR</span> QUERY <span style="color: #3a81c3;">[</span>Query_ID<span style="color: #3a81c3;">]</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org73005ef" class="outline-4">
+<h4 id="org73005ef"><span class="section-number-4">4.2.3</span> SHOW STATUS</h4>
+<div class="outline-text-4" id="text-4-2-3">
+<div class="org-src-container">
+<pre class="src src-sql">FLUSH STATUS;
+SHOW STATUS <span style="color: #3a81c3; font-weight: bold;">WHERE</span> Variable_name <span style="color: #3a81c3; font-weight: bold;">LIKE</span> <span style="color: #2d9574;">'Handler%'</span> <span style="color: #3a81c3; font-weight: bold;">OR</span> Variable_name <span style="color: #3a81c3; font-weight: bold;">LIKE</span> <span style="color: #2d9574;">'Created%'</span>;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orge7d1a48" class="outline-4">
+<h4 id="orge7d1a48"><span class="section-number-4">4.2.4</span> EXPLAIN</h4>
+<div class="outline-text-4" id="text-4-2-4">
+<div class="org-src-container">
+<pre class="src src-sql">EXPLAIN <span style="color: #3a81c3;">[</span>SQL_QUERY<span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc084146" class="outline-3">
+<h3 id="orgc084146"><span class="section-number-3">4.3</span> Server-Wide Problem Detection</h3>
+<div class="outline-text-3" id="text-4-3">
+</div>
+<div id="outline-container-org21a7211" class="outline-4">
+<h4 id="org21a7211"><span class="section-number-4">4.3.1</span> SHOW GLOBAL STATUS</h4>
+<div class="outline-text-4" id="text-4-3-1">
+<p>
+Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Threads_connected, Questions, and Queries.
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">mysqladmin ext -i1 -p | awk <span style="color: #2d9574;">'</span>
+<span style="color: #2d9574;">    /Queries/{q=$4-qp;qp=$4}</span>
+<span style="color: #2d9574;">    /Threads_connected/{tc=$4}</span>
+<span style="color: #2d9574;">    /Threads_running/{printf "%5d %5d %5d\n", q, tc, $4}'</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgac7b436" class="outline-4">
+<h4 id="orgac7b436"><span class="section-number-4">4.3.2</span> SHOW PROCESSLIST</h4>
+<div class="outline-text-4" id="text-4-3-2">
+<div class="org-src-container">
+<pre class="src src-sh">mysql -e <span style="color: #2d9574;">'SHOW PROCESSLIST\G'</span> -p | grep State: | sort | uniq -c | sort -rn
+</pre>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="org068e930"></a>other approaches<br />
+<div class="outline-text-5" id="text-org068e930">
+<ul class="org-ul">
+<li>PROCESSLIST table</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> * <span style="color: #3a81c3; font-weight: bold;">FROM</span> INFORMATION_SCHEMA.PROCESSLIST;
+</pre>
+</div>
+<ul class="org-ul">
+<li><code>innotop</code> command</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org80025c8" class="outline-4">
+<h4 id="org80025c8"><span class="section-number-4">4.3.3</span> analyze slow log</h4>
+<div class="outline-text-4" id="text-4-3-3">
+<div class="org-src-container">
+<pre class="src src-sh">awk <span style="color: #2d9574;">'/^# Time:/{print $3, $4, c;c=0}/^# User/{c++}'</span> slow-query.log
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org5d4867e" class="outline-3">
+<h3 id="org5d4867e"><span class="section-number-3">4.4</span> Tools</h3>
+<div class="outline-text-3" id="text-4-4">
+</div>
+<div id="outline-container-orgdf02f53" class="outline-4">
+<h4 id="orgdf02f53"><span class="section-number-4">4.4.1</span> USER_STATISTICS</h4>
+<div class="outline-text-4" id="text-4-4-1">
+<p>
+<code>SHOW TABLES FROM INFORMATION_SCHEMA LIKE '%_STATISTICS';</code> in MariaDB
+</p>
+</div>
+</div>
+<div id="outline-container-org85e62ae" class="outline-4">
+<h4 id="org85e62ae"><span class="section-number-4">4.4.2</span> strace</h4>
+<div class="outline-text-4" id="text-4-4-2">
+<p>
+Use <code>strace</code> to intercepts system calls
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">strace -cfp <span style="color: #3a81c3;">[</span>PID<span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+</div>
 </div>
 </div>
 </div>
