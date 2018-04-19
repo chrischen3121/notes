@@ -1,6 +1,6 @@
 #+TITLE: Statistics
 #+KEYWORDS: math, statistics
-#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+OPTIONS: H:3 toc:1 num:3 ^:nil
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
@@ -49,6 +49,7 @@
     - The value far away from mean isn't penalized
 
     eg: set A: 4 4 6 8 8, set B: 2 6 6 6 10, average absolute deviations are the same.
+    - To penalize the outliers, use *standard deviation* instead of *average absolute distance*
 
 *** MAD(median absolute deviation)
     more robust than variance
@@ -97,17 +98,17 @@
 *** Systematic Sampling
     *Systematic Sampling* is where you choose a number, k, and sample every kth unit.
 
-
 ** Mean
    $$\bar{x}=\sum_{i=1}^n x_i$$
    - estimate of population mean
    $$\hat\mu=\bar{x}$$
 
 ** Variance
-   $$s^2 = \frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n}$$
+   $$s_{real}^2 = \frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n}$$
 *** estimate of population variance
     Because population distribution is steeper than sample distribution, use Bessel's Correction to get a better estimate of population
     $$\hat{\sigma}^2 = \frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n-1}$$
+    - The population variance point estimator is usually written $s$, so $s=\hat{\sigma}$
 
 * Sampling Distribution
   - $n$: sample size
@@ -132,6 +133,7 @@ Var(\bar{X}) & =Var(\frac{X_1+X_2+\dots+X_n}{n}) \\
 & = \frac{1}{n}(n\sigma^2) = \frac{\sigma^2}{n}
 \end{align*}$$
 - $SD=\frac{\sigma}{\sqrt n}$
+
 ** Central limit theorem
    Condition: $n \ge 30$
    - The mean of the sample means $\approx\mu$
@@ -142,7 +144,7 @@ Var(\bar{X}) & =Var(\frac{X_1+X_2+\dots+X_n}{n}) \\
   Confidence Interval(CI) is a type of interval estimate of a population parameter
   that is computed from the observed data
   $$statistic\pm margin\ of\ error$$
-  $$margin\ of\ error = c\times (standard\ deviation\ of\ statistic)
+  $$margin\ of\ error = c\times (standard\ deviation\ of\ statistic)$$
 
 ** Steps to Find CI
    1. choose the population statistic
@@ -150,49 +152,97 @@ Var(\bar{X}) & =Var(\frac{X_1+X_2+\dots+X_n}{n}) \\
    3. choose level of confidence
    4. find the confidence limits
 
-** Find CI with Normal Distributed Sampling Distribution($n\ge 30$)
-    $$(\hat{\mu}-zSD, \hat{\mu}+zSD)$$
-    - $zSD$ is the *margin of error*
+* z-distribution
+  Sample size $$n \ge 30$$
+** z-score
+   $$z=\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$$
 
-*** Estimate from sample
-    $$(\bar{x}-z\frac{\hat{\sigma}}{\sqrt{n}}, \bar{x}+z\frac{\hat{\sigma}}{\sqrt{n}})$$
-    $\pm{z}$ are the critical values of Y% confidence interval
+** Estimate CI
+   $$(\hat{\mu}-zSD, \hat{\mu}+zSD)$$
+   - $zSD$ is the *margin of error*
+
+   $$(\bar{x}-z\frac{s}{\sqrt{n}}, \bar{x}+z\frac{s}{\sqrt{n}})$$
+   - $\pm{z}$ are the critical values of Y% confidence interval
+   - if we know what $\sigma$ is, use $\sigma$ in the formula
+
+* t-distribution
+** What is t-distribution
+   The problem with basing our estimate of $\sigma$ on just a small sample is that it may not accurately reflect the true value of
+   the population variance. This means we need to make some allowance for this in our confidence interval by making the
+   interval wider.
+
+** When to use?
+  - population is normal
+  - $\sigma^2$ is unknown
+  - sample size is small
+
+** Notation
+  $$T\sim t(v)$$
+  - $v=n-1$: degree of freedom
+
+** t-score(same as z-score)
+   $$t=\frac{\bar{X}-\mu}{s/\sqrt{n}}$$
+
+** CI
+   $$(\bar{x}-t(v)\frac{s}{\sqrt{n}}, \bar{x}+t(v)\frac{s}{\sqrt{n}})$$
+   - check T-table with $v$ and Y% confidence interval
 
 * Hypothesis testing
-- $\alpha$ levels
-
-  Levels of likelihood: 5%, 1%, 0.1%. If the probability of getting a particular
-  sample mean is less than 5%, it is unlikely to occur.
-
-- critical region: the aera with the probability is less than particular $\alpha$ level
-- critical value: the z-score of the $\alpha$ level
+** Steps
+   1. Decide on the *hypothesis* ($H_0$, $H_A$) you're going to test
+   2. Choose your test *statistic*
+   3. Determine the *critical region* for your decision($\alpha$ level)
+   4. Find the *p-value* of the test statistic
+   5. See whether the sample result is within the *critical region*
+   6. Make your decision
 
 ** null hypothesis $H_0$
 *** Reject null hypothesis
     - Sample mean falls within the *critical region*
-    - z-score of sample mean is *greater than* the z-critical value
+    - z/t-score of sample mean is *greater than* the z/t-critical value
     - the probability of obtaining the sample mean is *less than* the $\alpha$ level
 
 *** type 1 error
     Reject $H_0$, but in the real world $H_0$ is true.
-    We think our hypothesis is correct, but it is wrong.
+    $P(type\ 1 error)$ = \alpha$
 
 *** type 2 error
     Retain $H_0$, but in the real world $H_0$ is false.
-    We think our hypothesis is wrong, but it is true.
+    $P(type\ 2 error)$ = \beta$
+**** Find $\beta$
+     1. Check that you have a specific value for $H_A$
+     2. Find the range of values outside the *critical region* of your test
+     3. Find the probability of getting this range ov values, assuming $H_1$ is true
+
+     We can only calculate $\beta$ if $H_A$ specifies a single specific value
+
+**** Power
+     The *power* of a hypothesis test is the probability that we will reject $H_0$
+     when $H_0$ is false
+     $$power = 1 - \beta$$
 
 ** alternative hypothesis $H_A$
-- assume $H_0$ is
-$$\mu\approx\mu_I$$
+   - assume $H_0$ is $\mu\approx\mu_0$
+   - then $H_A$ could be $\mu\neq\mu_0$, $\mu<\mu_0$,  $\mu>\mu_0$
 
-- then $H_A$ is
-$$\mu\neq\mu_I, \mu<\mu_I, \mu>\mu_I$$
+*** $\mu\neq\mu_0$
+    Use two-tailed test
 
-* Z-Tests
-  - known $\sigma$
-  - the sample size is *large* (often $n \ge 30$)
+*** $\mu<\mu_0$ or $\mu>\mu_0$
+    Use one-tailed test
 
-* T-Tests
+* Regression & Correlation
+** Least Squares Regression
+   The idea is to minimize the sum of squared errors(SSE) $\sum(y-\hat{y})$ where $\hat y=a+b\hat x$
+   $$b=\frac{\sum((x-\bar{x})(y-\bar{y}))}{\sum(x-\bar{x})}$$
+   $$a=\bar{y}-b\bar{x}$$
+
+** correlation coefficient
+   The *correlation coefficient* is a number between -1 and 1 that describes the
+   scatter of data points *away from* the line of best fit.
+   $$r=\frac{bs_x}{s_y}$$
+
+* TODO T-Tests
   Compare the difference between two means
 ** SEM(standard error of mean)
    uses sample sd
@@ -222,48 +272,49 @@ $$r^2=\frac{t^2}{t^2+df}$$
 ** Terms
 | DF  | degree of freedom      |
 | SEM | standard error of mean |
-* Dependent 2 sample t-test
+** Dependent 2 sample t-test
 $$t=\frac{\bar{x}_D-\mu_D}{S_D/\sqrt{n}}$$
 $$CI=\bar{x}_D\pm t_{critical}\cdot\frac{S_D}{\sqrt{n}}$$
 $$cohen's\ d=\frac{\bar{x}_D}{S_D}$$
-** Within-Subject designs
+*** Within-Subject designs
 - Two conditions
 - Pre-test, post-test
 - Growth over time(longitudinal study)
-** Effect size
+*** Effect size
 - difference measures: mean, standardized
   #+BEGIN_VERSE
   cohen's d == standardized mean difference
   #+END_VERSE
 
-** Statistical significance
+*** Statistical significance
 
    Statistical significance means:
    - rejected the null
    - results are not likely due to chance(sampling error)
 
-** Advantages
+*** Advantages
 - Controls for individual differences
 - Use fewer subject
 - Cost-effective
 - Less time-consuming
 - Less expensive
 
-** Disadvantages
+*** Disadvantages
 - Carry-over effects
 
   Second measurement can be affected by first treatment
 
 - Order may influence results
 
-* Independent 2 sample t-test
-** Between-Subject designs
+** Independent 2 sample t-test
+*** Between-Subject designs
 - Experimental
 - Observational
 
-** DF
-   $$DF = n_1+n_2-2$$
-** SE
+*** DF
+    $$DF = n_1+n_2-2$$
+
+*** SE
    $$s=\sqrt{s_{1}^2+s_{2}^2}$$
 
    Assumes samples are approximately the same size, then
@@ -278,7 +329,7 @@ $$cohen's\ d=\frac{\bar{x}_D}{S_D}$$
 
     $$d=\frac{\bar{x}-\mu}{S_p}$$
 
-** t statistic
+*** t statistic
    $$t=\frac{\bar{x}_D-\mu_D}{SE}$$
 
 * ANOVA
@@ -385,6 +436,3 @@ $$df_{total}=df_{between}+df_{within}=N-1$$
 
 *** Line charts
     Line charts are better at showing a trend.
-* Terms
-
-| z-score                     | number of standard deviations away from $\mu$                         |
