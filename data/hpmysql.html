@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-18 Wed 16:02 -->
+<!-- 2018-04-19 Thu 17:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance MySQL</title>
@@ -253,7 +253,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgc81dc2d">3.1. What to Measure</a></li>
 <li><a href="#org73e3c48">3.2. Gathering Data on MySQL</a></li>
 <li><a href="#org42ff9e0">3.3. Analyzing Results</a></li>
-<li><a href="#org5d4867e">3.4. Tools</a></li>
+<li><a href="#org4956cc6">3.4. Tools</a></li>
 </ul>
 </li>
 <li><a href="#orgbd40361">4. Profiling</a>
@@ -261,7 +261,6 @@ for the JavaScript code in this tag.
 <li><a href="#orgbb02c05">4.1. slow query log</a></li>
 <li><a href="#orgc895f05">4.2. Single Query Profiling</a></li>
 <li><a href="#orgc084146">4.3. Server-Wide Problem Detection</a></li>
-<li><a href="#org4956cc6">4.4. Tools</a></li>
 </ul>
 </li>
 </ul>
@@ -479,8 +478,8 @@ awk '
 </div>
 </div>
 
-<div id="outline-container-org5d4867e" class="outline-3">
-<h3 id="org5d4867e"><span class="section-number-3">3.4</span> Tools</h3>
+<div id="outline-container-org4956cc6" class="outline-3">
+<h3 id="org4956cc6"><span class="section-number-3">3.4</span> Tools</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
 <div id="outline-container-org3405a1b" class="outline-4">
@@ -613,12 +612,26 @@ related variables: <code>slow_query_log</code>, <code>long_query_time</code>
 <li>high-fidelity</li>
 </ul>
 </div>
-<div id="outline-container-orga820946" class="outline-4">
-<h4 id="orga820946"><span class="section-number-4">4.1.1</span> pt-query-diges</h4>
+
+<div id="outline-container-org224fb82" class="outline-4">
+<h4 id="org224fb82"><span class="section-number-4">4.1.1</span> pt-query-digest</h4>
 <div class="outline-text-4" id="text-4-1-1">
 <p>
-<code>pt-query-diges [log_file]</code>
+Analyze MySQL queries from logs, processlist, and tcpdump.
+<code>pt-query-digest [log_file]</code>
 </p>
+</div>
+</div>
+
+<div id="outline-container-orge8f7038" class="outline-4">
+<h4 id="orge8f7038"><span class="section-number-4">4.1.2</span> tcpdump</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<p>
+Use <code>tcpdump</code> to capture TCP network traffic and inspecting it, then
+</p>
+<ul class="org-ul">
+<li>use <code>pt-query-digest --type=tpcdump</code> to decode the MySQL client/server protocol</li>
+</ul>
 </div>
 </div>
 </div>
@@ -684,13 +697,22 @@ SHOW STATUS <span style="color: #3a81c3; font-weight: bold;">WHERE</span> Variab
 </div>
 </div>
 </div>
+
 <div id="outline-container-orgc084146" class="outline-3">
 <h3 id="orgc084146"><span class="section-number-3">4.3</span> Server-Wide Problem Detection</h3>
 <div class="outline-text-3" id="text-4-3">
 </div>
-<div id="outline-container-org21a7211" class="outline-4">
-<h4 id="org21a7211"><span class="section-number-4">4.3.1</span> SHOW GLOBAL STATUS</h4>
+<div id="outline-container-org7ef8a0f" class="outline-4">
+<h4 id="org7ef8a0f"><span class="section-number-4">4.3.1</span> sysstat</h4>
 <div class="outline-text-4" id="text-4-3-1">
+<ul class="org-ul">
+<li>iostat, vmstat</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org21a7211" class="outline-4">
+<h4 id="org21a7211"><span class="section-number-4">4.3.2</span> SHOW GLOBAL STATUS</h4>
+<div class="outline-text-4" id="text-4-3-2">
 <p>
 Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Threads_connected, Questions, and Queries.
 </p>
@@ -704,60 +726,10 @@ Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Thread
 </div>
 </div>
 <div id="outline-container-orgac7b436" class="outline-4">
-<h4 id="orgac7b436"><span class="section-number-4">4.3.2</span> SHOW PROCESSLIST</h4>
-<div class="outline-text-4" id="text-4-3-2">
-<div class="org-src-container">
-<pre class="src src-sh">mysql -e <span style="color: #2d9574;">'SHOW PROCESSLIST\G'</span> -p | grep State: | sort | uniq -c | sort -rn
-</pre>
-</div>
-</div>
-<ul class="org-ul">
-<li><a id="org068e930"></a>other approaches<br />
-<div class="outline-text-5" id="text-org068e930">
-<ul class="org-ul">
-<li>PROCESSLIST table</li>
-</ul>
-<div class="org-src-container">
-<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> * <span style="color: #3a81c3; font-weight: bold;">FROM</span> INFORMATION_SCHEMA.PROCESSLIST;
-</pre>
-</div>
-<ul class="org-ul">
-<li><code>innotop</code> command</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div id="outline-container-org80025c8" class="outline-4">
-<h4 id="org80025c8"><span class="section-number-4">4.3.3</span> analyze slow log</h4>
+<h4 id="orgac7b436"><span class="section-number-4">4.3.3</span> SHOW PROCESSLIST</h4>
 <div class="outline-text-4" id="text-4-3-3">
 <div class="org-src-container">
-<pre class="src src-sh">awk <span style="color: #2d9574;">'/^# Time:/{print $3, $4, c;c=0}/^# User/{c++}'</span> slow-query.log
-</pre>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-org4956cc6" class="outline-3">
-<h3 id="org4956cc6"><span class="section-number-3">4.4</span> Tools</h3>
-<div class="outline-text-3" id="text-4-4">
-</div>
-<div id="outline-container-orgdf02f53" class="outline-4">
-<h4 id="orgdf02f53"><span class="section-number-4">4.4.1</span> USER_STATISTICS</h4>
-<div class="outline-text-4" id="text-4-4-1">
-<p>
-<code>SHOW TABLES FROM INFORMATION_SCHEMA LIKE '%_STATISTICS';</code> in MariaDB
-</p>
-</div>
-</div>
-<div id="outline-container-org85e62ae" class="outline-4">
-<h4 id="org85e62ae"><span class="section-number-4">4.4.2</span> strace</h4>
-<div class="outline-text-4" id="text-4-4-2">
-<p>
-Use <code>strace</code> to intercepts system calls
-</p>
-<div class="org-src-container">
-<pre class="src src-sh">strace -cfp <span style="color: #3a81c3;">[</span>PID<span style="color: #3a81c3;">]</span>
+<pre class="src src-sh">mysql -e <span style="color: #2d9574;">'SHOW PROCESSLIST\G'</span> -p | grep State: | sort | uniq -c | sort -rn
 </pre>
 </div>
 </div>

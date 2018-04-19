@@ -167,8 +167,14 @@
    related variables: =slow_query_log=, =long_query_time=
    - low-overhead on I/O-bound workloads
    - high-fidelity
-*** pt-query-diges
-    =pt-query-diges [log_file]=
+
+*** pt-query-digest
+    Analyze MySQL queries from logs, processlist, and tcpdump.
+    =pt-query-digest [log_file]=
+
+*** tcpdump
+    Use =tcpdump= to capture TCP network traffic and inspecting it, then
+    - use =pt-query-digest --type=tpcdump= to decode the MySQL client/server protocol
 
 ** Single Query Profiling
 *** performance_schema
@@ -205,7 +211,10 @@
    #+BEGIN_SRC sql
      EXPLAIN [SQL_QUERY]
    #+END_SRC
+
 ** Server-Wide Problem Detection
+*** sysstat
+    - iostat, vmstat
 *** SHOW GLOBAL STATUS
     Run =SHOW GLOBAL STATUS= periodically, gather Threads_running, Threads_connected, Questions, and Queries.
     #+BEGIN_SRC sh
@@ -224,10 +233,23 @@
       SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST;
     #+END_SRC
     - =innotop= command
+*** SHOW INNODB STATUS
 *** analyze slow log
     #+BEGIN_SRC sh
       awk '/^# Time:/{print $3, $4, c;c=0}/^# User/{c++}' slow-query.log
     #+END_SRC
+
+*** *oprofile*
+    primary Linux system profiling tool
+
+*** *pt-stalk*
+    Collect forensic data about MySQL when problems occur.
+    - =pt-sift=: Browses files created by =pt-stalk=
+
+*** =pt-mysql-summary= & =pt-summary=
+*** *pt-pmp*
+    Aggregate GDB stack traces for a selected program
+
 ** Tools
 *** USER_STATISTICS
     =SHOW TABLES FROM INFORMATION_SCHEMA LIKE '%_STATISTICS';= in MariaDB
