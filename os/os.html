@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-13 Fri 17:53 -->
+<!-- 2018-04-20 Fri 17:07 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -285,10 +285,18 @@ for the JavaScript code in this tag.
 <li><a href="#org4f7bb04">3.10. Float Operations</a></li>
 </ul>
 </li>
-<li><a href="#org7e9fac8">4. Storage</a>
+<li><a href="#org2df7119">4. Optimizing Program Performance</a>
 <ul>
-<li><a href="#org2fe3633">4.1. Disk</a></li>
-<li><a href="#org805cd60">4.2. Locality</a></li>
+<li><a href="#org42e3063">4.1. Limits of Optimizing Compilers</a></li>
+<li><a href="#orgb3df4c6">4.2. Expressing Program Performance</a></li>
+<li><a href="#orga768c7b">4.3. Optimizing Performance</a></li>
+<li><a href="#orgba74267">4.4. CPU related Optimization</a></li>
+</ul>
+</li>
+<li><a href="#org7e9fac8">5. Storage</a>
+<ul>
+<li><a href="#org2fe3633">5.1. Disk</a></li>
+<li><a href="#org805cd60">5.2. Locality</a></li>
 </ul>
 </li>
 </ul>
@@ -2774,22 +2782,140 @@ vmovss, vmovsd
 </div>
 </div>
 
-
-<div id="outline-container-org7e9fac8" class="outline-2">
-<h2 id="org7e9fac8"><span class="section-number-2">4</span> Storage</h2>
+<div id="outline-container-org2df7119" class="outline-2">
+<h2 id="org2df7119"><span class="section-number-2">4</span> Optimizing Program Performance</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org2fe3633" class="outline-3">
-<h3 id="org2fe3633"><span class="section-number-3">4.1</span> Disk</h3>
+<div id="outline-container-org42e3063" class="outline-3">
+<h3 id="org42e3063"><span class="section-number-3">4.1</span> Limits of Optimizing Compilers</h3>
 <div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-org742802c" class="outline-4">
+<h4 id="org742802c"><span class="section-number-4">4.1.1</span> memory aliasing</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">twiddle1</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">xp</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">yp</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  *xp += *yp;
+  *xp += *yp;
+<span style="color: #3a81c3;">}</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">twiddle2</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">xp</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">yp</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span> *xp += <span style="color: #4e3163;">2</span> * *yp; <span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<p>
+The results will be different when xp == yp. Compilers can't optimize <b>twiddle1</b>
+</p>
+</div>
+</div>
+<div id="outline-container-orgaa78831" class="outline-4">
+<h4 id="orgaa78831"><span class="section-number-4">4.1.2</span> function calls</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #6c3163; font-weight: bold;">f</span><span style="color: #3a81c3;">()</span>;
+<span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #6c3163; font-weight: bold;">func1</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span> <span style="color: #3a81c3; font-weight: bold;">return</span> f<span style="color: #6c3163;">()</span> + f<span style="color: #6c3163;">()</span> + f<span style="color: #6c3163;">()</span> + f<span style="color: #6c3163;">()</span>; <span style="color: #3a81c3;">}</span>
+<span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #6c3163; font-weight: bold;">func2</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span> <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">4</span> * f<span style="color: #6c3163;">()</span>; <span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<p>
+Compilers don't know if f() has a <i>side effect</i>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb3df4c6" class="outline-3">
+<h3 id="orgb3df4c6"><span class="section-number-3">4.2</span> Expressing Program Performance</h3>
+<div class="outline-text-3" id="text-4-2">
+</div>
+<div id="outline-container-org65e480f" class="outline-4">
+<h4 id="org65e480f"><span class="section-number-4">4.2.1</span> CPE(Cycles Per Element)</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<p>
+4GHz means \(4.0\times 10^9\) cycles per second.
+The period of a 4GHz clock is 0.25 nanoseconds.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga768c7b" class="outline-3">
+<h3 id="orga768c7b"><span class="section-number-3">4.3</span> Optimizing Performance</h3>
+<div class="outline-text-3" id="text-4-3">
+</div>
+<div id="outline-container-org1703843" class="outline-4">
+<h4 id="org1703843"><span class="section-number-4">4.3.1</span> Eliminating Loop Inefficiencies</h4>
+<div class="outline-text-4" id="text-4-3-1">
+<p>
+e.g.: invoke unnecessary <b>strlen</b> in the loop
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfa65389" class="outline-4">
+<h4 id="orgfa65389"><span class="section-number-4">4.3.2</span> Reducing Procedure Calls</h4>
+</div>
+<div id="outline-container-orgc06b50f" class="outline-4">
+<h4 id="orgc06b50f"><span class="section-number-4">4.3.3</span> Eliminating Unneeded Memory References</h4>
+<div class="outline-text-4" id="text-4-3-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">i</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">result</span> = <span style="color: #4e3163;">0</span>;
+<span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i = <span style="color: #4e3163;">0</span>; i &lt; MAXIMUM; ++i<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  *result = *result + i; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">just use int instead of int*</span>
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgba74267" class="outline-3">
+<h3 id="orgba74267"><span class="section-number-3">4.4</span> CPU related Optimization</h3>
+<div class="outline-text-3" id="text-4-4">
+</div>
+<div id="outline-container-orgcfb57eb" class="outline-4">
+<h4 id="orgcfb57eb"><span class="section-number-4">4.4.1</span> Two Lower Bounds Characterize the Max Performance</h4>
+<div class="outline-text-4" id="text-4-4-1">
+<ul class="org-ul">
+<li>latency bound: is encountered when a series of operations</li>
+</ul>
+<p>
+must be performed in strict sequence, because the result of one operation is
+required before the next one can begin.
+</p>
+
+<ul class="org-ul">
+<li>throughput bound: characterizes the raw computing capacity of the processor’s functional units.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgec8fdbd" class="outline-4">
+<h4 id="orgec8fdbd"><span class="section-number-4">4.4.2</span> modern CPU</h4>
+<div class="outline-text-4" id="text-4-4-2">
+
+<div class="figure">
+<p><img src="../resources/os/CpuBlockDiagram.png" alt="CpuBlockDiagram.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7e9fac8" class="outline-2">
+<h2 id="org7e9fac8"><span class="section-number-2">5</span> Storage</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org2fe3633" class="outline-3">
+<h3 id="org2fe3633"><span class="section-number-3">5.1</span> Disk</h3>
+<div class="outline-text-3" id="text-5-1">
 <p>
 terms: track, sector, cylinder
 </p>
 </div>
 
 <div id="outline-container-orgf4e0571" class="outline-4">
-<h4 id="orgf4e0571"><span class="section-number-4">4.1.1</span> Access time</h4>
-<div class="outline-text-4" id="text-4-1-1">
+<h4 id="orgf4e0571"><span class="section-number-4">5.1.1</span> Access time</h4>
+<div class="outline-text-4" id="text-5-1-1">
 <ul class="org-ul">
 <li>seek time 3~9ms</li>
 <li>rotational latency \(T_{max}=\frac{1}{RPM}\cdot60\cdot1000 ms\)</li>
@@ -2800,8 +2926,8 @@ terms: track, sector, cylinder
 </div>
 
 <div id="outline-container-org805cd60" class="outline-3">
-<h3 id="org805cd60"><span class="section-number-3">4.2</span> Locality</h3>
-<div class="outline-text-3" id="text-4-2">
+<h3 id="org805cd60"><span class="section-number-3">5.2</span> Locality</h3>
+<div class="outline-text-3" id="text-5-2">
 <p class="verse">
 Programs that repeatedly reference the same variables enjoy good temporal locality.<br />
 <br />

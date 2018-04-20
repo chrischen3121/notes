@@ -668,6 +668,83 @@ Condition: $x\neq 0$
     - XOR&AND: vxorps, vandps, vorpd(double), andpd(double)
     - Comparation: ucomiss, ucomisd(double)
 
+* Optimizing Program Performance
+** Limits of Optimizing Compilers
+*** memory aliasing
+    #+BEGIN_SRC c
+      void twiddle1(int *xp, int *yp) {
+        ,*xp += *yp;
+        ,*xp += *yp;
+      }
+      void twiddle2(int *xp, int *yp) { *xp += 2 * *yp; }
+    #+END_SRC
+    The results will be different when xp == yp. Compilers can't optimize *twiddle1*
+*** function calls
+    #+BEGIN_SRC c
+      long f();
+      long func1() { return f() + f() + f() + f(); }
+      long func2() { return 4 * f(); }
+    #+END_SRC
+    Compilers don't know if f() has a /side effect/.
+
+** Expressing Program Performance
+*** CPE(Cycles Per Element)
+    4GHz means $4.0\times 10^9$ cycles per second.
+    The period of a 4GHz clock is 0.25 nanoseconds.
+
+** Optimizing Performance
+*** Eliminating Loop Inefficiencies
+    e.g.: invoke unnecessary *strlen* in the loop
+
+*** Reducing Procedure Calls
+*** Eliminating Unneeded Memory References
+    #+BEGIN_SRC c
+      int i;
+      int *result = 0;
+      for (i = 0; i < MAXIMUM; ++i) {
+        ,*result = *result + i; //just use int instead of int*
+      }
+    #+END_SRC
+
+** CPU related Optimization
+*** Two Lower Bounds Characterize the Max Performance
+    - latency bound: is encountered when a series of operations
+    must be performed in strict sequence, because the result of one operation is
+    required before the next one can begin.
+
+    - throughput bound: characterizes the raw computing capacity of the processor’s functional units.
+*** modern CPU
+    #+ATTR_HTML: align="center"
+    [[file:../resources/os/CpuBlockDiagram.png]]
+**** branch prediction & speculative execution
+     Misprediction incurs a significant cost in performance
+**** instruction decoding
+     *Instruction decoding* logic takes the actual program instructions and converts
+     them into a set of primitive operations
+     #+BEGIN_SRC asm
+       addq %rax, 8(%rdx)
+     #+END_SRC
+     yields multiple operations, separating the memory references from the arithmetic
+     operations.
+
+**** EU
+     The EU receives operations from the instruction fetch unit. Operations are dispatched to
+     a set of functional units that perform the actual operations.
+
+**** retirement unit
+     The retirement unit keeps track of the ongoing processing and
+     makes sure that it obeys the sequential semantics of the machine-level program.
+     - once the operations for the instruction have completed and any branch points
+     leading to this instruction are confirmed as having been correctly predicted,
+     the instruction can be *retired*
+     - If some branch point leading to this instruction was mispredicted, the instruction
+     will be *flushed*, discarding any results that may have been computed.
+
+**** operation results
+     the *execution units* can send results directly to each other.
+     - The most common mechanism for controlling the communication of operands
+     among the execution units is called *register renaming*
+
 * Storage
 ** Disk
 terms: track, sector, cylinder
