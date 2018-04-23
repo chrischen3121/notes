@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-20 Fri 17:07 -->
+<!-- 2018-04-23 Mon 14:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -2897,6 +2897,143 @@ required before the next one can begin.
 </p>
 </div>
 </div>
+<ul class="org-ul">
+<li><a id="org556b992"></a>Branch Prediction &amp; Speculative Execution<br />
+<div class="outline-text-5" id="text-org556b992">
+<p>
+Misprediction incurs a significant cost in performance
+</p>
+</div>
+</li>
+<li><a id="org2a92189"></a>Instruction Decoding<br />
+<div class="outline-text-5" id="text-org2a92189">
+<p>
+<b>Instruction decoding</b> logic takes the actual program instructions and converts
+them into a set of primitive operations
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #6c3163; font-weight: bold;">addq</span> <span style="color: #3a81c3; font-weight: bold;">%rax</span>, 8<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">%rdx</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+yields multiple operations, separating the memory references from the arithmetic
+operations.
+</p>
+</div>
+</li>
+
+<li><a id="org00312f2"></a>EU<br />
+<div class="outline-text-5" id="text-org00312f2">
+<p>
+The EU receives operations from the instruction fetch unit. Operations are dispatched to
+a set of functional units that perform the actual operations.
+</p>
+</div>
+</li>
+
+<li><a id="org4265782"></a>Retirement Unit<br />
+<div class="outline-text-5" id="text-org4265782">
+<p>
+The retirement unit keeps track of the ongoing processing and
+makes sure that it obeys the sequential semantics of the machine-level program.
+</p>
+<ul class="org-ul">
+<li>once the operations for the instruction have completed and any branch points</li>
+</ul>
+<p>
+leading to this instruction are confirmed as having been correctly predicted,
+the instruction can be <b>retired</b>
+</p>
+<ul class="org-ul">
+<li>If some branch point leading to this instruction was mispredicted, the instruction</li>
+</ul>
+<p>
+will be <b>flushed</b>, discarding any results that may have been computed.
+</p>
+</div>
+</li>
+
+<li><a id="org391f521"></a>Operation Results<br />
+<div class="outline-text-5" id="text-org391f521">
+<p>
+the <b>execution units</b> can send results directly to each other.
+</p>
+<ul class="org-ul">
+<li>The most common mechanism for controlling the communication of operands</li>
+</ul>
+<p>
+among the execution units is called <b>register renaming</b>
+</p>
+</div>
+</li>
+
+<li><a id="org5cecfeb"></a>Functional Unit Performance<br />
+<div class="outline-text-5" id="text-org5cecfeb">
+<ul class="org-ul">
+<li>Latency: the total time required to perform the operation</li>
+<li>Issue time: the minimum number of clock cycles between two successive operations of the same type</li>
+</ul>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Operation</td>
+<td class="org-right">Latency</td>
+<td class="org-right">Issue</td>
+</tr>
+
+<tr>
+<td class="org-left">Add(Int)</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">Mul(Int)</td>
+<td class="org-right">3</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">Div(Int)</td>
+<td class="org-right">3~30</td>
+<td class="org-right">3~30</td>
+</tr>
+
+<tr>
+<td class="org-left">Add(Float)</td>
+<td class="org-right">3</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">Mul(Float)</td>
+<td class="org-right">5</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">Div(Float)</td>
+<td class="org-right">3~15</td>
+<td class="org-right">3~15</td>
+</tr>
+</tbody>
+</table>
+<ul class="org-ul">
+<li>Functional units with issue times of 1 cycle are said to be fully pipelined</li>
+<li>Thoughput: \(\frac{number\ of\ function\ unit}{issue\ time}\) cycles per operation</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>

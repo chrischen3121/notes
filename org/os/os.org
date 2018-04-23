@@ -716,9 +716,9 @@ Condition: $x\neq 0$
 *** modern CPU
     #+ATTR_HTML: align="center"
     [[file:../resources/os/CpuBlockDiagram.png]]
-**** branch prediction & speculative execution
+**** Branch Prediction & Speculative Execution
      Misprediction incurs a significant cost in performance
-**** instruction decoding
+**** Instruction Decoding
      *Instruction decoding* logic takes the actual program instructions and converts
      them into a set of primitive operations
      #+BEGIN_SRC asm
@@ -731,7 +731,7 @@ Condition: $x\neq 0$
      The EU receives operations from the instruction fetch unit. Operations are dispatched to
      a set of functional units that perform the actual operations.
 
-**** retirement unit
+**** Retirement Unit
      The retirement unit keeps track of the ongoing processing and
      makes sure that it obeys the sequential semantics of the machine-level program.
      - once the operations for the instruction have completed and any branch points
@@ -740,10 +740,62 @@ Condition: $x\neq 0$
      - If some branch point leading to this instruction was mispredicted, the instruction
      will be *flushed*, discarding any results that may have been computed.
 
-**** operation results
+**** Operation Results
      the *execution units* can send results directly to each other.
      - The most common mechanism for controlling the communication of operands
      among the execution units is called *register renaming*
+
+**** Functional Unit Performance
+     - Latency: the total time required to perform the operation
+     - Issue time: the minimum number of clock cycles between two successive operations of the same type
+     | Operation  | Latency | Issue |
+     | Add(Int)   |       1 |     1 |
+     | Mul(Int)   |       3 |     1 |
+     | Div(Int)   |    3~30 |  3~30 |
+     | Add(Float) |       3 |     1 |
+     | Mul(Float) |       5 |     1 |
+     | Div(Float) |    3~15 |  3~15 |
+     - Functional units with issue times of 1 cycle are said to be fully pipelined
+     - Thoughput: $\frac{number\ of\ function\ unit}{issue\ time}$ cycles per operation
+
+*** *Data Flow Analysis*
+    Keypoint is finding *critical path*
+
+*** Loop Unrolling
+    Loop unrolling is a program transformation that reduces the number of iterations
+    for a loop by increasing the number of elements computed on each iteration.
+    #+BEGIN_SRC c
+      for (i = 0; i < n; i++) {
+        acc = acc * data[i];
+      }
+
+      // --> 2 * 1 loop unrolling
+      for (i = 0; i < n-1; i+=2) {
+        // reassociation transformation: better than (acc * data[i]) * data[i+1]
+        acc = acc * (data[i] * data[i+1]);
+      }
+      for (; i < n; i++) { // finish any remaining elements
+        acc = acc * data[i];
+      }
+    #+END_SRC
+    - GCC -O3 will perform loop unrolling and reassociations of int operations.
+
+*** Parallelism
+    #+BEGIN_SRC c
+      for (i = 0; i < n-1; i+=2) {
+        acc0 = acc0 * data[i];
+        acc1 = acc1 * data[i+1];
+      }
+      for (; i < n ; ++) {
+        acc0 = acc0 * data[i];
+      }
+      result = acc0 * acc1
+    #+END_SRC
+    - parallelize =map= op in =mapreduce= mechanism
+*** Limiting Factors
+**** Register Spilling
+**** Branch Prediction and Misprediction Penalties
+
 
 * Storage
 ** Disk
