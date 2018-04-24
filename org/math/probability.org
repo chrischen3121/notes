@@ -110,11 +110,45 @@
 ** Discrete
    *discrete* if a variable is discrete, that means it can only take exact values.
 ** Expectation
-   $$E(X)=\mu=\sum_{i=1}^n x_i P(X=x_i)$$
+*** Discrete
+    $$E[X]=\sum_{x\in R_X}xPMF_X(x)$$
+
+*** Continuous
+    $$E[X]=\int_{-\infty}^{\infty}xPDF_X(x)dx=\int_{-\infty}^{\infty}xd(CDF_X(x))$$
+
+*** Transformation
+    Let $Y = g(X)$, then
+**** Discrete
+     $$E[Y]=\sum_{x\in R_X}g(x)PMF_X(x)$$
+
+**** Continuous
+     $$E[Y]=\int_{-\infty}^{\infty}g(x)PDF_X(x)dx=\int_{-\infty}^{\infty}g(x)d(CDF_X(x))$$
+
 ** Variance
-   $$Var(X)=E((X-\mu)^2)=\sum_{i=1}^n (x_i-\mu)^2 P(X=x_i)$$
+   $$Var[X]=E[(X-E[X])^2]$$
+
+$$\begin{align*}
+Var[X] & = E[(X-E[X])^2)] \\
+& = E[X^2-2E[X] X + E[X]^2] \\
+& = E[X^2]-2E[X]\cdot E[X] + E[X]^2 \\
+& = E[X^2]-E[X]^2
+\end{align*}$$
+*** More details
+    $$Var[aX+b]=a^2Var[X]$$
 ** Standard Deviation
-   $$\sigma=\sqrt{Var(X)}$$
+   $$\sigma=\sqrt{Var[X]}$$
+
+** Moment
+   The $n_{th}$ moment of a random variable is the expected value of its $n_{th}$ power
+   $$\mu_X(n)=E[X^n]$$
+
+** Central Moment
+   The $n_{th}$ central moment of a random variable X is the expected value of
+   the $n_{th}$ power of the deviation of X from its expected value.
+   $$\bar\mu_X(n)=E[(X-E[X])^n]$$
+   - Variance: 2nd central moment
+   - Skewness: 3th central moment
+   - Kurtosis: 4th central moment
 
 * Conditional probabilities
 ** Conceptions
@@ -241,24 +275,24 @@ P_X(a < x \le b) & = CDF_X(b)-CDF_X(a)\\
 * Linear Transforms
   *Linear transforms* are when a variable X is transformed into aX + b, where a and b are constants.
   The probabilities of each Y should be the same as X
-  $$E(aX+b)=aE(X)+b$$
-  $$Var(aX+b)=a^2Var(X)$$
+  $$E(aX+b)=aE[X]+b$$
+  $$Var(aX+b)=a^2Var[X]$$
 
 ** Independent observations
-   $$E(X_1+X_2+...X_n) = nE(X)$$
-   $$Var(X_1+X_2+...X_n) = nVar(X)$$
+   $$E(X_1+X_2+...X_n) = nE[X]$$
+   $$Var(X_1+X_2+...X_n) = nVar[X]$$
 
 ** Independent Variables
    X and Y are *independent* random variables
-   $$E(X+Y)=E(X)+E(Y)$$
-   $$E(X-Y)=E(X)-E(Y)$$
-   $$Var(X+Y)=Var(X)+Var(Y)$$
-   $$Var(X-Y)=Var(X)+Var(Y)$$
+   $$E(X+Y)=E[X]+E[Y]$$
+   $$E(X-Y)=E[X]-E[Y]$$
+   $$Var(X+Y)=Var[X]+Var(Y)$$
+   $$Var(X-Y)=Var[X]+Var(Y)$$
    - linear transforms
-     $$E(aX+bY)=aE(X)+bE(Y)$$
-     $$E(aX-bY)=aE(X)-bE(Y)$$
-     $$Var(aX+bY)=a2Var(X)+b2Var(Y)$$
-     $$Var(aX-bY)=a2Var(X)-b2Var(Y)$$
+     $$E(aX+bY)=aE[X]+bE[Y]$$
+     $$E(aX-bY)=aE[X]-bE[Y]$$
+     $$Var(aX+bY)=a2Var[X]+b2Var(Y)$$
+     $$Var(aX-bY)=a2Var[X]-b2Var(Y)$$
 
 * Discrete distributions
 ** Bernoulli distribution
@@ -272,11 +306,11 @@ p,  & \mbox{if }x = 1 \\
 0, & \mbox{if }x\notin R_X \\
 \end{cases}$$
 
-*** E(X)
-    $$E(X)=p$$
+*** E[X]
+    $$E[X]=p$$
 
-*** Var(X)
-    $$Var(X)=p(1-p)$$
+*** Var[X]
+    $$Var[X]=p(1-p)$$
 
 *** CDF
 $$CDF_X(x)= \begin{cases}
@@ -292,11 +326,11 @@ $$CDF_X(x)= \begin{cases}
 *** PMF
     $$PMF_X(x)=\frac{1}{N}=\frac{k}{b-a+k}$$
 
-*** E(X)
-    $$E(X)=\frac{a+b}{2}$$
+*** E[X]
+    $$E[X]=\frac{a+b}{2}$$
 
-*** Var(X)
-    $$Var(X)=k^2(\frac{N^2-1}{12})$$
+*** Var[X]
+    $$Var[X]=k^2(\frac{N^2-1}{12})=\frac{(b-a)(b-a+2)}{12}$$
 
 *** CDF
 $$CDF_X(x)= \begin{cases}
@@ -320,11 +354,11 @@ $$CDF_X(x)= \begin{cases}
 *** PMF
     $$PMF_X(x)=\dbinom{n}{x} p^x (1-p)^{n-x}$$
 
-*** E(X)
-    $$E(X)=np$$
+*** E[X]
+    $$E[X]=np$$
 
-*** Var(X)
-    $$Var(X)=np(1-p)$$
+*** Var[X]
+    $$Var[X]=np(1-p)$$
 
 *** CDF
     $$CDF_X(x)=\sum_{m=0}^{\lfloor x \rfloor}{n \choose m}p^m(1-p)^{n-m}$$
@@ -344,52 +378,52 @@ $$CDF_X(x)= \begin{cases}
     To find the probability of $X$ taking a particular value $x$, using:
     $$PMF_X(x)=p(1-p)^{x-1}$$
 
-*** E(X)
-    $$E(X)=\frac{1}{p}$$
+*** E[X]
+    $$E[X]=\frac{1}{p}$$
 
-*** Var(X)
-    $$Var(X)=\frac{1-p}{p^2}$$
+*** Var[X]
+    $$Var[X]=\frac{1-p}{p^2}$$
 
 *** CDF
     $$CDF_X(x)=1-(1-p)^{\lfloor x \rfloor}$$
 
 *** memorylessness
 ** Pascal distribution
-   aslo known as *Negative binomial distribution*
+   aslo known as *Negative Binomial Distribution*
 
    1. You run a series of *independent* trials.
    2. There can be either a success or failure for each trial, and the probability of success is the same for each trial.
-   3. The main thing you’re interested in is *how many* trials are needed in order to get the $n$ successful outcomes.
+   3. The main thing you’re interested in is *how many* trials are needed in order to get the $k$ successful outcomes.
 
    Let:
-   - $X$ be the number of trials needed to get the $n$ successful outcomes
+   - $X$ be the number of trials needed to get the $k$ successful outcomes
    - $p$ be the probability of success in a trial
 
-   $$X\sim Pascal(n, p)$$
+   $$X\sim Pascal(k, p)$$
 
 *** PMF
 $$PMF_X(x)=\begin{cases}
-{x-1 \choose n-1}(1-p)^{x-n}p^n,  & x\ge n\\
+{x-1 \choose k-1}(1-p)^{x-k}p^k,  & x\ge k\\
 0, & otherwise\\
 \end{cases}$$
 
-*** E(X)
-    $$E(X)=\frac{n}{p}$$
+*** E[X]
+    $$E[X]=\frac{k}{p}$$
 
-*** Var(X)
-    $$Var(X)=\frac{n(1-p)}{p^2}$$
+*** Var[X]
+    $$Var[X]=\frac{k(1-p)}{p^2}$$
 
 *** CDF
 $$CDF_X(x)=\begin{cases}
-I_p(n, \lfloor x \rfloor - n + 1),  & x\ge n\\
+I_p(k, \lfloor x \rfloor - k + 1),  & x\ge k\\
 0, & otherwise\\
 \end{cases}$$
 $I_z(a,b)$ is the regularized incomplete beta function
 **** more
 $$\begin{align*}
 CDF_X(x) & =P(X\le x)\\
-& =P(\mbox{the n-th success occurs before the x-th trial})\\
-& =P(\mbox{n success in x trials})\\
+& =P(\mbox{the k-th success occurs before the x-th trial})\\
+& =P(\mbox{k success in x trials})\\
 & =P(Y\ge n), Y\sim B(x, p)
 \end{align*}$$
 This is why *pascal* is aslo called *negative binomial*.
@@ -408,11 +442,11 @@ This is why *pascal* is aslo called *negative binomial*.
 *** PMF
     $$PMF_X(x)=\frac{e^{-\lambda}\lambda^{x}}{x!}$$
 
-*** E(X)
-    $$E(X)=\lambda$$
+*** E[X]
+    $$E[X]=\lambda$$
 
-*** Var(X)
-    $$Var(X)=\lambda$$
+*** Var[X]
+    $$Var[X]=\lambda$$
 
 *** CDF
 $$CDF_X(x)= \begin{cases}
@@ -438,11 +472,11 @@ $$PDF_X(x)=\begin{cases}
 \frac{1}{b-a}, & a \le x \le b\\
 0, & \mbox{otherwise}\\
 \end{cases}$$
-*** E(X)
-    $$E(X)=\frac{a+b}{2}$$
+*** E[X]
+    $$E[X]=\frac{a+b}{2}$$
 
-*** Var(X)
-    $$Var(X)=\frac{(b-a)^2}{12}$$
+*** Var[X]
+    $$Var[X]=\frac{(b-a)^2}{12}$$
 
 *** CDF
 $$CDF_X(x)=\begin{cases}
@@ -464,11 +498,11 @@ $$PDF_X(x)=\begin{cases}
 0, & otherwise
 \end{cases}$$
 
-*** E(X)
-    $$E(X)=\frac{1}{\lambda}$$
+*** E[X]
+    $$E[X]=\frac{1}{\lambda}$$
 
-*** Var(X)
-    $$Var(X)=\frac{1}{\lambda^2}$$
+*** Var[X]
+    $$Var[X]=\frac{1}{\lambda^2}$$
 
 *** CDF
 $$CDF_X(x)=\begin{cases}
@@ -487,11 +521,11 @@ $$PDF_X(x)=\begin{cases}
 \frac{1}{(n-1)!}\lambda^n x^{n-1} e^{-\lambda x}, & x\ge 0\\
 0, & otherwise
 \end{cases}$$
-*** E(X)
-    $$E(X)=\frac{n}{\lambda}$$
+*** E[X]
+    $$E[X]=\frac{n}{\lambda}$$
 
-*** Var(X)
-    $$Var(X)=\frac{n}{\lambda^2}$$
+*** Var[X]
+    $$Var[X]=\frac{n}{\lambda^2}$$
 
 *** CDF
 $$CDF_X(x)=\begin{cases}
@@ -500,12 +534,14 @@ $$CDF_X(x)=\begin{cases}
 \end{cases}$$
 ** Normal distribution
    $$X\sim N(\mu, \sigma^2)$$
+   or
+   $$X\sim Gaussian(\mu, \sigma)$$
 *** PDF
     $$PDF_X(x)=\frac{1}{\sigma\sqrt{2\pi}}\cdot e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
 
 *** CDF
-    $$CDF_X(x) = \int_{-\inf}^{x}PDF_X(x)dx=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\inf}^{x}e^{-\frac{(x-\mu)^2}{2\sigma^2}}dx$$
-
+    $$CDF_X(x) = \int_{-\infty}^{x}PDF_X(x)dx=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\infty}^{x}e^{-\frac{(x-\mu)^2}{2\sigma^2}}dx$$
+    - Use z-table
 *** approximate Binomial distribution
     if $X\sim B(n, p)$  and $np>15$ and $nq>5$ , use $X\sim N(np, npq)$ to approximate it.
     - need to apply a *continuity correction* (round to discrete value), eg [5.5, 6.5) round to 6
