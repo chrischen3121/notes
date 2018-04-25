@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-23 Mon 14:12 -->
+<!-- 2018-04-25 Wed 18:24 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -291,6 +291,8 @@ for the JavaScript code in this tag.
 <li><a href="#orgb3df4c6">4.2. Expressing Program Performance</a></li>
 <li><a href="#orga768c7b">4.3. Optimizing Performance</a></li>
 <li><a href="#orgba74267">4.4. CPU related Optimization</a></li>
+<li><a href="#org6ee909b">4.5. Basic strategies for Optimization in the Real World</a></li>
+<li><a href="#org7154bbd">4.6. Profiling</a></li>
 </ul>
 </li>
 <li><a href="#org7e9fac8">5. Storage</a>
@@ -3034,6 +3036,200 @@ among the execution units is called <b>register renaming</b>
 </div>
 </li>
 </ul>
+</div>
+
+<div id="outline-container-org99057a1" class="outline-4">
+<h4 id="org99057a1"><span class="section-number-4">4.4.3</span> <b>Data Flow Analysis</b></h4>
+<div class="outline-text-4" id="text-4-4-3">
+<p>
+Keypoint is finding <b>critical path</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8ff7b2b" class="outline-4">
+<h4 id="org8ff7b2b"><span class="section-number-4">4.4.4</span> Loop Unrolling</h4>
+<div class="outline-text-4" id="text-4-4-4">
+<p>
+Loop unrolling is a program transformation that reduces the number of iterations
+for a loop by increasing the number of elements computed on each iteration.
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i = <span style="color: #4e3163;">0</span>; i &lt; n; i++<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  acc = acc * data<span style="color: #6c3163;">[</span>i<span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">--&gt; 2 * 1 loop unrolling</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i = <span style="color: #4e3163;">0</span>; i &lt; n-<span style="color: #4e3163;">1</span>; i+=<span style="color: #4e3163;">2</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">reassociation transformation: better than (acc * data[i]) * data[i+1]</span>
+  acc = acc * <span style="color: #6c3163;">(</span>data<span style="color: #2d9574;">[</span>i<span style="color: #2d9574;">]</span> * data<span style="color: #2d9574;">[</span>i+<span style="color: #4e3163;">1</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>; i &lt; n; i++<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">finish any remaining elements</span>
+  acc = acc * data<span style="color: #6c3163;">[</span>i<span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>GCC -O3 will perform loop unrolling and reassociations of int operations.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgccc8556" class="outline-4">
+<h4 id="orgccc8556"><span class="section-number-4">4.4.5</span> Parallelism</h4>
+<div class="outline-text-4" id="text-4-4-5">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i = <span style="color: #4e3163;">0</span>; i &lt; n-<span style="color: #4e3163;">1</span>; i+=<span style="color: #4e3163;">2</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  acc0 = acc0 * data<span style="color: #6c3163;">[</span>i<span style="color: #6c3163;">]</span>;
+  acc1 = acc1 * data<span style="color: #6c3163;">[</span>i+<span style="color: #4e3163;">1</span><span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>; i &lt; n ; ++<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  acc0 = acc0 * data<span style="color: #6c3163;">[</span>i<span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span>
+result = acc0 * acc1
+</pre>
+</div>
+<ul class="org-ul">
+<li>parallelize <code>map</code> op in <code>mapreduce</code> mechanism</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc0e5ffe" class="outline-4">
+<h4 id="orgc0e5ffe"><span class="section-number-4">4.4.6</span> Limiting Factors</h4>
+<div class="outline-text-4" id="text-4-4-6">
+</div>
+<ul class="org-ul">
+<li><a id="orgbf4983a"></a>Register Spilling<br /></li>
+<li><a id="org24ebc51"></a>Branch Prediction and Misprediction Penalties<br />
+<div class="outline-text-5" id="text-org24ebc51">
+<p>
+Branch prediction is only reliable for regular patterns.
+</p>
+
+<p>
+Principles to avoid branch misprediction penalties
+</p>
+<ul class="org-ul">
+<li>Do not be overly concerned about predictable branches</li>
+<li><p>
+Write code <b>suitable</b> for implementation with <b>conditional moves</b> (depends on compiler, write and check <b>asm</b>)
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i = <span style="color: #4e3163;">0</span>; i &lt; N; ++i<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #6c3163;">(</span>a &lt; b<span style="color: #6c3163;">)</span>
+    min = b; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">not predictable, cost of misprediction penalties is high</span>
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i = <span style="color: #4e3163;">0</span>; i &lt; N; ++i<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  min = a &lt; b ? a : b; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">CPE is steady</span>
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org3f60a2b" class="outline-4">
+<h4 id="org3f60a2b"><span class="section-number-4">4.4.7</span> CPU caches</h4>
+<div class="outline-text-4" id="text-4-4-7">
+<p>
+Modern processors have dedicated functional units to perform load and store operations,
+and these units have internal buffers to hold sets of outstanding requests for
+memory operations.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orge1f074a"></a>Load Performance<br />
+<div class="outline-text-5" id="text-orge1f074a">
+<p>
+Depends on the pipelining capability and the latency of the load unit.
+</p>
+</div>
+</li>
+<li><a id="org9968e36"></a>Store Performance<br />
+<div class="outline-text-5" id="text-org9968e36">
+<p>
+The store operation can operate in a fully pipelined mode, beginning a new store on every cycle.
+Because the store operation does not affect any register values.
+</p>
+
+<ul class="org-ul">
+<li>interaction with load operation</li>
+</ul>
+
+<p>
+The load operation will check the entries in the store buffer for matching addresses.
+If it finds a match, it retrieves the corresponding data entry as the result
+of the load operation.
+</p>
+
+<p>
+<b>When the load and store addresses match, these two operations can't be parallelized.</b>
+</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6ee909b" class="outline-3">
+<h3 id="org6ee909b"><span class="section-number-3">4.5</span> Basic strategies for Optimization in the Real World</h3>
+<div class="outline-text-3" id="text-4-5">
+</div>
+<div id="outline-container-org832cc58" class="outline-4">
+<h4 id="org832cc58"><span class="section-number-4">4.5.1</span> High-level Design</h4>
+<div class="outline-text-4" id="text-4-5-1">
+<p>
+Choose appropriate algorithms and data structures
+</p>
+</div>
+</div>
+<div id="outline-container-org897cde1" class="outline-4">
+<h4 id="org897cde1"><span class="section-number-4">4.5.2</span> Basic Coding Principles</h4>
+<div class="outline-text-4" id="text-4-5-2">
+<p>
+Avoid optimization blockers so that a compiler can generate efficient code.
+</p>
+<ul class="org-ul">
+<li>Eliminate excessive function calls</li>
+<li>Eliminate unnecessary memory references</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgbcfe644" class="outline-4">
+<h4 id="orgbcfe644"><span class="section-number-4">4.5.3</span> Low-level Optimizations</h4>
+<div class="outline-text-4" id="text-4-5-3">
+<ul class="org-ul">
+<li>Unroll loops</li>
+<li>Find ways to increase instruction-level parallelism by techniques such as</li>
+</ul>
+<p>
+multiple accumulators and reassociation
+</p>
+<ul class="org-ul">
+<li>Rewrite conditional operations in a functional style to enable compilation</li>
+</ul>
+<p>
+via conditional data transfers
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org7154bbd" class="outline-3">
+<h3 id="org7154bbd"><span class="section-number-3">4.6</span> Profiling</h3>
+<div class="outline-text-3" id="text-4-6">
+</div>
+<div id="outline-container-org574cff2" class="outline-4">
+<h4 id="org574cff2"><span class="section-number-4">4.6.1</span> Limitation of GPROF</h4>
+<div class="outline-text-4" id="text-4-6-1">
+<ul class="org-ul">
+<li>For programs that run for less than around 1 second, the timing is not very precise</li>
+<li>Not work for inline function</li>
+<li>By default, the timings for library functions are not shown.</li>
+</ul>
+</div>
 </div>
 </div>
 </div>

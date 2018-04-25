@@ -795,7 +795,58 @@ Condition: $x\neq 0$
 *** Limiting Factors
 **** Register Spilling
 **** Branch Prediction and Misprediction Penalties
+     Branch prediction is only reliable for regular patterns.
 
+     Principles to avoid branch misprediction penalties
+     - Do not be overly concerned about predictable branches
+     - Write code *suitable* for implementation with *conditional moves* (depends on compiler, write and check *asm*)
+       #+BEGIN_SRC c
+         for (i = 0; i < N; ++i) {
+           if (a < b)
+             min = b; // not predictable, cost of misprediction penalties is high
+         }
+
+         for (i = 0; i < N; ++i) {
+           min = a < b ? a : b; // CPE is steady
+         }
+       #+END_SRC
+
+*** CPU caches
+    Modern processors have dedicated functional units to perform load and store operations,
+    and these units have internal buffers to hold sets of outstanding requests for
+    memory operations.
+**** Load Performance
+     Depends on the pipelining capability and the latency of the load unit.
+**** Store Performance
+     The store operation can operate in a fully pipelined mode, beginning a new store on every cycle.
+     Because the store operation does not affect any register values.
+
+     - interaction with load operation
+
+     The load operation will check the entries in the store buffer for matching addresses.
+     If it finds a match, it retrieves the corresponding data entry as the result
+     of the load operation.
+
+     *When the load and store addresses match, these two operations can't be parallelized.*
+
+** Basic strategies for Optimization in the Real World
+*** High-level Design
+    Choose appropriate algorithms and data structures
+*** Basic Coding Principles
+    Avoid optimization blockers so that a compiler can generate efficient code.
+    - Eliminate excessive function calls
+    - Eliminate unnecessary memory references
+*** Low-level Optimizations
+    - Unroll loops
+    - Find ways to increase instruction-level parallelism by techniques such as
+    multiple accumulators and reassociation
+    - Rewrite conditional operations in a functional style to enable compilation
+    via conditional data transfers
+** Profiling
+*** Limitation of GPROF
+    - For programs that run for less than around 1 second, the timing is not very precise
+    - Not work for inline function
+    - By default, the timings for library functions are not shown.
 
 * Storage
 ** Disk
