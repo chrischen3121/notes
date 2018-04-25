@@ -93,7 +93,6 @@
          echo $ts
      done
      echo Exiting because $RUNFILE does not exist.
-
    #+END_SRC
 
 ** Analyzing Results
@@ -258,3 +257,37 @@
     #+BEGIN_SRC sh
       strace -cfp [PID]
     #+END_SRC
+* Schema
+** Data Type
+*** Priciples
+    - Smaller is usually better
+    - Simple is good
+    - Avoid NULL if possible
+
+*** SET
+    stores bits. useful for ACL(Access Control List)
+    #+BEGIN_SRC sql
+      CREATE TABLE acl (
+             perms SET('CAN_READ', 'CAN_WRITE', 'CAN_DELETE') NOT NULL
+      );
+      INSERT INTO acl (perms) VALUES ('CAN_READ,CAN_WRITE');
+      SELECT perms FROM acl WHERE FIND_IN_SET('CAN_READ', perms);
+    #+END_SRC
+    - stores SET types internally as integers but converts them to strings when doing comparisons.
+
+*** UUID
+    - recommend using *BINARY(16)* type
+** Normalization and Denormalization
+*** Normalization
+    Benefits:
+    - Normalized updates are usually faster than denormalized updates
+    - Normalized tables are usually smaller, so they fit better in memory and perform better
+    - The lack of redundant data means there's less need for DISTINCT or GROUP BY queries when retrieving lists of values
+
+    Drawbacks:
+    - requires more joins
+
+*** Denormalization
+    Benefits:
+    - avoids joins
+    - allow more efficient indexing strategies

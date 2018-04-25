@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-19 Thu 17:41 -->
+<!-- 2018-04-25 Wed 15:52 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance MySQL</title>
@@ -261,6 +261,13 @@ for the JavaScript code in this tag.
 <li><a href="#orgbb02c05">4.1. slow query log</a></li>
 <li><a href="#orgc895f05">4.2. Single Query Profiling</a></li>
 <li><a href="#orgc084146">4.3. Server-Wide Problem Detection</a></li>
+<li><a href="#orge93afe4">4.4. Tools</a></li>
+</ul>
+</li>
+<li><a href="#orga39e354">5. Schema</a>
+<ul>
+<li><a href="#org9e75718">5.1. Data Type</a></li>
+<li><a href="#orgcc56f15">5.2. Normalization and Denormalization</a></li>
 </ul>
 </li>
 </ul>
@@ -436,7 +443,6 @@ mysql -e <span style="color: #2d9574;">'SHOW GLOBAL VARIABLES'</span> &gt;&gt; m
     <span style="color: #3a81c3;">echo</span> $<span style="color: #715ab1;">ts</span>
 <span style="color: #3a81c3; font-weight: bold;">done</span>
 <span style="color: #3a81c3;">echo</span> Exiting because $<span style="color: #715ab1;">RUNFILE</span> does not exist.
-
 </pre>
 </div>
 </div>
@@ -732,6 +738,180 @@ Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Thread
 <pre class="src src-sh">mysql -e <span style="color: #2d9574;">'SHOW PROCESSLIST\G'</span> -p | grep State: | sort | uniq -c | sort -rn
 </pre>
 </div>
+</div>
+<ul class="org-ul">
+<li><a id="org68320ff"></a>other approaches<br />
+<div class="outline-text-5" id="text-org68320ff">
+<ul class="org-ul">
+<li>PROCESSLIST table</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> * <span style="color: #3a81c3; font-weight: bold;">FROM</span> INFORMATION_SCHEMA.PROCESSLIST;
+</pre>
+</div>
+<ul class="org-ul">
+<li><code>innotop</code> command</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org441846d" class="outline-4">
+<h4 id="org441846d"><span class="section-number-4">4.3.4</span> SHOW INNODB STATUS</h4>
+</div>
+<div id="outline-container-org1557bd4" class="outline-4">
+<h4 id="org1557bd4"><span class="section-number-4">4.3.5</span> analyze slow log</h4>
+<div class="outline-text-4" id="text-4-3-5">
+<div class="org-src-container">
+<pre class="src src-sh">awk <span style="color: #2d9574;">'/^# Time:/{print $3, $4, c;c=0}/^# User/{c++}'</span> slow-query.log
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orged91f98" class="outline-4">
+<h4 id="orged91f98"><span class="section-number-4">4.3.6</span> <b>oprofile</b></h4>
+<div class="outline-text-4" id="text-4-3-6">
+<p>
+primary Linux system profiling tool
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgadbe7a8" class="outline-4">
+<h4 id="orgadbe7a8"><span class="section-number-4">4.3.7</span> <b>pt-stalk</b></h4>
+<div class="outline-text-4" id="text-4-3-7">
+<p>
+Collect forensic data about MySQL when problems occur.
+</p>
+<ul class="org-ul">
+<li><code>pt-sift</code>: Browses files created by <code>pt-stalk</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6875370" class="outline-4">
+<h4 id="org6875370"><span class="section-number-4">4.3.8</span> <code>pt-mysql-summary</code> &amp; <code>pt-summary</code></h4>
+</div>
+<div id="outline-container-org59b9dd1" class="outline-4">
+<h4 id="org59b9dd1"><span class="section-number-4">4.3.9</span> <b>pt-pmp</b></h4>
+<div class="outline-text-4" id="text-4-3-9">
+<p>
+Aggregate GDB stack traces for a selected program
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge93afe4" class="outline-3">
+<h3 id="orge93afe4"><span class="section-number-3">4.4</span> Tools</h3>
+<div class="outline-text-3" id="text-4-4">
+</div>
+<div id="outline-container-org4404df7" class="outline-4">
+<h4 id="org4404df7"><span class="section-number-4">4.4.1</span> USER_STATISTICS</h4>
+<div class="outline-text-4" id="text-4-4-1">
+<p>
+<code>SHOW TABLES FROM INFORMATION_SCHEMA LIKE '%_STATISTICS';</code> in MariaDB
+</p>
+</div>
+</div>
+<div id="outline-container-orge718901" class="outline-4">
+<h4 id="orge718901"><span class="section-number-4">4.4.2</span> strace</h4>
+<div class="outline-text-4" id="text-4-4-2">
+<p>
+Use <code>strace</code> to intercepts system calls
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">strace -cfp <span style="color: #3a81c3;">[</span>PID<span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orga39e354" class="outline-2">
+<h2 id="orga39e354"><span class="section-number-2">5</span> Schema</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org9e75718" class="outline-3">
+<h3 id="org9e75718"><span class="section-number-3">5.1</span> Data Type</h3>
+<div class="outline-text-3" id="text-5-1">
+</div>
+<div id="outline-container-orgb220504" class="outline-4">
+<h4 id="orgb220504"><span class="section-number-4">5.1.1</span> Priciples</h4>
+<div class="outline-text-4" id="text-5-1-1">
+<ul class="org-ul">
+<li>Smaller is usually better</li>
+<li>Simple is good</li>
+<li>Avoid NULL if possible</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfb2a2c7" class="outline-4">
+<h4 id="orgfb2a2c7"><span class="section-number-4">5.1.2</span> SET</h4>
+<div class="outline-text-4" id="text-5-1-2">
+<p>
+stores bits. useful for ACL(Access Control List)
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #6c3163; font-weight: bold;">acl</span> <span style="color: #3a81c3;">(</span>
+       perms <span style="color: #3a81c3; font-weight: bold;">SET</span><span style="color: #6c3163;">(</span><span style="color: #2d9574;">'CAN_READ'</span>, <span style="color: #2d9574;">'CAN_WRITE'</span>, <span style="color: #2d9574;">'CAN_DELETE'</span><span style="color: #6c3163;">)</span> <span style="color: #3a81c3; font-weight: bold;">NOT</span> <span style="color: #3a81c3; font-weight: bold;">NULL</span>
+<span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">INSERT</span> <span style="color: #3a81c3; font-weight: bold;">INTO</span> acl <span style="color: #3a81c3;">(</span>perms<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">VALUES</span> <span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'CAN_READ,CAN_WRITE'</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> perms <span style="color: #3a81c3; font-weight: bold;">FROM</span> acl <span style="color: #3a81c3; font-weight: bold;">WHERE</span> FIND_IN_SET<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'CAN_READ'</span>, perms<span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+<ul class="org-ul">
+<li>stores SET types internally as integers but converts them to strings when doing comparisons.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org452fbb7" class="outline-4">
+<h4 id="org452fbb7"><span class="section-number-4">5.1.3</span> UUID</h4>
+<div class="outline-text-4" id="text-5-1-3">
+<ul class="org-ul">
+<li>recommend using <b>BINARY(16)</b> type</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgcc56f15" class="outline-3">
+<h3 id="orgcc56f15"><span class="section-number-3">5.2</span> Normalization and Denormalization</h3>
+<div class="outline-text-3" id="text-5-2">
+</div>
+<div id="outline-container-org6bce7f0" class="outline-4">
+<h4 id="org6bce7f0"><span class="section-number-4">5.2.1</span> Normalization</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<p>
+Benefits:
+</p>
+<ul class="org-ul">
+<li>Normalized updates are usually faster than denormalized updates</li>
+<li>Normalized tables are usually smaller, so they fit better in memory and perform better</li>
+<li>The lack of redundant data means there's less need for DISTINCT or GROUP BY queries when retrieving lists of values</li>
+</ul>
+
+<p>
+Drawbacks:
+</p>
+<ul class="org-ul">
+<li>requires more joins</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdc5dcf6" class="outline-4">
+<h4 id="orgdc5dcf6"><span class="section-number-4">5.2.2</span> Denormalization</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<p>
+Benefits:
+</p>
+<ul class="org-ul">
+<li>avoids joins</li>
+<li>allow more efficient indexing strategies</li>
+</ul>
 </div>
 </div>
 </div>
