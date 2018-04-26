@@ -849,23 +849,150 @@ Condition: $x\neq 0$
     - By default, the timings for library functions are not shown.
 
 * Storage
-** Disk
-terms: track, sector, cylinder
+** Storage Hierarchy
+    #+ATTR_HTML: align="center"
+    file:../resources/os/MemoryHierarchy.png
+*** Static RAM
+    CPU cache
+*** Dynamic RAM
+    Main memory
+*** Conventional DRAMs
+**** memory controller
+**** memory modules
+**** DRAM supercell
+   - /d/ supercells
+   - /w/ DRAM cells in each supercell
+   - A $d\times w$ DRAM stores /dw/ bits of information
 
-*** Access time
-- seek time 3~9ms
-- rotational latency $T_{max}=\frac{1}{RPM}\cdot60\cdot1000 ms$
-- transfer time $T{avg}=\frac{1}{RPM}\cdot\frac{1}{avg sectors/track}\cdot60\cdot1000 ms$
+**** DRAM cells
+   - RAS: Row Access Strobe
+   - CAS: Column Access Strobe
+   - Use internal row buffer to cache
+
+**** Data Flow
+     To retrieve a 64-bit doubleword at memory address A, the memory controller
+     converts A to a supercell address (i, j ) and sends it to the memory module, which
+     then broadcasts i and j to each DRAM. In response, each DRAM outputs the 8-
+     bit contents of its (i, j ) supercell. Circuitry in the module collects these outputs and
+     forms them into a 64-bit doubleword, which it returns to the memory controller.
+*** Enhanced DRAMs
+**** FPM DRAM
+     Fast page mode DRAM, allowing consecutive accesses to the same row to be served
+     directly from the row buffer
+**** EDO DRAM
+     Extended data out DRAM, allows the individual CAS signals to be spaced closer together in time.
+**** SDRAM
+     Synchronous DRAM, SDRAM can output the contents of its supercells at a faster rate than its asynchronous counterparts(FPM DRAM & EDO DRAM).
+**** DDR SDRAM
+     An enhancement of SDRAM that doubles the speed of the DRAM by using both clock edges as control signals. Different types of DDR SDRAMs are
+     characterized by the size of a small prefetch buffer that increases the effective
+     bandwidth: DDR (2 bits), DDR2 (4 bits), and DDR3 (8 bits).
+**** VRAM
+     Used in the frame buffers of graphics systems. VRAM is similar in spirit to FPM DRAM.
+     Differences are: 1) VRAM output is produced by shifting the entire contents of the
+     internal buffer in sequence 2) VRAM allows concurrent reads and writes to the memory.
+*** Nonvolatile Memory
+    - programmable ROM (PROM)
+    - erasable programmable ROM (EPROM)
+    - Flash memory
+    #
+    - Programs stored in ROM devices are called /firmware/. e.g. BIOS
+
+*** Disk
+    #+ATTR_HTML: align="center"
+    file:../resources/os/DiskStructure.png
+    - terms: platter, surface, track, cylinder(vertical), sector(horizontal)
+    - reading information from disk is a 100,000 times longer than from DRAM and 1,000,000 times longer than from SRAM
+**** Capacity
+     - recording density: bits/inch
+     - track density: tracks/inch
+     - areal density: $recording\times track$
+
+     $$Capacity=\frac{\#\ bytes}{sector}\times\frac{average\ \#\ sectors}{track}\times\frac{\#\ track}{surface}\times\frac{\#\ surfaces}{platter}\times\frac{\#\ platters}{disk}$$
+
+**** Access time
+     The access time for a sector has three main components
+     - seek time avg 3~9ms (seek track)
+     - rotational latency (seek sector)
+     $$T_{max}=\frac{1}{RPM}\ minutes$$
+     $$T_{avg}=\frac{T_{max}}{2}\ minutes$$
+     - transfer time
+     $$T{avg}=\frac{1}{RPM}\times\frac{1}{avg\ \#\ sectors/track}\ minutes$$
+**** Logical Disk Blocks
+     - number of blocks is equal to number of sectors, numbered 0, 1, ..., B-1
+     - A firmware device in the disk, called the /disk controller/,
+     maintains the mapping between logical block numbers and actual (physical) disk sectors.
+
+**** Accessing Disks
+     Uses a technique called *memory-mapped I/O*. In a system with memory-mapped I/O,
+     a block of addresses in the address space is reserved for communicating with I/O devices.
+     Each of these addresses is known as an I/O port. Each device is mapped to one or more
+     *I/O ports* when it is attached to the bus.
+
+     e.g. Reading from disk. Suppose that the /disk controller/ is mapped to port 0xa0
+     1. sends a command word that tells the disk to initiate a read
+     2. indicates the logical block number that should be read
+     3. indicates the main memory address where the contents of the disk sector should be stored.
+
+     /Disk controller/ finishes the *direct memory access(DMA)* transfer, then notify CPU the I/O is done.
+
+**** SSD
+     Based on flash memory
+     #+ATTR_HTML: align="center"
+     file:../resources/os/SSDStructure.png
+     - /flash translation layer/: plays the same role as a /disk controller/ (translating blocks)
+     - B blocks
+     - Each block consists of P pages
+     - Data is read and written in units of pages
+
+** BUS
+   - system bus
+   - memory bus
+   - I/O bus: independent of the CPU, PCIe(Peripheral Component Interconnect express)
+   - I/O bus connects USB devices, graphics adapter, host bus adapter(SATA, SCSI), network adapter, etc.
 
 ** Locality
-#+BEGIN_VERSE
-Programs that repeatedly reference the same variables enjoy good temporal locality.
+*** Principle of Locality
+    - Good temporal locality ::
+    A memory location that is referenced once is likely to be referenced again multiple times in the near future
 
-For programs with stride-k reference patterns, the smaller the stride the better
-the spatial locality. Programs with stride-1 reference patterns have good spatial
-locality. Programs that hop around memory with large strides have poor spatial locality.
+    - Good Spatial Locality ::
+    If a memory location is referenced once, then the program is likely to reference a nearby memory location in the near future.
 
-Loops have good temporal and spatial locality with respect to instruction
-fetches. The smaller the loop body and the greater the number of loop iterations,
-the better the locality.
-#+END_VERSE
+*** Reference Patterns
+    - sequential(stride-1) reference pattern enjoys good /spatial locality/
+    #+BEGIN_SRC c
+      // a[M][N]
+      int sum = 0;
+      for (i = 0; i < N; i++)
+        for (j = 0; j < M; j++)
+          sum += a[j][i] // bad, stride-N
+    #+END_SRC
+
+*** Locality of Instruction Fetches
+    Loops have good temporal and spatial locality with respect to instruction fetches.
+    The smaller the loop body and the greater the number of loop iterations, the better the locality.
+
+*** Cache Hit
+*** Cache Miss
+**** Placement Policy
+     Randomly placed blocks are expensive to locate. Restricts a particular block at level k+1
+     to a small subset of the blocks at level k.
+
+**** Replacement Policy
+     - random replacement policy
+     - least-recently used(LRU)
+
+**** Kinds of Cache Misses
+     - cold miss(compulsory miss): miss on cold cache(empty cache)
+     - conflict miss: placement policy lead to conflict miss
+     - capacity miss: when the size of the working set exceeds the size of the cache
+
+** Cache Memories
+*** Terms
+    - block ::
+    a fixed-sized packet of information that moves back and forth between a cache and main memory
+    - line ::
+    a container in a cache that stores a block, as well as other information such as the valid bit and the tag bits
+    - set ::
+    a collection of one or more lines.

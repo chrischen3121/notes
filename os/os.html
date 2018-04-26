@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-25 Wed 18:24 -->
+<!-- 2018-04-26 Thu 15:33 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -297,7 +297,7 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#org7e9fac8">5. Storage</a>
 <ul>
-<li><a href="#org2fe3633">5.1. Disk</a></li>
+<li><a href="#org306632c">5.1. Storage Hierarchy</a></li>
 <li><a href="#org805cd60">5.2. Locality</a></li>
 </ul>
 </li>
@@ -3238,23 +3238,183 @@ via conditional data transfers
 <h2 id="org7e9fac8"><span class="section-number-2">5</span> Storage</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org2fe3633" class="outline-3">
-<h3 id="org2fe3633"><span class="section-number-3">5.1</span> Disk</h3>
+<div id="outline-container-org306632c" class="outline-3">
+<h3 id="org306632c"><span class="section-number-3">5.1</span> Storage Hierarchy</h3>
 <div class="outline-text-3" id="text-5-1">
-<p>
-terms: track, sector, cylinder
+
+<div class="figure">
+<p><img src="../resources/os/MemoryHierarchy.png" alt="MemoryHierarchy.png" />
 </p>
 </div>
-
-<div id="outline-container-orgf4e0571" class="outline-4">
-<h4 id="orgf4e0571"><span class="section-number-4">5.1.1</span> Access time</h4>
+</div>
+<div id="outline-container-org45ad237" class="outline-4">
+<h4 id="org45ad237"><span class="section-number-4">5.1.1</span> Static RAM</h4>
 <div class="outline-text-4" id="text-5-1-1">
+<p>
+CPU cache
+</p>
+</div>
+</div>
+<div id="outline-container-org04b1330" class="outline-4">
+<h4 id="org04b1330"><span class="section-number-4">5.1.2</span> Dynamic RAM</h4>
+<div class="outline-text-4" id="text-5-1-2">
+<p>
+Main memory
+</p>
+</div>
+</div>
+<div id="outline-container-org73d3830" class="outline-4">
+<h4 id="org73d3830"><span class="section-number-4">5.1.3</span> Conventional DRAMs</h4>
+<div class="outline-text-4" id="text-5-1-3">
+</div>
 <ul class="org-ul">
-<li>seek time 3~9ms</li>
-<li>rotational latency \(T_{max}=\frac{1}{RPM}\cdot60\cdot1000 ms\)</li>
-<li>transfer time \(T{avg}=\frac{1}{RPM}\cdot\frac{1}{avg sectors/track}\cdot60\cdot1000 ms\)</li>
+<li><a id="org9385ade"></a>memory controller<br /></li>
+<li><a id="org3f87665"></a>memory modules<br /></li>
+<li><a id="org97a20f8"></a>DRAM supercell<br />
+<div class="outline-text-5" id="text-org97a20f8">
+<ul class="org-ul">
+<li><i>d</i> supercells</li>
+<li><i>w</i> DRAM cells in each supercell</li>
+<li>A \(d\times w\) DRAM stores <i>dw</i> bits of information</li>
 </ul>
 </div>
+</li>
+
+<li><a id="orgdb246c4"></a>DRAM cells<br />
+<div class="outline-text-5" id="text-orgdb246c4">
+<ul class="org-ul">
+<li>RAS: Row Access Strobe</li>
+<li>CAS: Column Access Strobe</li>
+<li>Use internal row buffer to cache</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgd2df434"></a>Data Flow<br />
+<div class="outline-text-5" id="text-orgd2df434">
+<p>
+To retrieve a 64-bit doubleword at memory address A, the memory controller
+converts A to a supercell address (i, j ) and sends it to the memory module, which
+then broadcasts i and j to each DRAM. In response, each DRAM outputs the 8-
+bit contents of its (i, j ) supercell. Circuitry in the module collects these outputs and
+forms them into a 64-bit doubleword, which it returns to the memory controller.
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org0090a20" class="outline-4">
+<h4 id="org0090a20"><span class="section-number-4">5.1.4</span> Enhanced DRAMs</h4>
+<div class="outline-text-4" id="text-5-1-4">
+</div>
+<ul class="org-ul">
+<li><a id="orge13ca36"></a>FPM DRAM<br />
+<div class="outline-text-5" id="text-orge13ca36">
+<p>
+Fast page mode DRAM, allowing consecutive accesses to the same row to be served
+directly from the row buffer
+</p>
+</div>
+</li>
+<li><a id="org29f6820"></a>EDO DRAM<br />
+<div class="outline-text-5" id="text-org29f6820">
+<p>
+Extended data out DRAM, allows the individual CAS signals to be spaced closer together in time.
+</p>
+</div>
+</li>
+<li><a id="org62c93a6"></a>SDRAM<br />
+<div class="outline-text-5" id="text-org62c93a6">
+<p>
+Synchronous DRAM, SDRAM can output the contents of its supercells at a faster rate than its asynchronous counterparts(FPM DRAM &amp; EDO DRAM).
+</p>
+</div>
+</li>
+<li><a id="org2dc24fc"></a>DDR SDRAM<br />
+<div class="outline-text-5" id="text-org2dc24fc">
+<p>
+An enhancement of SDRAM that doubles the speed of the DRAM by using both clock edges as control signals. Different types of DDR SDRAMs are
+characterized by the size of a small prefetch buffer that increases the effective
+bandwidth: DDR (2 bits), DDR2 (4 bits), and DDR3 (8 bits).
+</p>
+</div>
+</li>
+<li><a id="org7c39a0c"></a>VRAM<br />
+<div class="outline-text-5" id="text-org7c39a0c">
+<p>
+Used in the frame buffers of graphics systems. VRAM is similar in spirit to FPM DRAM.
+Differences are: 1) VRAM output is produced by shifting the entire contents of the
+internal buffer in sequence 2) VRAM allows concurrent reads and writes to the memory.
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org4c66d38" class="outline-4">
+<h4 id="org4c66d38"><span class="section-number-4">5.1.5</span> Nonvolatile Memory</h4>
+<div class="outline-text-4" id="text-5-1-5">
+<ul class="org-ul">
+<li>programmable ROM (PROM)</li>
+<li>erasable programmable ROM (EPROM)</li>
+<li>Flash memory</li>
+</ul>
+
+<ul class="org-ul">
+<li>Programs stored in ROM devices are called <i>firmware</i>. e.g. BIOS</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2fe3633" class="outline-4">
+<h4 id="org2fe3633"><span class="section-number-4">5.1.6</span> Disk</h4>
+<div class="outline-text-4" id="text-5-1-6">
+
+<div class="figure">
+<p><img src="../resources/os/DiskStructure.png" alt="DiskStructure.png" />
+</p>
+</div>
+<ul class="org-ul">
+<li>terms: platter, surface, track, cylinder(vertical), sector(horizontal)</li>
+<li>reading information from disk is a 100,000 times longer than from DRAM and 1,000,000 times longer than from SRAM</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="orgad09278"></a>Capacity<br />
+<div class="outline-text-5" id="text-orgad09278">
+<ul class="org-ul">
+<li>recording density: bits/inch</li>
+<li>track density: tracks/inch</li>
+<li>areal density: \(recording\times track\)</li>
+</ul>
+
+<p>
+\[Capacity=\frac{\#\ bytes}{sector}\times\frac{average\ \#\ sectors}{track}\times\frac{\#\ track}{surface}\times\frac{\#\ surfaces}{platter}\times\frac{\#\ platters}{disk}\]
+</p>
+</div>
+</li>
+
+<li><a id="orgf4e0571"></a>Access time<br />
+<div class="outline-text-5" id="text-orgf4e0571">
+<p>
+The access time for a sector has three main components
+</p>
+<ul class="org-ul">
+<li>seek time avg 3~9ms (seek track)</li>
+<li>rotational latency (seek sector)</li>
+</ul>
+<p>
+\[T_{max}=\frac{1}{RPM}\ minutes\]
+\[T_{avg}=\frac{T_{max}}{2}\ minutes\]
+</p>
+<ul class="org-ul">
+<li>transfer time</li>
+</ul>
+<p>
+\[T{avg}=\frac{1}{RPM}\times\frac{1}{avg\ \#\ sectors/track}\ minutes\]
+</p>
+</div>
+</li>
+</ul>
 </div>
 </div>
 
