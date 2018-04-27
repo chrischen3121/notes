@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-26 Thu 15:33 -->
+<!-- 2018-04-27 Fri 13:59 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -298,7 +298,9 @@ for the JavaScript code in this tag.
 <li><a href="#org7e9fac8">5. Storage</a>
 <ul>
 <li><a href="#org306632c">5.1. Storage Hierarchy</a></li>
-<li><a href="#org805cd60">5.2. Locality</a></li>
+<li><a href="#org80e77f5">5.2. BUS</a></li>
+<li><a href="#org805cd60">5.3. Locality</a></li>
+<li><a href="#orgd58d42b">5.4. Cache Memories</a></li>
 </ul>
 </li>
 </ul>
@@ -3414,24 +3416,389 @@ The access time for a sector has three main components
 </p>
 </div>
 </li>
+<li><a id="org833cb60"></a>Logical Disk Blocks<br />
+<div class="outline-text-5" id="text-org833cb60">
+<ul class="org-ul">
+<li>number of blocks is equal to number of sectors, numbered 0, 1, &#x2026;, B-1</li>
+<li>A firmware device in the disk, called the <i>disk controller</i>,</li>
+</ul>
+<p>
+maintains the mapping between logical block numbers and actual (physical) disk sectors.
+</p>
+</div>
+</li>
+
+<li><a id="org2e7fe11"></a>Accessing Disks<br />
+<div class="outline-text-5" id="text-org2e7fe11">
+<p>
+Uses a technique called <b>memory-mapped I/O</b>. In a system with memory-mapped I/O,
+a block of addresses in the address space is reserved for communicating with I/O devices.
+Each of these addresses is known as an I/O port. Each device is mapped to one or more
+<b>I/O ports</b> when it is attached to the bus.
+</p>
+
+<p>
+e.g. Reading from disk. Suppose that the <i>disk controller</i> is mapped to port 0xa0
+</p>
+<ol class="org-ol">
+<li>sends a command word that tells the disk to initiate a read</li>
+<li>indicates the logical block number that should be read</li>
+<li>indicates the main memory address where the contents of the disk sector should be stored.</li>
+</ol>
+
+<p>
+<i>Disk controller</i> finishes the <b>direct memory access(DMA)</b> transfer, then notify CPU the I/O is done.
+</p>
+</div>
+</li>
+
+<li><a id="org20266b1"></a>SSD<br />
+<div class="outline-text-5" id="text-org20266b1">
+<p>
+Based on flash memory
+</p>
+
+<div class="figure">
+<p><img src="../resources/os/SSDStructure.png" alt="SSDStructure.png" />
+</p>
+</div>
+<ul class="org-ul">
+<li><i>flash translation layer</i>: plays the same role as a <i>disk controller</i> (translating blocks)</li>
+<li>B blocks</li>
+<li>Each block consists of P pages</li>
+<li>Data is read and written in units of pages</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org80e77f5" class="outline-3">
+<h3 id="org80e77f5"><span class="section-number-3">5.2</span> BUS</h3>
+<div class="outline-text-3" id="text-5-2">
+<ul class="org-ul">
+<li>system bus</li>
+<li>memory bus</li>
+<li>I/O bus: independent of the CPU, PCIe(Peripheral Component Interconnect express)</li>
+<li>I/O bus connects USB devices, graphics adapter, host bus adapter(SATA, SCSI), network adapter, etc.</li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-org805cd60" class="outline-3">
-<h3 id="org805cd60"><span class="section-number-3">5.2</span> Locality</h3>
-<div class="outline-text-3" id="text-5-2">
-<p class="verse">
-Programs that repeatedly reference the same variables enjoy good temporal locality.<br />
-<br />
-For programs with stride-k reference patterns, the smaller the stride the better<br />
-the spatial locality. Programs with stride-1 reference patterns have good spatial<br />
-locality. Programs that hop around memory with large strides have poor spatial locality.<br />
-<br />
-Loops have good temporal and spatial locality with respect to instruction<br />
-fetches. The smaller the loop body and the greater the number of loop iterations,<br />
-the better the locality.<br />
+<h3 id="org805cd60"><span class="section-number-3">5.3</span> Locality</h3>
+<div class="outline-text-3" id="text-5-3">
+</div>
+<div id="outline-container-org625e1ac" class="outline-4">
+<h4 id="org625e1ac"><span class="section-number-4">5.3.1</span> Principle of Locality</h4>
+<div class="outline-text-4" id="text-5-3-1">
+<dl class="org-dl">
+<dt>Good temporal locality</dt><dd></dd>
+</dl>
+<p>
+A memory location that is referenced once is likely to be referenced again multiple times in the near future
 </p>
+
+<dl class="org-dl">
+<dt>Good Spatial Locality</dt><dd></dd>
+</dl>
+<p>
+If a memory location is referenced once, then the program is likely to reference a nearby memory location in the near future.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5907c8c" class="outline-4">
+<h4 id="org5907c8c"><span class="section-number-4">5.3.2</span> Reference Patterns</h4>
+<div class="outline-text-4" id="text-5-3-2">
+<ul class="org-ul">
+<li>sequential(stride-1) reference pattern enjoys good <i>spatial locality</i></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">a[M][N]</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">sum</span> = <span style="color: #4e3163;">0</span>;
+<span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i = <span style="color: #4e3163;">0</span>; i &lt; N; i++<span style="color: #3a81c3;">)</span>
+  <span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>j = <span style="color: #4e3163;">0</span>; j &lt; M; j++<span style="color: #3a81c3;">)</span>
+    sum += a<span style="color: #3a81c3;">[</span>j<span style="color: #3a81c3;">][</span>i<span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">bad, stride-N</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org21fd3cd" class="outline-4">
+<h4 id="org21fd3cd"><span class="section-number-4">5.3.3</span> Locality of Instruction Fetches</h4>
+<div class="outline-text-4" id="text-5-3-3">
+<p>
+Loops have good temporal and spatial locality with respect to instruction fetches.
+The smaller the loop body and the greater the number of loop iterations, the better the locality.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4cf96c8" class="outline-4">
+<h4 id="org4cf96c8"><span class="section-number-4">5.3.4</span> Cache Hit</h4>
+</div>
+<div id="outline-container-org01582d2" class="outline-4">
+<h4 id="org01582d2"><span class="section-number-4">5.3.5</span> Cache Miss</h4>
+<div class="outline-text-4" id="text-5-3-5">
+</div>
+<ul class="org-ul">
+<li><a id="orge4733ef"></a>Placement Policy<br />
+<div class="outline-text-5" id="text-orge4733ef">
+<p>
+Randomly placed blocks are expensive to locate. Restricts a particular block at level k+1
+to a small subset of the blocks at level k.
+</p>
+</div>
+</li>
+
+<li><a id="org6461c8c"></a>Replacement Policy<br />
+<div class="outline-text-5" id="text-org6461c8c">
+<ul class="org-ul">
+<li>random replacement policy</li>
+<li>least-recently used(LRU)</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orge0c7e55"></a>Kinds of Cache Misses<br />
+<div class="outline-text-5" id="text-orge0c7e55">
+<ul class="org-ul">
+<li>cold miss(compulsory miss): miss on cold cache(empty cache)</li>
+<li>conflict miss: placement policy lead to conflict miss</li>
+<li>capacity miss: when the size of the working set exceeds the size of the cache</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd58d42b" class="outline-3">
+<h3 id="orgd58d42b"><span class="section-number-3">5.4</span> Cache Memories</h3>
+<div class="outline-text-3" id="text-5-4">
+
+<div class="figure">
+<p><img src="../resources/os/CacheOrganization.png" alt="CacheOrganization.png" />
+</p>
+</div>
+
+<div class="figure">
+<p><img src="../resources/os/MemoryAddress.png" alt="MemoryAddress.png" />
+</p>
+</div>
+<ul class="org-ul">
+<li>i-cache: A cache that holds instructions, often read-only</li>
+<li>d-cache: A cache that holds program data</li>
+</ul>
+
+<div class="figure">
+<p><img src="../resources/os/ProcessorPackage.png" alt="ProcessorPackage.png" />
+</p>
+</div>
+</div>
+<div id="outline-container-org7fff116" class="outline-4">
+<h4 id="org7fff116"><span class="section-number-4">5.4.1</span> Terms</h4>
+<div class="outline-text-4" id="text-5-4-1">
+<dl class="org-dl">
+<dt>block</dt><dd></dd>
+</dl>
+<p>
+a fixed-sized packet of information that moves back and forth between a cache and main memory
+</p>
+<dl class="org-dl">
+<dt>line</dt><dd></dd>
+</dl>
+<p>
+a container in a cache that stores a block, as well as other information such as the valid bit and the tag bits
+</p>
+<dl class="org-dl">
+<dt>set</dt><dd></dd>
+</dl>
+<p>
+a collection of one or more lines.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2a7040a" class="outline-4">
+<h4 id="org2a7040a"><span class="section-number-4">5.4.2</span> Parameters</h4>
+<div class="outline-text-4" id="text-5-4-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">\(S=2^s\)</td>
+<td class="org-left">Number of sets</td>
+</tr>
+
+<tr>
+<td class="org-left">\(E\)</td>
+<td class="org-left">Number of lines per set</td>
+</tr>
+
+<tr>
+<td class="org-left">\(B=2^b\)</td>
+<td class="org-left">Block size(bytes)</td>
+</tr>
+
+<tr>
+<td class="org-left">\(m=\log_2(M)\)</td>
+<td class="org-left">Number of memory address bits</td>
+</tr>
+
+<tr>
+<td class="org-left">\(M=2^m\)</td>
+<td class="org-left">Maximum number of unique memory addresses</td>
+</tr>
+
+<tr>
+<td class="org-left">\(s=\log_2(S)\)</td>
+<td class="org-left">Number of <i>set index bits</i></td>
+</tr>
+
+<tr>
+<td class="org-left">\(b=\log_2(B)\)</td>
+<td class="org-left">Number of <i>block offset bits</i></td>
+</tr>
+
+<tr>
+<td class="org-left">\(t=m-(s-b)\)</td>
+<td class="org-left">Number of <i>tag bits</i></td>
+</tr>
+
+<tr>
+<td class="org-left">\(C=B\times E \times S\)</td>
+<td class="org-left">Cache size exclude valid and tag bits</td>
+</tr>
+</tbody>
+</table>
+<ul class="org-ul">
+<li><i>valid bit</i>: indicates whether or not the line contains meaningful information</li>
+<li><i>tag bits</i>: a subset of the bits from the current block’s memory address, uniquely</li>
+</ul>
+<p>
+identify the block stored in the cache line.
+</p>
+<ul class="org-ul">
+<li><i>set</i> is like hash table, <i>set index bits</i> as hash code, E indicates the number of buckets.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd61a74a" class="outline-4">
+<h4 id="orgd61a74a"><span class="section-number-4">5.4.3</span> Direct-Mapped Caches(\(E=1\))</h4>
+<div class="outline-text-4" id="text-5-4-3">
+<ol class="org-ol">
+<li>Set Selection(set index bits)</li>
+<li>Line Matching: if the valid bit is set and the tag in the cache line matches the tag in the address.
+<ul class="org-ul">
+<li>Cache Hit: Word Selection(block offset bits)</li>
+<li>Cache Miss: retrieve from memory</li>
+</ul></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgc3a795f" class="outline-4">
+<h4 id="orgc3a795f"><span class="section-number-4">5.4.4</span> Set Associative Caches(\(1<E<C/B\))</h4>
+<div class="outline-text-4" id="text-5-4-4">
+<ul class="org-ul">
+<li>Line Matching Key: tag bits</li>
+<li>Cache Miss: use replacement policy, e.g. LFU(least-frequently-used), LRU(least-recently-used)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb79f9d6" class="outline-4">
+<h4 id="orgb79f9d6"><span class="section-number-4">5.4.5</span> Fully Associative Caches(\(E=C/B, S=1\))</h4>
+<div class="outline-text-4" id="text-5-4-5">
+<ul class="org-ul">
+<li><p>
+no set index bits
+</p>
+
+<div class="figure">
+<p><img src="../resources/os/FullCacheAddress.png" alt="FullCacheAddress.png" />
+</p>
+</div></li>
+<li>Line Matching: same as Set Associative Caches</li>
+<li>only appropriate for small caches, e.g. translation lookaside buffers (TLB)s</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgcbd680a" class="outline-4">
+<h4 id="orgcbd680a"><span class="section-number-4">5.4.6</span> Write Issues</h4>
+<div class="outline-text-4" id="text-5-4-6">
+</div>
+<ul class="org-ul">
+<li><a id="org10377fd"></a>Write Hit<br />
+<div class="outline-text-5" id="text-org10377fd">
+<ul class="org-ul">
+<li>write-through: immediately write w’s cache block to the next lower level</li>
+<li><b>write-back</b>: updated block to the low level when it is evicted from the cache</li>
+</ul>
+<p>
+by the replacement algorithm. Maintains an additional dirty(modify) bit for each cache line.
+</p>
+</div>
+</li>
+<li><a id="org612c6c7"></a>Write Miss<br />
+<div class="outline-text-5" id="text-org612c6c7">
+<ul class="org-ul">
+<li><b>write-allocate</b>: loads the corresponding block from the lower level into the cache</li>
+</ul>
+<p>
+and then updates the cache block
+</p>
+<ul class="org-ul">
+<li>not-write-allocate</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org960d2e3" class="outline-4">
+<h4 id="org960d2e3"><span class="section-number-4">5.4.7</span> <b>Performance Impact of Cache Parameters</b></h4>
+<div class="outline-text-4" id="text-5-4-7">
+</div>
+<ul class="org-ul">
+<li><a id="org65f56b8"></a>Indicators<br />
+<div class="outline-text-5" id="text-org65f56b8">
+<ul class="org-ul">
+<li>Miss rate: \(\frac{\#\ misses}{\#\ references}\)</li>
+<li>Hit rate: \(1-Miss\ rate\)</li>
+<li>Hit time: the time to deliver a word in the cache to the CPU</li>
+<li>Miss penaly: any additional time required because of a miss</li>
+</ul>
+</div>
+</li>
+<li><a id="org1792938"></a>Impacts<br />
+<div class="outline-text-5" id="text-org1792938">
+<ul class="org-ul">
+<li>Cache size</li>
+<li>Block size: The larger blocks can help increase the hit rate by exploiting any spatial locality, but expensive</li>
+<li>Associativity(E): The larger E decreases the vulnerability of the cache to thrashing due to conflict misses</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org96322e5" class="outline-4">
+<h4 id="org96322e5"><span class="section-number-4">5.4.8</span> Writing Cache-friendly Code</h4>
+<div class="outline-text-4" id="text-5-4-8">
+<ol class="org-ol">
+<li>Make the common case go fast</li>
+<li>Minimize the number of cache misses in each inner loop(step=1 is the best)</li>
+</ol>
+</div>
 </div>
 </div>
 </div>

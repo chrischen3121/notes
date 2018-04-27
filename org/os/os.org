@@ -989,6 +989,14 @@ Condition: $x\neq 0$
      - capacity miss: when the size of the working set exceeds the size of the cache
 
 ** Cache Memories
+     #+ATTR_HTML: align="center"
+     file:../resources/os/CacheOrganization.png
+     #+ATTR_HTML: align="center"
+     file:../resources/os/MemoryAddress.png
+     - i-cache: A cache that holds instructions, often read-only
+     - d-cache: A cache that holds program data
+     #+ATTR_HTML: align="center"
+     file:../resources/os/ProcessorPackage.png
 *** Terms
     - block ::
     a fixed-sized packet of information that moves back and forth between a cache and main memory
@@ -996,3 +1004,57 @@ Condition: $x\neq 0$
     a container in a cache that stores a block, as well as other information such as the valid bit and the tag bits
     - set ::
     a collection of one or more lines.
+
+*** Parameters
+    | $S=2^s$                | Number of sets                            |
+    | $E$                    | Number of lines per set                   |
+    | $B=2^b$                | Block size(bytes)                         |
+    | $m=\log_2(M)$          | Number of memory address bits             |
+    | $M=2^m$                | Maximum number of unique memory addresses |
+    | $s=\log_2(S)$          | Number of /set index bits/                |
+    | $b=\log_2(B)$          | Number of /block offset bits/             |
+    | $t=m-(s-b)$            | Number of /tag bits/                      |
+    | $C=B\times E \times S$ | Cache size exclude valid and tag bits     |
+    - /valid bit/: indicates whether or not the line contains meaningful information
+    - /tag bits/: a subset of the bits from the current block’s memory address, uniquely
+    identify the block stored in the cache line.
+    - /set/ is like hash table, /set index bits/ as hash code, E indicates the number of buckets.
+
+*** Direct-Mapped Caches($E=1$)
+    1. Set Selection(set index bits)
+    2. Line Matching: if the valid bit is set and the tag in the cache line matches the tag in the address.
+       - Cache Hit: Word Selection(block offset bits)
+       - Cache Miss: retrieve from memory
+
+*** Set Associative Caches($1<E<C/B$)
+    - Line Matching Key: tag bits
+    - Cache Miss: use replacement policy, e.g. LFU(least-frequently-used), LRU(least-recently-used)
+
+*** Fully Associative Caches($E=C/B, S=1$)
+    - no set index bits
+     #+ATTR_HTML: align="center"
+     file:../resources/os/FullCacheAddress.png
+    - Line Matching: same as Set Associative Caches
+    - only appropriate for small caches, e.g. translation lookaside buffers (TLB)s
+*** Write Issues
+**** Write Hit
+     - write-through: immediately write w’s cache block to the next lower level
+     - *write-back*: updated block to the low level when it is evicted from the cache
+     by the replacement algorithm. Maintains an additional dirty(modify) bit for each cache line.
+**** Write Miss
+     - *write-allocate*: loads the corresponding block from the lower level into the cache
+     and then updates the cache block
+     - not-write-allocate
+*** *Performance Impact of Cache Parameters*
+**** Indicators
+    - Miss rate: $\frac{\#\ misses}{\#\ references}$
+    - Hit rate: $1-Miss\ rate$
+    - Hit time: the time to deliver a word in the cache to the CPU
+    - Miss penaly: any additional time required because of a miss
+**** Impacts
+     - Cache size
+     - Block size: The larger blocks can help increase the hit rate by exploiting any spatial locality, but expensive
+     - Associativity(E): The larger E decreases the vulnerability of the cache to thrashing due to conflict misses
+*** Writing Cache-friendly Code
+    1. Make the common case go fast
+    2. Minimize the number of cache misses in each inner loop(step=1 is the best)
