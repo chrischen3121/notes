@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-25 Wed 15:52 -->
+<!-- 2018-04-27 Fri 14:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance MySQL</title>
@@ -253,7 +253,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgc81dc2d">3.1. What to Measure</a></li>
 <li><a href="#org73e3c48">3.2. Gathering Data on MySQL</a></li>
 <li><a href="#org42ff9e0">3.3. Analyzing Results</a></li>
-<li><a href="#org4956cc6">3.4. Tools</a></li>
+<li><a href="#orge93afe4">3.4. Tools</a></li>
 </ul>
 </li>
 <li><a href="#orgbd40361">4. Profiling</a>
@@ -261,13 +261,15 @@ for the JavaScript code in this tag.
 <li><a href="#orgbb02c05">4.1. slow query log</a></li>
 <li><a href="#orgc895f05">4.2. Single Query Profiling</a></li>
 <li><a href="#orgc084146">4.3. Server-Wide Problem Detection</a></li>
-<li><a href="#orge93afe4">4.4. Tools</a></li>
+<li><a href="#org0781e12">4.4. Tools</a></li>
 </ul>
 </li>
 <li><a href="#orga39e354">5. Schema</a>
 <ul>
 <li><a href="#org9e75718">5.1. Data Type</a></li>
 <li><a href="#orgcc56f15">5.2. Normalization and Denormalization</a></li>
+<li><a href="#orgf4041ab">5.3. Summary Table &amp; Cache Table</a></li>
+<li><a href="#orgda22cea">5.4. Speeding Up ALTER TABLE</a></li>
 </ul>
 </li>
 </ul>
@@ -484,8 +486,8 @@ awk '
 </div>
 </div>
 
-<div id="outline-container-org4956cc6" class="outline-3">
-<h3 id="org4956cc6"><span class="section-number-3">3.4</span> Tools</h3>
+<div id="outline-container-orge93afe4" class="outline-3">
+<h3 id="orge93afe4"><span class="section-number-3">3.4</span> Tools</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
 <div id="outline-container-org3405a1b" class="outline-4">
@@ -803,8 +805,8 @@ Aggregate GDB stack traces for a selected program
 </div>
 </div>
 
-<div id="outline-container-orge93afe4" class="outline-3">
-<h3 id="orge93afe4"><span class="section-number-3">4.4</span> Tools</h3>
+<div id="outline-container-org0781e12" class="outline-3">
+<h3 id="org0781e12"><span class="section-number-3">4.4</span> Tools</h3>
 <div class="outline-text-3" id="text-4-4">
 </div>
 <div id="outline-container-org4404df7" class="outline-4">
@@ -913,6 +915,60 @@ Benefits:
 <li>allow more efficient indexing strategies</li>
 </ul>
 </div>
+</div>
+</div>
+<div id="outline-container-orgf4041ab" class="outline-3">
+<h3 id="orgf4041ab"><span class="section-number-3">5.3</span> Summary Table &amp; Cache Table</h3>
+<div class="outline-text-3" id="text-5-3">
+<ul class="org-ul">
+<li>summary tables: hold aggregated data from GROUP BY queries</li>
+<li>cache tables: contain data that can be easily retrieved from the schema(i.e., data that is logically redundant).</li>
+</ul>
+</div>
+<div id="outline-container-org53229fc" class="outline-4">
+<h4 id="org53229fc"><span class="section-number-4">5.3.1</span> Flexviews</h4>
+<div class="outline-text-4" id="text-5-3-1">
+<ul class="org-ul">
+<li>offer materialized views</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgda22cea" class="outline-3">
+<h3 id="orgda22cea"><span class="section-number-3">5.4</span> Speeding Up ALTER TABLE</h3>
+<div class="outline-text-3" id="text-5-4">
+</div>
+<div id="outline-container-org85349c0" class="outline-4">
+<h4 id="org85349c0"><span class="section-number-4">5.4.1</span> Default</h4>
+<div class="outline-text-4" id="text-5-4-1">
+<p>
+MySQL performs most alterations by making an empty table with the desired new
+structure, inserting all the data from the old table into the new one, and deleting the old table.
+</p>
+</div>
+</div>
+<div id="outline-container-org985a365" class="outline-4">
+<h4 id="org985a365"><span class="section-number-4">5.4.2</span> Alternatives</h4>
+<div class="outline-text-4" id="text-5-4-2">
+<ul class="org-ul">
+<li>Performing the ALTER on servers that are not in production service</li>
+<li>Shadow copy: build a new table with the desired structure beside the existing one,</li>
+</ul>
+<p>
+and then perform a rename and drop to swap the two.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org0a920c3"></a>Shadow copy tool<br />
+<div class="outline-text-5" id="text-org0a920c3">
+<ul class="org-ul">
+<li>"online schema change" from facebook</li>
+<li>openark</li>
+<li>Percona Toolkit</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>

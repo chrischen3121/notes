@@ -291,3 +291,20 @@
     Benefits:
     - avoids joins
     - allow more efficient indexing strategies
+** Summary Table & Cache Table
+   - summary tables: hold aggregated data from GROUP BY queries
+   - cache tables: contain data that can be easily retrieved from the schema(i.e., data that is logically redundant).
+*** Flexviews
+    - offer materialized views
+** Speeding Up ALTER TABLE
+*** Default
+    MySQL performs most alterations by making an empty table with the desired new
+    structure, inserting all the data from the old table into the new one, and deleting the old table.
+*** Alternatives
+    - Performing the ALTER on servers that are not in production service
+    - Shadow copy: build a new table with the desired structure beside the existing one,
+    and then perform a rename and drop to swap the two.
+**** Shadow copy tool
+     - "online schema change" from facebook
+     - openark
+     - Percona Toolkit
