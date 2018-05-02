@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-05-02 Wed 14:00 -->
+<!-- 2018-05-02 Wed 18:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -306,6 +306,10 @@ for the JavaScript code in this tag.
 <li><a href="#org6d33b70">6. Link</a>
 <ul>
 <li><a href="#orge5ccad0">6.1. Object Files</a></li>
+<li><a href="#org768fd7c">6.2. Symbols</a></li>
+<li><a href="#org1975bec">6.3. Static Libraries</a></li>
+<li><a href="#orgd56b50f">6.4. Relocation</a></li>
+<li><a href="#org2c7a40d">6.5. Tools</a></li>
 </ul>
 </li>
 </ul>
@@ -3812,7 +3816,7 @@ and then updates the cache block
 <div class="outline-text-2" id="text-6">
 <ol class="org-ol">
 <li>preprocesser(cpp for C -&gt; xxx.i)</li>
-<li>compiler(cc1 -&gt; xxx.s)</li>
+<li>compiler(cc1 -&gt; xxx.s, generate symbol table)</li>
 <li>assembler(as -&gt; xxx.o)</li>
 <li>linker(ld -&gt; executable)</li>
 
@@ -3952,8 +3956,7 @@ when the linker combines this object file with others.
 <li><a id="org070633a"></a>.rel.data<br />
 <div class="outline-text-5" id="text-org070633a">
 <p>
-Relocation information for any global variables that are refer-
-enced or defined by the module.
+Relocation information for any global variables that are referenced or defined by the module.
 </p>
 </div>
 </li>
@@ -4005,6 +4008,112 @@ A special type of relocatable object file that can be loaded
 into memory and linked dynamically, at either load time or run time.
 </p>
 </div>
+</div>
+</div>
+<div id="outline-container-org768fd7c" class="outline-3">
+<h3 id="org768fd7c"><span class="section-number-3">6.2</span> Symbols</h3>
+<div class="outline-text-3" id="text-6-2">
+</div>
+<div id="outline-container-org6dd9ba3" class="outline-4">
+<h4 id="org6dd9ba3"><span class="section-number-4">6.2.1</span> Symbol types</h4>
+<div class="outline-text-4" id="text-6-2-1">
+</div>
+<ul class="org-ul">
+<li><a id="orgdc11192"></a>Global symbols that are defined by current module<br /></li>
+<li><a id="org6988218"></a>Global symbols that are referenced by current module, aslo called <i>externals</i><br /></li>
+<li><a id="org101ac1e"></a>Local symbols that are defined and referenced exclusively by current module<br />
+<div class="outline-text-5" id="text-org101ac1e">
+<p>
+Some local linker symbols correspond to C functions and global variables that are
+defined with the static attribute. These symbols are visible anywhere within
+module m, but cannot be referenced by other modules.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgae67824" class="outline-4">
+<h4 id="orgae67824"><span class="section-number-4">6.2.2</span> overloaded function in C++</h4>
+<div class="outline-text-4" id="text-6-2-2">
+<p>
+The compiler encodes each unique method and parameter list combination into a unique name for the linker.
+This encoding process is called <b>mangling</b>, and the inverse process <b>demangling</b>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5fdac51" class="outline-4">
+<h4 id="org5fdac51"><span class="section-number-4">6.2.3</span> strong/weak symbols</h4>
+<div class="outline-text-4" id="text-6-2-3">
+<ul class="org-ul">
+<li>Functions and initialized global variables get strong symbols.</li>
+<li>Uninitialized global variables get weak symbols.</li>
+<li>Rules:
+<ol class="org-ol">
+<li>Multiple strong symbols are not allowed.</li>
+<li>Given a strong symbol and multiple weak symbols, choose the strong symbol.</li>
+<li>Given multiple weak symbols, choose <b>any</b> of the weak symbols.</li>
+</ol></li>
+<li><code>-fno-common</code>: triggers an error if it encounters multiply defined global symbols.</li>
+<li><code>-Werror</code>: make all warnings into errors</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1975bec" class="outline-3">
+<h3 id="org1975bec"><span class="section-number-3">6.3</span> Static Libraries</h3>
+<div class="outline-text-3" id="text-6-3">
+</div>
+<div id="outline-container-orgae39169" class="outline-4">
+<h4 id="orgae39169"><span class="section-number-4">6.3.1</span> Symbol Resolution</h4>
+<div class="outline-text-4" id="text-6-3-1">
+<p>
+The linker maintains a set <i>E</i> of relocatable object files that will be merged to form the
+executable, a set <i>U</i> of unresolved symbols (i.e., symbols referred to, but not yet
+defined), and a set <i>D</i> of symbols that have been defined in previous input files.
+</p>
+<ul class="org-ul">
+<li>place libraries at the end of the command line</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd56b50f" class="outline-3">
+<h3 id="orgd56b50f"><span class="section-number-3">6.4</span> Relocation</h3>
+<div class="outline-text-3" id="text-6-4">
+<ol class="org-ol">
+<li>Relocating sections and symbol definitions.</li>
+<li>Relocating symbol references within sections.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org2c7a40d" class="outline-3">
+<h3 id="org2c7a40d"><span class="section-number-3">6.5</span> Tools</h3>
+<div class="outline-text-3" id="text-6-5">
+<ul class="org-ul">
+<li>ar: Creates static libraries, and inserts, deletes, lists, and extracts members.</li>
+<li>strings: Lists all of the printable strings contained in an object file.</li>
+<li>strip: Deletes symbol table information from an object file.</li>
+<li>nm: Lists the symbols defined in the symbol table of an object file.</li>
+<li>size: Lists the names and sizes of the sections in an object file.</li>
+<li>readelf: Displays the complete structure of an object file, including all of the</li>
+</ul>
+<p>
+information encoded in the ELF header; subsumes the functionality of size and nm.
+</p>
+<ul class="org-ul">
+<li>objdump: The mother of all binary tools. Can display all of the information in an</li>
+</ul>
+<p>
+object file. Its most useful function is disassembling the binary instructions
+in the .text section. <code>objdump -dx</code>
+</p>
+<ul class="org-ul">
+<li>ldd: Lists the shared libraries that an executable needs at run time.</li>
+</ul>
 </div>
 </div>
 </div>

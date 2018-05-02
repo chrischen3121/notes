@@ -1060,7 +1060,7 @@ Condition: $x\neq 0$
     2. Minimize the number of cache misses in each inner loop(step=1 is the best)
 * Link
   1. preprocesser(cpp for C -> xxx.i)
-  2. compiler(cc1 -> xxx.s)
+  2. compiler(cc1 -> xxx.s, generate symbol table)
   3. assembler(as -> xxx.o)
   4. linker(ld -> executable)
 
@@ -1108,8 +1108,7 @@ Condition: $x\neq 0$
      when the linker combines this object file with others.
 
 **** .rel.data
-     Relocation information for any global variables that are refer-
-     enced or defined by the module.
+     Relocation information for any global variables that are referenced or defined by the module.
 
 **** .debug
      A debugging symbol table with entries for *local variables* and *typedefs*
@@ -1130,3 +1129,48 @@ Condition: $x\neq 0$
 *** Shared object file
     A special type of relocatable object file that can be loaded
     into memory and linked dynamically, at either load time or run time.
+** Symbols
+*** Symbol types
+**** Global symbols that are defined by current module
+**** Global symbols that are referenced by current module, aslo called /externals/
+**** Local symbols that are defined and referenced exclusively by current module
+     Some local linker symbols correspond to C functions and global variables that are
+     defined with the static attribute. These symbols are visible anywhere within
+     module m, but cannot be referenced by other modules.
+
+*** overloaded function in C++
+    The compiler encodes each unique method and parameter list combination into a unique name for the linker.
+    This encoding process is called *mangling*, and the inverse process *demangling*.
+
+*** strong/weak symbols
+    - Functions and initialized global variables get strong symbols.
+    - Uninitialized global variables get weak symbols.
+    - Rules:
+      1. Multiple strong symbols are not allowed.
+      2. Given a strong symbol and multiple weak symbols, choose the strong symbol.
+      3. Given multiple weak symbols, choose *any* of the weak symbols.
+    - ~-fno-common~: triggers an error if it encounters multiply defined global symbols.
+    - ~-Werror~: make all warnings into errors
+
+** Static Libraries
+*** Symbol Resolution
+    The linker maintains a set /E/ of relocatable object files that will be merged to form the
+    executable, a set /U/ of unresolved symbols (i.e., symbols referred to, but not yet
+    defined), and a set /D/ of symbols that have been defined in previous input files.
+    - place libraries at the end of the command line
+** Relocation
+   1. Relocating sections and symbol definitions.
+   2. Relocating symbol references within sections.
+
+** Tools
+   - ar: Creates static libraries, and inserts, deletes, lists, and extracts members.
+   - strings: Lists all of the printable strings contained in an object file.
+   - strip: Deletes symbol table information from an object file.
+   - nm: Lists the symbols defined in the symbol table of an object file.
+   - size: Lists the names and sizes of the sections in an object file.
+   - readelf: Displays the complete structure of an object file, including all of the
+   information encoded in the ELF header; subsumes the functionality of size and nm.
+   - objdump: The mother of all binary tools. Can display all of the information in an
+   object file. Its most useful function is disassembling the binary instructions
+   in the .text section. =objdump -dx=
+   - ldd: Lists the shared libraries that an executable needs at run time.
