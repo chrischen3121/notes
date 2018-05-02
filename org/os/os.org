@@ -1058,3 +1058,75 @@ Condition: $x\neq 0$
 *** Writing Cache-friendly Code
     1. Make the common case go fast
     2. Minimize the number of cache misses in each inner loop(step=1 is the best)
+* Link
+  1. preprocesser(cpp for C -> xxx.i)
+  2. compiler(cc1 -> xxx.s)
+  3. assembler(as -> xxx.o)
+  4. linker(ld -> executable)
+
+  - loader(executable -> memory)
+
+** Object Files
+*** Relocatable object file
+    Contains binary code and data in a form that can be combined
+    with other relocatable object files at compile time to create an
+    executable object file.
+    | ELF header(16bytes)  |
+    | .text                |
+    | .rodata              |
+    | .data                |
+    | .bss                 |
+    | .symtab              |
+    | .rel.text            |
+    | .rel.data            |
+    | .debug               |
+    | .line                |
+    | .strtab              |
+    | Section header table |
+
+**** ELF header
+     Describes the word size and byte ordering of the system that generated the file
+
+**** .text
+     The machine code of the compiled program.
+
+**** .rodata
+     Read-only data such as the format strings in printf statements, and jump tables for switch statements
+
+**** .data
+     Initialized global C variables.
+
+**** .bss
+     Uninitialized global C variables.
+
+**** .symtab
+     A symbol table with information about functions and global variables
+     that are defined and referenced in the program.
+
+**** .rel.text
+     A list of locations in the .text section that will need to be modified
+     when the linker combines this object file with others.
+
+**** .rel.data
+     Relocation information for any global variables that are refer-
+     enced or defined by the module.
+
+**** .debug
+     A debugging symbol table with entries for *local variables* and *typedefs*
+     defined in the program.
+
+**** .line
+     A mapping between line numbers in the original C source program
+     and machine code instructions in the .text section.(~-g~ only)
+
+**** .strtab
+     A string table for the symbol tables in the .symtab and .debug
+     sections, and for the section names in the section headers.
+
+*** Excutable object file
+    Contains binary code and data in a form that can be copied
+    directly into memory and executed.
+
+*** Shared object file
+    A special type of relocatable object file that can be loaded
+    into memory and linked dynamically, at either load time or run time.

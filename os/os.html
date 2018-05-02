@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-27 Fri 13:59 -->
+<!-- 2018-05-02 Wed 14:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -301,6 +301,11 @@ for the JavaScript code in this tag.
 <li><a href="#org80e77f5">5.2. BUS</a></li>
 <li><a href="#org805cd60">5.3. Locality</a></li>
 <li><a href="#orgd58d42b">5.4. Cache Memories</a></li>
+</ul>
+</li>
+<li><a href="#org6d33b70">6. Link</a>
+<ul>
+<li><a href="#orge5ccad0">6.1. Object Files</a></li>
 </ul>
 </li>
 </ul>
@@ -3798,6 +3803,207 @@ and then updates the cache block
 <li>Make the common case go fast</li>
 <li>Minimize the number of cache misses in each inner loop(step=1 is the best)</li>
 </ol>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org6d33b70" class="outline-2">
+<h2 id="org6d33b70"><span class="section-number-2">6</span> Link</h2>
+<div class="outline-text-2" id="text-6">
+<ol class="org-ol">
+<li>preprocesser(cpp for C -&gt; xxx.i)</li>
+<li>compiler(cc1 -&gt; xxx.s)</li>
+<li>assembler(as -&gt; xxx.o)</li>
+<li>linker(ld -&gt; executable)</li>
+
+<li>loader(executable -&gt; memory)</li>
+</ol>
+</div>
+
+<div id="outline-container-orge5ccad0" class="outline-3">
+<h3 id="orge5ccad0"><span class="section-number-3">6.1</span> Object Files</h3>
+<div class="outline-text-3" id="text-6-1">
+</div>
+<div id="outline-container-orgbc8119c" class="outline-4">
+<h4 id="orgbc8119c"><span class="section-number-4">6.1.1</span> Relocatable object file</h4>
+<div class="outline-text-4" id="text-6-1-1">
+<p>
+Contains binary code and data in a form that can be combined
+with other relocatable object files at compile time to create an
+executable object file.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ELF header(16bytes)</td>
+</tr>
+
+<tr>
+<td class="org-left">.text</td>
+</tr>
+
+<tr>
+<td class="org-left">.rodata</td>
+</tr>
+
+<tr>
+<td class="org-left">.data</td>
+</tr>
+
+<tr>
+<td class="org-left">.bss</td>
+</tr>
+
+<tr>
+<td class="org-left">.symtab</td>
+</tr>
+
+<tr>
+<td class="org-left">.rel.text</td>
+</tr>
+
+<tr>
+<td class="org-left">.rel.data</td>
+</tr>
+
+<tr>
+<td class="org-left">.debug</td>
+</tr>
+
+<tr>
+<td class="org-left">.line</td>
+</tr>
+
+<tr>
+<td class="org-left">.strtab</td>
+</tr>
+
+<tr>
+<td class="org-left">Section header table</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgc69fb37"></a>ELF header<br />
+<div class="outline-text-5" id="text-orgc69fb37">
+<p>
+Describes the word size and byte ordering of the system that generated the file
+</p>
+</div>
+</li>
+
+<li><a id="org663583c"></a>.text<br />
+<div class="outline-text-5" id="text-org663583c">
+<p>
+The machine code of the compiled program.
+</p>
+</div>
+</li>
+
+<li><a id="orga72381a"></a>.rodata<br />
+<div class="outline-text-5" id="text-orga72381a">
+<p>
+Read-only data such as the format strings in printf statements, and jump tables for switch statements
+</p>
+</div>
+</li>
+
+<li><a id="org54e5e4f"></a>.data<br />
+<div class="outline-text-5" id="text-org54e5e4f">
+<p>
+Initialized global C variables.
+</p>
+</div>
+</li>
+
+<li><a id="orgf96e193"></a>.bss<br />
+<div class="outline-text-5" id="text-orgf96e193">
+<p>
+Uninitialized global C variables.
+</p>
+</div>
+</li>
+
+<li><a id="orga7ff737"></a>.symtab<br />
+<div class="outline-text-5" id="text-orga7ff737">
+<p>
+A symbol table with information about functions and global variables
+that are defined and referenced in the program.
+</p>
+</div>
+</li>
+
+<li><a id="orgab6b119"></a>.rel.text<br />
+<div class="outline-text-5" id="text-orgab6b119">
+<p>
+A list of locations in the .text section that will need to be modified
+when the linker combines this object file with others.
+</p>
+</div>
+</li>
+
+<li><a id="org070633a"></a>.rel.data<br />
+<div class="outline-text-5" id="text-org070633a">
+<p>
+Relocation information for any global variables that are refer-
+enced or defined by the module.
+</p>
+</div>
+</li>
+
+<li><a id="orgd22bf0c"></a>.debug<br />
+<div class="outline-text-5" id="text-orgd22bf0c">
+<p>
+A debugging symbol table with entries for <b>local variables</b> and <b>typedefs</b>
+defined in the program.
+</p>
+</div>
+</li>
+
+<li><a id="orgf825140"></a>.line<br />
+<div class="outline-text-5" id="text-orgf825140">
+<p>
+A mapping between line numbers in the original C source program
+and machine code instructions in the .text section.(<code>-g</code> only)
+</p>
+</div>
+</li>
+
+<li><a id="orgfb2381b"></a>.strtab<br />
+<div class="outline-text-5" id="text-orgfb2381b">
+<p>
+A string table for the symbol tables in the .symtab and .debug
+sections, and for the section names in the section headers.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org024eb0b" class="outline-4">
+<h4 id="org024eb0b"><span class="section-number-4">6.1.2</span> Excutable object file</h4>
+<div class="outline-text-4" id="text-6-1-2">
+<p>
+Contains binary code and data in a form that can be copied
+directly into memory and executed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8edf48d" class="outline-4">
+<h4 id="org8edf48d"><span class="section-number-4">6.1.3</span> Shared object file</h4>
+<div class="outline-text-4" id="text-6-1-3">
+<p>
+A special type of relocatable object file that can be loaded
+into memory and linked dynamically, at either load time or run time.
+</p>
 </div>
 </div>
 </div>
