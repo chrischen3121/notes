@@ -1103,11 +1103,11 @@ Condition: $x\neq 0$
      A symbol table with information about functions and global variables
      that are defined and referenced in the program.
 
-**** .rel.text
+**** .rel.text(.rela.text)
      A list of locations in the .text section that will need to be modified
      when the linker combines this object file with others.
 
-**** .rel.data
+**** .rel.data(.rela.data)
      Relocation information for any global variables that are referenced or defined by the module.
 
 **** .debug
@@ -1125,6 +1125,38 @@ Condition: $x\neq 0$
 *** Excutable object file
     Contains binary code and data in a form that can be copied
     directly into memory and executed.
+    - readonly(code segment)
+    | ELF header            |
+    | Segment header table  |
+    | .init                 |
+    | .text                 |
+    | .rodata               |
+    - read/write(data segment)
+    | .data                 |
+    | .bss                  |
+    - Symbol table and debug info are not loaded into memory
+    | .symtab               |
+    | .debug                |
+    | .line                 |
+    | .strtab               |
+    | Section header table  |
+**** ELF header
+     The *ELF header* describes the overall format of the file.
+     It also includes the program’s /entry point/
+
+**** .init
+     *.init* section defines a small function, called ~_init~,
+     that will be called by the program’s initialization code.
+
+**** Segment header table
+     Map contiguous chunks of the executable file to contiguous memory segments.
+     See *Program Header* displayed by *objdump*
+     - off: file offset
+     - vaddr\/paddr: vitual\/physical address
+     - align: segment alignment
+     - filesz: segment size in the object file
+     - memsz: segment size in memory
+     - flags: run-time permissions
 
 *** Shared object file
     A special type of relocatable object file that can be loaded
@@ -1158,9 +1190,138 @@ Condition: $x\neq 0$
     executable, a set /U/ of unresolved symbols (i.e., symbols referred to, but not yet
     defined), and a set /D/ of symbols that have been defined in previous input files.
     - place libraries at the end of the command line
+** Shared Libraries
+   - *dynamic linker* program: /ld-linux.so/
+   - *dynamic linking*: load shared libraries at an arbitrary memory address and linked with a program in memory *at run-time*.
+
+   A single copy of the .text section of a shared library in memory can
+   be shared by different running processes.
+   #+ATTR_HTML: align="center"
+   [[file:../resources/os/DynamicLinking.png]]
+
+*** Compilation
+    #+BEGIN_SRC sh
+      gcc -shared -fpic -o libxxx.so xxx.c
+    #+END_SRC
+
+*** Linking process
+    1. Relocating the text and data of /libc.so/ into some memory segment.
+    2. Relocating the text and data of /libxxx.so/ into another memory segment.
+    3. Relocating any references in *executable* to symbols defined by /libc.so/ and /libxxx.so/
+    4. call main
+
+*** Linking at run-time
+    #+BEGIN_SRC c
+      #include <dlfcn.h>
+      void *dlopen(const char *filename, int flag); //Returns: ptr to handle if OK
+      void *dlsym(void *handle, char *symbol); //Returns: ptr to symbol if OK
+      int dlclose (void *handle);//Returns: 0 if OK
+      const char *dlerror(void);//Returns: error msg if previous call to dlopen, dlsym, or dlclose failed
+    #+END_SRC
+    #+BEGIN_SRC sh
+      gcc -rdynamic -o prog xxx.c -ldl
+    #+END_SRC
+    - compile with ~-rdynamic~ option to add all symbols to the dynamic symbol table
+
+*** library interpositioning
+    wrap the function in shared library
+**** compilation time
+     Compile with ~-I.~ to search current directory first
+
+**** link time
+     #+BEGIN_SRC sh
+       gcc -W1,--wrap,func1 -o prog xxx.o xxx.o
+     #+END_SRC
+     ~-W1,--wrap,func1~: gcc transform ~--wrap malloc~ to linker
+
+**** run-time
+     Uses ~LD_PRELOAD~ environment variable
+     #+BEGIN_SRC sh
+       LD_PRELOAD="./wrapper.so" ./prog
+     #+END_SRC
+
+
 ** Relocation
    1. Relocating sections and symbol definitions.
    2. Relocating symbol references within sections.
+*** Relocation Entries
+    #+BEGIN_SRC c
+      typedef struct {
+        long offset;     // Offset of the reference to relocate
+        long type : 32,  // Relocation type
+             symbol : 32;// Symbol table index
+        long addend;     // Constant part of relocation expression
+      } Elf64_Rela;
+    #+END_SRC
+    #+BEGIN_SRC sh
+      objdump -r xxx.o # to lookup the relocation entries
+      readelf -r xxx.o
+    #+END_SRC
+**** type
+     - R_X86_64_PC32: Relocate a reference that uses a 32-bit PC-relative address
+     - R_X86_64_32: Relocate a reference that uses a 32-bit absolute address
+
+*** Relocation Algorithm(Linker)
+    #+BEGIN_SRC c
+      foreach section s {
+        foreach relocation entry r {
+          refptr = s + r.offset; // ptr to reference to be relocated (need to fill in)
+
+          // PC-relative relocation
+          if (r.type == R_X86_64_PC32) {
+            refaddr = ADDR(s) + r.offset; // ref's run-time address
+            ,*refptr = (unsigned) (ADDR(r.symbol) - refaddr + r.addend); // runtime symbol addr - current PC->addr
+          }
+
+          // absolute addr relocation
+          if (r.type == R_X86_64_32) {
+            ,*refptr = (unsigned) (ADDR(r.symbol) + r.addend);
+          }
+        }
+      }
+    #+END_SRC
+    - r.addend: constant number should be added to find the correct address
+
+
+** Loading Executable Object Files
+   - *loader*: copies the code and data in the executable object file from
+   disk into memory, and then runs the program by jumping to its first instruction, or
+   /entry point/.
+*** run-time memory structure
+    #+ATTR_HTML: align="center"
+    [[file:../resources/os/RuntimeMemory.png]]
+    - not considering ASLR(address-space layout randomization)
+
+*** loading process
+    1. creates the memory image
+    2. copies chunks of the executable into the code and data segments
+    3. jumps to the program's entry point, which is always the address of the =_start= symbol(defined in crt1.o)
+    4. call =__libc_start_main= (defined in libc.so)
+    5. call main
+
+** Position-Independent Code (PIC)
+   The code can be loaded and executed at any address without being
+   *modified* by the linker.
+   - Shared libraries must be compiled with =-fpic=
+
+*** global offset table(GOT)
+    GOT is created by compiler at the beginning of the data segment(in /.so/ file).
+    At load time, the dynamic linker relocates each entry in the GOT so that it
+    contains the appropriate absolute address.
+
+
+*** PIC Data References
+    The data segment is always allocated immediately after the code segment.
+    Thus, the distance between any instruction in the code segment and
+    any variable in the data segment is a run-time constant.
+
+*** PIC Function Calls
+**** lazy binding
+     Defers the binding of procedure addresses until the first time the procedure is called.
+
+**** procedure linkage table(PLT)
+     If an object module calls any functions that are defined in shared libraries, then it
+     has its own GOT and PLT. The PLT is part of the .text section
 
 ** Tools
    - ar: Creates static libraries, and inserts, deletes, lists, and extracts members.

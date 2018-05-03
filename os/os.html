@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-05-02 Wed 18:05 -->
+<!-- 2018-05-03 Thu 18:03 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -303,13 +303,16 @@ for the JavaScript code in this tag.
 <li><a href="#orgd58d42b">5.4. Cache Memories</a></li>
 </ul>
 </li>
-<li><a href="#org6d33b70">6. Link</a>
+<li><a href="#orgee59ebf">6. Linking</a>
 <ul>
 <li><a href="#orge5ccad0">6.1. Object Files</a></li>
 <li><a href="#org768fd7c">6.2. Symbols</a></li>
 <li><a href="#org1975bec">6.3. Static Libraries</a></li>
-<li><a href="#orgd56b50f">6.4. Relocation</a></li>
-<li><a href="#org2c7a40d">6.5. Tools</a></li>
+<li><a href="#org037aebc">6.4. Shared Libraries</a></li>
+<li><a href="#orgd56b50f">6.5. Relocation</a></li>
+<li><a href="#org3dc832d">6.6. Loading Executable Object Files</a></li>
+<li><a href="#orgb54f473">6.7. Position-Independent Code (PIC)</a></li>
+<li><a href="#org2c7a40d">6.8. Tools</a></li>
 </ul>
 </li>
 </ul>
@@ -3811,8 +3814,8 @@ and then updates the cache block
 </div>
 </div>
 </div>
-<div id="outline-container-org6d33b70" class="outline-2">
-<h2 id="org6d33b70"><span class="section-number-2">6</span> Link</h2>
+<div id="outline-container-orgee59ebf" class="outline-2">
+<h2 id="orgee59ebf"><span class="section-number-2">6</span> Linking</h2>
 <div class="outline-text-2" id="text-6">
 <ol class="org-ol">
 <li>preprocesser(cpp for C -&gt; xxx.i)</li>
@@ -3944,8 +3947,8 @@ that are defined and referenced in the program.
 </div>
 </li>
 
-<li><a id="orgab6b119"></a>.rel.text<br />
-<div class="outline-text-5" id="text-orgab6b119">
+<li><a id="org9979f55"></a>.rel.text(.rela.text)<br />
+<div class="outline-text-5" id="text-org9979f55">
 <p>
 A list of locations in the .text section that will need to be modified
 when the linker combines this object file with others.
@@ -3953,8 +3956,8 @@ when the linker combines this object file with others.
 </div>
 </li>
 
-<li><a id="org070633a"></a>.rel.data<br />
-<div class="outline-text-5" id="text-org070633a">
+<li><a id="org3042096"></a>.rel.data(.rela.data)<br />
+<div class="outline-text-5" id="text-org3042096">
 <p>
 Relocation information for any global variables that are referenced or defined by the module.
 </p>
@@ -3997,7 +4000,124 @@ sections, and for the section names in the section headers.
 Contains binary code and data in a form that can be copied
 directly into memory and executed.
 </p>
+<ul class="org-ul">
+<li>readonly(code segment)</li>
+</ul>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ELF header</td>
+</tr>
+
+<tr>
+<td class="org-left">Segment header table</td>
+</tr>
+
+<tr>
+<td class="org-left">.init</td>
+</tr>
+
+<tr>
+<td class="org-left">.text</td>
+</tr>
+
+<tr>
+<td class="org-left">.rodata</td>
+</tr>
+</tbody>
+</table>
+<ul class="org-ul">
+<li>read/write(data segment)</li>
+</ul>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">.data</td>
+</tr>
+
+<tr>
+<td class="org-left">.bss</td>
+</tr>
+</tbody>
+</table>
+<ul class="org-ul">
+<li>Symbol table and debug info are not loaded into memory</li>
+</ul>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">.symtab</td>
+</tr>
+
+<tr>
+<td class="org-left">.debug</td>
+</tr>
+
+<tr>
+<td class="org-left">.line</td>
+</tr>
+
+<tr>
+<td class="org-left">.strtab</td>
+</tr>
+
+<tr>
+<td class="org-left">Section header table</td>
+</tr>
+</tbody>
+</table>
 </div>
+<ul class="org-ul">
+<li><a id="org3339209"></a>ELF header<br />
+<div class="outline-text-5" id="text-org3339209">
+<p>
+The <b>ELF header</b> describes the overall format of the file.
+It also includes the program’s <i>entry point</i>
+</p>
+</div>
+</li>
+
+<li><a id="org43f5c44"></a>.init<br />
+<div class="outline-text-5" id="text-org43f5c44">
+<p>
+<b>.init</b> section defines a small function, called <code>_init</code>,
+that will be called by the program’s initialization code.
+</p>
+</div>
+</li>
+
+<li><a id="org2d61e51"></a>Segment header table<br />
+<div class="outline-text-5" id="text-org2d61e51">
+<p>
+Map contiguous chunks of the executable file to contiguous memory segments.
+See <b>Program Header</b> displayed by <b>objdump</b>
+</p>
+<ul class="org-ul">
+<li>off: file offset</li>
+<li>vaddr\/paddr: vitual\/physical address</li>
+<li>align: segment alignment</li>
+<li>filesz: segment size in the object file</li>
+<li>memsz: segment size in memory</li>
+<li>flags: run-time permissions</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 
 <div id="outline-container-org8edf48d" class="outline-4">
@@ -4080,19 +4200,282 @@ defined), and a set <i>D</i> of symbols that have been defined in previous input
 </div>
 </div>
 </div>
-<div id="outline-container-orgd56b50f" class="outline-3">
-<h3 id="orgd56b50f"><span class="section-number-3">6.4</span> Relocation</h3>
+<div id="outline-container-org037aebc" class="outline-3">
+<h3 id="org037aebc"><span class="section-number-3">6.4</span> Shared Libraries</h3>
 <div class="outline-text-3" id="text-6-4">
+<ul class="org-ul">
+<li><b>dynamic linker</b> program: <i>ld-linux.so</i></li>
+<li><b>dynamic linking</b>: load shared libraries at an arbitrary memory address and linked with a program in memory <b>at run-time</b>.</li>
+</ul>
+
+<p>
+A single copy of the .text section of a shared library in memory can
+be shared by different running processes.
+</p>
+
+<div class="figure">
+<p><img src="../resources/os/DynamicLinking.png" alt="DynamicLinking.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org70e1026" class="outline-4">
+<h4 id="org70e1026"><span class="section-number-4">6.4.1</span> Compilation</h4>
+<div class="outline-text-4" id="text-6-4-1">
+<div class="org-src-container">
+<pre class="src src-sh">gcc -shared -fpic -o libxxx.so xxx.c
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf4d95eb" class="outline-4">
+<h4 id="orgf4d95eb"><span class="section-number-4">6.4.2</span> Linking process</h4>
+<div class="outline-text-4" id="text-6-4-2">
+<ol class="org-ol">
+<li>Relocating the text and data of <i>libc.so</i> into some memory segment.</li>
+<li>Relocating the text and data of <i>libxxx.so</i> into another memory segment.</li>
+<li>Relocating any references in <b>executable</b> to symbols defined by <i>libc.so</i> and <i>libxxx.so</i></li>
+<li>call main</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org6a37da1" class="outline-4">
+<h4 id="org6a37da1"><span class="section-number-4">6.4.3</span> Linking at run-time</h4>
+<div class="outline-text-4" id="text-6-4-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;dlfcn.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> *<span style="color: #6c3163; font-weight: bold;">dlopen</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">filename</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">flag</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Returns: ptr to handle if OK</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> *<span style="color: #6c3163; font-weight: bold;">dlsym</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">void</span> *<span style="color: #715ab1;">handle</span>, <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">symbol</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Returns: ptr to symbol if OK</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">dlclose</span> <span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">void</span> *<span style="color: #715ab1;">handle</span><span style="color: #3a81c3;">)</span>;<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Returns: 0 if OK</span>
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #6c3163; font-weight: bold;">dlerror</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">void</span><span style="color: #3a81c3;">)</span>;<span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">Returns: error msg if previous call to dlopen, dlsym, or dlclose failed</span>
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-sh">gcc -rdynamic -o prog xxx.c -ldl
+</pre>
+</div>
+<ul class="org-ul">
+<li>compile with <code>-rdynamic</code> option to add all symbols to the dynamic symbol table</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga819244" class="outline-4">
+<h4 id="orga819244"><span class="section-number-4">6.4.4</span> library interpositioning</h4>
+<div class="outline-text-4" id="text-6-4-4">
+<p>
+wrap the function in shared library
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org4132a2a"></a>compilation time<br />
+<div class="outline-text-5" id="text-org4132a2a">
+<p>
+Compile with <code>-I.</code> to search current directory first
+</p>
+</div>
+</li>
+
+<li><a id="org2aaefe3"></a>link time<br />
+<div class="outline-text-5" id="text-org2aaefe3">
+<div class="org-src-container">
+<pre class="src src-sh">gcc -W1,--wrap,func1 -o prog xxx.o xxx.o
+</pre>
+</div>
+<p>
+<code>-W1,--wrap,func1</code>: gcc transform <code>--wrap malloc</code> to linker
+</p>
+</div>
+</li>
+
+<li><a id="org57cd50e"></a>run-time<br />
+<div class="outline-text-5" id="text-org57cd50e">
+<p>
+Uses <code>LD_PRELOAD</code> environment variable
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #715ab1;">LD_PRELOAD</span>=<span style="color: #2d9574;">"./wrapper.so"</span> ./prog
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgd56b50f" class="outline-3">
+<h3 id="orgd56b50f"><span class="section-number-3">6.5</span> Relocation</h3>
+<div class="outline-text-3" id="text-6-5">
 <ol class="org-ol">
 <li>Relocating sections and symbol definitions.</li>
 <li>Relocating symbol references within sections.</li>
 </ol>
 </div>
+<div id="outline-container-org37f6634" class="outline-4">
+<h4 id="org37f6634"><span class="section-number-4">6.5.1</span> Relocation Entries</h4>
+<div class="outline-text-4" id="text-6-5-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #3a81c3; font-weight: bold;">typedef</span> <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #715ab1;">offset</span>;     <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Offset of the reference to relocate</span>
+  <span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #715ab1;">type</span> : <span style="color: #4e3163;">32</span>,  <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Relocation type</span>
+       <span style="color: #715ab1;">symbol</span> : <span style="color: #4e3163;">32</span>;<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Symbol table index</span>
+  <span style="color: #ba2f59; font-weight: bold;">long</span> <span style="color: #715ab1;">addend</span>;     <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Constant part of relocation expression</span>
+<span style="color: #3a81c3;">}</span> <span style="color: #ba2f59; font-weight: bold;">Elf64_Rela</span>;
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-sh">objdump -r xxx.o <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">to lookup the relocation entries</span>
+readelf -r xxx.o
+</pre>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="org87db933"></a>type<br />
+<div class="outline-text-5" id="text-org87db933">
+<ul class="org-ul">
+<li>R_X86_64_PC32: Relocate a reference that uses a 32-bit PC-relative address</li>
+<li>R_X86_64_32: Relocate a reference that uses a 32-bit absolute address</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgbcd8748" class="outline-4">
+<h4 id="orgbcd8748"><span class="section-number-4">6.5.2</span> Relocation Algorithm(Linker)</h4>
+<div class="outline-text-4" id="text-6-5-2">
+<div class="org-src-container">
+<pre class="src src-c">foreach <span style="color: #ba2f59; font-weight: bold;">section</span> <span style="color: #715ab1;">s</span> <span style="color: #3a81c3;">{</span>
+  foreach relocation <span style="color: #ba2f59; font-weight: bold;">entry</span> <span style="color: #715ab1;">r</span> <span style="color: #6c3163;">{</span>
+    refptr = s + r.offset; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">ptr to reference to be relocated (need to fill in)</span>
+
+    <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">PC-relative relocation</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>r.type == R_X86_64_PC32<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">{</span>
+      refaddr = ADDR<span style="color: #67b11d;">(</span>s<span style="color: #67b11d;">)</span> + r.offset; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">ref's run-time address</span>
+      *refptr = <span style="color: #67b11d;">(</span><span style="color: #ba2f59; font-weight: bold;">unsigned</span><span style="color: #67b11d;">)</span> <span style="color: #67b11d;">(</span>ADDR<span style="color: #b1951d;">(</span>r.symbol<span style="color: #b1951d;">)</span> - refaddr + r.addend<span style="color: #67b11d;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">runtime symbol addr - current PC-&gt;addr</span>
+    <span style="color: #2d9574;">}</span>
+
+    <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">absolute addr relocation</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>r.type == R_X86_64_32<span style="color: #2d9574;">)</span> <span style="color: #2d9574;">{</span>
+      *refptr = <span style="color: #67b11d;">(</span><span style="color: #ba2f59; font-weight: bold;">unsigned</span><span style="color: #67b11d;">)</span> <span style="color: #67b11d;">(</span>ADDR<span style="color: #b1951d;">(</span>r.symbol<span style="color: #b1951d;">)</span> + r.addend<span style="color: #67b11d;">)</span>;
+    <span style="color: #2d9574;">}</span>
+  <span style="color: #6c3163;">}</span>
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>r.addend: constant number should be added to find the correct address</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org3dc832d" class="outline-3">
+<h3 id="org3dc832d"><span class="section-number-3">6.6</span> Loading Executable Object Files</h3>
+<div class="outline-text-3" id="text-6-6">
+<ul class="org-ul">
+<li><b>loader</b>: copies the code and data in the executable object file from</li>
+</ul>
+<p>
+disk into memory, and then runs the program by jumping to its first instruction, or
+<i>entry point</i>.
+</p>
+</div>
+<div id="outline-container-org3377390" class="outline-4">
+<h4 id="org3377390"><span class="section-number-4">6.6.1</span> run-time memory structure</h4>
+<div class="outline-text-4" id="text-6-6-1">
+
+<div class="figure">
+<p><img src="../resources/os/RuntimeMemory.png" alt="RuntimeMemory.png" />
+</p>
+</div>
+<ul class="org-ul">
+<li>not considering ASLR(address-space layout randomization)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga2bae9f" class="outline-4">
+<h4 id="orga2bae9f"><span class="section-number-4">6.6.2</span> loading process</h4>
+<div class="outline-text-4" id="text-6-6-2">
+<ol class="org-ol">
+<li>creates the memory image</li>
+<li>copies chunks of the executable into the code and data segments</li>
+<li>jumps to the program's entry point, which is always the address of the <code>_start</code> symbol(defined in crt1.o)</li>
+<li>call <code>__libc_start_main</code> (defined in libc.so)</li>
+<li>call main</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb54f473" class="outline-3">
+<h3 id="orgb54f473"><span class="section-number-3">6.7</span> Position-Independent Code (PIC)</h3>
+<div class="outline-text-3" id="text-6-7">
+<p>
+The code can be loaded and executed at any address without being
+<b>modified</b> by the linker.
+</p>
+<ul class="org-ul">
+<li>Shared libraries must be compiled with <code>-fpic</code></li>
+</ul>
+</div>
+
+<div id="outline-container-org712295c" class="outline-4">
+<h4 id="org712295c"><span class="section-number-4">6.7.1</span> global offset table(GOT)</h4>
+<div class="outline-text-4" id="text-6-7-1">
+<p>
+GOT is created by compiler at the beginning of the data segment(in <i>.so</i> file).
+At load time, the dynamic linker relocates each entry in the GOT so that it
+contains the appropriate absolute address.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org400aa8e" class="outline-4">
+<h4 id="org400aa8e"><span class="section-number-4">6.7.2</span> PIC Data References</h4>
+<div class="outline-text-4" id="text-6-7-2">
+<p>
+The data segment is always allocated immediately after the code segment.
+Thus, the distance between any instruction in the code segment and
+any variable in the data segment is a run-time constant.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc18ee40" class="outline-4">
+<h4 id="orgc18ee40"><span class="section-number-4">6.7.3</span> PIC Function Calls</h4>
+<div class="outline-text-4" id="text-6-7-3">
+</div>
+<ul class="org-ul">
+<li><a id="orga782f3c"></a>lazy binding<br />
+<div class="outline-text-5" id="text-orga782f3c">
+<p>
+Defers the binding of procedure addresses until the first time the procedure is called.
+</p>
+</div>
+</li>
+
+<li><a id="orgb6cd394"></a>procedure linkage table(PLT)<br />
+<div class="outline-text-5" id="text-orgb6cd394">
+<p>
+If an object module calls any functions that are defined in shared libraries, then it
+has its own GOT and PLT. The PLT is part of the .text section
+</p>
+</div>
+</li>
+</ul>
+</div>
 </div>
 
 <div id="outline-container-org2c7a40d" class="outline-3">
-<h3 id="org2c7a40d"><span class="section-number-3">6.5</span> Tools</h3>
-<div class="outline-text-3" id="text-6-5">
+<h3 id="org2c7a40d"><span class="section-number-3">6.8</span> Tools</h3>
+<div class="outline-text-3" id="text-6-8">
 <ul class="org-ul">
 <li>ar: Creates static libraries, and inserts, deletes, lists, and extracts members.</li>
 <li>strings: Lists all of the printable strings contained in an object file.</li>
