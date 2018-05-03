@@ -280,14 +280,26 @@ f^\prime(x) & =\lim_{h\to 0}\frac{(x+h)^n-x^n}{h} \\
     $$\int x^n dx=\frac{x^{n+1}}{n+1} + C$$
 
 *** U-Substitution Rule
+    - Chain rule in reverse
     let $u=g(x)$, then $du=g'(x)dx$
     $$\int f(g(x))g^\prime(x)dx=\int f(u)du$$
+**** e.g. $\int e^\sqrt{x}dx$
+     let $u=\sqrt{x}$, then $du=\frac{1}{2\sqrt{x}}dx$, $dx = 2\sqrt{x}du = 2udu$
+     $$\int e^\sqrt{x}dx = \int e^u 2udu = \cdots$$
 
-*** Integration By Parts(product rule in reverse)
+**** e.g. $\int \sin^odd xdx$
+     $$\int \sin^5 xdx=\int (\sin^2 x)^2 \sinx dx=-\int (1-\cos^2 x)^2 (-\sin x)dx$$
+     let $u=\cos x$, then $du=-\sinx dx$
+     $$=-\int (1-u^2)^2du=-\int (1-2u^2+u^4)=-u+2\frac{u^3}{3}-\frac{u^5}{5}$$
+     $$=-\cos x+2\frac{\cos^3 x}{3}-\frac{\cos^5 x}{5}+C$$
+
+
+*** Integration By Parts
+    - Product rule in reverse
     $$\int f(x)g^\prime(x) dx = f(x)g(x) - \int f^\prime(x)g(x) dx$$
     let $u=f(x)$, $v=g(x)$, then $du=f^\prime(x)dx$, $dv=g^\prime(x)dx$
     $$\int udv = uv - \int vdu$$
-**** Example $\int xe^x dx$
+**** e.g. $\int xe^x dx$
      pick $u=x,\ dv=e^xdx$
 
      then $du=dx,\ v=e^x$
@@ -295,6 +307,19 @@ f^\prime(x) & =\lim_{h\to 0}\frac{(x+h)^n-x^n}{h} \\
      $$\int xe^x dx = xe^x-\int e^x dx$$
 
      - verify by differentiating result with product rule
+** Some Integrations
+*** $\int \sin^even xdx$
+    - Use Half Angle Formula
+      $$\sin^2 x=\frac{1-\cos 2x}{2}$$
+      $$\cos^2 x=\frac{1+\cos 2x}{2}$$
+
+    $$\int \sin^4 xdx=\int(\sin^2 x)^2 dx=\int(\frac{1-\cos (2x)}{2})^2 dx$$
+    $$=\int(\frac{\cos^2(2x)}{4}-\frac{1}{2}\cos(2x)+\frac{1}{4})dx$$
+    $$=\int(\frac{1+\cos(4x)}{8}dx-\frac{\sin(2x)}{4}+\frac{1}{4}x$$
+    $$=\frac{1}{8}x+\frac{\sin(4x)}{32}-\frac{\sin(2x)}{4}+\frac{1}{4}x + C$$
+
+*** $\int \sin^n x dx=\frac{n-1}{n}\int sin^{n-2} x dx$
+    see [[https://www.coursera.org/learn/calculus1/lecture/FQjH6/what-is-the-integral-of-sin-n-x-dx-in-terms-of-sin-n-2-x-dx][Coursera]]
 
 ** Fundamental Theorem of Calculus
    Suppose $f:[a, b]\to \mathbb{R}$ is continuous.
@@ -335,181 +360,3 @@ f^\prime(x) & =\lim_{h\to 0}\frac{(x+h)^n-x^n}{h} \\
    2. $e = \sum_{n=0}^{\infty}\frac{1}{n}$
    3. $\int_1^x\frac{1}{t}dt = 1, then\space x=e$
    4. $\lim_{h\to 0}\frac{x^h-1}{h}=1$
-
-* 积分
-** 微积分基本定理
-- 定理一
-  $$\int_a^bf(x)dx=F(b)-F(a)$$
-  式中的 F(x)为函数 f(x)的不定积分。
-- 定理二
-  $$\frac{d}{dx}\int_a^xf(t)dt=f(x)$$
-  注意：无论 a 为何数，最终得到的结果均不受影响。
-** 积分解法
-*** 代换法(逆链式法则)
-$$\int f'(u(x))u'(x)dx = \int (f(u(x)))'dx =f(u(x))+C$$
-换一种写法：
-$$u'(x)dx=\frac{du}{dx}dx=du$$
-由此可得：
-$$\int f'(u(x))du = f(u(x))+C$$
-*** 直接观察法
-#+BEGIN_VERSE
-$\int(2x+1)^4\mathrm{d}x$ 猜测一个不太离谱的答案$\frac{(2x+1)^5}{5}+C$
-反向求导看看答案对不对，结果为$2(2x+1)^4$ ，比原函数大了一倍。则修正答案
-为$\frac{(2x+1)^5}{10}+C$
-#+END_VERSE
-
-*** 数值逼近法
-#<<矩形逼近法>>
-- 矩形逼近法
-  #+BEGIN_VERSE
-  使左端点落在函数曲线上
-  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{n}[f(x_0)+f(x_1)+...+f(x_n-1)]$$
-  使右端点落在函数曲线上，
-  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{n}[f(x_1)+...f(x_n)]$$
-  以上两种矩形法成为黎曼和(Riemann sum)
-
-  选中点落在函数曲线上
-  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{n}[f(\frac{x_0+x_1}{2}) + ... + f(\frac{x_{n-1}+x_n}{2})]$$
-  #+END_VERSE
-- 梯形法
-  把矩形法的水平线换成斜率各不相同的直线。该方法利用了梯形的面积公式
-  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{n}[\frac{f(x_0)}{2}+f(x_1)+...+f(x_{n-1})+\frac{f(x_n)}{2}]$$
-- 抛物线法(辛普森法)
-  $$\int_a^bf(x)\mathrm{d}x \approx \frac{b-a}{3n}[f(x_0)+4f(x_1)+2f(x_2)+...+2f(x_{n-2})+4f(x_{n-1})+f(x_n)]$$
-  #+BEGIN_VERSE
-  注意点：
-  系数为$\frac{b-a}{3n}$
-  括号内 $f(x_i)$ 的系数为固定的模式(前提是偶数等分)：1, 4, 2, 4, 2, 4, ..., 2, 4, 2, 4, 1
-  #+END_VERSE
-*** 分部积分法
-积法则的逆方法
-$$(u(x)v(x))' = u'(x)v(x)+u(x)v'(x)$$
-$$\int uv'dx = uv - \int u'vdx$$
-因为 $u'dx = \frac{du}{dx}dx = du$ 以及 $v'dx = \frac{dv}{dx}dx = dv$
-$$\to \int udv = uv - \int vdu$$
-例题：
-**** $\int x\ln x dx$
-#+BEGIN_VERSE
-选 $u=\ln x$ 和 $dv = xdx$
-则 $du = \frac{1}{x} dx$ 和 $v = \frac{x^{2}}{2}$
-代入 $uv - \int vdu$ ，则 $\int udv = \frac{x^2}{2}\ln x - \frac{x^2}{4} + C$
-#+END_VERSE
-**** 如何选择 u, dv？
-1) dv 必须选能够积分的项
-2) 经过步骤一，右边出现积分项 $\int vdu$ ，如果这个积分应该当比原积分容易解。如果不是，重新选择 u, dv。
-*** 三角代换法
-**** 求 $\int{\frac{1}{\sqrt{1-x^2}}dx}$ (代换与分部都做不了)
-1) 令 $x=sin\theta$ 则 $\sqrt{1-x^{2}} =\sqrt{1-sin^{2} \theta} =cos\theta$
-2) 对 $x=sin\theta$ 求导 $dx = cos\theta d\theta$
-3) 原积分变为 $\int \frac{1}{\sqrt{1-x^2}}dx = \int\frac{1}{cos\theta} cos\theta\mathrm{d}\theta = \int 1d\theta = \theta + C$
-4) 把 $\theta = arcsin x$ 代入，答案为 $arcsin x + C$
-**** 求 $\int{\frac{1}{4+x^2}}$
-1) 令 $x= 2tan\theta$ 则 $dx = 2\frac{cos^2\theta + sin^2\theta}{cos^2\theta}d\theta$
-2) 代入求得 $\int \frac{1}{2}d\theta = \frac{\theta}{2} + C$
-3) 答案为 $\frac{1}{2}arctan\frac{x}{2} + C$
-*** 部分分式积分法
-#+BEGIN_VERSE
-什么时候用？处于同一分母里的一对函数无法被一同积分。
-Example:
-求 $\int\frac{3x-1}{x^2+x-2}dx$
-$$x^2+x-2 = (x-1)(x+2)$$
-$$\frac{3x-1}{x^2+x-2} = \frac{A}{x-1} + \frac{B}{x+2}$$
-化简得：
-$$(A+B)x-(B-2A)=3x-1 \to A=\frac{2}{3} and B=\frac{7}{3}$$
-$$\int\frac{\frac{2}{3}}{x-1}+\frac{\frac{7}{3}}{x+2}dx = \frac{2}{3}ln|x-1| + \frac{7}{3}ln|x+2| + C$$
-提示(重要)：如果被积函数的分子与分母均为多项式，且分子次数比分母高，如：
-$$\frac{x^3-x^2-7x+2}{x^2-3x+2}$$
-可使用 [[http://zh.wikipedia.org/wiki/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E9%95%BF%E9%99%A4%E6%B3%95][多项式长除法]] 化为
-$$x+2+\frac{-3x-2}{x^2-3x+2}$$
-#+END_VERSE
-*** 常用运算规则
-上下限互换，正负号也跟着换。
-$$\int_a^bf(x)dx=-\int_b^af(x)dx$$
-常数直接拉出积分式外。
-$$\int_a^bcf(x)dx=c\int_a^bf(x)dx$$
-想像一下面积就能得出以下式子。
-$$\int_a^cf(x)dx=\int_a^bf(x)dx+\int_b^cf(x)dx$$
-- Example
-  $\int_{-2}^1|x|\mathrm{d}x$
-  $=\int_{-2}^0-x\mathrm{d}x+\int_0^1x\mathrm{d}x$
-  $=-\frac{x^2}{2}|_0^2+\frac{x^2}{2}|_0^1$
-  $=\frac{5}{2}$
-
-*** 推广公式
-**** $\ln{x}$
-$$\int \ln{x}=\frac{1}{x}$$
-链式法则推广：
-$$\frac{d}{dx}[\ln{g(x)}]=\frac{g'(x)}{g(x)}$$
-example:
-$$\frac{d}{dx}[ln(x^3-7)]=\frac{3x^2}{x^3-7}$$
-** 反常积分
-*** 当积分上下限为 $\pm\infty$
-$$\int_a^{\infty}f(x)dx=\lim_{b\to \infty}\int_a^bf(x)dx$$
-反常积分答案是个有限的数，称为收敛(converge)。不存在或者为 $\infty$ ，称为发散(diverge)。
-$$\int_{-\infty}^{\infty}f(x)dx=\int_{-\infty}{c}f(x)dx + \int_{c}^{\infty}f(x)dx$$
-*** 当被积函数变为 $\pm\infty$
-$\int_{-1}^2 \frac{1}{x^{\frac{2}{3}}}dx$ 在 x=0 处未被定义。解法：分段
-$$= \lim_{b\to -0}\int_{-1}^b \frac{1}{x^{\frac{2}{3}}}dx + \lim_{b\to +0}\int_b^2\frac{1}{x^{\frac{2}{3}}}dx$$
-$$=\lim_{b\to -0} (3b^{\frac{1}{3}}-3(-1)^{\frac{1}{3}}) + \lim_{b\to +0} (3(2^{\frac{1}{3}})-3b^{\frac{1}{3}}) \approx6.780$$
-* 指数和对数
-** $e^x$
-*** 求导
-    $$\frac{d}{dx}(e^x)=e^x$$
-*** 积分
-$$\int e^x dx=e^x + C$$
-推广： $e^{kx}$
-$$\int e^{kx}dx=\frac{e^kx}{k} + C$$
-** $\ln{x}$
-*** 求导
-$$\frac{d}{dx} \ln{x}=\frac{1}{x}$$
-链式法则推广：
-$$\frac{d}{dx}[\ln{g(x)}]=\frac{g'(x)}{g(x)}$$
-example:
-$$\frac{d}{dx}[ln(x^3-7)]=\frac{3x^2}{x^3-7}$$
-*** 积分
-$$\int\frac{1}{x}dx=\ln |x| + C$$
-关于绝对值：自然对数函数仅对正数有定义，所以要加上绝对值。
-** 底数为任意数 a
-*** 求导
-$$\frac{d}{dx}(a^x)=a^x \ln a$$
-#+BEGIN_VERSE
-推导：
-$$a = e^{\ln a}$$
-$$a^x=(e^{\ln a})^x=e^{x(\ln a)}=e^{\ln(a^x)}$$
-$$\frac{d}{dx}e^{\ln(a^x)}=e^{\ln(a^x)}\ln a=a^x\ln a$$
-#+END_VERSE
-- *指数函数求导方法*
-  $$f(x)=a^x$$
-  $$\ln{f(x)}=x\ln{a}$$
-  $$\frac{d}{dx}\ln{f(x)} = \frac{f'(x)}{f(x)} = \ln{a}$$
-  $$f'(x) = a^x\ln{a}$$
-*** 对数求导
-#+BEGIN_VERSE
-推导： $\log_b x$ 对 x 求导
-$y=\log_b x$ => $b^y = x$ 对 x 求导得：
-$$b^y\ln b \frac{dy}{dx}=1$$
-$$\frac{dy}{dx}=\frac{1}{b^y\ln b} = \frac{1}{x\ln b}$$
-结论：
-$$\frac{d}{dx}(\log_b x) = \frac{1}{x\ln b}$$
-#+END_VERSE
-** 指数增长(衰退)方程
-函数的变化率与函数值成正比。
-$$\frac{dN}{dt} = kN$$
-$$\to \frac{dN}{N} = k\mathrm{d}t$$
-两边积分
-$$\to \int \frac{dN}{N} = \int k \mathrm{d}t \to \ln N = kt + C \to N = e^{kt+C}$$
-$e^C$ 是常数，继续化简为
-$$N=Ce^{kt}$$
-当时间 t 为 0 时，N(0) = C
-$$N(t)=N_0 e^{kt}$$
-*** 连续复利通式
-本金 P，r 为年利率，t 为年数。本利和 = $Pe^{rt}$
-* 极坐标
-** 画图方法
-*** 描点法
-*** 转换成直角坐标
-** 著名的心脏线函数
-$$ r = a(1\pm{sin\theta})$$ OR
-$$ r= a(1\pm{cos\theta})$$
-a 代表心脏的大小。正负号代表心脏的凹进部分方向。sin/cos 代表是横着的还是竖着的。
-** 求面积
