@@ -308,3 +308,81 @@
      - "online schema change" from facebook
      - openark
      - Percona Toolkit
+** Indexing Methods
+*** B-tree
+    - column order in a index is extremely important
+**** B+Tree
+     data is on the leaf node.
+**** Limitation
+     - lookup does not start from the leftmost side of the indexed columns
+     - you can't skip columns in the index.
+     e.g. index(col1, col2, col3) need to specify a value to col2 if value of col3 is given
+     - The storage engine can’t optimize accesses with any columns to the right of the first range condition.
+     e.g. col2 LIKE 'abc%' <- range condition, then col3=="somevalue" won't be optimized.
+
+*** Hash
+    - only the Memory storage engine supports explicit hash indexes
+**** InnoDB
+     /adaptive hash indexes/: When InnoDB notices that some index values are being accessed very frequently,
+     it builds a hash index for them in memory on top of B-Tree indexes.
+
+**** Building hash indexes
+     1. add hash column
+     2. create trigger on ~insert~ and ~update~
+     3. ~select~ by hash value
+     #+BEGIN_SRC sql
+       SELECT id FROM url WHERE url_crc=CRC32("http://www.mysql.com")
+              AND url="http://www.mysql.com"; -- Search in collision
+     #+END_SRC
+     - hash functions: CRC32, FNV64, SHA1, MD5
+
+*** R-Tree
+    - index GEOMETRY information
+    - MyISAM supports R-Tree
+
+*** Full-text
+    Full-text is a special type of index that finds keywords in the text instead of comparing values directly to the values in the index.
+** Indexing Strategies
+*** Long string index
+**** one approach: simulate a hash index
+**** indexing the first few characters
+     Index selectivity is the ratio of the number of distinct indexed values (the cardinality) to the total number of rows in the table.
+     Choose a prefix that’s long enough to give good selectivity, but short enough to save space
+
+     - one way: try to compare occurrences of each distinct indexed values for each prefix
+
+     #+BEGIN_SRC sql
+       SELECT COUNT(*) AS cnt, city FROM sakila.city_demo GROUP BY city ORDER BY cnt DESC LIMIT 10;
+       SELECT COUNT(*) AS cnt, LEFT(city, 3) AS pref FROM sakila.city_demo GROUP BY pref ORDER BY cnt DESC LIMIT 10;
+     #+END_SRC
+
+     - another way: computing the full column's selectivity and trying to make the prefix's selectivity close to that value.
+     #+BEGIN_SRC sql
+       SELECT COUNT(DISTINCT city)/COUNT(*) FROM sakila.city_demo;
+       SELECT COUNT(DISTINCT LEFT(city, 3))/COUNT(*) AS sel3,
+              COUNT(DISTINCT LEFT(city, 4))/COUNT(*) AS sel4,
+       FROM sakila.city_demo;
+     #+END_SRC
+
+     - downside: MySQL cannot use prefix indexes for ORDER BY or GROUP BY queries, nor can it use them as covering indexes.
+
+*** Multicolumn Indexes
+    - Individual indexes on lots of columns won’t help MySQL improve performance for most queries
+      #+BEGIN_SRC sql
+        SELECT col1, col2 FROM tbl WHERE index1=1 or index2=1;
+        -- will translate to
+        SELECT col1, col2 FROM tbl WHERE index1=1
+        UNION ALL
+        SELECT col1, col2 FROM tbl WHERE index2=1 AND index1 <> 1;
+      #+END_SRC
+      Use ~EXPLAIN~ to check
+
+*** Choosing a Good Column Order
+    Choose the index order such that rows are sorted and grouped in a way that will benefit the query
+    The order of columns in a multicolumn B-Tree index means that the index is sorted first by the
+    leftmost column, then by the next column, and so on.
+
+* Query Optimization
+*** Isolating the Column
+    Indexed column is alone on one side of the comparison operator.
+    Wrong Examples: ~WHERE id+2=5~, ~WHERE SUM(id)=10~

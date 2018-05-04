@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-27 Fri 14:32 -->
+<!-- 2018-05-04 Fri 17:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance MySQL</title>
@@ -253,7 +253,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgc81dc2d">3.1. What to Measure</a></li>
 <li><a href="#org73e3c48">3.2. Gathering Data on MySQL</a></li>
 <li><a href="#org42ff9e0">3.3. Analyzing Results</a></li>
-<li><a href="#orge93afe4">3.4. Tools</a></li>
+<li><a href="#orgfa51bd4">3.4. Tools</a></li>
 </ul>
 </li>
 <li><a href="#orgbd40361">4. Profiling</a>
@@ -261,7 +261,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgbb02c05">4.1. slow query log</a></li>
 <li><a href="#orgc895f05">4.2. Single Query Profiling</a></li>
 <li><a href="#orgc084146">4.3. Server-Wide Problem Detection</a></li>
-<li><a href="#org0781e12">4.4. Tools</a></li>
+<li><a href="#org126b2a3">4.4. Tools</a></li>
 </ul>
 </li>
 <li><a href="#orga39e354">5. Schema</a>
@@ -270,8 +270,11 @@ for the JavaScript code in this tag.
 <li><a href="#orgcc56f15">5.2. Normalization and Denormalization</a></li>
 <li><a href="#orgf4041ab">5.3. Summary Table &amp; Cache Table</a></li>
 <li><a href="#orgda22cea">5.4. Speeding Up ALTER TABLE</a></li>
+<li><a href="#orgf17d4c6">5.5. Indexing Methods</a></li>
+<li><a href="#orgdd65b0b">5.6. Indexing Strategies</a></li>
 </ul>
 </li>
+<li><a href="#orgb1acb3d">6. Query Optimization</a></li>
 </ul>
 </div>
 </div>
@@ -486,8 +489,8 @@ awk '
 </div>
 </div>
 
-<div id="outline-container-orge93afe4" class="outline-3">
-<h3 id="orge93afe4"><span class="section-number-3">3.4</span> Tools</h3>
+<div id="outline-container-orgfa51bd4" class="outline-3">
+<h3 id="orgfa51bd4"><span class="section-number-3">3.4</span> Tools</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
 <div id="outline-container-org3405a1b" class="outline-4">
@@ -805,8 +808,8 @@ Aggregate GDB stack traces for a selected program
 </div>
 </div>
 
-<div id="outline-container-org0781e12" class="outline-3">
-<h3 id="org0781e12"><span class="section-number-3">4.4</span> Tools</h3>
+<div id="outline-container-org126b2a3" class="outline-3">
+<h3 id="org126b2a3"><span class="section-number-3">4.4</span> Tools</h3>
 <div class="outline-text-3" id="text-4-4">
 </div>
 <div id="outline-container-org4404df7" class="outline-4">
@@ -969,6 +972,195 @@ and then perform a rename and drop to swap the two.
 </div>
 </li>
 </ul>
+</div>
+</div>
+<div id="outline-container-orgf17d4c6" class="outline-3">
+<h3 id="orgf17d4c6"><span class="section-number-3">5.5</span> Indexing Methods</h3>
+<div class="outline-text-3" id="text-5-5">
+</div>
+<div id="outline-container-org18ba242" class="outline-4">
+<h4 id="org18ba242"><span class="section-number-4">5.5.1</span> B-tree</h4>
+<div class="outline-text-4" id="text-5-5-1">
+<ul class="org-ul">
+<li>column order in a index is extremely important</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="org54376e5"></a>B+Tree<br />
+<div class="outline-text-5" id="text-org54376e5">
+<p>
+data is on the leaf node.
+</p>
+</div>
+</li>
+<li><a id="org31c00b7"></a>Limitation<br />
+<div class="outline-text-5" id="text-org31c00b7">
+<ul class="org-ul">
+<li>lookup does not start from the leftmost side of the indexed columns</li>
+<li>you can't skip columns in the index.</li>
+</ul>
+<p>
+e.g. index(col1, col2, col3) need to specify a value to col2 if value of col3 is given
+</p>
+<ul class="org-ul">
+<li>The storage engine can’t optimize accesses with any columns to the right of the first range condition.</li>
+</ul>
+<p>
+e.g. col2 LIKE 'abc%' &lt;- range condition, then col3=="somevalue" won't be optimized.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org6011a92" class="outline-4">
+<h4 id="org6011a92"><span class="section-number-4">5.5.2</span> Hash</h4>
+<div class="outline-text-4" id="text-5-5-2">
+<ul class="org-ul">
+<li>only the Memory storage engine supports explicit hash indexes</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="org1631cb4"></a>InnoDB<br />
+<div class="outline-text-5" id="text-org1631cb4">
+<p>
+<i>adaptive hash indexes</i>: When InnoDB notices that some index values are being accessed very frequently,
+it builds a hash index for them in memory on top of B-Tree indexes.
+</p>
+</div>
+</li>
+
+<li><a id="orgf3058e4"></a>Building hash indexes<br />
+<div class="outline-text-5" id="text-orgf3058e4">
+<ol class="org-ol">
+<li>add hash column</li>
+<li>create trigger on <code>insert</code> and <code>update</code></li>
+<li><code>select</code> by hash value</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> id <span style="color: #3a81c3; font-weight: bold;">FROM</span> url <span style="color: #3a81c3; font-weight: bold;">WHERE</span> url_crc=CRC32<span style="color: #3a81c3;">(</span>"http://www.mysql.com"<span style="color: #3a81c3;">)</span>
+       <span style="color: #3a81c3; font-weight: bold;">AND</span> url="http://www.mysql.com"; <span style="color: #2aa1ae; background-color: #ecf3ec;">-- Search in collision</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>hash functions: CRC32, FNV64, SHA1, MD5</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orga0fa529" class="outline-4">
+<h4 id="orga0fa529"><span class="section-number-4">5.5.3</span> R-Tree</h4>
+<div class="outline-text-4" id="text-5-5-3">
+<ul class="org-ul">
+<li>index GEOMETRY information</li>
+<li>MyISAM supports R-Tree</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga3c6c2a" class="outline-4">
+<h4 id="orga3c6c2a"><span class="section-number-4">5.5.4</span> Full-text</h4>
+<div class="outline-text-4" id="text-5-5-4">
+<p>
+Full-text is a special type of index that finds keywords in the text instead of comparing values directly to the values in the index.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdd65b0b" class="outline-3">
+<h3 id="orgdd65b0b"><span class="section-number-3">5.6</span> Indexing Strategies</h3>
+<div class="outline-text-3" id="text-5-6">
+</div>
+<div id="outline-container-org9264c17" class="outline-4">
+<h4 id="org9264c17"><span class="section-number-4">5.6.1</span> Long string index</h4>
+<div class="outline-text-4" id="text-5-6-1">
+</div>
+<ul class="org-ul">
+<li><a id="orgb9d7827"></a>one approach: simulate a hash index<br /></li>
+<li><a id="org439e3e3"></a>indexing the first few characters<br />
+<div class="outline-text-5" id="text-org439e3e3">
+<p>
+Index selectivity is the ratio of the number of distinct indexed values (the cardinality) to the total number of rows in the table.
+Choose a prefix that’s long enough to give good selectivity, but short enough to save space
+</p>
+
+<ul class="org-ul">
+<li>one way: try to compare occurrences of each distinct indexed values for each prefix</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> <span style="color: #3a81c3;">COUNT</span><span style="color: #3a81c3;">(</span>*<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> cnt, city <span style="color: #3a81c3; font-weight: bold;">FROM</span> sakila.city_demo <span style="color: #3a81c3; font-weight: bold;">GROUP</span> <span style="color: #3a81c3; font-weight: bold;">BY</span> city <span style="color: #3a81c3; font-weight: bold;">ORDER</span> <span style="color: #3a81c3; font-weight: bold;">BY</span> cnt <span style="color: #3a81c3; font-weight: bold;">DESC</span> <span style="color: #3a81c3; font-weight: bold;">LIMIT</span> <span style="color: #4e3163;">10</span>;
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> <span style="color: #3a81c3;">COUNT</span><span style="color: #3a81c3;">(</span>*<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> cnt, <span style="color: #3a81c3; font-weight: bold;">LEFT</span><span style="color: #3a81c3;">(</span>city, <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> pref <span style="color: #3a81c3; font-weight: bold;">FROM</span> sakila.city_demo <span style="color: #3a81c3; font-weight: bold;">GROUP</span> <span style="color: #3a81c3; font-weight: bold;">BY</span> pref <span style="color: #3a81c3; font-weight: bold;">ORDER</span> <span style="color: #3a81c3; font-weight: bold;">BY</span> cnt <span style="color: #3a81c3; font-weight: bold;">DESC</span> <span style="color: #3a81c3; font-weight: bold;">LIMIT</span> <span style="color: #4e3163;">10</span>;
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>another way: computing the full column's selectivity and trying to make the prefix's selectivity close to that value.</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> <span style="color: #3a81c3;">COUNT</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">DISTINCT</span> city<span style="color: #3a81c3;">)</span>/<span style="color: #3a81c3;">COUNT</span><span style="color: #3a81c3;">(</span>*<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">FROM</span> sakila.city_demo;
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> <span style="color: #3a81c3;">COUNT</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">DISTINCT</span> <span style="color: #3a81c3; font-weight: bold;">LEFT</span><span style="color: #6c3163;">(</span>city, <span style="color: #4e3163;">3</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>/<span style="color: #3a81c3;">COUNT</span><span style="color: #3a81c3;">(</span>*<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> sel3,
+       <span style="color: #3a81c3;">COUNT</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">DISTINCT</span> <span style="color: #3a81c3; font-weight: bold;">LEFT</span><span style="color: #6c3163;">(</span>city, <span style="color: #4e3163;">4</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>/<span style="color: #3a81c3;">COUNT</span><span style="color: #3a81c3;">(</span>*<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> sel4,
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> sakila.city_demo;
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>downside: MySQL cannot use prefix indexes for ORDER BY or GROUP BY queries, nor can it use them as covering indexes.</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org0004848" class="outline-4">
+<h4 id="org0004848"><span class="section-number-4">5.6.2</span> Multicolumn Indexes</h4>
+<div class="outline-text-4" id="text-5-6-2">
+<ul class="org-ul">
+<li><p>
+Individual indexes on lots of columns won’t help MySQL improve performance for most queries
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> col1, col2 <span style="color: #3a81c3; font-weight: bold;">FROM</span> tbl <span style="color: #3a81c3; font-weight: bold;">WHERE</span> index1=<span style="color: #4e3163;">1</span> <span style="color: #3a81c3; font-weight: bold;">or</span> index2=<span style="color: #4e3163;">1</span>;
+<span style="color: #2aa1ae; background-color: #ecf3ec;">-- will translate to</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> col1, col2 <span style="color: #3a81c3; font-weight: bold;">FROM</span> tbl <span style="color: #3a81c3; font-weight: bold;">WHERE</span> index1=<span style="color: #4e3163;">1</span>
+<span style="color: #3a81c3; font-weight: bold;">UNION</span> <span style="color: #3a81c3; font-weight: bold;">ALL</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> col1, col2 <span style="color: #3a81c3; font-weight: bold;">FROM</span> tbl <span style="color: #3a81c3; font-weight: bold;">WHERE</span> index2=<span style="color: #4e3163;">1</span> <span style="color: #3a81c3; font-weight: bold;">AND</span> index1 &lt;&gt; <span style="color: #4e3163;">1</span>;
+</pre>
+</div>
+<p>
+Use <code>EXPLAIN</code> to check
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfa937f7" class="outline-4">
+<h4 id="orgfa937f7"><span class="section-number-4">5.6.3</span> Choosing a Good Column Order</h4>
+<div class="outline-text-4" id="text-5-6-3">
+<p>
+Choose the index order such that rows are sorted and grouped in a way that will benefit the query
+The order of columns in a multicolumn B-Tree index means that the index is sorted first by the
+leftmost column, then by the next column, and so on.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb1acb3d" class="outline-2">
+<h2 id="orgb1acb3d"><span class="section-number-2">6</span> Query Optimization</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org2136d69" class="outline-4">
+<h4 id="org2136d69"><span class="section-number-4">6.0.1</span> Isolating the Column</h4>
+<div class="outline-text-4" id="text-6-0-1">
+<p>
+Indexed column is alone on one side of the comparison operator.
+Wrong Examples: <code>WHERE id+2=5</code>, <code>WHERE SUM(id)=10</code>
+</p>
 </div>
 </div>
 </div>
