@@ -1416,6 +1416,73 @@ Condition: $x\neq 0$
      were open at the time of the call to the execve function.
 
 ** Signals
-*** Suspend Process
-    SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU
-    - resume: SIGCONT
+   #+BEGIN_SRC sh
+     man 7 signal
+   #+END_SRC
+   #+BEGIN_SRC c
+     #include <unistd.h>
+     pid_t getpgrp(void); // returns the process group ID of the current process.
+     int setpgid(pid_t pid,
+                 pid_t pgid); // changes the process group of process pid to pgid.
+
+     #include <signal.h>
+     int kill(pid_t pid, int sig);          // sends signal to process pid
+     unsigned int alarm(unsigned int secs); // arranges for the kernel to send a
+                                            // SIGALRM signal to the calling process
+                                            // in secs seconds
+   #+END_SRC
+*** Receiving Signals
+    #+BEGIN_SRC c
+      #include <signal.h>
+      typedef void (*sighandler_t)(int);
+      sighandler_t signal(int signum, sighandler_t handler);
+    #+END_SRC
+
+*** Blocking Signals
+    #+BEGIN_SRC c
+      #include <signal.h>
+
+      int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
+      int sigemptyset(sigset_t *set);
+      int sigfillset(sigset_t *set);
+      int sigaddset(sigset_t *set, int signum);
+      int sigdelset(sigset_t *set, int signum);
+
+      int sigismember(const sigset_t *set, int signum);
+    #+END_SRC
+**** sigsuspend
+     #+BEGIN_SRC c
+       #include <signal.h>
+       int sigsuspend(const sigset_t *mask);
+       // is equivalent to(atomic)
+       sigprocmask(SIG_SETMASK, &mask, &prev);
+       pause();
+       sigprocmask(SIG_SETMASK, &prev, NULL);
+     #+END_SRC
+
+*** Nonlocal Jumps
+    #+BEGIN_SRC c
+      #include <setjmp.h>
+      int setjmp(jmp_buf env);
+      int sigsetjmp(sigjmp_buf env, int savesigs);
+
+      void longjmp(jmp_buf env, int retval);
+      void longjmp(sigjmp_buf env, int retval);
+    #+END_SRC
+**** setjmp
+     The =setjmp= function saves the current calling environment in the env buffer,
+     for later use by longjmp, and returns a 0.
+
+**** longjmp
+     The =longjmp= function restores the calling environment from the env buffer
+     and then triggers a return from the most recent setjmp call that initialized env.
+     The =setjmp= then returns with the nonzero return value retval.
+
+**** extension: *try-catch*
+** Tools
+   - strace: Prints a trace of each system call invoked by a running program and its children.
+   Compile your program with -static to get a cleaner trace.
+   - ps
+   - top
+   - pmap: Displays the memory map of a process.
+   - /proc: A virtual filesystem that exports the contents of numerous kernel data structures.
