@@ -1371,6 +1371,9 @@ Condition: $x\neq 0$
 
       #include <stdlib.h>
       void exit(int status);
+      char *getenv(const char *name);
+      int setenv(const char *name, const char *newvalue, int overwrite);
+      void unsetenv(const char *name);
 
       #include <sys/wait.h>
       pid_t waitpid(pid_t pid, int *statusp,
@@ -1389,7 +1392,6 @@ Condition: $x\neq 0$
 
      Arguments:
      - pid=-1: the wait set consists of all of the parent’s child processes.
-
 ***** options
       Combinations of the WNOHANG, WUNTRACED and WCONTINUED constants.
       - WNOHANG: Return immediately if none of the child processes in the wait set has terminated yet
@@ -1406,6 +1408,12 @@ Condition: $x\neq 0$
 ***** Return Value
       - If the calling process has no children, then waitpid returns −1 and sets errno to ECHILD.
       - If the waitpid function was interrupted by a signal, then it returns −1 and sets errno to EINTR.
+
+**** execve
+     The execve function loads and runs a new program in the context of the current process.
+     It overwrites the address space of the current process, it does not create a new process.
+     The new program still has the same PID, and it inherits all of the file descriptors that
+     were open at the time of the call to the execve function.
 
 ** Signals
 *** Suspend Process
