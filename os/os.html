@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-05-03 Thu 18:03 -->
+<!-- 2018-05-07 Mon 12:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -313,6 +313,13 @@ for the JavaScript code in this tag.
 <li><a href="#org3dc832d">6.6. Loading Executable Object Files</a></li>
 <li><a href="#orgb54f473">6.7. Position-Independent Code (PIC)</a></li>
 <li><a href="#org2c7a40d">6.8. Tools</a></li>
+</ul>
+</li>
+<li><a href="#orgb203e44">7. ECF(Exceptional Control Flow)</a>
+<ul>
+<li><a href="#org32a08a6">7.1. Classes of Exceptions</a></li>
+<li><a href="#orgf8b7d92">7.2. Process</a></li>
+<li><a href="#org9be2a2a">7.3. Signals</a></li>
 </ul>
 </li>
 </ul>
@@ -3898,8 +3905,8 @@ executable object file.
 </div>
 
 <ul class="org-ul">
-<li><a id="orgc69fb37"></a>ELF header<br />
-<div class="outline-text-5" id="text-orgc69fb37">
+<li><a id="org3339209"></a>ELF header<br />
+<div class="outline-text-5" id="text-org3339209">
 <p>
 Describes the word size and byte ordering of the system that generated the file
 </p>
@@ -4083,8 +4090,8 @@ directly into memory and executed.
 </table>
 </div>
 <ul class="org-ul">
-<li><a id="org3339209"></a>ELF header<br />
-<div class="outline-text-5" id="text-org3339209">
+<li><a id="org71d0cf9"></a>ELF header<br />
+<div class="outline-text-5" id="text-org71d0cf9">
 <p>
 The <b>ELF header</b> describes the overall format of the file.
 It also includes the program’s <i>entry point</i>
@@ -4497,6 +4504,216 @@ in the .text section. <code>objdump -dx</code>
 <ul class="org-ul">
 <li>ldd: Lists the shared libraries that an executable needs at run time.</li>
 </ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb203e44" class="outline-2">
+<h2 id="orgb203e44"><span class="section-number-2">7</span> ECF(Exceptional Control Flow)</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-org32a08a6" class="outline-3">
+<h3 id="org32a08a6"><span class="section-number-3">7.1</span> Classes of Exceptions</h3>
+<div class="outline-text-3" id="text-7-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Class</th>
+<th scope="col" class="org-left">Cause</th>
+<th scope="col" class="org-left">Async/Sync</th>
+<th scope="col" class="org-left">Return behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Interrupt</td>
+<td class="org-left">Signal from IO device</td>
+<td class="org-left">Async</td>
+<td class="org-left">Always returns to next instruction</td>
+</tr>
+
+<tr>
+<td class="org-left">Trap</td>
+<td class="org-left">Intentional exception</td>
+<td class="org-left">Sync</td>
+<td class="org-left">Always returns to next instruction</td>
+</tr>
+
+<tr>
+<td class="org-left">Fault</td>
+<td class="org-left">Potentially recoverable error</td>
+<td class="org-left">Sync</td>
+<td class="org-left">Might return to current instruction</td>
+</tr>
+
+<tr>
+<td class="org-left">Abort</td>
+<td class="org-left">Nonrecoverable error</td>
+<td class="org-left">Sync</td>
+<td class="org-left">Never returns</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgf8b7d92" class="outline-3">
+<h3 id="orgf8b7d92"><span class="section-number-3">7.2</span> Process</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+Provides:
+</p>
+<ul class="org-ul">
+<li>An independent logical control flow that provides the illusion that our</li>
+</ul>
+<p>
+program has exclusive use of the processor.
+</p>
+<ul class="org-ul">
+<li>A private address space that provides the illusion that our program has</li>
+</ul>
+<p>
+exclusive use of the memory system.
+</p>
+</div>
+
+<div id="outline-container-org320703a" class="outline-4">
+<h4 id="org320703a"><span class="section-number-4">7.2.1</span> Terminology</h4>
+<div class="outline-text-4" id="text-7-2-1">
+<ul class="org-ul">
+<li>concurrent flow: A logical flow whose execution overlaps in time with another flow</li>
+<li>time slice: Each time period that a process executes a portion of its flow</li>
+<li>parallel flow: Two flows are running concurrently on different processor cores or computers</li>
+<li>scheduling: The kernel can decide to preempt the current process and restart a previously preempted process</li>
+<li>zombie process:A terminated process that has not yet been reaped, and it still consume system memory resources.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6ebe387" class="outline-4">
+<h4 id="org6ebe387"><span class="section-number-4">7.2.2</span> Process Control</h4>
+<div class="outline-text-4" id="text-7-2-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;unistd.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #6c3163; font-weight: bold;">getpid</span><span style="color: #3a81c3;">()</span>;  <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">get current process id</span>
+<span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #6c3163; font-weight: bold;">getppid</span><span style="color: #3a81c3;">()</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">get parent process id</span>
+<span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #6c3163; font-weight: bold;">fork</span><span style="color: #3a81c3;">()</span>;    <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">create subprocess</span>
+<span style="color: #ba2f59; font-weight: bold;">unsigned</span> <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sleep</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">unsigned</span> <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">secs</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">pause</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">void</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">puts the calling function to sleep until a signal is</span>
+                 <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">received by the process.</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">execve</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">filename</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">argv</span><span style="color: #6c3163;">[]</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">envp</span><span style="color: #6c3163;">[]</span><span style="color: #3a81c3;">)</span>;
+
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;stdlib.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">exit</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">status</span><span style="color: #3a81c3;">)</span>;
+
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/wait.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #6c3163; font-weight: bold;">waitpid</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #715ab1;">pid</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">statusp</span>,
+              <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">options</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">waits for its children to terminate</span>
+<span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #6c3163; font-weight: bold;">wait</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">statusp</span><span style="color: #3a81c3;">)</span>;   <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as waitpid(-1, &amp;status, 0)</span>
+</pre>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="orgdcf47ea"></a>fork<br />
+<div class="outline-text-5" id="text-orgdcf47ea">
+<ul class="org-ul">
+<li>child gets an identical (but separate) copy of the parent’s user-level virtual</li>
+</ul>
+<p>
+address space, including the text, data, and bss segments, heap, user stack,
+and identical copies of any of the parent’s open file descriptors.
+</p>
+<ul class="org-ul">
+<li>Call once, return twice. Return child pid in parent process, return 0 in child process.</li>
+</ul>
+</div>
+</li>
+
+<li><a id="org99a4fa8"></a>waitpid<br />
+<div class="outline-text-5" id="text-org99a4fa8">
+<p>
+suspends execution of the calling process until a child
+process in its wait set terminates.(default)
+</p>
+
+<p>
+Arguments:
+</p>
+<ul class="org-ul">
+<li>pid=-1: the wait set consists of all of the parent’s child processes.</li>
+</ul>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgec2923b"></a>options<br />
+<div class="outline-text-6" id="text-orgec2923b">
+<p>
+Combinations of the WNOHANG, WUNTRACED and WCONTINUED constants.
+</p>
+<ul class="org-ul">
+<li>WNOHANG: Return immediately if none of the child processes in the wait set has terminated yet</li>
+<li>WUNTRACED: Suspend execution of the calling process until a process in</li>
+</ul>
+<p>
+the wait set becomes either terminated or stopped
+</p>
+<ul class="org-ul">
+<li>WCONTINUED</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgfdc6239"></a>statusp<br />
+<div class="outline-text-6" id="text-orgfdc6239">
+<p>
+If the status argument is non-NULL, then waitpid encodes status information
+about the child that caused the return in the status argument.
+</p>
+
+<p>
+Status Macro: WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSIG, WIFCONTINUED
+</p>
+</div>
+</li>
+
+<li><a id="org99d257d"></a>Return Value<br />
+<div class="outline-text-6" id="text-org99d257d">
+<ul class="org-ul">
+<li>If the calling process has no children, then waitpid returns −1 and sets errno to ECHILD.</li>
+<li>If the waitpid function was interrupted by a signal, then it returns −1 and sets errno to EINTR.</li>
+</ul>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9be2a2a" class="outline-3">
+<h3 id="org9be2a2a"><span class="section-number-3">7.3</span> Signals</h3>
+<div class="outline-text-3" id="text-7-3">
+</div>
+<div id="outline-container-org1517895" class="outline-4">
+<h4 id="org1517895"><span class="section-number-4">7.3.1</span> Suspend Process</h4>
+<div class="outline-text-4" id="text-7-3-1">
+<p>
+SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU
+</p>
+<ul class="org-ul">
+<li>resume: SIGCONT</li>
+</ul>
+</div>
 </div>
 </div>
 </div>

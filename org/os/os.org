@@ -1335,3 +1335,79 @@ Condition: $x\neq 0$
    object file. Its most useful function is disassembling the binary instructions
    in the .text section. =objdump -dx=
    - ldd: Lists the shared libraries that an executable needs at run time.
+* ECF(Exceptional Control Flow)
+** Classes of Exceptions
+   | Class     | Cause                         | Async/Sync | Return behavior                     |
+   |-----------+-------------------------------+------------+-------------------------------------|
+   | Interrupt | Signal from IO device         | Async      | Always returns to next instruction  |
+   | Trap      | Intentional exception         | Sync       | Always returns to next instruction  |
+   | Fault     | Potentially recoverable error | Sync       | Might return to current instruction |
+   | Abort     | Nonrecoverable error          | Sync       | Never returns                       |
+
+** Process
+   Provides:
+   - An independent logical control flow that provides the illusion that our
+   program has exclusive use of the processor.
+   - A private address space that provides the illusion that our program has
+   exclusive use of the memory system.
+
+*** Terminology
+    - concurrent flow: A logical flow whose execution overlaps in time with another flow
+    - time slice: Each time period that a process executes a portion of its flow
+    - parallel flow: Two flows are running concurrently on different processor cores or computers
+    - scheduling: The kernel can decide to preempt the current process and restart a previously preempted process
+    - zombie process:A terminated process that has not yet been reaped, and it still consume system memory resources.
+
+*** Process Control
+    #+BEGIN_SRC c
+      #include <unistd.h>
+      pid_t getpid();  // get current process id
+      pid_t getppid(); // get parent process id
+      pid_t fork();    // create subprocess
+      unsigned int sleep(unsigned int secs);
+      int pause(void); // puts the calling function to sleep until a signal is
+                       // received by the process.
+      int execve(const char *filename, const char *argv[], const char *envp[]);
+
+      #include <stdlib.h>
+      void exit(int status);
+
+      #include <sys/wait.h>
+      pid_t waitpid(pid_t pid, int *statusp,
+                    int options); // waits for its children to terminate
+      pid_t wait(int *statusp);   // same as waitpid(-1, &status, 0)
+    #+END_SRC
+**** fork
+     - child gets an identical (but separate) copy of the parent’s user-level virtual
+     address space, including the text, data, and bss segments, heap, user stack,
+     and identical copies of any of the parent’s open file descriptors.
+     - Call once, return twice. Return child pid in parent process, return 0 in child process.
+
+**** waitpid
+     suspends execution of the calling process until a child
+     process in its wait set terminates.(default)
+
+     Arguments:
+     - pid=-1: the wait set consists of all of the parent’s child processes.
+
+***** options
+      Combinations of the WNOHANG, WUNTRACED and WCONTINUED constants.
+      - WNOHANG: Return immediately if none of the child processes in the wait set has terminated yet
+      - WUNTRACED: Suspend execution of the calling process until a process in
+      the wait set becomes either terminated or stopped
+      - WCONTINUED
+
+***** statusp
+      If the status argument is non-NULL, then waitpid encodes status information
+      about the child that caused the return in the status argument.
+
+      Status Macro: WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSIG, WIFCONTINUED
+
+***** Return Value
+      - If the calling process has no children, then waitpid returns −1 and sets errno to ECHILD.
+      - If the waitpid function was interrupted by a signal, then it returns −1 and sets errno to EINTR.
+
+** Signals
+*** Suspend Process
+    SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU
+    - resume: SIGCONT
