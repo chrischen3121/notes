@@ -36,13 +36,23 @@
      #         [ 0.,  0.],
      #         [ 0.,  0.]]])
 
-     np.arange(5)
+     array = np.arange(5)
      #=> array([0, 1, 2, 3, 4])
+     masked_array = np.ma.masked_array(array, array<3)
+     #=> [-- -- -- 3 4]
      np.random.randn(2, 3)
 
      np_array = np.array([1, 2, 3], dtype=np.int32)
      np_array = np_array.astype(np.float64)
      np_array.dtype #=> dtype('float64')
+
+     x, y=np.meshgrid(np.arange(2),np.arange(2))
+     #x=>
+     # array([[0, 1],
+     #        [0, 1]])
+     #x=>
+     # array([[0, 0],
+     #        [1, 1]])
    #+END_SRC
 *** Strides
     indicating the number of bytes to "step" in order to advance
@@ -138,6 +148,8 @@
     # array([[ 6,  7],
     #        [10, 11]])
   #+END_SRC
+** matrix
+   matrix has two dimensions and implements row-column matrix multiplication
 ** Conditional Logic
 *** any, all
 *** numpy.where
@@ -340,6 +352,12 @@ reindex args: index, method, fill_value, limit, level, copy
   # r1   1   2
   # r2   4   5
   # r3   7   8
+
+  df['sum_c'] = df.eval('c1+c2')
+  #     c1  c2  sum_c
+  # r1   0   1      1
+  # r2   2   3      5
+  # r3   4   5      9
 #+END_SRC
 *** Broadcasting
     #+BEGIN_SRC python
@@ -1010,6 +1028,22 @@ reindex args: index, method, fill_value, limit, level, copy
     that computes group frequencies.
 
 * other tools
+** ipyparallel
+   #+BEGIN_SRC sh
+     ipcluster start --n=4
+   #+END_SRC
+   #+BEGIN_SRC python
+     from ipyparallel import Client
+     rc = Client()
+     dview = rc[:]
+     # => <DirectView [0, 1, 2, 3>]
+     dview.apply_sync(os.getpid)
+
+     dview.scatter('a', range(10)) # distribute data (map)
+     dview.execute('print(a)').display_outputs()
+     dview.execute('b=sum(a)')
+     dview.gather('b').r # reduce
+   #+END_SRC
 ** Scipy
 ** statsmodels
 ** Sympy
@@ -1026,7 +1060,17 @@ reindex args: index, method, fill_value, limit, level, copy
 
      S.solve(p) # solves p == 0
      # => [-1/2 - sqrt(3)*I/2, -1/2 + sqrt(3)*I/2]
+
+     S.roots(p)
+     # => {-1/2 - sqrt(3)*I/2: 1, -1/2 + sqrt(3)*I/2: 1}
    #+END_SRC
+*** lambdify
+    #+BEGIN_SRC python
+      y = S.tan(x) * x + x**2
+      yf= S.lambdify(x,y,’numpy’)
+      #=> <function numpy.<lambda>>
+      yf(np.arange(3))
+    #+END_SRC
 *** Alternative SAGE
     - open source mathematics software package
     - non pure-python module.
@@ -1036,13 +1080,17 @@ reindex args: index, method, fill_value, limit, level, copy
 *** scikit-learn
 *** scikit-image
 *** scikits-cuda
+
 ** Blaze
-   - Big data
-   - tight integration with Pandas
+   - Big data(too big to fit in RAM)
+   - tight integration with Pandas dataframes
 
    https://github.com/blaze/blaze
 ** bcolz
-   columnar and compressed data containers
+   columnar and compressed data containers(either in-memory and on-disk)
+   - based on numpy
+   - support for PyTables and pandas dataframes
+   - takes advantage of multi-core architecture
 
    https://github.com/Blosc/bcolz
 ** Enthought Tool-Suite (ETS)

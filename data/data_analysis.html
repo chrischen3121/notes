@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-04-12 Thu 10:47 -->
+<!-- 2018-05-09 Wed 15:07 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DataAnalysis For Python</title>
@@ -262,15 +262,16 @@ for the JavaScript code in this tag.
 <li><a href="#org5dd706b">1. numpy</a>
 <ul>
 <li><a href="#org90fafdd">1.1. ndarray</a></li>
-<li><a href="#org1fab733">1.2. Conditional Logic</a></li>
-<li><a href="#orgeefa311">1.3. Transpose</a></li>
-<li><a href="#org8914788">1.4. Useful functions</a></li>
+<li><a href="#org37dfa5d">1.2. matrix</a></li>
+<li><a href="#org1fab733">1.3. Conditional Logic</a></li>
+<li><a href="#orgeefa311">1.4. Transpose</a></li>
+<li><a href="#org97875b1">1.5. Useful functions</a></li>
 </ul>
 </li>
 <li><a href="#org1db69b4">2. pandas</a>
 <ul>
-<li><a href="#org25ee79e">2.1. Series</a></li>
-<li><a href="#org15dffa8">2.2. DataFrame</a></li>
+<li><a href="#org0b90eae">2.1. Series</a></li>
+<li><a href="#org0d8c4c5">2.2. DataFrame</a></li>
 <li><a href="#orga54ec7a">2.3. Indexing Options</a></li>
 <li><a href="#org101fc49">2.4. Index</a></li>
 <li><a href="#org0647dcf">2.5. Functionality</a></li>
@@ -312,18 +313,19 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#orge190846">6. other tools</a>
 <ul>
-<li><a href="#org354c6e8">6.1. Scipy</a></li>
-<li><a href="#orgece4d10">6.2. statsmodels</a></li>
-<li><a href="#orgd2ff52e">6.3. Sympy</a></li>
-<li><a href="#orgd25d1d1">6.4. seaborn</a></li>
-<li><a href="#org23bebd5">6.5. scikits</a></li>
-<li><a href="#org95dc2c8">6.6. Blaze</a></li>
-<li><a href="#org76b88bd">6.7. bcolz</a></li>
-<li><a href="#org2411909">6.8. Enthought Tool-Suite (ETS)</a></li>
-<li><a href="#org49c1250">6.9. dateutil</a></li>
-<li><a href="#org2cf1b9c">6.10. bottleneck</a></li>
-<li><a href="#org75b1740">6.11. SWIG</a></li>
-<li><a href="#org68ba4c8">6.12. zipline</a></li>
+<li><a href="#orgfe93f77">6.1. ipyparallel</a></li>
+<li><a href="#org354c6e8">6.2. Scipy</a></li>
+<li><a href="#orgece4d10">6.3. statsmodels</a></li>
+<li><a href="#orgd2ff52e">6.4. Sympy</a></li>
+<li><a href="#orgd25d1d1">6.5. seaborn</a></li>
+<li><a href="#org23bebd5">6.6. scikits</a></li>
+<li><a href="#org95dc2c8">6.7. Blaze</a></li>
+<li><a href="#org76b88bd">6.8. bcolz</a></li>
+<li><a href="#org2411909">6.9. Enthought Tool-Suite (ETS)</a></li>
+<li><a href="#org49c1250">6.10. dateutil</a></li>
+<li><a href="#org2cf1b9c">6.11. bottleneck</a></li>
+<li><a href="#org75b1740">6.12. SWIG</a></li>
+<li><a href="#org68ba4c8">6.13. zipline</a></li>
 </ul>
 </li>
 <li><a href="#org7ad56c7">7. hdf</a>
@@ -369,13 +371,23 @@ np.empty<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</s
 <span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.],</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.]]])</span>
 
-np.arange<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">5</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">array</span> = np.arange<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">5</span><span style="color: #3a81c3;">)</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([0, 1, 2, 3, 4])</span>
+<span style="color: #715ab1;">masked_array</span> = np.ma.masked_array<span style="color: #3a81c3;">(</span>array, array&lt;<span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; [-- -- -- 3 4]</span>
 np.random.randn<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
 
 <span style="color: #715ab1;">np_array</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">1</span>, <span style="color: #4e3163;">2</span>, <span style="color: #4e3163;">3</span><span style="color: #6c3163;">]</span>, dtype=np.int32<span style="color: #3a81c3;">)</span>
 <span style="color: #715ab1;">np_array</span> = np_array.astype<span style="color: #3a81c3;">(</span>np.float64<span style="color: #3a81c3;">)</span>
 np_array.dtype <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; dtype('float64')</span>
+
+<span style="color: #715ab1;">x</span>, <span style="color: #715ab1;">y</span>=np.meshgrid<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span><span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span>,np.arange<span style="color: #6c3163;">(</span><span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">x=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[0, 1],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[0, 1]])</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">x=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[0, 0],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[1, 1]])</span>
 </pre>
 </div>
 </div>
@@ -462,8 +474,8 @@ has strides (160, 40, 8)
 </div>
 </div>
 
-<div id="outline-container-orgaab02c6" class="outline-4">
-<h4 id="orgaab02c6"><span class="section-number-4">1.1.4</span> Indexing</h4>
+<div id="outline-container-org60dafef" class="outline-4">
+<h4 id="org60dafef"><span class="section-number-4">1.1.4</span> Indexing</h4>
 <div class="outline-text-4" id="text-1-1-4">
 <p>
 <a id="orgcb84948"></a>
@@ -552,16 +564,24 @@ arr<span style="color: #3a81c3;">[</span>np.ix_<span style="color: #6c3163;">(</
 </div>
 </div>
 </div>
-<div id="outline-container-org1fab733" class="outline-3">
-<h3 id="org1fab733"><span class="section-number-3">1.2</span> Conditional Logic</h3>
+<div id="outline-container-org37dfa5d" class="outline-3">
+<h3 id="org37dfa5d"><span class="section-number-3">1.2</span> matrix</h3>
 <div class="outline-text-3" id="text-1-2">
+<p>
+matrix has two dimensions and implements row-column matrix multiplication
+</p>
+</div>
+</div>
+<div id="outline-container-org1fab733" class="outline-3">
+<h3 id="org1fab733"><span class="section-number-3">1.3</span> Conditional Logic</h3>
+<div class="outline-text-3" id="text-1-3">
 </div>
 <div id="outline-container-orgb375c02" class="outline-4">
-<h4 id="orgb375c02"><span class="section-number-4">1.2.1</span> any, all</h4>
+<h4 id="orgb375c02"><span class="section-number-4">1.3.1</span> any, all</h4>
 </div>
 <div id="outline-container-org5b6d193" class="outline-4">
-<h4 id="org5b6d193"><span class="section-number-4">1.2.2</span> numpy.where</h4>
-<div class="outline-text-4" id="text-1-2-2">
+<h4 id="org5b6d193"><span class="section-number-4">1.3.2</span> numpy.where</h4>
+<div class="outline-text-4" id="text-1-3-2">
 <p>
 The <b>numpy.where</b> function is a vectorized version of the ternary expression x if
 condition else y. <b>numpy.where</b> is quicker than list comprehension.
@@ -581,21 +601,21 @@ np.where<span style="color: #3a81c3;">(</span>cond, <span style="color: #4e3163;
 </div>
 
 <div id="outline-container-orgeefa311" class="outline-3">
-<h3 id="orgeefa311"><span class="section-number-3">1.3</span> Transpose</h3>
-<div class="outline-text-3" id="text-1-3">
+<h3 id="orgeefa311"><span class="section-number-3">1.4</span> Transpose</h3>
+<div class="outline-text-3" id="text-1-4">
 <p>
 Simple transposing with <code>.T</code> is just a special case of <code>swapaxes</code>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org8914788" class="outline-3">
-<h3 id="org8914788"><span class="section-number-3">1.4</span> Useful functions</h3>
-<div class="outline-text-3" id="text-1-4">
+<div id="outline-container-org97875b1" class="outline-3">
+<h3 id="org97875b1"><span class="section-number-3">1.5</span> Useful functions</h3>
+<div class="outline-text-3" id="text-1-5">
 </div>
 <div id="outline-container-org93f2dac" class="outline-4">
-<h4 id="org93f2dac"><span class="section-number-4">1.4.1</span> Math</h4>
-<div class="outline-text-4" id="text-1-4-1">
+<h4 id="org93f2dac"><span class="section-number-4">1.5.1</span> Math</h4>
+<div class="outline-text-4" id="text-1-5-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -675,8 +695,8 @@ Simple transposing with <code>.T</code> is just a special case of <code>swapaxes
 </div>
 </div>
 <div id="outline-container-orgc6d7e69" class="outline-4">
-<h4 id="orgc6d7e69"><span class="section-number-4">1.4.2</span> Linear Algebra</h4>
-<div class="outline-text-4" id="text-1-4-2">
+<h4 id="orgc6d7e69"><span class="section-number-4">1.5.2</span> Linear Algebra</h4>
+<div class="outline-text-4" id="text-1-5-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -751,8 +771,8 @@ Simple transposing with <code>.T</code> is just a special case of <code>swapaxes
 </div>
 </div>
 <div id="outline-container-org4203692" class="outline-4">
-<h4 id="org4203692"><span class="section-number-4">1.4.3</span> Random Number Generation</h4>
-<div class="outline-text-4" id="text-1-4-3">
+<h4 id="org4203692"><span class="section-number-4">1.5.3</span> Random Number Generation</h4>
+<div class="outline-text-4" id="text-1-5-3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -832,8 +852,8 @@ Simple transposing with <code>.T</code> is just a special case of <code>swapaxes
 </div>
 </div>
 <div id="outline-container-org936d1e0" class="outline-4">
-<h4 id="org936d1e0"><span class="section-number-4">1.4.4</span> Set operations</h4>
-<div class="outline-text-4" id="text-1-4-4">
+<h4 id="org936d1e0"><span class="section-number-4">1.5.4</span> Set operations</h4>
+<div class="outline-text-4" id="text-1-5-4">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -888,16 +908,16 @@ Simple transposing with <code>.T</code> is just a special case of <code>swapaxes
 <h2 id="org1db69b4"><span class="section-number-2">2</span> pandas</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org25ee79e" class="outline-3">
-<h3 id="org25ee79e"><span class="section-number-3">2.1</span> Series</h3>
+<div id="outline-container-org0b90eae" class="outline-3">
+<h3 id="org0b90eae"><span class="section-number-3">2.1</span> Series</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Series is a fixed-length <b>ordered dict</b>
 </p>
 </div>
 </div>
-<div id="outline-container-org15dffa8" class="outline-3">
-<h3 id="org15dffa8"><span class="section-number-3">2.2</span> DataFrame</h3>
+<div id="outline-container-org0d8c4c5" class="outline-3">
+<h3 id="org0d8c4c5"><span class="section-number-3">2.2</span> DataFrame</h3>
 <div class="outline-text-3" id="text-2-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span><span style="color: #4e3163;">8</span><span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span><span style="color: #4e3163;">4</span>,<span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span>,
@@ -1218,6 +1238,12 @@ df.add<span style="color: #3a81c3;">(</span>s2, axis=<span style="color: #4e3163
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   1   2</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   4   5</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   7   8</span>
+
+<span style="color: #715ab1;">df</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'sum_c'</span><span style="color: #3a81c3;">]</span> = df.<span style="color: #3a81c3;">eval</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'c1+c2'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2  sum_c</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   0   1      1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   2   3      5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   4   5      9</span>
 </pre>
 </div>
 </div>
@@ -1465,8 +1491,8 @@ returns.corrwith<span style="color: #3a81c3;">(</span>returns.IBM<span style="co
 <h3 id="org7d17d6b"><span class="section-number-3">2.7</span> Hierarchical Indexing</h3>
 <div class="outline-text-3" id="text-2-7">
 </div>
-<div id="outline-container-orgd11095b" class="outline-4">
-<h4 id="orgd11095b"><span class="section-number-4">2.7.1</span> Indexing</h4>
+<div id="outline-container-org75b1db7" class="outline-4">
+<h4 id="org75b1db7"><span class="section-number-4">2.7.1</span> Indexing</h4>
 <div class="outline-text-4" id="text-2-7-1">
 <div class="org-src-container">
 <pre class="src src-example">data[index_level1]
@@ -1500,8 +1526,8 @@ Although hierarchical indexing makes using truly N-dimensional arrays unnecessar
 </pre>
 </div>
 </div>
-<div id="outline-container-org97875b1" class="outline-4">
-<h4 id="org97875b1"><span class="section-number-4">2.8.1</span> Useful functions</h4>
+<div id="outline-container-org45af665" class="outline-4">
+<h4 id="org45af665"><span class="section-number-4">2.8.1</span> Useful functions</h4>
 <div class="outline-text-4" id="text-2-8-1">
 <ul class="org-ul">
 <li><p>
@@ -1566,8 +1592,8 @@ pandas <b>stores</b> timestamps as numpy.datatime64
 <h5 id="org4261009">to_period</h5>
 </div>
 </div>
-<div id="outline-container-org548226c" class="outline-4">
-<h4 id="org548226c"><span class="section-number-4">2.9.3</span> Indexing</h4>
+<div id="outline-container-org689997e" class="outline-4">
+<h4 id="org689997e"><span class="section-number-4">2.9.3</span> Indexing</h4>
 <div class="outline-text-4" id="text-2-9-3">
 <div class="org-src-container">
 <pre class="src src-python">ts<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">(</span>time<span style="color: #2d9574;">(</span><span style="color: #4e3163;">10</span>,<span style="color: #4e3163;">0</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
@@ -1991,9 +2017,9 @@ It is just a special case where the window is the length of the time series.
 <h4 id="org060d908"><span class="section-number-4">3.1.1</span> Reading option categories</h4>
 <div class="outline-text-4" id="text-3-1-1">
 </div>
-<div id="outline-container-org60dafef" class="outline-5">
-<h5 id="org60dafef">Indexing</h5>
-<div class="outline-text-5" id="text-org60dafef">
+<div id="outline-container-org2d1904d" class="outline-5">
+<h5 id="org2d1904d">Indexing</h5>
+<div class="outline-text-5" id="text-org2d1904d">
 <p>
 Can treat one or more columns as the returned DataFrame, and whether
 to get column names from the file, the user, or not at all.
@@ -2478,9 +2504,9 @@ ax.add_patch<span style="color: #3a81c3;">(</span>circ<span style="color: #3a81c
 <h4 id="org7c68e64"><span class="section-number-4">4.3.1</span> Line Plots</h4>
 <div class="outline-text-4" id="text-4-3-1">
 </div>
-<div id="outline-container-org55f9f80" class="outline-5">
-<h5 id="org55f9f80">Series</h5>
-<div class="outline-text-5" id="text-org55f9f80">
+<div id="outline-container-org4b7efcb" class="outline-5">
+<h5 id="org4b7efcb">Series</h5>
+<div class="outline-text-5" id="text-org4b7efcb">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -2519,9 +2545,9 @@ ax.add_patch<span style="color: #3a81c3;">(</span>circ<span style="color: #3a81c
 </table>
 </div>
 </div>
-<div id="outline-container-orge8979e3" class="outline-5">
-<h5 id="orge8979e3">DataFrame</h5>
-<div class="outline-text-5" id="text-orge8979e3">
+<div id="outline-container-orgbede3c3" class="outline-5">
+<h5 id="orgbede3c3">DataFrame</h5>
+<div class="outline-text-5" id="text-orgbede3c3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -2819,9 +2845,9 @@ df.groupby<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[<
 <h4 id="org53a78dc"><span class="section-number-4">5.2.1</span> <b>aggregate</b> / <b>agg</b> method</h4>
 <div class="outline-text-4" id="text-5-2-1">
 </div>
-<div id="outline-container-org0b90eae" class="outline-5">
-<h5 id="org0b90eae">Series</h5>
-<div class="outline-text-5" id="text-org0b90eae">
+<div id="outline-container-orgba403a7" class="outline-5">
+<h5 id="orgba403a7">Series</h5>
+<div class="outline-text-5" id="text-orgba403a7">
 <div class="org-src-container">
 <pre class="src src-python">s.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'std'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
 s.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">(</span><span style="color: #2d9574;">'foo'</span>, <span style="color: #2d9574;">'mean'</span><span style="color: #2d9574;">)</span>, <span style="color: #2d9574;">(</span><span style="color: #2d9574;">'bar'</span>, <span style="color: #2d9574;">'np.std'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">foo bar will be the column name of result df</span>
@@ -2829,9 +2855,9 @@ s.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span
 </div>
 </div>
 </div>
-<div id="outline-container-org0d8c4c5" class="outline-5">
-<h5 id="org0d8c4c5">DataFrame</h5>
-<div class="outline-text-5" id="text-org0d8c4c5">
+<div id="outline-container-org9534af4" class="outline-5">
+<h5 id="org9534af4">DataFrame</h5>
+<div class="outline-text-5" id="text-org9534af4">
 <div class="org-src-container">
 <pre class="src src-python">df.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'col1'</span>: <span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'col2'</span>: <span style="color: #2d9574;">'std'</span>, <span style="color: #2d9574;">'col3'</span>: np.<span style="color: #3a81c3;">max</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
 df.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'col1'</span>: <span style="color: #2d9574;">[</span><span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'std'</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
@@ -2938,15 +2964,37 @@ that computes group frequencies.
 <h2 id="orge190846"><span class="section-number-2">6</span> other tools</h2>
 <div class="outline-text-2" id="text-6">
 </div>
+<div id="outline-container-orgfe93f77" class="outline-3">
+<h3 id="orgfe93f77"><span class="section-number-3">6.1</span> ipyparallel</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+<pre class="src src-sh">ipcluster start --n=<span style="color: #4e3163;">4</span>
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> ipyparallel <span style="color: #3a81c3; font-weight: bold;">import</span> Client
+<span style="color: #715ab1;">rc</span> = Client<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">dview</span> = rc<span style="color: #3a81c3;">[</span>:<span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; &lt;DirectView [0, 1, 2, 3&gt;]</span>
+dview.apply_sync<span style="color: #3a81c3;">(</span>os.getpid<span style="color: #3a81c3;">)</span>
+
+dview.scatter<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'a'</span>, <span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">10</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">distribute data (map)</span>
+dview.execute<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'print(a)'</span><span style="color: #3a81c3;">)</span>.display_outputs<span style="color: #3a81c3;">()</span>
+dview.execute<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'b=sum(a)'</span><span style="color: #3a81c3;">)</span>
+dview.gather<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'b'</span><span style="color: #3a81c3;">)</span>.r <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">reduce</span>
+</pre>
+</div>
+</div>
+</div>
 <div id="outline-container-org354c6e8" class="outline-3">
-<h3 id="org354c6e8"><span class="section-number-3">6.1</span> Scipy</h3>
+<h3 id="org354c6e8"><span class="section-number-3">6.2</span> Scipy</h3>
 </div>
 <div id="outline-container-orgece4d10" class="outline-3">
-<h3 id="orgece4d10"><span class="section-number-3">6.2</span> statsmodels</h3>
+<h3 id="orgece4d10"><span class="section-number-3">6.3</span> statsmodels</h3>
 </div>
 <div id="outline-container-orgd2ff52e" class="outline-3">
-<h3 id="orgd2ff52e"><span class="section-number-3">6.3</span> Sympy</h3>
-<div class="outline-text-3" id="text-6-3">
+<h3 id="orgd2ff52e"><span class="section-number-3">6.4</span> Sympy</h3>
+<div class="outline-text-3" id="text-6-4">
 <p>
 Main computer algebra module in Python
 </p>
@@ -2962,12 +3010,27 @@ init_printing<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae
 
 S.solve<span style="color: #3a81c3;">(</span>p<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">solves p == 0</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; [-1/2 - sqrt(3)*I/2, -1/2 + sqrt(3)*I/2]</span>
+
+S.roots<span style="color: #3a81c3;">(</span>p<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; {-1/2 - sqrt(3)*I/2: 1, -1/2 + sqrt(3)*I/2: 1}</span>
 </pre>
 </div>
 </div>
+<div id="outline-container-org82037d6" class="outline-4">
+<h4 id="org82037d6"><span class="section-number-4">6.4.1</span> lambdify</h4>
+<div class="outline-text-4" id="text-6-4-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">y</span> = S.tan<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span> * x + x**<span style="color: #4e3163;">2</span>
+<span style="color: #715ab1;">yf</span>= S.lambdify<span style="color: #3a81c3;">(</span>x,y,&#8217;numpy&#8217;<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; &lt;function numpy.&lt;lambda&gt;&gt;</span>
+yf<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span><span style="color: #4e3163;">3</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
 <div id="outline-container-org1583806" class="outline-4">
-<h4 id="org1583806"><span class="section-number-4">6.3.1</span> Alternative SAGE</h4>
-<div class="outline-text-4" id="text-6-3-1">
+<h4 id="org1583806"><span class="section-number-4">6.4.2</span> Alternative SAGE</h4>
+<div class="outline-text-4" id="text-6-4-2">
 <ul class="org-ul">
 <li>open source mathematics software package</li>
 <li>non pure-python module.</li>
@@ -2976,33 +3039,34 @@ S.solve<span style="color: #3a81c3;">(</span>p<span style="color: #3a81c3;">)</s
 </div>
 </div>
 <div id="outline-container-orgd25d1d1" class="outline-3">
-<h3 id="orgd25d1d1"><span class="section-number-3">6.4</span> seaborn</h3>
-<div class="outline-text-3" id="text-6-4">
+<h3 id="orgd25d1d1"><span class="section-number-3">6.5</span> seaborn</h3>
+<div class="outline-text-3" id="text-6-5">
 <p>
 Beautifully formatted plots
 </p>
 </div>
 </div>
 <div id="outline-container-org23bebd5" class="outline-3">
-<h3 id="org23bebd5"><span class="section-number-3">6.5</span> scikits</h3>
-<div class="outline-text-3" id="text-6-5">
+<h3 id="org23bebd5"><span class="section-number-3">6.6</span> scikits</h3>
+<div class="outline-text-3" id="text-6-6">
 </div>
 <div id="outline-container-org9a54d33" class="outline-4">
-<h4 id="org9a54d33"><span class="section-number-4">6.5.1</span> scikit-learn</h4>
+<h4 id="org9a54d33"><span class="section-number-4">6.6.1</span> scikit-learn</h4>
 </div>
 <div id="outline-container-org1b01000" class="outline-4">
-<h4 id="org1b01000"><span class="section-number-4">6.5.2</span> scikit-image</h4>
+<h4 id="org1b01000"><span class="section-number-4">6.6.2</span> scikit-image</h4>
 </div>
 <div id="outline-container-orgacad161" class="outline-4">
-<h4 id="orgacad161"><span class="section-number-4">6.5.3</span> scikits-cuda</h4>
+<h4 id="orgacad161"><span class="section-number-4">6.6.3</span> scikits-cuda</h4>
 </div>
 </div>
+
 <div id="outline-container-org95dc2c8" class="outline-3">
-<h3 id="org95dc2c8"><span class="section-number-3">6.6</span> Blaze</h3>
-<div class="outline-text-3" id="text-6-6">
+<h3 id="org95dc2c8"><span class="section-number-3">6.7</span> Blaze</h3>
+<div class="outline-text-3" id="text-6-7">
 <ul class="org-ul">
-<li>Big data</li>
-<li>tight integration with Pandas</li>
+<li>Big data(too big to fit in RAM)</li>
+<li>tight integration with Pandas dataframes</li>
 </ul>
 
 <p>
@@ -3011,11 +3075,16 @@ Beautifully formatted plots
 </div>
 </div>
 <div id="outline-container-org76b88bd" class="outline-3">
-<h3 id="org76b88bd"><span class="section-number-3">6.7</span> bcolz</h3>
-<div class="outline-text-3" id="text-6-7">
+<h3 id="org76b88bd"><span class="section-number-3">6.8</span> bcolz</h3>
+<div class="outline-text-3" id="text-6-8">
 <p>
-columnar and compressed data containers
+columnar and compressed data containers(either in-memory and on-disk)
 </p>
+<ul class="org-ul">
+<li>based on numpy</li>
+<li>support for PyTables and pandas dataframes</li>
+<li>takes advantage of multi-core architecture</li>
+</ul>
 
 <p>
 <a href="https://github.com/Blosc/bcolz">https://github.com/Blosc/bcolz</a>
@@ -3023,24 +3092,24 @@ columnar and compressed data containers
 </div>
 </div>
 <div id="outline-container-org2411909" class="outline-3">
-<h3 id="org2411909"><span class="section-number-3">6.8</span> Enthought Tool-Suite (ETS)</h3>
-<div class="outline-text-3" id="text-6-8">
+<h3 id="org2411909"><span class="section-number-3">6.9</span> Enthought Tool-Suite (ETS)</h3>
+<div class="outline-text-3" id="text-6-9">
 <p>
 ETS is a collection of components developed by Enthought and our partners,
 which we use every day to construct custom scientific applications.
 </p>
 </div>
 <div id="outline-container-org1fb55d9" class="outline-4">
-<h4 id="org1fb55d9"><span class="section-number-4">6.8.1</span> Chaco</h4>
-<div class="outline-text-4" id="text-6-8-1">
+<h4 id="org1fb55d9"><span class="section-number-4">6.9.1</span> Chaco</h4>
+<div class="outline-text-4" id="text-6-9-1">
 <p>
 2-Dimensional Plotting, interactive visualization.
 </p>
 </div>
 </div>
 <div id="outline-container-org67169b0" class="outline-4">
-<h4 id="org67169b0"><span class="section-number-4">6.8.2</span> Mayavi</h4>
-<div class="outline-text-4" id="text-6-8-2">
+<h4 id="org67169b0"><span class="section-number-4">6.9.2</span> Mayavi</h4>
+<div class="outline-text-4" id="text-6-9-2">
 <p>
 Another Enthought-supported 3D visualization package that sits on VTK.
 </p>
@@ -3048,24 +3117,24 @@ Another Enthought-supported 3D visualization package that sits on VTK.
 </div>
 </div>
 <div id="outline-container-org49c1250" class="outline-3">
-<h3 id="org49c1250"><span class="section-number-3">6.9</span> dateutil</h3>
-<div class="outline-text-3" id="text-6-9">
+<h3 id="org49c1250"><span class="section-number-3">6.10</span> dateutil</h3>
+<div class="outline-text-3" id="text-6-10">
 <p>
 parser.parse: parse datetime str to datetime object
 </p>
 </div>
 </div>
 <div id="outline-container-org2cf1b9c" class="outline-3">
-<h3 id="org2cf1b9c"><span class="section-number-3">6.10</span> bottleneck</h3>
-<div class="outline-text-3" id="text-6-10">
+<h3 id="org2cf1b9c"><span class="section-number-3">6.11</span> bottleneck</h3>
+<div class="outline-text-3" id="text-6-11">
 <p>
 provides an alternate implementation of NaN-friendly moving window functions.
 </p>
 </div>
 </div>
 <div id="outline-container-org75b1740" class="outline-3">
-<h3 id="org75b1740"><span class="section-number-3">6.11</span> SWIG</h3>
-<div class="outline-text-3" id="text-6-11">
+<h3 id="org75b1740"><span class="section-number-3">6.12</span> SWIG</h3>
+<div class="outline-text-3" id="text-6-12">
 <p>
 Wrapper for c, c++ libraries.
 </p>
@@ -3075,7 +3144,7 @@ Wrapper for c, c++ libraries.
 </div>
 </div>
 <div id="outline-container-org68ba4c8" class="outline-3">
-<h3 id="org68ba4c8"><span class="section-number-3">6.12</span> zipline</h3>
+<h3 id="org68ba4c8"><span class="section-number-3">6.13</span> zipline</h3>
 </div>
 </div>
 <div id="outline-container-org7ad56c7" class="outline-2">
