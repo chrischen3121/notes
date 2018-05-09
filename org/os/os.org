@@ -1486,3 +1486,58 @@ Condition: $x\neq 0$
    - top
    - pmap: Displays the memory map of a process.
    - /proc: A virtual filesystem that exports the contents of numerous kernel data structures.
+* Unix I/O
+** File operations
+*** Basic
+    #+BEGIN_SRC c
+      #include <sys/types.h>
+      #include <sys/stat.h>
+      #include <fcntl.h>
+      int open(char *filename, int flags, mode_t mode); // returns file descriptor or -1
+      int close(int fd); // 0 if OK, -1 on error
+
+      #include <unistd.h>
+      ssize_t read(int fd, void *buf, size_t n); // returns number of bytes read if OK, 0 on EOF, −1 on error
+      ssize_t write(int fd, const void *buf, size_t n); // returns number of bytes written if OK, −1 on error
+      off_t lseek(int fd, off_t offset, int whence);
+    #+END_SRC
+
+*** Application-level Buffering
+    Efficiently read text lines  and binary data from a file whose
+    contents are cached in a slightly larger application-level buffer.
+
+*** Metadata
+    #+BEGIN_SRC c
+      #include <unistd.h>
+      #include <sys/stat.h>
+
+      int stat(const char *filename, struct stat *buf);
+      int fstat(int fd, struct stat *buf);
+    #+END_SRC
+
+*** File Status
+    Data structures to describe file status
+    - Descriptor table: Each process has its own separate descriptor table.
+    - File table: The set of open files is represented by a file table that is shared by all processes.
+    Each file table entry consists of (for our purposes) the current file position, a reference
+    count of the number of descriptor entries that currently point to it, and a pointer to an
+    entry in the /v-node/ table.
+    - /v-node/ table: The /v-node/ table is shared by all processes.
+    Each entry contains most of the information in the /stat/ structure.
+
+** Directory
+    #+BEGIN_SRC c
+      #include <sys/types.h>
+      #include <dirent.h>
+      DIR *opendir(const char *name);
+      struct dirent *readdir(DIR *dirp);
+      int closedir(DIR *dirp);
+    #+END_SRC
+
+** I/O Redirection
+   #+BEGIN_SRC c
+     #include <unistd.h>
+     int dup2(int oldfd, int newfd);
+   #+END_SRC
+   The =dup2= function copies descriptor table entry oldfd to descriptor table entry
+   newfd, overwriting the previous contents of descriptor table entry newfd.
