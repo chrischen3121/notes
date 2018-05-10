@@ -1541,3 +1541,33 @@ Condition: $x\neq 0$
    #+END_SRC
    The =dup2= function copies descriptor table entry oldfd to descriptor table entry
    newfd, overwriting the previous contents of descriptor table entry newfd.
+* Socket
+** Network Byte Order
+   #+BEGIN_SRC c
+     #include <arpa/inet.h>
+     // host -> network
+     uint32_t htonl(uint32_t hostlong);
+     uint16_t htons(uint32_t hostshort);
+
+     // network -> host
+     uint32_t ntohl(uint32_t netlong);
+     uint32_t htonl(uint32_t netshort);
+   #+END_SRC
+** IP Address
+   #+BEGIN_SRC c
+     #include <arpa/inet.h>
+
+     struct in_addr {
+       uint32_t s_addr; // network byte order
+     };
+
+     int inet_pton(AF_INET, const char *src, void *dst); //"x.x.x.x" -> &in_addr
+     const char *inet_ntop(AF_INET, const void *src, char *dst, socklen_t size); //&in_addr -> "x.x.x.x"
+   #+END_SRC
+
+** Connection
+   uniquely identified by =(cliaddr:cliport, servaddr:servport)=
+
+** Interface
+    #+ATTR_HTML: align="center"
+    file:../resources/os/SocketAPI.png

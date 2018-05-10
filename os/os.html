@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-05-07 Mon 12:16 -->
+<!-- 2018-05-10 Thu 17:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -320,6 +320,22 @@ for the JavaScript code in this tag.
 <li><a href="#org32a08a6">7.1. Classes of Exceptions</a></li>
 <li><a href="#orgf8b7d92">7.2. Process</a></li>
 <li><a href="#org9be2a2a">7.3. Signals</a></li>
+<li><a href="#orga518e01">7.4. Tools</a></li>
+</ul>
+</li>
+<li><a href="#org97e9814">8. Unix I/O</a>
+<ul>
+<li><a href="#org9b6d46d">8.1. File operations</a></li>
+<li><a href="#orga25ed25">8.2. Directory</a></li>
+<li><a href="#org43323b8">8.3. I/O Redirection</a></li>
+</ul>
+</li>
+<li><a href="#orgdc0dbce">9. Socket</a>
+<ul>
+<li><a href="#orgfc5a49e">9.1. Network Byte Order</a></li>
+<li><a href="#orgdccb8c6">9.2. IP Address</a></li>
+<li><a href="#org8bdba38">9.3. Connection</a></li>
+<li><a href="#orgb490d05">9.4. Interface</a></li>
 </ul>
 </li>
 </ul>
@@ -3905,8 +3921,8 @@ executable object file.
 </div>
 
 <ul class="org-ul">
-<li><a id="org3339209"></a>ELF header<br />
-<div class="outline-text-5" id="text-org3339209">
+<li><a id="org71d0cf9"></a>ELF header<br />
+<div class="outline-text-5" id="text-org71d0cf9">
 <p>
 Describes the word size and byte ordering of the system that generated the file
 </p>
@@ -4090,8 +4106,8 @@ directly into memory and executed.
 </table>
 </div>
 <ul class="org-ul">
-<li><a id="org71d0cf9"></a>ELF header<br />
-<div class="outline-text-5" id="text-org71d0cf9">
+<li><a id="org82984fa"></a>ELF header<br />
+<div class="outline-text-5" id="text-org82984fa">
 <p>
 The <b>ELF header</b> describes the overall format of the file.
 It also includes the program’s <i>entry point</i>
@@ -4615,6 +4631,9 @@ exclusive use of the memory system.
 
 <span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;stdlib.h&gt;</span>
 <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">exit</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">status</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #6c3163; font-weight: bold;">getenv</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">name</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">setenv</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">name</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">newvalue</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">overwrite</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">unsetenv</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">name</span><span style="color: #3a81c3;">)</span>;
 
 <span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/wait.h&gt;</span>
 <span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #6c3163; font-weight: bold;">waitpid</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #715ab1;">pid</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">statusp</span>,
@@ -4653,7 +4672,6 @@ Arguments:
 <li>pid=-1: the wait set consists of all of the parent’s child processes.</li>
 </ul>
 </div>
-
 <ul class="org-ul">
 <li><a id="orgec2923b"></a>options<br />
 <div class="outline-text-6" id="text-orgec2923b">
@@ -4696,6 +4714,17 @@ Status Macro: WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSI
 </li>
 </ul>
 </li>
+
+<li><a id="orga380bff"></a>execve<br />
+<div class="outline-text-5" id="text-orga380bff">
+<p>
+The execve function loads and runs a new program in the context of the current process.
+It overwrites the address space of the current process, it does not create a new process.
+The new program still has the same PID, and it inherits all of the file descriptors that
+were open at the time of the call to the execve function.
+</p>
+</div>
+</li>
 </ul>
 </div>
 </div>
@@ -4703,16 +4732,282 @@ Status Macro: WIFEXITED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WIFSTOPPED, WSTOPSI
 <div id="outline-container-org9be2a2a" class="outline-3">
 <h3 id="org9be2a2a"><span class="section-number-3">7.3</span> Signals</h3>
 <div class="outline-text-3" id="text-7-3">
+<div class="org-src-container">
+<pre class="src src-sh">man <span style="color: #4e3163;">7</span> signal
+</pre>
 </div>
-<div id="outline-container-org1517895" class="outline-4">
-<h4 id="org1517895"><span class="section-number-4">7.3.1</span> Suspend Process</h4>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;unistd.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #6c3163; font-weight: bold;">getpgrp</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">void</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">returns the process group ID of the current process.</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">setpgid</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #715ab1;">pid</span>,
+            <span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #715ab1;">pgid</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">changes the process group of process pid to pgid.</span>
+
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;signal.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">kill</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">pid_t</span> <span style="color: #715ab1;">pid</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">sig</span><span style="color: #3a81c3;">)</span>;          <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">sends signal to process pid</span>
+<span style="color: #ba2f59; font-weight: bold;">unsigned</span> <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">alarm</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">unsigned</span> <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">secs</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">arranges for the kernel to send a</span>
+                                       <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">SIGALRM signal to the calling process</span>
+                                       <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">in secs seconds</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb885c9a" class="outline-4">
+<h4 id="orgb885c9a"><span class="section-number-4">7.3.1</span> Receiving Signals</h4>
 <div class="outline-text-4" id="text-7-3-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;signal.h&gt;</span>
+<span style="color: #3a81c3; font-weight: bold;">typedef</span> <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #3a81c3;">(</span>*<span style="color: #ba2f59; font-weight: bold;">sighandler_t</span><span style="color: #3a81c3;">)(</span><span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">sighandler_t</span> <span style="color: #6c3163; font-weight: bold;">signal</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">signum</span>, <span style="color: #ba2f59; font-weight: bold;">sighandler_t</span> <span style="color: #715ab1;">handler</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org559cfeb" class="outline-4">
+<h4 id="org559cfeb"><span class="section-number-4">7.3.2</span> Blocking Signals</h4>
+<div class="outline-text-4" id="text-7-3-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;signal.h&gt;</span>
+
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sigprocmask</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">how</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">sigset_t</span> *<span style="color: #715ab1;">set</span>, <span style="color: #ba2f59; font-weight: bold;">sigset_t</span> *<span style="color: #715ab1;">oldset</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sigemptyset</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">sigset_t</span> *<span style="color: #715ab1;">set</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sigfillset</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">sigset_t</span> *<span style="color: #715ab1;">set</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sigaddset</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">sigset_t</span> *<span style="color: #715ab1;">set</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">signum</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sigdelset</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">sigset_t</span> *<span style="color: #715ab1;">set</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">signum</span><span style="color: #3a81c3;">)</span>;
+
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sigismember</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">sigset_t</span> *<span style="color: #715ab1;">set</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">signum</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="org7a43711"></a>sigsuspend<br />
+<div class="outline-text-5" id="text-org7a43711">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;signal.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sigsuspend</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">sigset_t</span> *<span style="color: #715ab1;">mask</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">is equivalent to(atomic)</span>
+sigprocmask<span style="color: #3a81c3;">(</span>SIG_SETMASK, &amp;mask, &amp;prev<span style="color: #3a81c3;">)</span>;
+pause<span style="color: #3a81c3;">()</span>;
+sigprocmask<span style="color: #3a81c3;">(</span>SIG_SETMASK, &amp;prev, <span style="color: #4e3163;">NULL</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgebb3315" class="outline-4">
+<h4 id="orgebb3315"><span class="section-number-4">7.3.3</span> Nonlocal Jumps</h4>
+<div class="outline-text-4" id="text-7-3-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;setjmp.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">setjmp</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">jmp_buf</span> <span style="color: #715ab1;">env</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">sigsetjmp</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">sigjmp_buf</span> <span style="color: #715ab1;">env</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">savesigs</span><span style="color: #3a81c3;">)</span>;
+
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">longjmp</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">jmp_buf</span> <span style="color: #715ab1;">env</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">retval</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">longjmp</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">sigjmp_buf</span> <span style="color: #715ab1;">env</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">retval</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="orgc114712"></a>setjmp<br />
+<div class="outline-text-5" id="text-orgc114712">
 <p>
-SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU
+The <code>setjmp</code> function saves the current calling environment in the env buffer,
+for later use by longjmp, and returns a 0.
+</p>
+</div>
+</li>
+
+<li><a id="org49d962e"></a>longjmp<br />
+<div class="outline-text-5" id="text-org49d962e">
+<p>
+The <code>longjmp</code> function restores the calling environment from the env buffer
+and then triggers a return from the most recent setjmp call that initialized env.
+The <code>setjmp</code> then returns with the nonzero return value retval.
+</p>
+</div>
+</li>
+
+<li><a id="orga5a71ca"></a>extension: <b>try-catch</b><br /></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga518e01" class="outline-3">
+<h3 id="orga518e01"><span class="section-number-3">7.4</span> Tools</h3>
+<div class="outline-text-3" id="text-7-4">
+<ul class="org-ul">
+<li>strace: Prints a trace of each system call invoked by a running program and its children.</li>
+</ul>
+<p>
+Compile your program with -static to get a cleaner trace.
 </p>
 <ul class="org-ul">
-<li>resume: SIGCONT</li>
+<li>ps</li>
+<li>top</li>
+<li>pmap: Displays the memory map of a process.</li>
+<li>/proc: A virtual filesystem that exports the contents of numerous kernel data structures.</li>
 </ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org97e9814" class="outline-2">
+<h2 id="org97e9814"><span class="section-number-2">8</span> Unix I/O</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org9b6d46d" class="outline-3">
+<h3 id="org9b6d46d"><span class="section-number-3">8.1</span> File operations</h3>
+<div class="outline-text-3" id="text-8-1">
+</div>
+<div id="outline-container-orgb77f1f7" class="outline-4">
+<h4 id="orgb77f1f7"><span class="section-number-4">8.1.1</span> Basic</h4>
+<div class="outline-text-4" id="text-8-1-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/types.h&gt;</span>
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/stat.h&gt;</span>
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;fcntl.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">open</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">filename</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">flags</span>, <span style="color: #ba2f59; font-weight: bold;">mode_t</span> <span style="color: #715ab1;">mode</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">returns file descriptor or -1</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">close</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">fd</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 if OK, -1 on error</span>
+
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;unistd.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">ssize_t</span> <span style="color: #6c3163; font-weight: bold;">read</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">fd</span>, <span style="color: #ba2f59; font-weight: bold;">void</span> *<span style="color: #715ab1;">buf</span>, <span style="color: #ba2f59; font-weight: bold;">size_t</span> <span style="color: #715ab1;">n</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">returns number of bytes read if OK, 0 on EOF, &#8722;1 on error</span>
+<span style="color: #ba2f59; font-weight: bold;">ssize_t</span> <span style="color: #6c3163; font-weight: bold;">write</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">fd</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">void</span> *<span style="color: #715ab1;">buf</span>, <span style="color: #ba2f59; font-weight: bold;">size_t</span> <span style="color: #715ab1;">n</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">returns number of bytes written if OK, &#8722;1 on error</span>
+<span style="color: #ba2f59; font-weight: bold;">off_t</span> <span style="color: #6c3163; font-weight: bold;">lseek</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">fd</span>, <span style="color: #ba2f59; font-weight: bold;">off_t</span> <span style="color: #715ab1;">offset</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">whence</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1416351" class="outline-4">
+<h4 id="org1416351"><span class="section-number-4">8.1.2</span> Application-level Buffering</h4>
+<div class="outline-text-4" id="text-8-1-2">
+<p>
+Efficiently read text lines  and binary data from a file whose
+contents are cached in a slightly larger application-level buffer.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgac45ee7" class="outline-4">
+<h4 id="orgac45ee7"><span class="section-number-4">8.1.3</span> Metadata</h4>
+<div class="outline-text-4" id="text-8-1-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;unistd.h&gt;</span>
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/stat.h&gt;</span>
+
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">stat</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">filename</span>, <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">stat</span> *<span style="color: #715ab1;">buf</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">fstat</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">fd</span>, <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">stat</span> *<span style="color: #715ab1;">buf</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0de2342" class="outline-4">
+<h4 id="org0de2342"><span class="section-number-4">8.1.4</span> File Status</h4>
+<div class="outline-text-4" id="text-8-1-4">
+<p>
+Data structures to describe file status
+</p>
+<ul class="org-ul">
+<li>Descriptor table: Each process has its own separate descriptor table.</li>
+<li>File table: The set of open files is represented by a file table that is shared by all processes.</li>
+</ul>
+<p>
+Each file table entry consists of (for our purposes) the current file position, a reference
+count of the number of descriptor entries that currently point to it, and a pointer to an
+entry in the <i>v-node</i> table.
+</p>
+<ul class="org-ul">
+<li><i>v-node</i> table: The <i>v-node</i> table is shared by all processes.</li>
+</ul>
+<p>
+Each entry contains most of the information in the <i>stat</i> structure.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga25ed25" class="outline-3">
+<h3 id="orga25ed25"><span class="section-number-3">8.2</span> Directory</h3>
+<div class="outline-text-3" id="text-8-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/types.h&gt;</span>
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;dirent.h&gt;</span>
+DIR *opendir<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">name</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">dirent</span> *<span style="color: #6c3163; font-weight: bold;">readdir</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">DIR</span> *<span style="color: #715ab1;">dirp</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">closedir</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">DIR</span> *<span style="color: #715ab1;">dirp</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org43323b8" class="outline-3">
+<h3 id="org43323b8"><span class="section-number-3">8.3</span> I/O Redirection</h3>
+<div class="outline-text-3" id="text-8-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;unistd.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">dup2</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">oldfd</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">newfd</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+<p>
+The <code>dup2</code> function copies descriptor table entry oldfd to descriptor table entry
+newfd, overwriting the previous contents of descriptor table entry newfd.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdc0dbce" class="outline-2">
+<h2 id="orgdc0dbce"><span class="section-number-2">9</span> Socket</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-orgfc5a49e" class="outline-3">
+<h3 id="orgfc5a49e"><span class="section-number-3">9.1</span> Network Byte Order</h3>
+<div class="outline-text-3" id="text-9-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;arpa/inet.h&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">host -&gt; network</span>
+<span style="color: #ba2f59; font-weight: bold;">uint32_t</span> <span style="color: #6c3163; font-weight: bold;">htonl</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">uint32_t</span> <span style="color: #715ab1;">hostlong</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">uint16_t</span> <span style="color: #6c3163; font-weight: bold;">htons</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">uint32_t</span> <span style="color: #715ab1;">hostshort</span><span style="color: #3a81c3;">)</span>;
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">network -&gt; host</span>
+<span style="color: #ba2f59; font-weight: bold;">uint32_t</span> <span style="color: #6c3163; font-weight: bold;">ntohl</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">uint32_t</span> <span style="color: #715ab1;">netlong</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">uint32_t</span> <span style="color: #6c3163; font-weight: bold;">htonl</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">uint32_t</span> <span style="color: #715ab1;">netshort</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdccb8c6" class="outline-3">
+<h3 id="orgdccb8c6"><span class="section-number-3">9.2</span> IP Address</h3>
+<div class="outline-text-3" id="text-9-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;arpa/inet.h&gt;</span>
+
+<span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">in_addr</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #ba2f59; font-weight: bold;">uint32_t</span> <span style="color: #715ab1;">s_addr</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">network byte order</span>
+<span style="color: #3a81c3;">}</span>;
+
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">inet_pton</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">AF_INET</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">src</span>, <span style="color: #ba2f59; font-weight: bold;">void</span> *<span style="color: #715ab1;">dst</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">"x.x.x.x" -&gt; &amp;in_addr</span>
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #6c3163; font-weight: bold;">inet_ntop</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">AF_INET</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">void</span> *<span style="color: #715ab1;">src</span>, <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">dst</span>, <span style="color: #ba2f59; font-weight: bold;">socklen_t</span> <span style="color: #715ab1;">size</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">//</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&amp;in_addr -&gt; "x.x.x.x"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8bdba38" class="outline-3">
+<h3 id="org8bdba38"><span class="section-number-3">9.3</span> Connection</h3>
+<div class="outline-text-3" id="text-9-3">
+<p>
+uniquely identified by <code>(cliaddr:cliport, servaddr:servport)</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb490d05" class="outline-3">
+<h3 id="orgb490d05"><span class="section-number-3">9.4</span> Interface</h3>
+<div class="outline-text-3" id="text-9-4">
+
+<div class="figure">
+<p><img src="../resources/os/SocketAPI.png" alt="SocketAPI.png" />
+</p>
 </div>
 </div>
 </div>
