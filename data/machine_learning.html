@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-05-03 Thu 18:03 -->
+<!-- 2018-05-11 Fri 15:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Machine Learning</title>
@@ -229,6 +229,28 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "left",
+        displayIndent: "5em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "left",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -240,14 +262,27 @@ for the JavaScript code in this tag.
 <li><a href="#orgc480cd4">1. Definition</a></li>
 <li><a href="#org59d6196">2. Supervised</a>
 <ul>
-<li><a href="#orgfa96fae">2.1. Regression problem</a></li>
+<li><a href="#orgfa96fae">2.1. Regression problem</a>
+<ul>
+<li><a href="#orgaf5841c">2.1.1. Linear Regression</a></li>
+<li><a href="#org37ffed5">2.1.2. Gradient Descent</a></li>
+</ul>
+</li>
 <li><a href="#orgcd64c69">2.2. Classification problem</a></li>
 </ul>
 </li>
 <li><a href="#orgb16c9e2">3. Unsupervised</a>
 <ul>
-<li><a href="#org0d98378">3.1. Clustering problem</a></li>
-<li><a href="#org810a878">3.2. Non-clustering problem</a></li>
+<li><a href="#org0d98378">3.1. Clustering problem</a>
+<ul>
+<li><a href="#orgc41c970">3.1.1. Examples</a></li>
+</ul>
+</li>
+<li><a href="#org810a878">3.2. Non-clustering problem</a>
+<ul>
+<li><a href="#org20c4303">3.2.1. Cocktail party algorithm</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -281,6 +316,63 @@ Teach the computer how to do something
 <p>
 predict continuous valued output
 </p>
+
+<div class="figure">
+<p><img src="../resources/ml/RegressionModel.png" alt="RegressionModel.png" />
+</p>
+</div>
+</div>
+<div id="outline-container-orgaf5841c" class="outline-4">
+<h4 id="orgaf5841c"><span class="section-number-4">2.1.1</span> Linear Regression</h4>
+<div class="outline-text-4" id="text-2-1-1">
+</div>
+<div id="outline-container-orgf66b725" class="outline-5">
+<h5 id="orgf66b725"><span class="section-number-5">2.1.1.1</span> Hypothesis</h5>
+<div class="outline-text-5" id="text-2-1-1-1">
+<p>
+\[h_\theta(x)=\theta_0+\theta_1 x\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf75e9fe" class="outline-5">
+<h5 id="orgf75e9fe"><span class="section-number-5">2.1.1.2</span> Cost Function</h5>
+<div class="outline-text-5" id="text-2-1-1-2">
+<p>
+Called <b>Squared error function</b> or <b>Mean squared error</b>
+\[J(\theta_0, \theta_1)=\frac{1}{2m}\sum_{i=1}^m(\hat{y_i}-y_i)^2=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x_i)-y_i)^2\]
+</p>
+<ul class="org-ul">
+<li>Goal: minimize \(J(\theta_0, \theta_1)\)</li>
+<li>\(\frac{1}{2}\) is a convenience for the computation of the gradient descent,</li>
+</ul>
+<p>
+as the derivative term of the square function will cancel out the \(\frac{1}{2}\) term.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org37ffed5" class="outline-4">
+<h4 id="org37ffed5"><span class="section-number-4">2.1.2</span> Gradient Descent</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+To find the minimum value of the cost function.
+</p>
+<ol class="org-ol">
+<li>Start with some parameters \(\theta_0, \theta_1, \dots\)</li>
+<li>Keep changing parameters to reduce \(J(\theta_0, \theta_1, \dots)\)</li>
+</ol>
+</div>
+<div id="outline-container-org0a8c16a" class="outline-5">
+<h5 id="org0a8c16a"><span class="section-number-5">2.1.2.1</span> idea</h5>
+<div class="outline-text-5" id="text-2-1-2-1">
+<p>
+repeat until convergence
+\[\theta_i=\theta_i-\alpha\frac{d}{d\theta_i}J(\theta_0, \theta_1, \dots)\]
+</p>
+</div>
+</div>
 </div>
 </div>
 
