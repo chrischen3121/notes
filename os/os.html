@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-05-10 Thu 17:42 -->
+<!-- 2018-05-11 Fri 11:49 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Operating Systems</title>
@@ -312,7 +312,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgd56b50f">6.5. Relocation</a></li>
 <li><a href="#org3dc832d">6.6. Loading Executable Object Files</a></li>
 <li><a href="#orgb54f473">6.7. Position-Independent Code (PIC)</a></li>
-<li><a href="#org2c7a40d">6.8. Tools</a></li>
+<li><a href="#orga518e01">6.8. Tools</a></li>
 </ul>
 </li>
 <li><a href="#orgb203e44">7. ECF(Exceptional Control Flow)</a>
@@ -320,7 +320,7 @@ for the JavaScript code in this tag.
 <li><a href="#org32a08a6">7.1. Classes of Exceptions</a></li>
 <li><a href="#orgf8b7d92">7.2. Process</a></li>
 <li><a href="#org9be2a2a">7.3. Signals</a></li>
-<li><a href="#orga518e01">7.4. Tools</a></li>
+<li><a href="#orgf194761">7.4. Tools</a></li>
 </ul>
 </li>
 <li><a href="#org97e9814">8. Unix I/O</a>
@@ -335,7 +335,8 @@ for the JavaScript code in this tag.
 <li><a href="#orgfc5a49e">9.1. Network Byte Order</a></li>
 <li><a href="#orgdccb8c6">9.2. IP Address</a></li>
 <li><a href="#org8bdba38">9.3. Connection</a></li>
-<li><a href="#orgb490d05">9.4. Interface</a></li>
+<li><a href="#org3fbd6ac">9.4. Socket Address</a></li>
+<li><a href="#orgb490d05">9.5. Interface</a></li>
 </ul>
 </li>
 </ul>
@@ -3921,8 +3922,8 @@ executable object file.
 </div>
 
 <ul class="org-ul">
-<li><a id="org71d0cf9"></a>ELF header<br />
-<div class="outline-text-5" id="text-org71d0cf9">
+<li><a id="org82984fa"></a>ELF header<br />
+<div class="outline-text-5" id="text-org82984fa">
 <p>
 Describes the word size and byte ordering of the system that generated the file
 </p>
@@ -4106,8 +4107,8 @@ directly into memory and executed.
 </table>
 </div>
 <ul class="org-ul">
-<li><a id="org82984fa"></a>ELF header<br />
-<div class="outline-text-5" id="text-org82984fa">
+<li><a id="org6096ac5"></a>ELF header<br />
+<div class="outline-text-5" id="text-org6096ac5">
 <p>
 The <b>ELF header</b> describes the overall format of the file.
 It also includes the program’s <i>entry point</i>
@@ -4496,8 +4497,8 @@ has its own GOT and PLT. The PLT is part of the .text section
 </div>
 </div>
 
-<div id="outline-container-org2c7a40d" class="outline-3">
-<h3 id="org2c7a40d"><span class="section-number-3">6.8</span> Tools</h3>
+<div id="outline-container-orga518e01" class="outline-3">
+<h3 id="orga518e01"><span class="section-number-3">6.8</span> Tools</h3>
 <div class="outline-text-3" id="text-6-8">
 <ul class="org-ul">
 <li>ar: Creates static libraries, and inserts, deletes, lists, and extracts members.</li>
@@ -4832,8 +4833,8 @@ The <code>setjmp</code> then returns with the nonzero return value retval.
 </ul>
 </div>
 </div>
-<div id="outline-container-orga518e01" class="outline-3">
-<h3 id="orga518e01"><span class="section-number-3">7.4</span> Tools</h3>
+<div id="outline-container-orgf194761" class="outline-3">
+<h3 id="orgf194761"><span class="section-number-3">7.4</span> Tools</h3>
 <div class="outline-text-3" id="text-7-4">
 <ul class="org-ul">
 <li>strace: Prints a trace of each system call invoked by a running program and its children.</li>
@@ -5001,13 +5002,86 @@ uniquely identified by <code>(cliaddr:cliport, servaddr:servport)</code>
 </div>
 </div>
 
-<div id="outline-container-orgb490d05" class="outline-3">
-<h3 id="orgb490d05"><span class="section-number-3">9.4</span> Interface</h3>
+<div id="outline-container-org3fbd6ac" class="outline-3">
+<h3 id="org3fbd6ac"><span class="section-number-3">9.4</span> Socket Address</h3>
 <div class="outline-text-3" id="text-9-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">IP socket address</span>
+<span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">sockaddr_in</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #ba2f59; font-weight: bold;">uint16_t</span> <span style="color: #715ab1;">sin_family</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">protocol famliy (AF_INET)</span>
+  <span style="color: #ba2f59; font-weight: bold;">uint16_t</span> <span style="color: #715ab1;">sin_port</span>;   <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">port number in network byte order</span>
+  <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">in_addr</span> <span style="color: #715ab1;">sin_addr</span>;
+  <span style="color: #ba2f59; font-weight: bold;">unsigned</span> <span style="color: #ba2f59; font-weight: bold;">char</span> <span style="color: #715ab1;">sin_zero</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">8</span><span style="color: #6c3163;">]</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pad to sizeof(struct sockaddr)</span>
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Generic socket address</span>
+<span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">sockaddr</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #ba2f59; font-weight: bold;">uint16_t</span> <span style="color: #715ab1;">sa_family</span>;
+  <span style="color: #ba2f59; font-weight: bold;">char</span> <span style="color: #715ab1;">sa_data</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">14</span><span style="color: #6c3163;">]</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb490d05" class="outline-3">
+<h3 id="orgb490d05"><span class="section-number-3">9.5</span> Interface</h3>
+<div class="outline-text-3" id="text-9-5">
 
 <div class="figure">
 <p><img src="../resources/os/SocketAPI.png" alt="SocketAPI.png" />
 </p>
+</div>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/types.h&gt;</span>
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/socket.h&gt;</span>
+
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">socket</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">domain</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">type</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">protocol</span><span style="color: #3a81c3;">)</span>;
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">client-side</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">connect</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">clientifd</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">sockaddr</span> *<span style="color: #715ab1;">addr</span>, <span style="color: #ba2f59; font-weight: bold;">socklen_t</span> <span style="color: #715ab1;">addrlen</span><span style="color: #3a81c3;">)</span>;
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">server-side</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">bind</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">sockfd</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">sockaddr</span> *<span style="color: #715ab1;">addr</span>, <span style="color: #ba2f59; font-weight: bold;">socklen_t</span> <span style="color: #715ab1;">addrlen</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">listen</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">sockfd</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">backlog</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">accept</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">listenfd</span>, <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">sockaddr</span> *<span style="color: #715ab1;">addr</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> *<span style="color: #715ab1;">addrlen</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+<ul class="org-ul">
+<li>listen: The <code>listen</code> function converts sockfd from an active socket to a <i>listening socket</i></li>
+</ul>
+<p>
+that can accept connection requests from clients.
+</p>
+<ul class="org-ul">
+<li>accept: The <code>accept</code> function waits for a connection request from a client to arrive on</li>
+</ul>
+<p>
+the listening descriptor <code>listenfd</code>, then fills in the client’s socket address in <code>addr</code>,
+and returns a <i>connected descriptor</i>.
+</p>
+</div>
+
+<div id="outline-container-org3d50a8e" class="outline-4">
+<h4 id="org3d50a8e"><span class="section-number-4">9.5.1</span> <code>getaddrinfo</code></h4>
+<div class="outline-text-4" id="text-9-5-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;netdb.h&gt;</span>
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/socket.h&gt;</span>
+<span style="color: #6c3163;">#include</span> <span style="color: #2d9574;">&lt;sys/types.h&gt;</span>
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">getaddrinfo</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">host</span>, <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">service</span>,
+                <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">addrinfo</span> *<span style="color: #715ab1;">hints</span>, <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">addrinfo</span> **<span style="color: #715ab1;">result</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">freeaddrinfo</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">addrinfo</span> *<span style="color: #715ab1;">result</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">getnameinfo</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">sockaddr</span> *<span style="color: #715ab1;">sa</span>, <span style="color: #ba2f59; font-weight: bold;">socklen_t</span> <span style="color: #715ab1;">salen</span>, <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">host</span>,
+                <span style="color: #ba2f59; font-weight: bold;">size_t</span> <span style="color: #715ab1;">hostlen</span>, <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #715ab1;">service</span>, <span style="color: #ba2f59; font-weight: bold;">size_t</span> <span style="color: #715ab1;">servlen</span>,
+                <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">flags</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">reverse fn of getaddrinfo</span>
+
+<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">char</span> *<span style="color: #6c3163; font-weight: bold;">gai_strerror</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">errcode</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+<ul class="org-ul">
+<li>service: service name(http, &#x2026;) or port no(decimal)</li>
+<li>hints: see <code>man getaddrinfo</code>, use <code>memset</code> to initialize <i>hints</i></li>
+</ul>
 </div>
 </div>
 </div>
