@@ -1,6 +1,6 @@
 #+TITLE: Operating Systems
 #+KEYWORDS: OS
-#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+OPTIONS: H:4 toc:2 num:4 ^:nil
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
@@ -1623,3 +1623,96 @@ Condition: $x\neq 0$
     #+END_SRC
     - service: service name(http, ...) or port no(decimal)
     - hints: see =man getaddrinfo=, use =memset= to initialize /hints/
+* Concurrency
+** Process
+   - Scheduled and maintained by the kernel.
+   - Have separate virtual address spaces.
+
+** I/O Multiplexing
+   - Scheduled by application itself.
+   - Single process
+   - All flows share the same address space.
+
+*** select
+    #+BEGIN_SRC c
+      #include <sys/select.h>
+
+      int select(int n, fd_set *fdset, NULL, NULL, NULL);
+
+      // macros for manipulating descriptor sets
+      FD_ZERO(fd_set *fdset); // clear all fds in fdset
+      FD_CLR(int fd, fd_set *fdset); // remove fd from fdset
+      FD_SET(int fd, fd_set *fdset); // add fd to fdset
+      FD_ISSET(int fd, fd_set *fdset); // is fd in fdset
+    #+END_SRC
+    - Example:
+      #+BEGIN_SRC c
+        #include <sys/select.h>
+
+        int main(int argc, char **argv) {
+          fd_set read_set, ready_set;
+          FD_ZERO(&read_set);
+          FD_SET(fd1, &read_set);
+          FD_SET(fd2, &read_set);
+
+          while (True) {
+            ready_set = read_set;
+            select(fd2 + 1, &ready_set, NULL, NULL, NULL);
+            if (FD_ISSET(fd1, &ready_set)) {
+              // ...
+            }
+            if (FD_ISSET(fd2, &ready_set)) {
+              //...
+            }
+          }
+        }
+      #+END_SRC
+
+** Thread
+   - Scheduled and maintained by the kernel.
+   - All flows share the same address space.
+*** Thread Context
+    Includes a unique integer thread ID (TID), stack, stack pointer, program counter,
+    general-purpose registers, and condition codes.
+    - much smaller than a process context
+
+*** Posix Interface(pthread)
+    #+BEGIN_SRC c
+      #include <pthread.h>
+      typedef void *(func)(void *);
+
+      int pthread_create(pthread_t *tid, pthread_attr_t *attr, func *f, void *arg);
+      pthread_t pthread_self(void);// returns the ID of the calling thread
+
+      pthread_once_t once_control = PTHREAD_ONCE_INIT;
+      int pthread_once(pthread_once_t *once_control,
+                       void (*init_routine)(void));
+
+      void pthread_exit(void *thread_return);
+      int pthread_cancel(pthread_t tid);
+      int pthread_join(pthread_t tid, void **thread_return);
+      int pthread_detach(pthread_t tid);
+    #+END_SRC
+
+**** Initializing
+     The =pthread_once= function is useful whenever you need to dynamically
+     initialize global variables that are shared by multiple threads.
+     - Only the first call to =pthread_once= invokes =init_routine=
+
+**** Terminating
+     - implicitly terminates when its top-level thread routine returns
+     - call =pthread_exit= function
+     - calls the Unix =exit= function, which terminates the process
+     and all threads associated with the process.
+     - another thread calls =pthread_cancel= to terminate current thread
+
+**** Joining
+     Threads wait for other threads to terminate by calling the =pthread_join= function.
+     The =once_control= variable is a global or static variable that is always
+     initialized to =PTHREAD_ONCE_INIT=.
+
+**** Detaching
+     At any point in time, a thread is /joinable/ or /detached/.
+     A /detached/ thread cannot be reaped or killed by other threads.
+     A /joinable/ thread's memory resources are not freed until it is reaped by another thread
+     or detached by a call to the =pthread_detach= function
