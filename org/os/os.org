@@ -1716,3 +1716,51 @@ Condition: $x\neq 0$
      A /detached/ thread cannot be reaped or killed by other threads.
      A /joinable/ thread's memory resources are not freed until it is reaped by another thread
      or detached by a call to the =pthread_detach= function
+** Synchronization
+   =count++= for asm code
+   #+BEGIN_SRC asm
+       movq count(%rip), %rdx
+       addq %eax
+       movq %eax, cnt(%rip)
+   #+END_SRC
+*** Semaphore
+    A semaphore *s* is a global variable with nonnegative integer value that can only
+    be manipulated by two special operations, called =P= and =V=
+
+**** P(s)
+     If *s* is nonzero, then =P= decrements *s* and returns immediately(atomic). If *s* is zero,
+     then suspend the thread until *s* becomes nonzero and the process is restarted
+     by a =V= operation. After restarting, the =P= operation decrements *s* and returns
+     control to the caller.
+
+**** V(s)
+     The =V= operation increments *s* by 1(atomic). If there are any threads blocked
+     at a =P= operation waiting for *s* to become nonzero, then the =V= operation
+     restarts exactly one of these threads, which then completes its =P= operation
+     by decrementing s.
+
+**** API
+   #+BEGIN_SRC c
+     #include <semaphore.h>
+
+     int sem_init(sem_t *sem, int pshared, unsigned int value);
+     int sem_wait(sem_t *s); /* P(s) */
+     int sem_post(sem_t *s); /* V(s) */
+   #+END_SRC
+   - pshared: be shared between the threads, or between processes
+
+*** mutex
+    binary semaphore, value is 1 or 0
+    - P(s): lock the mutex
+    - V(s): unlock the mutex
+    #+BEGIN_SRC c
+      #include <semaphore.h>
+
+      sem_t mutex;
+
+      sem_init(&mutex, 0, 1); // initialized by 1
+
+      sem_wait(&mutex); // lock
+      cnt++;
+      sem_post(&mutex); // unlock
+    #+END_SRC
