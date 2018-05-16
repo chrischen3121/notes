@@ -1,6 +1,6 @@
 #+TITLE: C++ 点滴
 #+KEYWORDS: c++
-#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+OPTIONS: H:3 toc:1 num:2 ^:nil
 #+LANGUAGE: zh-CN
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
@@ -36,14 +36,12 @@
      std::cout << i << " " << ++i << "\n"; //未定义
    #+END_SRC
 ** 递增递减运算符
-   除非必须，否则不使用后置版本。后置版本需要存储原始值用于返回未修改的内容。
-*** 与解引用混用
-    #+BEGIN_SRC cpp
-      std::cout << *iter << "\n";
-      ++iter;
-      //等价于
-      std::cout << *iter++ << "\n"; //先递增后解引用，常规简洁写法，记住。
-    #+END_SRC
+   #+BEGIN_SRC cpp
+     std::cout << *iter++ << "\n"; //先解引用后递增迭代器，常规简洁写法，记住。
+     // 等价于
+     std::cout << *iter << "\n";
+     iter++;
+   #+END_SRC
 ** sizeof 运算符
    sizeof 运算符返回一条表达式或一个类型名字所占的字节数
    #+BEGIN_SRC cpp
@@ -120,13 +118,13 @@
 *** 成员函数指针
     三种形式：
     #+BEGIN_SRC cpp
-      auto a = std::mem_fn<int&()>(&X::get ); //std::mem_fn 生成指向成员指针的包装对象
+      auto a = std::mem_fn<int&()>(&X::get); //std::mem_fn 生成指向成员指针的包装对象
       auto b  = [] (X& x) {return x.get();};
       auto c = std::bind(&X::get, &x);
     #+END_SRC
 ** std::bind
    接受一个可调用对象，绑定若干参数，生成一个新的可调用对象。(函数柯里化)
-   引用类型参数需用 std::ref 包装，常量引用使用 std::cref。
+   - 引用类型参数需用 std::ref 包装，常量引用使用 std::cref。
 
 ** 运算符函数化
    标准库提供了内置类型的函数形式的运算符，如 plus<int>, negate<int>等。主要用于给算法传递这些函数，例如：
@@ -141,14 +139,20 @@
 ** 隐式 inline
    在类定义中声明的成员函数为隐式 inline 函数
 
-** 可变数据成员
-   定义 const 成员函数可以改变的数据成员，比如用于 const 函数调用计数
+** 可变数据成员(mutable)
+   使用关键字 mutable 定义 const 成员函数可以改变的数据成员，比如用于 const 函数调用计数
+   #+BEGIN_SRC cpp
+     class Test {
+      public:
+       void fn() const { count++; }; //count 可以被改变
 
-** 返回*this 的 const 成员函数
-   const 成员函数以引用形式返回的是 *常量引用*
+      private:
+       mutable int count = 0;
+     };
+   #+END_SRC
+   fn 是一个对于外部来说的逻辑 const 函数，它所改变的内部状态不为外部“所知”(非接口可获取，内部缓存)
 
-** 委托构造函数
-** explicit
+** explicit 构造
    抑制构造函数(拷贝和移动构造函数不算在内)定义的隐式转换
 
 ** 聚合类
@@ -171,9 +175,6 @@
     - 至少有一个 constexpr 构造函数
     - 必须使用析构函数的默认定义
 
-** 静态常量初始值
-   即使静态常量在类内被初始化了也应该在类外部定义该成员。否则该静态值无法传入参数为其类型 const 引用的函数。
-
 ** 运算符重载
 *** 递增递减运算符
     #+BEGIN_SRC cpp
@@ -187,9 +188,11 @@
     #+END_SRC
 
 ** 虚析构函数
-   虚析构函数是为了解决基类的指针指向派生类对象，并用基类的指针删除派生类对象。
+   虚析构函数是为了解决基类的指针指向派生类对象，并用基类的指针删除派生类对象时产生的子类资源不释放的问题。
+
 ** dynamic_cast
    从父类转换成子类，使用 dynamic_cast 会在运行时检查转换是否有效，而 static_cast 不会
+
 ** 强制调用基类虚函数
    #+BEGIN_SRC cpp
      p_base->Base::fn();//使用作用域指定
@@ -208,18 +211,6 @@
 ** 嵌套类和局部类
    - 嵌套类：定义在某类内部，与外层类为相互独立的类型
    - 局部类：定义在函数内部，作用域很小，通常为小型数据类
-** mutable 数据成员
-   被 mutable 修饰的数据成员，可以在 const 成员函数中修改。
-   #+BEGIN_SRC cpp
-     class Test {
-      public:
-       void fn() const { count++; }; //count 可以被改变
-
-      private:
-       mutable int count = 0;
-     };
-   #+END_SRC
-   fn 是一个对于外部来说的逻辑 const 函数，它所改变的内部状态不为外部“所知”(非接口可获取，内部缓存)
 * 类型
 ** 类型别名
    以下两个语句等价：
@@ -236,14 +227,29 @@
      decltype((i)) b = 5; //错误：b 为 int &
      decltype((i)) c = i; //正确
    #+END_SRC
+*** Diagnositcs(Boost.TypeIndex)
+    #+BEGIN_SRC cpp
+      #include <boost/type_index.hpp>
+      using boost::typeindex::type_id_with_cvr;
+      type_id_with_cvr<T>().pretty_name();
+    #+END_SRC
 
-*** 模板
+*** 模板类型推断
     #+BEGIN_SRC cpp
       int x = 42;
       const int cx = x;
       const int &rx = x;
     #+END_SRC
-    - case 1: reference or pointer
+    - case 1: neither reference nor pointer
+      #+BEGIN_SRC cpp
+        template<typename T>
+        void f(T param);
+
+        f(x); // T -> int
+        f(cx); // T -> int
+        f(rx); // T -> int
+      #+END_SRC
+    - case 2: reference or pointer
       #+BEGIN_SRC cpp
         template<typename T>
         void f(T &param);
@@ -253,7 +259,8 @@
         f(rx); // T -> const int, 引用已经是函数参数的一部分
         f(5); // wrong 不接受右值
       #+END_SRC
-    - case 2: const reference
+
+    - case 3: const reference
       #+BEGIN_SRC cpp
         template<typename T>
         void f(const T &param);
@@ -262,25 +269,15 @@
         f(cx); // T -> int, const 已经是函数参数的一部分
         f(rx); // T -> int, 同上
       #+END_SRC
-    - case 3: universal reference
+    - case 4: universal reference
       #+BEGIN_SRC cpp
-        template <typename T> void f(T &&param) {
-          std::cout << boost::typeindex::type_id_with_cvr<T>().pretty_name() << "\n";
-        }
+        template <typename T>
+        void f(T &&param);
 
-        f(x);  // x is lvalue, T -> int & 因为引用折叠
+        f(x);  // x is lvalue, T -> int &
         f(cx); // T -> const int &
         f(rx); // T -> const int &
         f(42); // x is rvalue, T -> int, &&已经是函数参数的一部分
-      #+END_SRC
-    - case 4: neither reference nor pointer
-      #+BEGIN_SRC cpp
-        template<typename T>
-        void f(T param);
-
-        f(x); // T -> int
-        f(cx); // T -> int
-        f(rx); // T -> int
       #+END_SRC
     - case 5: array or function
 
@@ -291,12 +288,12 @@
     - X&& &&折叠成 X&&
 *** auto
     #+BEGIN_SRC cpp
-      auto x = 42; // case3
-      const auto cx = x; // case3
-      const auto &cx = x; // case1
-      auto &&uref1 = x; // case2: uref1 -> int &
-      auto &&uref2 = cx; // case2: uref2 -> const int &
-      auto &&uref3 = 42; // case2: uref3 -> int &&
+      auto x = 42; // case1
+      const auto cx = x; // case1
+      const auto &cx = x; // case3
+      auto &&uref1 = x; // case4: uref1 -> int &
+      auto &&uref2 = cx; // case4: uref2 -> const int &
+      auto &&uref3 = 42; // case4: uref3 -> int &&
 
       const char name[] = "beep";
       auto arr1 = name; // arr1 -> const char *
@@ -309,11 +306,8 @@
       auto x = {27}; // notice: x -> std::initializer_list<int>
     #+END_SRC
     - *auto* 与模板类型推断唯一的不同在于 auto 会将{}包围的初始化列表，推断为 *std::initializer_list*
-    - C++14 允许函数返回值使用 *auto* ，但这里 *auto* 的行为方式与模板类型推断一致；C++14 lambda 中的 *auto* 参数也是如此
-    - 使用 initializer idiom 来初始化具体类型
-      #+BEGIN_SRC cpp
-        auto pos_flag = static_cast<bool>(x)
-      #+END_SRC
+    - C++14 允许函数返回值使用 *auto* ，但这里 *auto* 的行为方式与模板类型推断一致；C++14 lambda 中
+    的 *auto* 参数也是如此
 *** decltype
     - *decltype* 通常不做任何修改的返回变量或表达式的类型，非常直观
     - 对容器中的下标操作 *operator[]* 使用 *decltype* 则返回 *T&*
@@ -325,19 +319,14 @@
           return c[i];
         }
       #+END_SRC
-      这里的 *auto* 没有任何推断作用，只是用于标识尾部的 *decltype* 。C++14 语法允许去掉尾部的 *decltype* ，
-      但是由于使用的是模板推断，原本的引用类型 *T&* 被推断为 *T* 。
+      这里的 *auto* 没有任何推断作用，只是用于标识尾部的 *decltype* 。C++14 语法允许去掉尾部的 *decltype* 。
       #+BEGIN_SRC cpp
-        template<typename Container, typename Index>
-        auto Access(Container &c, Index i) {
-          return c[i];
-        }
-
-        std::vector<int> vec;
-        ...
-        Access(vec, 5) = 10; // Wrong，实际返回值为 int，且是一个 rvalue
+        std::vector<int> vec{1, 2, 3};
+        Access(vec, 1) = 10; // Wrong，实际返回值为 int，且是一个 rvalue
       #+END_SRC
-    - *decltype(auto)* ? *auto* 说明类型需要被推断， *decltype* 说明推断的时候应使用 *decltype* 的规则；C++14 only.
+
+*** decltype(auto)
+    *auto* 说明类型需要被推断， *decltype* 说明推断的时候应使用 *decltype* 的规则；C++14 only.
       #+BEGIN_SRC cpp
         int i = 42;
         const int &ci = i;
@@ -348,26 +337,15 @@
         decltype(*pi) a4 = i; // a4 -> int & 同 a3，*pi 为表达式
       #+END_SRC
 
-    - *std::forward* final version:
-      #+BEGIN_SRC cpp
-        template<typename Container, typename Index>
-        decltype(auto) Access(Container &c, Index i) {
-          return std::forward<Container>(c)[i];
-        } // for C++14
-
-        template<typename Container, typename Index>
-        auto Access(Container &c, Index i)
-            -> decltype(std::forward<Container>(c)[i])
-        {
-          return std::forward<Container>(c)[i];
-        } // for C++11
-      #+END_SRC
-
-*** Diagnositcs(Boost.TypeIndex)
+*** perfect forwarding
     #+BEGIN_SRC cpp
-      #include <boost/type_index.hpp>
-      using boost::typeindex::type_id_with_cvr;
-      type_id_with_cvr<T>().pretty_name();
+      template <typename T> decltype(auto) f(T &&param) {
+        return std::forward<T>(param);
+      } // for C++14
+
+      template <typename T> auto f(T &&param) -> decltype(std::forward<T>(param)) {
+        return std::forward<T>(param);
+      } // for C++11
     #+END_SRC
 
 ** 类型转换
@@ -388,33 +366,19 @@
        auto pd = static_cast<double*>(p);
      #+END_SRC
 **** dynamic_cast
-     多态指针转换
+     多态指针转换，可通过返回值判断转换是否成功
 **** const_cast
-     去掉 const
+     去掉 const 修饰
      #+BEGIN_SRC cpp
        const char *pc;
        char *p = const_cast<char *>(pc)
      #+END_SRC
      常常用于函数重载的情况
 **** reinterpret_cast
-     用来处理无关类型之间的转换，字面意思“重新解释（类型的比特位）”，避免使用。
-** 运行时类型识别
-*** typeid 运算符
-    - typeid 用于指针类型，始终返回该指针静态编译时的类型
-    - typeid 作用于在继承体系中的类时，是否返回静态编译时类型取决于类是否包含虚函数
-
-*** dynamic_cast
-    常用于将基类转换成派生类并执行派生类非虚函数的操作，例如想对有继承关系的类实现相等运算符，由于形参不同无法使用虚函数
-    - 指针类型转换：失败返回空指针，不抛出异常；推荐用法：
-      #+BEGIN_SRC cpp
-        Base *bp = new Derived;
-        if (Derived *dp = dynamic_cast<Derived *>(bp)) { //转换和结果检查和并单个语句
-          // 使用 dp
-        } else {
-          // 使用 bp
-        }
-      #+END_SRC
-    - 引用类型转换：失败抛异常
+     用来处理无关类型之间的转换，字面意思“重新解释（类型的比特位）”，不安全避免使用。
+** 运行时类型识别 typeid
+- typeid 用于指针类型，始终返回该指针静态编译时的类型
+- typeid 作用于在继承体系中的类时，是否返回静态编译时类型取决于类是否包含虚函数
 
 * 容器
 ** 数组
@@ -654,7 +618,7 @@
        return *begin
      }
    #+END_SRC
-   - \*begin 返回容器元素的引用
+   - *begin 返回容器元素的引用
    - 使用 remove_reference 对类型去引用
    - 尾部 typename 显示告知编译器这里需要的是类型而非成员
 
@@ -772,7 +736,8 @@
      }
    #+END_SRC
 ** 数值转换
-   std::to_string, stoXXX
+   - std::to_string
+   - stoXXX
 * new & delete
   - 可重载 new 和 delete 操作符以控制 *内存分配*
   - 无法改变 *运算符* new 和 delete 的行为
@@ -826,7 +791,7 @@
    volatile 告诉编译器，不应该对其声明的对象进行优化。
    - 打破编译器根据有限的上下文对某变量是不会发生改变的假设，从而作出错误的编译优化。
 ** extern
-   extern 链接指示器声明其他语言编写的函数，也可以指示 C++代码为其他语言所用
+   extern 链接指示器可声明其他语言编写的函数，也可以指示 C++代码为其他语言所用
    #+BEGIN_SRC cpp
      extern "C" size_t strlen(const char *);
      extern "C" {

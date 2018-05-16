@@ -1716,3 +1716,242 @@ Condition: $x\neq 0$
      A /detached/ thread cannot be reaped or killed by other threads.
      A /joinable/ thread's memory resources are not freed until it is reaped by another thread
      or detached by a call to the =pthread_detach= function
+** Synchronization
+   =count++= for asm code
+   #+BEGIN_SRC asm
+       movq count(%rip), %rdx
+       addq %eax
+       movq %eax, cnt(%rip)
+   #+END_SRC
+*** Semaphore
+    A semaphore *s* is a global variable with nonnegative integer value that can only
+    be manipulated by two special operations, called =P= and =V=
+
+**** P(s)
+     If *s* is nonzero, then =P= decrements *s* and returns immediately(atomic). If *s* is zero,
+     then suspend the thread until *s* becomes nonzero and the process is restarted
+     by a =V= operation. After restarting, the =P= operation decrements *s* and returns
+     control to the caller.
+
+**** V(s)
+     The =V= operation increments *s* by 1(atomic). If there are any threads blocked
+     at a =P= operation waiting for *s* to become nonzero, then the =V= operation
+     restarts exactly one of these threads, which then completes its =P= operation
+     by decrementing s.
+
+**** API
+   #+BEGIN_SRC c
+     #include <semaphore.h>
+
+     int sem_init(sem_t *sem, int pshared, unsigned int value);
+     int sem_wait(sem_t *s); /* P(s) */
+     int sem_post(sem_t *s); /* V(s) */
+   #+END_SRC
+   - pshared: be shared between the threads, or between processes
+
+*** mutex
+    binary semaphore, value is 1 or 0
+    - P(s): lock the mutex
+    - V(s): unlock the mutex
+    #+BEGIN_SRC c
+      #include <semaphore.h>
+
+      sem_t mutex;
+
+      sem_init(&mutex, 0, 1); // initialized by 1
+
+      sem_wait(&mutex); // lock
+      cnt++;
+      sem_post(&mutex); // unlock
+    #+END_SRC
+
+*** Producer-Consumer Problem
+    #+BEGIN_SRC cpp
+      #include <atomic>
+      #include <deque>
+      #include <iostream>
+      #include <semaphore.h>
+      #include <thread>
+      #include <vector>
+
+      sem_t mutex, items, slots;
+      constexpr int MAX_SLOTS = 10;
+      constexpr int THREAD_COUNT = 4;
+      constexpr int PRODUCER_LOOPS = 10000;
+      constexpr int EXPECTED_SUM = THREAD_COUNT * 49995000;
+      std::deque<int> buf(0, MAX_SLOTS);
+      void produce() {
+        for (auto i = 0; i < PRODUCER_LOOPS; ++i) {
+          sem_wait(&slots);
+          sem_wait(&mutex);
+          buf.emplace_back(i);
+          sem_post(&mutex);
+          sem_post(&items);
+        }
+      }
+
+      void consume() {
+        static std::atomic<int> sum{0};
+        while (true) {
+          sem_wait(&items);
+          sem_wait(&mutex);
+          for (auto i = 0; i < buf.size(); ++i) {
+            sum += buf.front();
+            buf.pop_front();
+            sem_post(&slots);
+          }
+          sem_post(&mutex);
+          if (sum == EXPECTED_SUM) {
+            std::cout << sum << "\n";
+            exit(EXIT_SUCCESS);
+          }
+        }
+      }
+
+      int main(int, char *[]) {
+        sem_init(&mutex, 0, 1);
+        sem_init(&items, 0, 0);
+        sem_init(&slots, 0, MAX_SLOTS);
+
+        std::vector<std::thread> producers;
+        std::vector<std::thread> consumers;
+        for (auto i = 0; i < THREAD_COUNT; ++i) {
+          producers.emplace_back(produce);
+          consumers.emplace_back(consume);
+        }
+        for (auto &th : producers)
+          th.join();
+        for (auto &th : consumers)
+          th.join();
+        return 0;
+      }
+    #+END_SRC
+*** Readers-Writers Problem
+**** Reader favored
+    #+BEGIN_SRC cpp
+      #include <atomic>
+      #include <chrono>
+      #include <iostream>
+      #include <semaphore.h>
+      #include <thread>
+      #include <vector>
+
+      using namespace std::chrono_literals;
+
+      sem_t mutex;
+      int resource = 0;
+      constexpr int THREAD_COUNT = 4;
+      constexpr int WRITE_COUNT = 1000;
+      void read() {
+        static std::atomic<int> readcnt{0};
+        int out = 0;
+        while (true) {
+          readcnt++;
+          if (readcnt == 1) { // first reader in
+            sem_wait(&mutex);
+          }
+          out = resource; // read operation
+          readcnt--;
+          if (readcnt == 0) {
+            sem_post(&mutex);
+          }
+          std::this_thread::sleep_for(500ms);
+        }
+      }
+
+      void write() {
+        for (auto i = 0; i < WRITE_COUNT; ++i) {
+          sem_wait(&mutex);
+          resource = i; // write operation
+          sem_post(&mutex);
+          std::this_thread::sleep_for(1s);
+        }
+      }
+
+      int main(int, char *[]) {
+        sem_init(&mutex, 0, 1);
+
+        std::vector<std::thread> readers;
+        std::vector<std::thread> writers;
+        for (auto i = 0; i < THREAD_COUNT; ++i) {
+          readers.emplace_back(read);
+          writers.emplace_back(write);
+        }
+        for (auto &th : readers)
+          th.join();
+        for (auto &th : writers)
+          th.join();
+        return 0;
+      }
+
+    #+END_SRC
+**** Writer favored
+     #+BEGIN_SRC cpp
+       #include <atomic>
+       #include <chrono>
+       #include <iostream>
+       #include <semaphore.h>
+       #include <thread>
+       #include <vector>
+
+       using namespace std::chrono_literals;
+
+       sem_t re_mutex, read_mutex;
+       int resource = 0;
+       constexpr int THREAD_COUNT = 4;
+       constexpr int WRITE_COUNT = 1000;
+       void read() {
+         static std::atomic<int> readcnt{0};
+         int out = 0;
+         while (true) {
+           sem_wait(&read_mutex); // no writer in
+           readcnt++;
+           if (readcnt == 1) {    // first reader in
+             sem_wait(&re_mutex); // lock resource
+           }
+           sem_post(&read_mutex);
+
+           out = resource; // read operation
+           readcnt--;
+           if (readcnt == 0) {
+             sem_post(&re_mutex); // last reader out, unlock resource
+           }
+           std::this_thread::sleep_for(500ms);
+         }
+       }
+
+       void write() {
+         static std::atomic<int> writecnt{0};
+         for (auto i = 0; i < WRITE_COUNT; ++i) {
+           writecnt++;
+           if (writecnt == 1) {
+             sem_wait(&read_mutex); // first writer in, block uncoming readers
+           }
+           sem_wait(&re_mutex);
+           resource = i; // write operation
+           sem_post(&re_mutex);
+           writecnt--;
+           if (writecnt == 0) {
+             sem_post(&read_mutex); // last writer out
+           }
+           std::this_thread::sleep_for(1s);
+         }
+       }
+
+       int main(int, char *[]) {
+         sem_init(&re_mutex, 0, 1);
+         sem_init(&read_mutex, 0, 1);
+         std::vector<std::thread> readers;
+         std::vector<std::thread> writers;
+         for (auto i = 0; i < THREAD_COUNT; ++i) {
+           readers.emplace_back(read);
+           writers.emplace_back(write);
+         }
+         for (auto &th : readers)
+           th.join();
+         for (auto &th : writers)
+           th.join();
+         return 0;
+       }
+
+     #+END_SRC
