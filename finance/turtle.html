@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2017-09-05 Tue 11:42 -->
+<!-- 2018-05-16 Wed 08:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>海龟交易法则</title>
@@ -69,6 +69,7 @@
   pre.src-fortran:before { content: 'Fortran'; }
   pre.src-gnuplot:before { content: 'gnuplot'; }
   pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
   pre.src-java:before { content: 'Java'; }
   pre.src-js:before { content: 'Javascript'; }
   pre.src-latex:before { content: 'LaTeX'; }
@@ -187,7 +188,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2017 Free Software Foundation, Inc.
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -236,98 +237,116 @@ for the JavaScript code in this tag.
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2f3833d">1. 认知偏差(cognitive bias)</a>
+<li><a href="#org38f8059">1. 认知偏差(cognitive bias)</a>
 <ul>
-<li><a href="#orgdb2db8f">1.1. 损失厌恶(loss aversion)</a></li>
-<li><a href="#org364da35">1.2. 沉没成本效应(sunk costs effect)</a></li>
-<li><a href="#orgc02e13c">1.3. 处置效应(disposition effect)</a></li>
-<li><a href="#org089f87f">1.4. 结果偏好(outcome bias)</a></li>
-<li><a href="#org8c90ec7">1.5. 近期偏好(recency bias)</a></li>
-<li><a href="#orgaa9f5e7">1.6. 锚定效应(anchoring)</a></li>
-<li><a href="#orgc4af8aa">1.7. 潮流效应(bandwagon effect)</a></li>
-<li><a href="#org7efbb5a">1.8. 小数定律(the law of small numbers)</a></li>
+<li><a href="#orge51ce3f">1.1. 损失厌恶(loss aversion)</a></li>
+<li><a href="#org9574f88">1.2. 沉没成本效应(sunk costs effect)</a></li>
+<li><a href="#org8a5549c">1.3. 处置效应(disposition effect)</a></li>
+<li><a href="#org76af195">1.4. 结果偏好(outcome bias)</a></li>
+<li><a href="#org7df3939">1.5. 近期偏好(recency bias)</a></li>
+<li><a href="#org095cfd2">1.6. 锚定效应(anchoring)</a></li>
+<li><a href="#org91ebd5b">1.7. 潮流效应(bandwagon effect)</a></li>
+<li><a href="#orge263885">1.8. 小数定律(the law of small numbers)</a></li>
+<li><a href="#org2ec5b71">1.9. the framing effect</a></li>
+<li><a href="#orgcbccc19">1.10. the disjunction effect</a></li>
+<li><a href="#org06e309b">1.11. attention anomalies</a></li>
+<li><a href="#org9f3a3b5">1.12. representativeness heuristic</a></li>
 </ul>
 </li>
-<li><a href="#org3432d79">2. 趋势策略</a>
+<li><a href="#org49d303e">2. 趋势策略</a>
 <ul>
-<li><a href="#org24fc7dc">2.1. Donchian Channels</a></li>
-<li><a href="#org98e220d">2.2. 支撑和阻力</a></li>
+<li><a href="#org90b11a6">2.1. Donchian Channels</a></li>
+<li><a href="#orge7bfb7b">2.2. 支撑和阻力</a></li>
 </ul>
 </li>
-<li><a href="#org0883ae9">3. 策略评测</a>
+<li><a href="#orgb966b28">3. 策略评测</a>
 <ul>
-<li><a href="#orgefb7067">3.1. 回报量化</a></li>
-<li><a href="#orgf28db70">3.2. 风险量化</a></li>
-<li><a href="#org33470d5">3.3. 风险回报综合指标</a></li>
-<li><a href="#orgf39a658">3.4. 其他</a></li>
+<li><a href="#org41665d3">3.1. 回报量化</a></li>
+<li><a href="#org5b912ac">3.2. 风险量化</a></li>
+<li><a href="#orgfb542dc">3.3. 风险回报综合指标</a></li>
+<li><a href="#org41884d1">3.4. 其他</a></li>
 </ul>
 </li>
-<li><a href="#org1cb0907">4. 资产管理</a>
+<li><a href="#orga4e79d6">4. 资产管理</a>
 <ul>
-<li><a href="#org509a026">4.1. ATR(average true range)</a></li>
+<li><a href="#orga996c9b">4.1. ATR(average true range)</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2f3833d" class="outline-2">
-<h2 id="org2f3833d"><span class="section-number-2">1</span> 认知偏差(cognitive bias)</h2>
+<div id="outline-container-org38f8059" class="outline-2">
+<h2 id="org38f8059"><span class="section-number-2">1</span> 认知偏差(cognitive bias)</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-orgdb2db8f" class="outline-3">
-<h3 id="orgdb2db8f"><span class="section-number-3">1.1</span> 损失厌恶(loss aversion)</h3>
+</div>
+<div id="outline-container-orge51ce3f" class="outline-3">
+<h3 id="orge51ce3f"><span class="section-number-3">1.1</span> 损失厌恶(loss aversion)</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
-不赔钱远比赚钱更重要
+多数人对同风险下同数量的损失比收益敏感(prospect theory)
 </p>
 </div>
 </div>
-<div id="outline-container-org364da35" class="outline-3">
-<h3 id="org364da35"><span class="section-number-3">1.2</span> 沉没成本效应(sunk costs effect)</h3>
+<div id="outline-container-org9574f88" class="outline-3">
+<h3 id="org9574f88"><span class="section-number-3">1.2</span> 沉没成本效应(sunk costs effect)</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 更重视已花掉的钱，而不是未来可能要花的钱
 </p>
 </div>
 </div>
-<div id="outline-container-orgc02e13c" class="outline-3">
-<h3 id="orgc02e13c"><span class="section-number-3">1.3</span> 处置效应(disposition effect)</h3>
+<div id="outline-container-org8a5549c" class="outline-3">
+<h3 id="org8a5549c"><span class="section-number-3">1.3</span> 处置效应(disposition effect)</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
-早早兑现利润，却让损失持续下去
+早早兑现利润，却让损失持续下去(prospect theory, cognitive dissonance)
 </p>
 </div>
 </div>
-<div id="outline-container-org089f87f" class="outline-3">
-<h3 id="org089f87f"><span class="section-number-3">1.4</span> 结果偏好(outcome bias)</h3>
+<div id="outline-container-org76af195" class="outline-3">
+<h3 id="org76af195"><span class="section-number-3">1.4</span> 结果偏好(outcome bias)</h3>
 </div>
-<div id="outline-container-org8c90ec7" class="outline-3">
-<h3 id="org8c90ec7"><span class="section-number-3">1.5</span> 近期偏好(recency bias)</h3>
+<div id="outline-container-org7df3939" class="outline-3">
+<h3 id="org7df3939"><span class="section-number-3">1.5</span> 近期偏好(recency bias)</h3>
 </div>
-<div id="outline-container-orgaa9f5e7" class="outline-3">
-<h3 id="orgaa9f5e7"><span class="section-number-3">1.6</span> 锚定效应(anchoring)</h3>
+<div id="outline-container-org095cfd2" class="outline-3">
+<h3 id="org095cfd2"><span class="section-number-3">1.6</span> 锚定效应(anchoring)</h3>
 <div class="outline-text-3" id="text-1-6">
 <p>
 过于依赖容易获得的信息
 </p>
 </div>
 </div>
-<div id="outline-container-orgc4af8aa" class="outline-3">
-<h3 id="orgc4af8aa"><span class="section-number-3">1.7</span> 潮流效应(bandwagon effect)</h3>
+<div id="outline-container-org91ebd5b" class="outline-3">
+<h3 id="org91ebd5b"><span class="section-number-3">1.7</span> 潮流效应(bandwagon effect)</h3>
 </div>
-<div id="outline-container-org7efbb5a" class="outline-3">
-<h3 id="org7efbb5a"><span class="section-number-3">1.8</span> 小数定律(the law of small numbers)</h3>
+<div id="outline-container-orge263885" class="outline-3">
+<h3 id="orge263885"><span class="section-number-3">1.8</span> 小数定律(the law of small numbers)</h3>
 <div class="outline-text-3" id="text-1-8">
 <p>
 从太少的信息中得出没有依据的结论
 </p>
 </div>
 </div>
+<div id="outline-container-org2ec5b71" class="outline-3">
+<h3 id="org2ec5b71"><span class="section-number-3">1.9</span> the framing effect</h3>
 </div>
-<div id="outline-container-org3432d79" class="outline-2">
-<h2 id="org3432d79"><span class="section-number-2">2</span> 趋势策略</h2>
+<div id="outline-container-orgcbccc19" class="outline-3">
+<h3 id="orgcbccc19"><span class="section-number-3">1.10</span> the disjunction effect</h3>
+</div>
+<div id="outline-container-org06e309b" class="outline-3">
+<h3 id="org06e309b"><span class="section-number-3">1.11</span> attention anomalies</h3>
+</div>
+<div id="outline-container-org9f3a3b5" class="outline-3">
+<h3 id="org9f3a3b5"><span class="section-number-3">1.12</span> representativeness heuristic</h3>
+</div>
+</div>
+<div id="outline-container-org49d303e" class="outline-2">
+<h2 id="org49d303e"><span class="section-number-2">2</span> 趋势策略</h2>
 <div class="outline-text-2" id="text-2">
-</div><div id="outline-container-org24fc7dc" class="outline-3">
-<h3 id="org24fc7dc"><span class="section-number-3">2.1</span> Donchian Channels</h3>
+</div>
+<div id="outline-container-org90b11a6" class="outline-3">
+<h3 id="org90b11a6"><span class="section-number-3">2.1</span> Donchian Channels</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 A moving average indicator developed by Richard Donchian. It plots the
@@ -335,8 +354,8 @@ highest high and lowest low over the last period time intervals.
 </p>
 </div>
 </div>
-<div id="outline-container-org98e220d" class="outline-3">
-<h3 id="org98e220d"><span class="section-number-3">2.2</span> 支撑和阻力</h3>
+<div id="outline-container-orge7bfb7b" class="outline-3">
+<h3 id="orge7bfb7b"><span class="section-number-3">2.2</span> 支撑和阻力</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 趋势突破的支撑和阻力主要来源于三种认知偏差：锚定效应，近期偏好以及处置效应。一个近期的新高新低变成新的锚点。
@@ -345,47 +364,50 @@ highest high and lowest low over the last period time intervals.
 </div>
 </div>
 
-<div id="outline-container-org0883ae9" class="outline-2">
-<h2 id="org0883ae9"><span class="section-number-2">3</span> 策略评测</h2>
+<div id="outline-container-orgb966b28" class="outline-2">
+<h2 id="orgb966b28"><span class="section-number-2">3</span> 策略评测</h2>
 <div class="outline-text-2" id="text-3">
-</div><div id="outline-container-orgefb7067" class="outline-3">
-<h3 id="orgefb7067"><span class="section-number-3">3.1</span> 回报量化</h3>
+</div>
+<div id="outline-container-org41665d3" class="outline-3">
+<h3 id="org41665d3"><span class="section-number-3">3.1</span> 回报量化</h3>
 <div class="outline-text-3" id="text-3-1">
-</div><div id="outline-container-org447ac05" class="outline-4">
-<h4 id="org447ac05"><span class="section-number-4">3.1.1</span> 几何平均回报率(geometric average return)</h4>
+</div>
+<div id="outline-container-org546d437" class="outline-4">
+<h4 id="org546d437"><span class="section-number-4">3.1.1</span> 几何平均回报率(geometric average return)</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 投资期间的平均化复利率
 </p>
 </div>
 </div>
-<div id="outline-container-orgfd4eea6" class="outline-4">
-<h4 id="orgfd4eea6"><span class="section-number-4">3.1.2</span> 年平均回报率(average one year trailing return)</h4>
+<div id="outline-container-org61d71cc" class="outline-4">
+<h4 id="org61d71cc"><span class="section-number-4">3.1.2</span> 年平均回报率(average one year trailing return)</h4>
 </div>
-<div id="outline-container-org16bb8bb" class="outline-4">
-<h4 id="org16bb8bb"><span class="section-number-4">3.1.3</span> 平均月度回报率(average monthly return)</h4>
+<div id="outline-container-org6d3905e" class="outline-4">
+<h4 id="org6d3905e"><span class="section-number-4">3.1.3</span> 平均月度回报率(average monthly return)</h4>
 </div>
 </div>
 
-<div id="outline-container-orgf28db70" class="outline-3">
-<h3 id="orgf28db70"><span class="section-number-3">3.2</span> 风险量化</h3>
+<div id="outline-container-org5b912ac" class="outline-3">
+<h3 id="org5b912ac"><span class="section-number-3">3.2</span> 风险量化</h3>
 <div class="outline-text-3" id="text-3-2">
-</div><div id="outline-container-org38dd1e5" class="outline-4">
-<h4 id="org38dd1e5"><span class="section-number-4">3.2.1</span> 回报标准差</h4>
 </div>
-<div id="outline-container-org67b1696" class="outline-4">
-<h4 id="org67b1696"><span class="section-number-4">3.2.2</span> 最大回撤(max drawdown)</h4>
+<div id="outline-container-org247083e" class="outline-4">
+<h4 id="org247083e"><span class="section-number-4">3.2.1</span> 回报标准差</h4>
 </div>
-<div id="outline-container-orgd264c24" class="outline-4">
-<h4 id="orgd264c24"><span class="section-number-4">3.2.3</span> 最大回撤周期</h4>
+<div id="outline-container-org404dd39" class="outline-4">
+<h4 id="org404dd39"><span class="section-number-4">3.2.2</span> 最大回撤(max drawdown)</h4>
+</div>
+<div id="outline-container-orgbd26616" class="outline-4">
+<h4 id="orgbd26616"><span class="section-number-4">3.2.3</span> 最大回撤周期</h4>
 <div class="outline-text-4" id="text-3-2-3">
 <p>
 衡量衰落的恢复速度
 </p>
 </div>
 </div>
-<div id="outline-container-org8b3251c" class="outline-4">
-<h4 id="org8b3251c"><span class="section-number-4">3.2.4</span> R 平方值</h4>
+<div id="outline-container-org8034530" class="outline-4">
+<h4 id="org8034530"><span class="section-number-4">3.2.4</span> R 平方值</h4>
 <div class="outline-text-4" id="text-3-2-4">
 <p>
 实际投资回报率与平均复合增长率的吻合程度
@@ -394,27 +416,28 @@ highest high and lowest low over the last period time intervals.
 </div>
 </div>
 
-<div id="outline-container-org33470d5" class="outline-3">
-<h3 id="org33470d5"><span class="section-number-3">3.3</span> 风险回报综合指标</h3>
+<div id="outline-container-orgfb542dc" class="outline-3">
+<h3 id="orgfb542dc"><span class="section-number-3">3.3</span> 风险回报综合指标</h3>
 <div class="outline-text-3" id="text-3-3">
-</div><div id="outline-container-orgbefd806" class="outline-4">
-<h4 id="orgbefd806"><span class="section-number-4">3.3.1</span> 夏普比率(sharpe ratio)</h4>
+</div>
+<div id="outline-container-orgc981e2c" class="outline-4">
+<h4 id="orgc981e2c"><span class="section-number-4">3.3.1</span> 夏普比率(sharpe ratio)</h4>
 <div class="outline-text-4" id="text-3-3-1">
 <p>
 夏普比率流行的劣势：把回报的稳定性当成风险水平的唯一衡量标准
 </p>
 </div>
 </div>
-<div id="outline-container-orge57c6d5" class="outline-4">
-<h4 id="orge57c6d5"><span class="section-number-4">3.3.2</span> MAR 比率(MAR ratio)</h4>
+<div id="outline-container-orgef8568a" class="outline-4">
+<h4 id="orgef8568a"><span class="section-number-4">3.3.2</span> MAR 比率(MAR ratio)</h4>
 <div class="outline-text-4" id="text-3-3-2">
 <p>
 MAR 比率等于年均回报率除以最大的回撤幅度
 </p>
 </div>
 </div>
-<div id="outline-container-org9ec6e73" class="outline-4">
-<h4 id="org9ec6e73"><span class="section-number-4">3.3.3</span> R-multiple</h4>
+<div id="outline-container-orgdb1c87e" class="outline-4">
+<h4 id="orgdb1c87e"><span class="section-number-4">3.3.3</span> R-multiple</h4>
 <div class="outline-text-4" id="text-3-3-3">
 <p>
 R 乘数等于一笔交易的利润除以这笔交易的风险投入
@@ -423,11 +446,12 @@ R 乘数等于一笔交易的利润除以这笔交易的风险投入
 </div>
 </div>
 
-<div id="outline-container-orgf39a658" class="outline-3">
-<h3 id="orgf39a658"><span class="section-number-3">3.4</span> 其他</h3>
+<div id="outline-container-org41884d1" class="outline-3">
+<h3 id="org41884d1"><span class="section-number-3">3.4</span> 其他</h3>
 <div class="outline-text-3" id="text-3-4">
-</div><div id="outline-container-orge44c784" class="outline-4">
-<h4 id="orge44c784"><span class="section-number-4">3.4.1</span> MAE(maximum adverse excursion)/MFE(maximum favorable excursion)</h4>
+</div>
+<div id="outline-container-orga3a8a07" class="outline-4">
+<h4 id="orga3a8a07"><span class="section-number-4">3.4.1</span> MAE(maximum adverse excursion)/MFE(maximum favorable excursion)</h4>
 <div class="outline-text-4" id="text-3-4-1">
 <p>
 最大不利变动幅度和最大有利变动幅度
@@ -440,11 +464,12 @@ R 乘数等于一笔交易的利润除以这笔交易的风险投入
 </div>
 </div>
 
-<div id="outline-container-org1cb0907" class="outline-2">
-<h2 id="org1cb0907"><span class="section-number-2">4</span> 资产管理</h2>
+<div id="outline-container-orga4e79d6" class="outline-2">
+<h2 id="orga4e79d6"><span class="section-number-2">4</span> 资产管理</h2>
 <div class="outline-text-2" id="text-4">
-</div><div id="outline-container-org509a026" class="outline-3">
-<h3 id="org509a026"><span class="section-number-3">4.1</span> ATR(average true range)</h3>
+</div>
+<div id="outline-container-orga996c9b" class="outline-3">
+<h3 id="orga996c9b"><span class="section-number-3">4.1</span> ATR(average true range)</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 The true range indicator is the greatest of the following: current high less the current low,
