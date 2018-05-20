@@ -2,54 +2,52 @@
 #+OPTIONS: H:2 toc:nil num:nil ^:nil
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="resume.css" />
 #+BEGIN_CENTER
-13651824760\\
++8613651824760\\
 chrischen3121@gmail.com\\
-chrischen3121@Github\\
-Shanghai, China\\
+https://github.com/chrischen3121\\
 #+END_CENTER
 * _Skills_
-- Proficient in python ::
-The main language used in the last two years. Mainly used for trading system development
-and data processing related tasks.
+- Proficient in python
+  - Server-side development
+  - Web scraping, data wrangling, backtesting
+- Proficient in C++
+  - Distributed real-time trading system development
+- Knowledge of various trading APIs, such as wind, CTP, Bloomberg, IB
+- Project Management
+- Team Building & Leadership
+- Technology Summary
 
-- Proficient in C++ :: 
-Ability to use the new features of C++11/14 to write elegant and efficient code. 
-Experience with ~standard library~ and ~boost~. Basic knowledge of the linux kernel API.
-
-- Understand the underlying foundation of the operating system, especially linux.
-- Familiar with network programming and concurrent programming.
-- Experience with ~MySQL~, ~redis~, ~mongodb~ and ~ORM~ tool(~SQLAlchemy~).
-- High-frequency trading system architecture experience.
-- Good mathematics foundation and financial background knowledge. 
-Have a habit of continuous self-improvement, see my [[https://chrischen3121.github.io/notes/][notes]]
+  STL, boost, twisted, scrapy, numpy, pandas, scipy, sympy, git, pyqt4, linux, emacs,
+  elisp, cmake, zeromq, gtest/gmock, protobuf, flask, hdf5, MySQL, redis, MongoDB,
+  SQLAlchemy, docker
 
 * _Experience_
-** /2016.5~present/ - Technical Director - Shanghai Baomap Capital Management
+** /2016.5~present/   Technical Director   Baomap Asset Management Co.,Ltd
 Baomap is a startup company, whose main business is investment and financing for high net worth clients. My responsibility is
 - Architecture design and development of the quantitative trading system.
 - Independently developed backend financial data platform and accumulated a ton of experience in data collection and data wrangling. Implemented a large number of crawlers, familiar to deal with various anti-crawling techniques.
 - Implemented the calendar spread arbitrage strategy of the commodity futures. Implemented the backtesting by using python data analysis toolkit. Has a short-term experience on strategy watching in the production environment.
 
-** /2014.7~2016.4/ - General Manager Assistant - ShenZhen Rione Investment CO.,Ltd
-Rione was the leading ETF arbitrage hedge fund in China at the time. As a developer, I implemented the 
-trading module for futures(interact with CTP interface). Later in the management position, I was responsible 
-for general management work like team building, recruitment, annual evaluation, etc. I also led both the 
-development team and testing team of 10+ people to reconstruct the trading system which aimed for large-scale 
-and better performance. The system finally succeeded in going online and keep running for one month until 
+** /2014.7~2016.4/   General Manager Assistant   Rione Investment CO.,Ltd
+Rione was the leading ETF arbitrage hedge fund in China at the time. As a developer, I implemented the
+trading module for futures(interact with CTP interface). Later in the management position, I was responsible
+for general management work like team building, recruitment, annual evaluation, etc. I also led both the
+development team and testing team of 10+ people to reconstruct the trading system which aimed for large-scale
+and better performance. The system finally succeeded in going online and keep running for one month until
 the financial crisis occurred in China.
 
-** /2008.1~2014.6/ - Team Lead - NihonKohden
+** /2008.1~2014.6/   Team Leader   NihonKohden
 NihonKohden is Japan's leading maker of the medical electronic equipment. I worked in the R&D department and
 participated in the whole development process of the cardiovascular information system which used in hospital
-cardiac department. And in one particular year period, I worked as a system engineer, led a team of 2-3 people 
+cardiac department. And in one particular year period, I worked as a system engineer, led a team of 2-3 people
 to do on-site deployment and training. These experience greatly improved my communication skills and helped me
-to have a better understanding of requirements analysis. 
+to have a better understanding of requirements analysis.
 
 * _Projects_
 ** /2016.5~present/ Robo-advisor System
-The system provides asset allocation on the basis of client's risk preferences and desired target return. 
-The system is divided into two subsystems, website, and trading system. I was responsible for architecture 
-design of the trading system, including the data exchange protocol definition and the database design. 
+The system provides asset allocation on the basis of client's risk preferences and desired target return.
+The system is divided into two subsystems, website, and trading system. I was responsible for architecture
+design of the trading system, including the data exchange protocol definition and the database design.
 I also developed strategy and data processing related modules.
 - One of the difficulties is to calculate the adjusted price of the self-compiled index before the trading hours. At first, I tried to use the Bloomberg's action data to calculate the adjusted price. After testing a large amount of historical data, it was found that due to the complexity of dividends of US stocks, the result is always biased. After consulting with Bloomberg's technical support, I used computed factors and passed the historical data verification.
 - In the real-time calculation of the self-compiled index, it was faced with a lack of performance. I made two optimizations to solve the problem: 1) Parallelize the calculation by using multiprocessing 2) Modified the code to be compatible with ~pypy~. But memory leaks were introduced by the optimization. After troubleshooting, I found it was caused by the garbage collection strategies of ~pypy~. Then I fixed it by dereferencing in =__del__= method.
@@ -66,28 +64,28 @@ techniques: python, lxml, selenium, scrapy, pandas, mysql, mongodb
 I was responsible for the architectural design and developed the strategy layer.
 - techniques: c++, python, zeromq, pyqt4, pandas
 - Designed the interface of strategy so that all strategies can be easily embedded into the system. However, this approach is still on source-level integration. There is room for improvement, like plugin approaches.
-- The strategy does not perform well after going on-line. I used python to write a backtest of the strategy, calculate the transaction costs carefully, simulate the real trading as much as possible. Finally, I found the parameter used on-line can't help to reach the expectation. 
+- The strategy does not perform well after going on-line. I used python to write a backtest of the strategy, calculate the transaction costs carefully, simulate the real trading as much as possible. Finally, I found the parameter used on-line can't help to reach the expectation.
 - Implemented a trading client with ~pyqt~
 
 ** /2014.7-2015.10/ High-frequency Quantitative Trading System(Rione)
-The company’s core trading system. It assisted the trading department in creating 50% half-year yield with no daily drawdown at all during the booming market of 2015. The system was proved to load 20 million transactions per day. 
+The company’s core trading system. It assisted the trading department in creating 50% half-year yield with no daily drawdown at all during the booming market of 2015. The system was proved to load 20 million transactions per day.
 - techniques: c++, boost.asio, protobuf, redis
 - Developed the shared common library with message encapsulation, socket reconnection, and heartbeat mechanism.
 - Designed abstraction of the advanced order layer. Implemented basket order, ETF arbitrage order etc. Because the state transfer of advanced order is complicated and requires high performance, I chose to use ~Boost.MetaStateMachine~ to implement.
 - Introduced unit tests to the development process. As a result, 3/4 bugs were reduced during the integration testing phase.
 - Based on the inefficient release process, I have recommended using docker for deployment. However, due to the learning cost of the docker itself, the operating team never adopted it.
 
-** /2011.6-2014.6/ ECG information Management System(NihonKohden)
+** /2011.6-2014.6/ ECG information System(NihonKohden)
 The system serves the hospital cardiac department, it collects data from the various diagnostic devices and generates reports to assist the doctor in diagnosis.
-I implemented multiple interaction modules corresponding to different diagnostic equipment. techniques: C# .Net, c++, Com, socket 
+I implemented multiple interaction modules corresponding to different diagnostic equipment. techniques: C# .Net, c++, Com, socket
 My main contributions to the project are:
 - Detected and fixed a memory leak problem within a protocol module which are used by several products.
 - By observing user habits, I improved the user experience by changing report generating process to asynchronous.
 
-* _Language_
-- English CET-6; Ability to read and write technical documentation
-- Japanese N2
-
 * _Education_
 - /2004-2008/ ~Mechanical Design Manufacturing and Automation~ *Shanghai Institute of Technology*
 - Completed several online courses related to mathematics, finance, and computer science. (mostly on Coursera and Udacity)
+
+* _Language_
+- English CET-6
+- Japanese N2
