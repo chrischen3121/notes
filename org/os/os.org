@@ -9,31 +9,31 @@
 ** Integer
 *** Integer Limits
     $$TMax_w = 2^{w-1}-1\quad TMin_w = - 2^{w-1}\quad UMax_w = 2^w-1\quad UMin_w = 0$$
-*** Binary2Integer
+*** B2U
     $$B2U_w(\overrightarrow{x})\doteq\sum_{i=0}^{w-1}x_i2^i$$
-**** Twos' Complement
-     $$B2T_w(\overrightarrow{x})\doteq-x_{w-1}2^{w-1}+\sum_{i=0}^{w-2}x_i2^i$$
-**** Sign-Magnitude
-     - used in floating number
-     $$B2S_w(\overrightarrow{x})\doteq(-1)^{x_{w-1}}\cdot(\sum_{i=0}^{w-2}x_i2^i)$$
-
-*** Transform between signed and unsigned
-**** $T2U_w(x)$
+*** B2T
+    $$B2T_w(\overrightarrow{x})\doteq-x_{w-1}2^{w-1}+\sum_{i=0}^{w-2}x_i2^i$$
+*** T2U
+    $$T2U_w(x)\doteqB2U_w(T2B_w(x))$$
+    - input: $TMin_w\sim TMax_w$
+    - output: $0\sim UMax_w$
+    $$T2U_w(x) = \begin{cases}
+    x+2^w, & x < 0 \\
+    x, & x \ge 0 \\
+    \end{cases}$$
+    $$T2U_w(x) = x_{w-1}2^w + x$$
+**** Verification
      $$B2U_w(\overrightarrow{x})-B2T_w(\overrightarrow{x})=x_{w-1}(2^{w-1}+2^{w-1})=x_{w-1}2^w$$
      $$B2U_w(\overrightarrow{x})=x_{w-1}2^w + B2T_w(\overrightarrow{x})$$
-     Let $\overrightarrow{x}=T2B_w(x)$ , Then：
+     Let $\overrightarrow{x}=T2B_w(x)$ , Then:
      $$T2U_w(x)=B2U_w(T2B_w(x)) = x_{w-1}2^w + B2T_w(T2B_w(x)) = x_{w-1}2^w + x$$
-     bit $x_{w-1}$ is the sign bit, giving:
-     $$T2U_w(x) = \begin{cases}
-     x+2^w, & x\le 0 \\
-     x, & x>0 \\
-     \end{cases}$$
-**** $U2T_w(x)$
-     $$U2T_w(u)=B2T_w(U2B_w(u))=-u_{w-1}2^w+u$$
-     $$U2T_w(u) = \begin{cases}
-     u, & u<2^{w-1} \\
-     u - 2^w, & u\ge2^{w-1} \\
-     \end{cases}$$
+
+*** $U2T_w(x)$
+    $$U2T_w(u) = \begin{cases}
+    u, & u<2^{w-1} \\
+    u - 2^w, & u\ge2^{w-1} \\
+    \end{cases}$$
+    $$U2T_w(u)=B2T_w(U2B_w(u))=-u_{w-1}2^w+u$$
 
 *** Small size to big size
      1) Change the size(fill 0 or 1 depends on signed/unsigned)
@@ -45,6 +45,8 @@
 
 ** Floating Point
 *** Fractional Binary Numbers
+**** Sign-Magnitude
+     $$B2S_w(\overrightarrow{x})\doteq(-1)^{x_{w-1}}\cdot(\dots)$$
 **** Fractional Decimal
      $$d=\sum_{i=-n}^m10^i\times{d_i}$$
      Consider Fractional decimal $12.34_{10}$
