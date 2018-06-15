@@ -1,0 +1,85 @@
+#+TITLE: C++ Concurrency
+#+KEYWORDS: c++
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ../../org-templates/level-1.org
+* Managing threads
+** RAII(Resource Acquisition Is Initialization)
+   Use RAII to avoid use of /try/catch/ blocks.
+    #+BEGIN_SRC cpp
+      class ThreadGuard {
+      public:
+        explicit ThreadGuard(std::thread &t) : t_(t) {}
+        ~ThreadGuard() {
+          if (t_.joinable()) {
+            t_.join();
+          }
+        }
+        ThreadGuard(const ThreadGuard &) = delete;
+        ThreadGuard &operator=(const ThreadGuard &) = delete;
+
+      private:
+        std::thread &t_;
+      };
+
+      std::thread t(some_func);
+      ThreadGuard g(t);
+    #+END_SRC
+
+** Daemon threads
+    #+BEGIN_SRC cpp
+      std::thread t(do_background_work);
+      t.detach();
+    #+END_SRC
+
+** Passing arguments
+   The arguments are *copied* into thread's internal storage by default. Use /std::ref/ to bind a reference argument.
+   #+BEGIN_SRC cpp
+     std::thread t(update_ref_data, std::ref(data)); // use std::move for move scenario
+   #+END_SRC
+
+** Transferring ownership of a thread
+   Instances of std::thread are *movable*, but aren't *copyable*
+   #+BEGIN_SRC cpp
+     class ScopedThread {
+     public:
+       explicit ScopedThread(std::thread t) : t_(std::move(t)) {
+         if (!t_.joinable())
+           throw std::logic_error("No thread");
+       }
+       ~ScopedThread() { t_.join(); }
+       ScopedThread(const ScopedThread &) = delete;
+       ScopedThread &operator=(const ScopedThread &) = delete;
+
+     private:
+       std::thread t_;
+     };
+
+     ScopedThread t(std::thread(some_func));
+   #+END_SRC
+
+** hardware_concurrency
+   #+BEGIN_SRC cpp
+     std::cout << std::thread::hardware_concurrency() << "\n";
+   #+END_SRC
+
+* Useful tools
+  - std::ref
+  - std::distance(iter1, iter2)
+  - std::advance(iter, distance)
+** std::mem_fn
+   useful for std algorithms
+   #+BEGIN_SRC cpp
+     class SomeClass {
+       void some_func() {}
+     };
+
+     auto some_func = std::mem_fn(&SomeClass::some_func);
+     SomeClass s;
+     some_func(s);
+     std::some_algo(iter1, iter2, some_func);
+   #+END_SRC
