@@ -382,7 +382,23 @@
     The order of columns in a multicolumn B-Tree index means that the index is sorted first by the
     leftmost column, then by the next column, and so on.
 
+** Clustered Indexes
+   Clustered index is an approach to data storage.
+   - InnoDB's clustered indexes actually store a B-Tree index and the rows together in the same structure.
+
+** Covering Indexes
+   An index that contains (or “covers”) all the data needed to satisfy a query is called a *covering index*.
+   - Covering indexes are especially helpful for InnoDB tables, because of InnoDB’s clustered indexes
+   - When you issue a query that is an index-covered query, you’ll see “Using index” in the /Extra/ column in /EXPLAIN/
+*** Benefits
+    - reduce random I/O
+
+** Using Index for Sorts
+   Ordering the results by the index works only when
+   - the index’s order is exactly the same as the ORDER BY clause
+   - and all columns are sorted in the same direction
+
 * Query Optimization
-*** Isolating the Column
-    Indexed column is alone on one side of the comparison operator.
-    Wrong Examples: ~WHERE id+2=5~, ~WHERE SUM(id)=10~
+** Isolating the Column
+   Indexed column is alone on one side of the comparison operator.
+   Wrong Examples: ~WHERE id+2=5~, ~WHERE SUM(id)=10~
