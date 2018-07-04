@@ -169,6 +169,30 @@
         std::condition_variable data_cond_;
       };
     #+END_SRC
+** future<>
+   - std::future
+   - std::shared_future
+** async
+   #+BEGIN_SRC cpp
+     std::future<data> result = std::async(find_the_answer);
+     do_other_things();
+     std::cout << result.get() << "\n";
+   #+END_SRC
+   options: std::launch::async, std::launch::deferred
+** packaged_task<>
+   std::packaged_task<> ties a future to a function or callable object.
+   - definition for a specialization of std::packaged_task<>
+   #+BEGIN_SRC cpp
+     template <> class packaged_task<std::string(std::vector<char> *, int)> {
+     public:
+       template <typename Callable> explicit packaged_task(Callable &&f);
+       std::future<std::string> get_future();
+       void operator()(std::vector<char> *, int);
+     };
+   #+END_SRC
+   - You can wrap a task in a std::packaged_task and retrieve the future before passing the std::packaged_task object elsewhere to be invoked in due course.
+** promises
+
 * Useful tools
   - std::ref
   - std::distance(iter1, iter2)
