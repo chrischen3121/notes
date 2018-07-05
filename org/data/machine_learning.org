@@ -13,7 +13,7 @@
   with experience *E* -- Tom Mitchell(1998)
 
 * Roadmap
-    #+ATTR_HTML: align="center"
+   #+ATTR_HTML: align="center"
    file:../resources/ml/roadmap.png
 
 * Supervised
@@ -24,14 +24,19 @@
    predict continuous valued output
 *** Linear Regression
 **** Hypothesis
-     $$h_\theta(x)=\theta_0+\theta_1 x$$
+     $$h_\theta(x_0, x_1, \dots)=\theta_0 x_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta_n x_n (x_0 = 1)$$
+***** vectorized
+      $$h_\theta(x)=\theta^T \cdot x$$
+      - $\theta$ and $x$ are $n\times 1$ matrices or $n$ vectors
 
 **** Cost Function
      Called *Squared error function* or *Mean squared error*
-     $$J(\theta_0, \theta_1)=\frac{1}{2m}\sum_{i=1}^m(\hat{y_i}-y_i)^2=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x_i)-y_i)^2$$
+     $$J(\theta_0, \theta_1)=\frac{1}{2m}\sum_{i=1}^m(\hat{y^i}-y^i)^2=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x^i)-y^i)^2$$
      - Goal: minimize $J(\theta_0, \theta_1)$
      - $\frac{1}{2}$ is a convenience for the computation of the gradient descent,
      as the derivative term of the square function will cancel out the $\frac{1}{2}$ term.
+***** vectorized
+      $$J(\theta)=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x^i)-y^i)^2=\frac{1}{2m}\sum_{i=1}^m (\theta^T x^i-y^i)^2$$
 
 *** Gradient Descent
     To find the minimum value of the cost function.
@@ -43,8 +48,14 @@
      - $\alpha$ too smaller: gradient descent can be slow
      - $\alpha$ too large: gradient descent can overshoot the minimum
      - Solve equation:
-       $$\theta_0 = \theta_0-\alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x_i)-y_i)$$
-       $$\theta_1 = \theta_1-\alpha\frac{1}{m}\sum_{i=1}^m((h_\theta(x_i)-y_i)x_i)$$
+       $$\theta_0 = \theta_0-\alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^i)-y^i)$$
+       $$\theta_1 = \theta_1-\alpha\frac{1}{m}\sum_{i=1}^m((h_\theta(x^i)-y^i)x^i)$$
+***** vectorized
+      repeat until convergence
+      $$\begin{align*}
+      \theta_j & = \theta_j-\alpha\frac{d}{d\theta_j}J(\theta) \\
+      & = \theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^i)-y^i)x_j^i
+      \end{align*}$$
 
 **** Batch Gradient Descent
      Each step of gradient descent uses all the training examples.
