@@ -170,8 +170,16 @@
       };
     #+END_SRC
 ** future<>
-   - std::future
-   - std::shared_future
+   - std::future(wrapped by unique_ptr)
+*** shared_future
+    copyable, wrapped by shared_ptr
+    - operations on copied shared_future are thread-safe
+    - std::future -> std::shared_future
+      #+BEGIN_SRC cpp
+        auto sf = future.share();
+        assert(!future.valid()) // future object has been moved
+      #+END_SRC
+
 ** async
    #+BEGIN_SRC cpp
      std::future<data> result = std::async(find_the_answer);
@@ -179,6 +187,7 @@
      std::cout << result.get() << "\n";
    #+END_SRC
    options: std::launch::async, std::launch::deferred
+
 ** packaged_task<>
    std::packaged_task<> ties a future to a function or callable object.
    - definition for a specialization of std::packaged_task<>
@@ -191,7 +200,44 @@
      };
    #+END_SRC
    - You can wrap a task in a std::packaged_task and retrieve the future before passing the std::packaged_task object elsewhere to be invoked in due course.
-** promises
+
+** promise<>
+   std::promise<T> provides a means of setting a value (of type T), which can later be read through an associated std::future<T> object.
+   The waiting thread could block on the future, while the thread providing the data could use the promise half of the pairing to set
+   the associated value and make the future ready.
+   #+BEGIN_SRC cpp
+     void do_work(std::promise<int> promise) {
+       prepare_data();
+       promise.set_value(42);
+     }
+
+     int main() {
+       std::promise<int> promise;
+       std::future<int> future = promise.get_future();
+       std::thread worker(do_work, std::move(promise));
+       future.wait();
+       std::cout << future.get() << "\n";
+       worker.join();
+       return 0;
+     }
+
+   #+END_SRC
+*** set_exception()
+    #+BEGIN_SRC cpp
+      try {
+        some_promise.set_value(calculate_value());
+      } catch (...) {
+        some_promise.set_exception(std::current_exception());
+        // alternative:
+        some_promise.set_exception(std::copy_exception(std::logic_error("foo")));
+      }
+    #+END_SRC
+    - std::current_exception()
+    - prefer the alternative way: Not only does it simplify the code, but it also provides the compiler with greater opportunity to optimize the code.
+
+** exception for the future
+   A call to get() rethrows that stored exception
+
 
 * Useful tools
   - std::ref
@@ -209,3 +255,37 @@
      some_func(s);
      std::some_algo(iter1, iter2, some_func);
    #+END_SRC
+
+** Time Facilities
+*** Clocks
+**** now
+     #+BEGIN_SRC cpp
+       auto time_point = std::chrono::some_clock::now();
+     #+END_SRC
+
+**** tick period
+     - std::ratio<1, 25> ticks every 1/25 seconds
+     - std::ratio<5, 2> ticks every 2.5 seconds
+
+     There’s *no guarantee* that the observed tick period in a given run of the program matches the specified period for that clock.
+
+**** steady_clock
+     If a clock ticks at a uniform rate and can’t be adjusted, the clock is said to be a steady clock.
+     Steady clocks are important for *timeout calculations*.(system_clock can be changed)
+
+**** high
+     /high_resolution_clock/ provides the smallest possible tick period of all the library-supplied clocks.
+
+*** Durations
+    std::duration<representation, std::ratio<>>
+    - example millisecond duration: std::chrono::duration<double, std::ratio<1,1000>>
+    - std::chrono::duration_cast<>: floor(high_resolution)
+
+    The time for a duration-based wait is measured using a steady clock internal to the library, even if the system clock was adjusted during the wait
+
+*** Time points
+    std::chrono::time_point<clock, duration>
+    - time_since_epoch() returns a duration value specifying the length of time since the clock epoch to that particular time point
+
+*** wait_for & wait_until
+    - Clock adjustments are taken into account by the /wait_until/
