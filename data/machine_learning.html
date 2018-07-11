@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-07-05 Thu 16:33 -->
+<!-- 2018-07-11 Wed 13:01 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Machine Learning</title>
@@ -266,7 +266,9 @@ for the JavaScript code in this tag.
 <li><a href="#org67259db">3.1. Regression problem</a>
 <ul>
 <li><a href="#orgce68e35">3.1.1. Linear Regression</a></li>
-<li><a href="#org755ccf2">3.1.2. Gradient Descent</a></li>
+<li><a href="#org44ee93c">3.1.2. Polynomial Regression</a></li>
+<li><a href="#org755ccf2">3.1.3. Gradient Descent</a></li>
+<li><a href="#org4465dcc">3.1.4. Normal Equation</a></li>
 </ul>
 </li>
 <li><a href="#orgeb076ee">3.2. Classification problem</a></li>
@@ -341,8 +343,8 @@ predict continuous valued output
 </p>
 </div>
 <ul class="org-ul">
-<li><a id="org1ea28ab"></a>vectorized<br />
-<div class="outline-text-6" id="text-org1ea28ab">
+<li><a id="org622cf9b"></a>vectorized<br />
+<div class="outline-text-6" id="text-org622cf9b">
 <p>
 \[h_\theta(x)=\theta^T \cdot x\]
 </p>
@@ -370,8 +372,8 @@ as the derivative term of the square function will cancel out the \(\frac{1}{2}\
 </p>
 </div>
 <ul class="org-ul">
-<li><a id="org3e2cf5e"></a>vectorized<br />
-<div class="outline-text-6" id="text-org3e2cf5e">
+<li><a id="org9f92820"></a>vectorized<br />
+<div class="outline-text-6" id="text-org9f92820">
 <p>
 \[J(\theta)=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x^i)-y^i)^2=\frac{1}{2m}\sum_{i=1}^m (\theta^T x^i-y^i)^2\]
 </p>
@@ -381,9 +383,20 @@ as the derivative term of the square function will cancel out the \(\frac{1}{2}\
 </div>
 </div>
 
-<div id="outline-container-org755ccf2" class="outline-4">
-<h4 id="org755ccf2"><span class="section-number-4">3.1.2</span> Gradient Descent</h4>
+<div id="outline-container-org44ee93c" class="outline-4">
+<h4 id="org44ee93c"><span class="section-number-4">3.1.2</span> Polynomial Regression</h4>
 <div class="outline-text-4" id="text-3-1-2">
+<ul class="org-ul">
+<li>Let \(x_1=x, x_2=x^2\)
+\[h_\theta(x)=\theta_0+\theta_1 x_1+\theta_2 x_2\]</li>
+<li>need to use feature scaling</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org755ccf2" class="outline-4">
+<h4 id="org755ccf2"><span class="section-number-4">3.1.3</span> Gradient Descent</h4>
+<div class="outline-text-4" id="text-3-1-3">
 <p>
 To find the minimum value of the cost function.
 </p>
@@ -393,8 +406,8 @@ To find the minimum value of the cost function.
 </ol>
 </div>
 <div id="outline-container-org2b037ac" class="outline-5">
-<h5 id="org2b037ac"><span class="section-number-5">3.1.2.1</span> idea</h5>
-<div class="outline-text-5" id="text-3-1-2-1">
+<h5 id="org2b037ac"><span class="section-number-5">3.1.3.1</span> idea</h5>
+<div class="outline-text-5" id="text-3-1-3-1">
 <p>
 repeat until convergence
 \[\theta_i=\theta_i-\alpha\frac{d}{d\theta_i}J(\theta_0, \theta_1, \dots)\]
@@ -404,12 +417,12 @@ repeat until convergence
 <li>\(\alpha\) too large: gradient descent can overshoot the minimum</li>
 <li>Solve equation:
 \[\theta_0 = \theta_0-\alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^i)-y^i)\]
-\[\theta_1 = \theta_1-\alpha\frac{1}{m}\sum_{i=1}^m((h_\theta(x^i)-y^i)x^i_1)\]</li>
+\[\theta_1 = \theta_1-\alpha\frac{1}{m}\sum_{i=1}^m((h_\theta(x^i)-y^i)x^i)\]</li>
 </ul>
 </div>
 <ul class="org-ul">
-<li><a id="org1452343"></a>vectorized<br />
-<div class="outline-text-6" id="text-org1452343">
+<li><a id="org468d532"></a>vectorized<br />
+<div class="outline-text-6" id="text-org468d532">
 <p>
 repeat until convergence
 \[\begin{align*}
@@ -423,8 +436,8 @@ repeat until convergence
 </div>
 
 <div id="outline-container-orgecb6c8d" class="outline-5">
-<h5 id="orgecb6c8d"><span class="section-number-5">3.1.2.2</span> Batch Gradient Descent</h5>
-<div class="outline-text-5" id="text-3-1-2-2">
+<h5 id="orgecb6c8d"><span class="section-number-5">3.1.3.2</span> Batch Gradient Descent</h5>
+<div class="outline-text-5" id="text-3-1-3-2">
 <p>
 Each step of gradient descent uses all the training examples.
 </p>
@@ -432,8 +445,8 @@ Each step of gradient descent uses all the training examples.
 </div>
 
 <div id="outline-container-org9026742" class="outline-5">
-<h5 id="org9026742"><span class="section-number-5">3.1.2.3</span> Other Method to find min value of the cost function</h5>
-<div class="outline-text-5" id="text-3-1-2-3">
+<h5 id="org9026742"><span class="section-number-5">3.1.3.3</span> Other Method to find min value of the cost function</h5>
+<div class="outline-text-5" id="text-3-1-3-3">
 <p>
 Normal Equations Method
 </p>
@@ -442,6 +455,30 @@ Normal Equations Method
 </ul>
 </div>
 </div>
+<div id="outline-container-org999ea0d" class="outline-5">
+<h5 id="org999ea0d"><span class="section-number-5">3.1.3.4</span> Feature Scaling</h5>
+<div class="outline-text-5" id="text-3-1-3-4">
+<ul class="org-ul">
+<li>mean normalization
+\[\frac{x_i - \mu}{range}\]
+range could be replaced with std</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgde1be06" class="outline-5">
+<h5 id="orgde1be06"><span class="section-number-5">3.1.3.5</span> Learning Rate</h5>
+<div class="outline-text-5" id="text-3-1-3-5">
+<ul class="org-ul">
+<li><b>Debugging gradient descent</b>: Plot cost function with number of iterations on the x-axis</li>
+<li><b>Automatic convergence test</b>: Declare convergence if \(J(θ)\) decreases by less than \(E\)(some small value, e.g. \(10^{-3}\)) in one iteration</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4465dcc" class="outline-4">
+<h4 id="org4465dcc"><span class="section-number-4">3.1.4</span> Normal Equation</h4>
 </div>
 </div>
 <div id="outline-container-orgeb076ee" class="outline-3">
