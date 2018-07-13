@@ -1,6 +1,6 @@
 #+TITLE: Machine Learning
 #+KEYWORDS: machine learning
-#+OPTIONS: H:4 toc:3 num:4 ^:nil
+#+OPTIONS: H:4 toc:3 num:3 ^:nil
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
@@ -49,7 +49,7 @@
     2. Keep changing parameters to reduce $J(\theta_0, \theta_1, \dots)$
 **** idea
      repeat until convergence
-     $$\theta_i=\theta_i-\alpha\frac{d}{d\theta_i}J(\theta_0, \theta_1, \dots)$$
+     $$\theta_j=\theta_j-\alpha\frac{d}{d\theta_j}J(\theta_0, \theta_1, \dots)$$
      - $\alpha$ too smaller: gradient descent can be slow
      - $\alpha$ too large: gradient descent can overshoot the minimum
      - Solve equation:
@@ -59,7 +59,7 @@
       repeat until convergence
       $$\begin{align*}
       \theta_j & = \theta_j-\alpha\frac{d}{d\theta_j}J(\theta) \\
-      & = \theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^i)-y^i)x_j^i
+      & = \theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(\theta^T x^i - y^i)x_j^i
       \end{align*}$$
 
 **** Batch Gradient Descent
@@ -78,6 +78,21 @@
      - *Automatic convergence test*: Declare convergence if $J(θ)$ decreases by less than $E$(some small value, e.g. $10^{-3}$) in one iteration
 
 *** Normal Equation
+    Minimize J by taking its derivatives with respect to $\theta_j$, and set them to zero.
+    $$\theta=(X^T X)^{-1}X^T y$$
+**** vs Gradient Descent
+      | Gradient Descent           | Normal Equation                      |
+      |----------------------------+--------------------------------------|
+      | Need to choose $\alpha$    | No need to choose $\alpha$           |
+      | Needs many iterations      | No need to iterate                   |
+      | $O(k n^2)$                 | $O(n^3)$ to calculate $(X^T X)^{-1}$ |
+      | Works well when n is large | Slow if $n$ is large. $n > 10000$    |
+
+**** $(X^T X)^{-1}$ is noninvertible
+     - Redundant features (they are linearly dependent)
+     - Too many features $m\le n$, In this case, delete some features or use regularization
+
+
 ** Classification problem
    predict discrete valued output
 
