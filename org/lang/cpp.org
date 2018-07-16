@@ -206,7 +206,7 @@
      class D : public B {};
      class D : public C {};
    #+END_SRC
-   - D 中只有一个 A 的基类部分
+   - D 中只有一个 A 的基类部分, 通过在 object 的 base class table 存放 base class 指针实现
    - 在派生类的构造中，虚基类总是先于非虚基类构造
 ** 嵌套类和局部类
    - 嵌套类：定义在某类内部，与外层类为相互独立的类型
@@ -809,3 +809,25 @@
      #endif // __cplusplus
      int strcmp(const char *, const char *);
    #+END_SRC
+* 类对象
+** 内存布局
+*** 一般继承
+    | vptr        | 虚函数表 |
+    | data member | 数据成员 |
+
+*** 多重继承
+    | base1 vptr               |
+    | base1 data member        |
+    | base2 vptr               |
+    | base2 data member        |
+    | derived data member      |
+
+*** 多重继承(虚继承)
+    | base vptr                           |
+    | derived_level1_a vptr               |
+    | derived_level1_a vbptr(虚继承 base) |
+    | derived_level1_a data member        |
+    | derived_level1_b vptr               |
+    | derived_level1_b vbptr(虚继承 base) |
+    | derived_level1_b data member        |
+    | derived_level2 data member          |
