@@ -5,6 +5,7 @@
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
 #+SETUPFILE: ../../org-templates/level-1.org
+#+STARTUP: inlineimages
 * Data Structures and Algorithms
 ** Unpack Arbitrary items
    #+BEGIN_SRC python
@@ -66,4 +67,52 @@
      d2 = zip(d.values(), d.keys())
      max(d2)
      sorted(d2)
+   #+END_SRC
+* Interface
+** Properties
+   #+BEGIN_SRC python
+     class Prop:
+         def __init__(self, x):
+             self.__x = x
+
+         @property
+         def x(self):
+             return self.__x
+
+         @x.setter
+         def x(self, value):
+             self.__x = value
+   #+END_SRC
+
+** Sequences
+#+BEGIN_SRC plantuml :file ../resources/python/SeqInterface.png
+  interface Container {
+  {method} __contains__
+  }
+
+  interface Iterable {
+  {method} __iter__
+  }
+
+  interface Sized {
+  {method} __len__
+  }
+
+  interface Sequence {
+  {method} __getitem__
+  {method} __reversed__
+  {method} index
+  {method} count
+  }
+  Container <|-- Sequence
+  Iterable <|-- Sequence
+  Sized <|-- Sequence
+#+END_SRC
+
+#+RESULTS:
+[[file:../resources/python/SeqInterface.png]]
+** Monkey Patching
+   Changing a class or module at runtime, without touching the source code.
+   #+BEGIN_SRC python
+   some_obj.__getitem__ = some_get_function(some_class, position)
    #+END_SRC
