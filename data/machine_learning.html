@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-08-02 Thu 13:03 -->
+<!-- 2018-08-03 Fri 13:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Machine Learning</title>
@@ -339,16 +339,16 @@ predict continuous valued output
 <h4 id="orgeaa1cbb"><span class="section-number-4">3.1.1</span> Linear Regression</h4>
 <div class="outline-text-4" id="text-3-1-1">
 </div>
-<div id="outline-container-orgc867a88" class="outline-5">
-<h5 id="orgc867a88">Hypothesis</h5>
-<div class="outline-text-5" id="text-orgc867a88">
+<div id="outline-container-org977090b" class="outline-5">
+<h5 id="org977090b">Hypothesis</h5>
+<div class="outline-text-5" id="text-org977090b">
 <p>
 \[h_\theta(x_0, x_1, \dots)=\theta_0 x_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta_n x_n (x_0 = 1)\]
 </p>
 </div>
 <ul class="org-ul">
-<li><a id="orgc4ad24e"></a>vectorized<br />
-<div class="outline-text-6" id="text-orgc4ad24e">
+<li><a id="orgf059010"></a>vectorized<br />
+<div class="outline-text-6" id="text-orgf059010">
 <p>
 \[h_\theta(x)=\theta^T \cdot x\]
 </p>
@@ -360,9 +360,9 @@ predict continuous valued output
 </ul>
 </div>
 
-<div id="outline-container-org0e00ed1" class="outline-5">
-<h5 id="org0e00ed1">Cost Function</h5>
-<div class="outline-text-5" id="text-org0e00ed1">
+<div id="outline-container-org14c8255" class="outline-5">
+<h5 id="org14c8255">Cost Function</h5>
+<div class="outline-text-5" id="text-org14c8255">
 <p>
 Called <b>Squared error function</b> or <b>Mean squared error</b>
 \[J(\theta_0, \theta_1)=\frac{1}{2m}\sum_{i=1}^m(\hat{y^i}-y^i)^2=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x^i)-y^i)^2\]
@@ -376,10 +376,10 @@ as the derivative term of the square function will cancel out the \(\frac{1}{2}\
 </p>
 </div>
 <ul class="org-ul">
-<li><a id="org6d5c5f2"></a>vectorized<br />
-<div class="outline-text-6" id="text-org6d5c5f2">
+<li><a id="org492a0df"></a>vectorized<br />
+<div class="outline-text-6" id="text-org492a0df">
 <p>
-\[J(\theta)=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x^i)-y^i)^2=\frac{1}{2m}\sum_{i=1}^m (\theta^T x^i-y^i)^2\]
+\[J(\theta)=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x^i)-y^i)^2=\frac{1}{2m}\sum_{i=1}^m (\theta^T x^i-y^i)^2=\frac{1}{2m}(\theta^T x-y)^2\]
 </p>
 </div>
 </li>
@@ -425,8 +425,8 @@ repeat until convergence
 </ul>
 </div>
 <ul class="org-ul">
-<li><a id="org8773f82"></a>vectorized<br />
-<div class="outline-text-6" id="text-org8773f82">
+<li><a id="org0775fbc"></a>vectorized<br />
+<div class="outline-text-6" id="text-org0775fbc">
 <p>
 repeat until convergence
 \[\begin{align*}
@@ -554,6 +554,10 @@ predict discrete valued output
 <div id="outline-container-org9abb7c3" class="outline-4">
 <h4 id="org9abb7c3"><span class="section-number-4">3.2.1</span> Logistic Regression</h4>
 <div class="outline-text-4" id="text-3-2-1">
+</div>
+<div id="outline-container-org794489f" class="outline-5">
+<h5 id="org794489f">Hypothesis</h5>
+<div class="outline-text-5" id="text-org794489f">
 <ul class="org-ul">
 <li>Logistic(Sigmoid) function</li>
 </ul>
@@ -562,17 +566,39 @@ predict discrete valued output
 where
 \[g(z)=\frac{1}{1+e^{-z}}\]
 </p>
+
+<div class="figure">
+<p><img src="../resources/ml/LogisticFunc.png" alt="LogisticFunc.png" />
+</p>
+</div>
+
 <p>
-<img src="../resources/ml/LogisticFunc.png" alt="LogisticFunc.png" />
 combine together:
 \[h_\theta(x)=\frac{1}{1+e^{-\theta^T x}}\]
+</p>
+
+<ul class="org-ul">
+<li>\(y=1\) if \(g(z)\ge 0.5\) -&gt; \(z\ge 0\)</li>
+<li>\(y=0\) if \(g(z) < 0.5\) -&gt; \(z < 0\)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga299e63" class="outline-5">
+<h5 id="orga299e63">Cost Function</h5>
+<div class="outline-text-5" id="text-orga299e63">
+<p>
+\[Cost(h_\theta(x), y)=
+\begin{cases}
+-\log(h_\theta(x)),  & \mbox{if }y=1 \\
+-\log(1-h_\theta(x)), & \mbox{if }y=0
+\end{cases}\]
 </p>
 </div>
 </div>
 </div>
 </div>
-
-
+</div>
 
 <div id="outline-container-orgdf6640e" class="outline-2">
 <h2 id="orgdf6640e"><span class="section-number-2">4</span> Unsupervised</h2>
