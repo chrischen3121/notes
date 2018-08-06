@@ -69,6 +69,41 @@
      max(d2)
      sorted(d2)
    #+END_SRC
+* Network&Web
+** RESTful API Query
+   #+BEGIN_SRC python
+     from urllib import request, parse
+     url = 'http://www.123.com/get'
+     params = {
+         'name1' : 'value1',
+         'name2' : 'value2'
+     }
+     query_string = parse.urlencode(params)
+
+     # headers
+     headers = {
+         'User-agent' : 'none/ofyourbusiness',
+         'Spam' : 'Eggs'
+     }
+
+     u = request.urlopen(url+'?' + query_string.encode('ascii'), headers=headers)
+     resp = u.read() # resp.text(unicode),  resp.content(raw binary), resp.json
+   #+END_SRC
+   - useful resp data
+     - ~resp.status_code~
+     - ~resp.headers['last-modified']~
+     - ~resp.headers['content-type']~
+     - ~resp.headers['content-length']~
+
+   - urlopen useful args
+     - headers
+     - cookies
+     - files
+     - auth
+
+*** Testing
+    - use [[http://httpbin.org/][httpbin]]
+
 * Interface
 ** Properties
    #+BEGIN_SRC python
@@ -117,3 +152,112 @@
    #+BEGIN_SRC python
    some_obj.__getitem__ = some_get_function(some_class, position)
    #+END_SRC
+* asyncio
+** coroutine
+   #+BEGIN_SRC python
+     def simple_coroutine():
+         print('-> coroutine started')
+         x = yield # received by send(x)
+         print('-> coroutine received:', x)
+
+     coro = simple_coroutine() # GEN_CREATED
+     next(coro) # equivalent to coro.send(None). GEN_CREATED->GEN_RUNNING->GEN_SUSPENDED
+     #-> coroutine started
+     coro.send(42) # GEN_SUSPENDED->GEN_RUNNING->GEN_CLOSED
+     #-> coroutine received: 42
+   #+END_SRC
+   - next(coro) is often describe as "priming" the coroutine(advancing it to the first yield)
+
+*** states
+    use ~inspect.getgeneratorstate()~ to get state
+    - GEN_CREATED: Waiting to start execution
+    - GEN_RUNNING: Currently being executed by the interpreter
+    - GEN_SUSPENDED: Currently suspended at a yield expression
+    - GEN_CLOSED
+
+*** generator methods
+    - send(value): the caller can post data that then becomes the value of the yield expression inside the generator.
+    - throw(): allow the caller to throw an exception to be handled inside the generator.
+    - close()
+
+*** auto priming
+    #+BEGIN_SRC python
+      from functools import wraps
+      def coroutine(func):
+          """Decorator: primes `func` by advancing to first `yield`"""
+          @wraps(func)
+          def primer(*args,**kwargs):
+              gen = func(*args,**kwargs)
+              next(gen)
+              return gen
+          return primer
+
+      @coroutine
+      def simple_coroutine():
+          x = yield
+
+      coro = simple_coroutine()
+      #-> GEN_SUSPENDED
+    #+END_SRC
+   - ~yield from~ automatically primes the coroutine called by it, making it incompatible with the coroutine decorator above.
+   - ~asyncio.coroutine~ is designed to work with yield from so it does not prime the coroutine.
+
+*** Termination & Exception
+**** from generator
+     An exception within a coroutine propagates to the caller of the next or send that triggered it.
+**** to generator
+     - ~throw~: Causes the yield expression where the generator was paused to raise the exception given.
+     - ~close~: Causes the yield expression where the generator was paused to raise a Generator Exit exception.
+**** cleanup code
+     wrap the cleanup code in ~try/finally~ block
+
+*** return value
+    #+BEGIN_SRC python
+      Result = namedtuple('Result', 'count average')
+      def averager():
+          total = 0.0
+          count = 0
+          average = None
+          while True:
+              term = yield # yield None
+              if term is None:
+                  break # use a sentinel to terminate the coroutine normally
+              total += term
+              count += 1
+              average = total/count
+          return Result(count, average)
+
+      coro_avg = averager()
+      coro_avg.send(10)
+      try:
+          coro_avg.send(None)
+      except StopIteration as exc:
+          result = exc.value # Result(count=3, average=15.5)
+    #+END_SRC
+    - in order to return a value, a coroutine must terminate normally
+
+*** *yield from*
+    The main feature of *yield from* is to open a bidirectional channel from the outermost caller to the innermost subgenerator, so that values
+    can be sent and yielded back and forth directly from them, and exceptions can be thrown all the way in without adding a lot of exception
+    handling boilerplate code in the intermediate coroutines.
+
+    - similar constructs in other languages are called *await*
+    #+BEGIN_SRC python
+      def gen():
+          yield from 'abc'
+          # shortcut for forloop
+          # for x in 'abc':
+          #     yield x
+    #+END_SRC
+**** terms
+     - delegating generator: The generator function that contains the *yield from <iterable>* expression
+     - subgenerator
+     - caller
+
+     #+CAPTION: Coroutine
+     #+ATTR_HTML: align="center"
+     file:../resources/python/coroutine.png
+
+
+**** ipython-yf
+     Enables evaluating yield from directly in the *iPython* console.
