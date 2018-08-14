@@ -877,6 +877,9 @@
        engine = create_engine('sqlite:///:memory:')
        Session = sessionmaker(bind=engine) # generate factory function
        session = Session() # establish the connection
+       # or
+       with engine.connect() as conn:
+           session = Session(bind=conn)
      #+END_SRC
 
 *** SQL
