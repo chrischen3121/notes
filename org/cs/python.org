@@ -249,6 +249,7 @@
           # for x in 'abc':
           #     yield x
     #+END_SRC
+
 **** terms
      - delegating generator: The generator function that contains the *yield from <iterable>* expression
      - subgenerator
@@ -258,6 +259,41 @@
      #+ATTR_HTML: align="center"
      file:../resources/python/coroutine.png
 
+**** meaning of *yield from*
+     - Any values that the subgenerator yields are passed directly to the caller of the delegating generator
+     - Any values sent to the delegating generator using *send()* are passed directly to the subgenerator.
+     If the sent value is *None*, the subgenerator's *__next__()* method is called. If the sent value is
+     not *None*, the subgenerator's *send()* method is called. If the call raises *StopIteration*, the delegating
+     generator is resumed. Any other exception is propagated to the delegating generator.
+     - return expr in a generator (or subgenerator) causes *StopIteration(expr)* to be raised upon exit from
+     the generator.
+     - The value of the *yield from* expression is the first argument to the *StopIteration* exception raised by
+     the subgenerator when it terminates.
+
+**** pseudocode
+     #+BEGIN_SRC python
+       _i = iter(EXPR)
+       try:
+           _y = next(_i)
+       except StopIteration as _e:
+           _r = _e.value # the RESULT in the simplest case
+       else: # channel between the caller and the subgenerator
+           while 1:
+               _s = yield _y
+               try:
+                   _y = _i.send(_s)
+               except StopIteration as _e:
+                   _r = _e.value
+                   break
+       RESULT = _r
+     #+END_SRC
+     - _i(iterator): The subgenerator
+     - _y(yielded): A value yielded from the subgenerator
+     - _r(result): The eventual result
+     - _s(sent): A value sent by the caller to the delegating generator, which is forwarded to the subgenerator
+     - _e(exception): An exception
 
 **** ipython-yf
      Enables evaluating yield from directly in the *iPython* console.
+*** example
+** asyncio
