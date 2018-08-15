@@ -133,7 +133,66 @@
      by_name = sorted(users, key=attrgetter('last_name', 'first_name'))
    #+END_SRC
 
+** groupby
+   Since =groupby()= only examines consecutive items, should sort the groupby key first.
+   #+BEGIN_SRC python
+     rows.sort(key=itemgetter('date'))
+     for date, items in groupby(rows, key=itemgetter('date')):
+         pass
+     # alternative if memory is no concern, and faster than sort+groupby
+     rows_by_date = defaultdict(list)
+     for row in rows:
+         rows_by_date[row['date']].append(row)
+   #+END_SRC
+** compress
+   Takes an iterable and an accompanying Boolean selector sequence as input.
+   =list(compress(data, mask))=
 
+** namedtuple&namedlist
+   optional or missing fields
+   #+BEGIN_SRC python
+     Stock = namedtuple('Stock', ['name', 'shares', 'price', 'date', 'time'])
+     stock_prototype = Stock('', 0, 0.0, None, None)
+     def dict_to_stock(s):
+         return stock_prototype._replace(**s)
+   #+END_SRC
+
+** sum, min,...
+   #+BEGIN_SRC python
+     s = sum((x * x for x in nums))
+     s = sum(x * x for x in nums) # same as above
+
+     # Original: Returns 20
+     min_shares = min(s['shares'] for s in portfolio)
+     # Alternative: Returns {'name': 'AOL', 'shares': 20}
+     min_shares = min(portfolio, key=lambda s: s['shares'])
+   #+END_SRC
+
+** ChainMap
+   A ChainMap takes multiple mappings and makes them logically appear as one. If there are duplicate keys,
+   the values from the first mapping get used.
+   #+BEGIN_SRC python
+     from collections import ChainMap
+     c = ChainMap(a,b)
+     # alternative
+     c = b
+     c.update(a)
+   #+END_SRC
+   - but ChainMap keep the reference of a&b
+
+
+*** store scoped values
+   A ChainMap is particularly useful when working with scoped values such as variables in
+   a programming language (i.e., globals, locals, etc.)
+   #+BEGIN_SRC python
+     values = ChainMap()
+     values['x'] = 1
+     values = values.new_child()
+     values['x'] = 2
+     values['x'] #=> 2
+     values = values.parents
+     values['x'] #=> 1
+   #+END_SRC
 * Network&Web
 ** RESTful API Query
    #+BEGIN_SRC python
