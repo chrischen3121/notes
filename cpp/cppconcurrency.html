@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2018-08-16 Thu 09:25 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>C++ Concurrency</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="c++" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="../styles/demo/css/demo.css"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">C++ Concurrency</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org985e3c2">1. Managing threads</a>
+<ul>
+<li><a href="#org495e774">1.1. RAII(Resource Acquisition Is Initialization)</a></li>
+<li><a href="#org45df56e">1.2. Daemon Threads</a></li>
+<li><a href="#orgb28a19d">1.3. Passing Arguments</a></li>
+<li><a href="#org782ad23">1.4. Transferring Ownership of a Thread</a></li>
+<li><a href="#org520e8fd">1.5. hardware_concurrency</a></li>
+</ul>
+</li>
+<li><a href="#orga367c69">2. Sharing data</a>
+<ul>
+<li><a href="#org05ec606">2.1. Avoiding Deadlock</a></li>
+<li><a href="#org405de5e">2.2. Lazy Initialization</a></li>
+<li><a href="#org9fa7c6d">2.3. Reader-writer Mutex</a></li>
+<li><a href="#org26984e4">2.4. More Approach</a></li>
+</ul>
+</li>
+<li><a href="#org895a9e0">3. Paradigm</a></li>
+<li><a href="#orgbefa2a9">4. Synchronizing Concurrent Operations</a>
+<ul>
+<li><a href="#org516bd39">4.1. Condition Variables</a></li>
+<li><a href="#org812b082">4.2. future&lt;&gt;</a></li>
+<li><a href="#org5b3dfc2">4.3. async</a></li>
+<li><a href="#orgd619830">4.4. packaged_task&lt;&gt;</a></li>
+<li><a href="#org81a957a">4.5. promise&lt;&gt;</a></li>
+<li><a href="#orgbc5ca44">4.6. exception for the future</a></li>
+</ul>
+</li>
+<li><a href="#orga51730f">5. Useful tools</a>
+<ul>
+<li><a href="#org9c50da0">5.1. std::mem_fn</a></li>
+<li><a href="#org52ee3a6">5.2. Time Facilities</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org985e3c2" class="outline-2">
+<h2 id="org985e3c2"><span class="section-number-2">1</span> Managing threads</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org495e774" class="outline-3">
+<h3 id="org495e774"><span class="section-number-3">1.1</span> RAII(Resource Acquisition Is Initialization)</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Use RAII to avoid use of <i>try/catch</i> blocks.
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> <span style="color: #3a81c3;">{</span>
+<span style="color: #3a81c3; font-weight: bold;">public</span>:
+  <span style="color: #3a81c3; font-weight: bold;">explicit</span> <span style="color: #6c3163; font-weight: bold;">ThreadGuard</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> &amp;<span style="color: #715ab1;">t</span><span style="color: #6c3163;">)</span> : t_<span style="color: #6c3163;">(</span>t<span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{}</span>
+  ~<span style="color: #6c3163; font-weight: bold;">ThreadGuard</span><span style="color: #6c3163;">()</span> <span style="color: #6c3163;">{</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>t_.joinable<span style="color: #67b11d;">()</span><span style="color: #2d9574;">)</span> <span style="color: #2d9574;">{</span>
+      t_.join<span style="color: #67b11d;">()</span>;
+    <span style="color: #2d9574;">}</span>
+  <span style="color: #6c3163;">}</span>
+  <span style="color: #6c3163; font-weight: bold;">ThreadGuard</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> &amp;<span style="color: #6c3163;">)</span> = <span style="color: #3a81c3; font-weight: bold;">delete</span>;
+  <span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> &amp;<span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">=</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> &amp;<span style="color: #6c3163;">)</span> = <span style="color: #3a81c3; font-weight: bold;">delete</span>;
+
+<span style="color: #3a81c3; font-weight: bold;">private</span>:
+  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> &amp;<span style="color: #715ab1;">t_</span>;
+<span style="color: #3a81c3;">}</span>;
+
+<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> <span style="color: #6c3163; font-weight: bold;">t</span><span style="color: #3a81c3;">(</span>some_func<span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> <span style="color: #6c3163; font-weight: bold;">g</span><span style="color: #3a81c3;">(</span>t<span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org45df56e" class="outline-3">
+<h3 id="org45df56e"><span class="section-number-3">1.2</span> Daemon Threads</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> <span style="color: #6c3163; font-weight: bold;">t</span><span style="color: #3a81c3;">(</span>do_background_work<span style="color: #3a81c3;">)</span>;
+t.detach<span style="color: #3a81c3;">()</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb28a19d" class="outline-3">
+<h3 id="orgb28a19d"><span class="section-number-3">1.3</span> Passing Arguments</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+The arguments are <b>copied</b> into thread's internal storage by default. Use <i>std::ref</i> to bind a reference argument.
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> <span style="color: #6c3163; font-weight: bold;">t</span><span style="color: #3a81c3;">(</span>update_ref_data, <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">ref</span><span style="color: #6c3163;">(</span><span style="color: #715ab1;">data</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">use std::move for move scenario</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org782ad23" class="outline-3">
+<h3 id="org782ad23"><span class="section-number-3">1.4</span> Transferring Ownership of a Thread</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Instances of std::thread are <b>movable</b>, but aren't <b>copyable</b>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">ScopedThread</span> <span style="color: #3a81c3;">{</span>
+<span style="color: #3a81c3; font-weight: bold;">public</span>:
+  <span style="color: #3a81c3; font-weight: bold;">explicit</span> <span style="color: #6c3163; font-weight: bold;">ScopedThread</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> <span style="color: #715ab1;">t</span><span style="color: #6c3163;">)</span> : t_<span style="color: #6c3163;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">move</span><span style="color: #2d9574;">(</span><span style="color: #715ab1;">t</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span><span style="color: #4e3163;">!</span>t_.joinable<span style="color: #67b11d;">()</span><span style="color: #2d9574;">)</span>
+      <span style="color: #3a81c3; font-weight: bold;">throw</span> <span style="color: #4e3163;">std</span>::logic_error<span style="color: #2d9574;">(</span><span style="color: #2d9574;">"No thread"</span><span style="color: #2d9574;">)</span>;
+  <span style="color: #6c3163;">}</span>
+  ~<span style="color: #6c3163; font-weight: bold;">ScopedThread</span><span style="color: #6c3163;">()</span> <span style="color: #6c3163;">{</span> t_.join<span style="color: #2d9574;">()</span>; <span style="color: #6c3163;">}</span>
+  <span style="color: #6c3163; font-weight: bold;">ScopedThread</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">ScopedThread</span> &amp;<span style="color: #6c3163;">)</span> = <span style="color: #3a81c3; font-weight: bold;">delete</span>;
+  <span style="color: #ba2f59; font-weight: bold;">ScopedThread</span> &amp;<span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">=</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">ScopedThread</span> &amp;<span style="color: #6c3163;">)</span> = <span style="color: #3a81c3; font-weight: bold;">delete</span>;
+
+<span style="color: #3a81c3; font-weight: bold;">private</span>:
+  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> <span style="color: #715ab1;">t_</span>;
+<span style="color: #3a81c3;">}</span>;
+
+<span style="color: #ba2f59; font-weight: bold;">ScopedThread</span> <span style="color: #6c3163; font-weight: bold;">t</span><span style="color: #3a81c3;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span><span style="color: #6c3163;">(</span><span style="color: #715ab1;">some_func</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org520e8fd" class="outline-3">
+<h3 id="org520e8fd"><span class="section-number-3">1.5</span> hardware_concurrency</h3>
+<div class="outline-text-3" id="text-1-5">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::cout &lt;&lt; <span style="color: #4e3163;">std</span>::<span style="color: #4e3163;">thread</span>::hardware_concurrency<span style="color: #3a81c3;">()</span> &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orga367c69" class="outline-2">
+<h2 id="orga367c69"><span class="section-number-2">2</span> Sharing data</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org05ec606" class="outline-3">
+<h3 id="org05ec606"><span class="section-number-3">2.1</span> Avoiding Deadlock</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-orgff98c65" class="outline-4">
+<h4 id="orgff98c65"><span class="section-number-4">2.1.1</span> std::lock</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+A function that can lock two or more mutexes at once without risk of deadlock
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::lock<span style="color: #3a81c3;">(</span>mu1, mu2<span style="color: #3a81c3;">)</span>;
+<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">lock_guard</span><span style="color: #3a81c3;">&lt;</span><span style="color: #4e3163;">std</span>::mutex<span style="color: #3a81c3;">&gt;</span> <span style="color: #6c3163; font-weight: bold;">lock_a</span><span style="color: #3a81c3;">(</span>mu1, <span style="color: #4e3163;">std</span>::adopt_lock<span style="color: #3a81c3;">)</span>;
+<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">lock_guard</span><span style="color: #3a81c3;">&lt;</span><span style="color: #4e3163;">std</span>::mutex<span style="color: #3a81c3;">&gt;</span> <span style="color: #6c3163; font-weight: bold;">lock_b</span><span style="color: #3a81c3;">(</span>mu2, <span style="color: #4e3163;">std</span>::adopt_lock<span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org405de5e" class="outline-3">
+<h3 id="org405de5e"><span class="section-number-3">2.2</span> Lazy Initialization</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-orgcfd5206" class="outline-4">
+<h4 id="orgcfd5206"><span class="section-number-4">2.2.1</span> std::once_flag &amp; std::call_once</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">shared_ptr</span><span style="color: #3a81c3;">&lt;</span>some_resource<span style="color: #3a81c3;">&gt;</span> <span style="color: #715ab1;">resource_ptr</span>;
+
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">init_resource</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
+  resource_ptr.reset<span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">new</span> <span style="color: #ba2f59; font-weight: bold;">some_resource</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">foo</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">static</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">once_flag</span> <span style="color: #715ab1;">resource_flag</span>;
+  <span style="color: #4e3163;">std</span>::call_once<span style="color: #6c3163;">(</span>resource_flag, init_resource<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span>;
+  resource_ptr-&gt;do_something<span style="color: #6c3163;">()</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org08dc45d" class="outline-4">
+<h4 id="org08dc45d"><span class="section-number-4">2.2.2</span> static(C++11)</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">SomeClass</span> &amp;<span style="color: #6c3163; font-weight: bold;">get_instance</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">static</span> <span style="color: #ba2f59; font-weight: bold;">SomeClass</span> <span style="color: #715ab1;">instance</span>;
+  <span style="color: #3a81c3; font-weight: bold;">return</span> instance;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9fa7c6d" class="outline-3">
+<h3 id="org9fa7c6d"><span class="section-number-3">2.3</span> Reader-writer Mutex</h3>
+<div class="outline-text-3" id="text-2-3">
+<ul class="org-ul">
+<li>boost::shared_mutex</li>
+<li>readers: shared_lock</li>
+<li>writers: unique_lock</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org26984e4" class="outline-3">
+<h3 id="org26984e4"><span class="section-number-3">2.4</span> More Approach</h3>
+<div class="outline-text-3" id="text-2-4">
+</div>
+<div id="outline-container-org4608a1d" class="outline-4">
+<h4 id="org4608a1d"><span class="section-number-4">2.4.1</span> software transactional memory(STM)</h4>
+<div class="outline-text-4" id="text-2-4-1">
+<p>
+like transaction in database, this is an active research area.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org895a9e0" class="outline-2">
+<h2 id="org895a9e0"><span class="section-number-2">3</span> Paradigm</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>FP style</li>
+<li>CSP(Communicating Sequential Processes)</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgbefa2a9" class="outline-2">
+<h2 id="orgbefa2a9"><span class="section-number-2">4</span> Synchronizing Concurrent Operations</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org516bd39" class="outline-3">
+<h3 id="org516bd39"><span class="section-number-3">4.1</span> Condition Variables</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">mutex</span> <span style="color: #715ab1;">mu</span>;
+<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">queue</span><span style="color: #3a81c3;">&lt;</span>data_chunk<span style="color: #3a81c3;">&gt;</span> <span style="color: #715ab1;">data_queue</span>;
+<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">condition_variable</span> <span style="color: #715ab1;">data_cond</span>;
+
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">prepare_data_thread</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #6c3163;">(</span>more_data_to_prepare<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
+    <span style="color: #ba2f59; font-weight: bold;">data_chunk</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #715ab1;">data</span> = prepare_data<span style="color: #2d9574;">()</span>;
+    <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">lock_guard</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">mutex</span><span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu<span style="color: #2d9574;">)</span>;
+    data_queue.push<span style="color: #2d9574;">(</span>data<span style="color: #2d9574;">)</span>;
+    data_cond.notify_one<span style="color: #2d9574;">()</span>;
+  <span style="color: #6c3163;">}</span>
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">data_processing_thread</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #6c3163;">(</span><span style="color: #4e3163;">true</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
+    <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">unique_lock</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">mutex</span><span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu<span style="color: #2d9574;">)</span>;
+    data_cond.wait<span style="color: #2d9574;">(</span>lk, <span style="color: #67b11d;">[]</span> <span style="color: #67b11d;">{</span> <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">!</span>data_queue.empty<span style="color: #b1951d;">()</span>; <span style="color: #67b11d;">}</span><span style="color: #2d9574;">)</span>;
+    <span style="color: #ba2f59; font-weight: bold;">data_chunk</span> <span style="color: #715ab1;">data</span>=data_queue.front<span style="color: #2d9574;">()</span>;
+    data_queue.pop<span style="color: #2d9574;">()</span>;
+    lk.unlock<span style="color: #2d9574;">()</span>;
+    process<span style="color: #2d9574;">(</span>data<span style="color: #2d9574;">)</span>;
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>is_last_chunk<span style="color: #67b11d;">(</span>data<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+      <span style="color: #3a81c3; font-weight: bold;">break</span>;
+  <span style="color: #6c3163;">}</span>
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-org89a35e9" class="outline-4">
+<h4 id="org89a35e9"><span class="section-number-4">4.1.1</span> Thread-safe Queue</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span> <span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">threadsafe_queue</span> <span style="color: #3a81c3;">{</span>
+<span style="color: #3a81c3; font-weight: bold;">public</span>:
+  <span style="color: #6c3163; font-weight: bold;">threadsafe_queue</span><span style="color: #6c3163;">()</span> <span style="color: #6c3163;">{}</span>
+  <span style="color: #6c3163; font-weight: bold;">threadsafe_queue</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">threadsafe_queue</span> &amp;<span style="color: #715ab1;">other</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
+    <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">lock_guard</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::mutex<span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>other.mu_<span style="color: #2d9574;">)</span>;
+    data_queue_ = other.data_queue_;
+  <span style="color: #6c3163;">}</span>
+
+  <span style="color: #ba2f59; font-weight: bold;">bool</span> <span style="color: #6c3163; font-weight: bold;">empty</span><span style="color: #6c3163;">()</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #6c3163;">{</span>
+    <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">lock_guard</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::mutex<span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu_<span style="color: #2d9574;">)</span>;
+    <span style="color: #3a81c3; font-weight: bold;">return</span> data_queue_.empty<span style="color: #2d9574;">()</span>;
+  <span style="color: #6c3163;">}</span>
+
+  <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">push</span><span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">T</span> <span style="color: #715ab1;">new_value</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
+    <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">lock_guard</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::mutex<span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu_<span style="color: #2d9574;">)</span>;
+    data_queue_.push<span style="color: #2d9574;">(</span>new_value<span style="color: #2d9574;">)</span>;
+    data_cond_.notify_one<span style="color: #2d9574;">()</span>;
+  <span style="color: #6c3163;">}</span>
+  <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">wait_and_pop</span><span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">T</span> &amp;<span style="color: #715ab1;">value</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
+    <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">unique_lock</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::mutex<span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu_<span style="color: #2d9574;">)</span>;
+    data_cond_.wait<span style="color: #2d9574;">(</span>lk, <span style="color: #67b11d;">[</span><span style="color: #3a81c3; font-weight: bold;">this</span><span style="color: #67b11d;">]</span> <span style="color: #67b11d;">{</span> <span style="color: #4e3163;">!</span>data_queue_.empty<span style="color: #b1951d;">()</span>; <span style="color: #67b11d;">}</span><span style="color: #2d9574;">)</span>;
+    value = data_queue.front<span style="color: #2d9574;">()</span>;
+    data_queue.pop<span style="color: #2d9574;">()</span>;
+  <span style="color: #6c3163;">}</span>
+
+<span style="color: #3a81c3; font-weight: bold;">private</span>:
+  <span style="color: #3a81c3; font-weight: bold;">mutable</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">mutex</span> <span style="color: #715ab1;">mu_</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">const member func like empty can lock mu_</span>
+  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">queue</span><span style="color: #6c3163;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #6c3163;">&gt;</span> <span style="color: #715ab1;">data_queue_</span>;
+  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">condition_variable</span> <span style="color: #715ab1;">data_cond_</span>;
+<span style="color: #3a81c3;">}</span>;
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org812b082" class="outline-3">
+<h3 id="org812b082"><span class="section-number-3">4.2</span> future&lt;&gt;</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li>std::future(wrapped by unique_ptr)</li>
+</ul>
+</div>
+<div id="outline-container-org6a25f5c" class="outline-4">
+<h4 id="org6a25f5c"><span class="section-number-4">4.2.1</span> shared_future</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<p>
+copyable, wrapped by shared_ptr
+</p>
+<ul class="org-ul">
+<li>operations on copied shared_future are thread-safe</li>
+<li><p>
+std::future -&gt; std::shared_future
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">sf</span> = future.share<span style="color: #3a81c3;">()</span>;
+assert<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">!</span>future.valid<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">future object has been moved</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5b3dfc2" class="outline-3">
+<h3 id="org5b3dfc2"><span class="section-number-3">4.3</span> async</h3>
+<div class="outline-text-3" id="text-4-3">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">future</span><span style="color: #3a81c3;">&lt;</span>data<span style="color: #3a81c3;">&gt;</span> <span style="color: #715ab1;">result</span> = <span style="color: #4e3163;">std</span>::async<span style="color: #3a81c3;">(</span>find_the_answer<span style="color: #3a81c3;">)</span>;
+do_other_things<span style="color: #3a81c3;">()</span>;
+<span style="color: #4e3163;">std</span>::cout &lt;&lt; result.get<span style="color: #3a81c3;">()</span> &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
+</pre>
+</div>
+<p>
+options: std::launch::async, std::launch::deferred
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd619830" class="outline-3">
+<h3 id="orgd619830"><span class="section-number-3">4.4</span> packaged_task&lt;&gt;</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+std::packaged_task&lt;&gt; ties a future to a function or callable object.
+</p>
+<ul class="org-ul">
+<li>definition for a specialization of std::packaged_task&lt;&gt;</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span> <span style="color: #3a81c3;">&lt;&gt;</span> <span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">packaged_task</span><span style="color: #3a81c3;">&lt;</span><span style="color: #4e3163;">std</span>::<span style="color: #6c3163; font-weight: bold;">string</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">vector</span><span style="color: #2d9574;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">char</span><span style="color: #2d9574;">&gt;</span> *, <span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #3a81c3;">{</span>
+<span style="color: #3a81c3; font-weight: bold;">public</span>:
+  <span style="color: #3a81c3; font-weight: bold;">template</span> <span style="color: #6c3163;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">Callable</span><span style="color: #6c3163;">&gt;</span> <span style="color: #3a81c3; font-weight: bold;">explicit</span> <span style="color: #6c3163; font-weight: bold;">packaged_task</span><span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">Callable</span> &amp;&amp;<span style="color: #715ab1;">f</span><span style="color: #6c3163;">)</span>;
+  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">future</span><span style="color: #6c3163;">&lt;</span><span style="color: #4e3163;">std</span>::string<span style="color: #6c3163;">&gt;</span> <span style="color: #6c3163; font-weight: bold;">get_future</span><span style="color: #6c3163;">()</span>;
+  <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">()</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">vector</span><span style="color: #2d9574;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">char</span><span style="color: #2d9574;">&gt;</span> *, <span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>;
+</pre>
+</div>
+<ul class="org-ul">
+<li>You can wrap a task in a std::packaged_task and retrieve the future before passing the std::packaged_task object elsewhere to be invoked in due course.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org81a957a" class="outline-3">
+<h3 id="org81a957a"><span class="section-number-3">4.5</span> promise&lt;&gt;</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+std::promise&lt;T&gt; provides a means of setting a value (of type T), which can later be read through an associated std::future&lt;T&gt; object.
+The waiting thread could block on the future, while the thread providing the data could use the promise half of the pairing to set
+the associated value and make the future ready.
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">do_work</span><span style="color: #3a81c3;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">promise</span><span style="color: #6c3163;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #6c3163;">&gt;</span> <span style="color: #715ab1;">promise</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  prepare_data<span style="color: #6c3163;">()</span>;
+  promise.set_value<span style="color: #6c3163;">(</span><span style="color: #4e3163;">42</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">promise</span><span style="color: #6c3163;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #6c3163;">&gt;</span> <span style="color: #715ab1;">promise</span>;
+  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">future</span><span style="color: #6c3163;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">int</span><span style="color: #6c3163;">&gt;</span> <span style="color: #715ab1;">future</span> = promise.get_future<span style="color: #6c3163;">()</span>;
+  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> <span style="color: #715ab1;">worker</span><span style="color: #6c3163;">(</span>do_work, <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">move</span><span style="color: #2d9574;">(</span><span style="color: #715ab1;">promise</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>;
+  future.wait<span style="color: #6c3163;">()</span>;
+  <span style="color: #4e3163;">std</span>::cout &lt;&lt; future.get<span style="color: #6c3163;">()</span> &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
+  worker.join<span style="color: #6c3163;">()</span>;
+  <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">0</span>;
+<span style="color: #3a81c3;">}</span>
+
+</pre>
+</div>
+</div>
+<div id="outline-container-org52681b9" class="outline-4">
+<h4 id="org52681b9"><span class="section-number-4">4.5.1</span> set_exception()</h4>
+<div class="outline-text-4" id="text-4-5-1">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">try</span> <span style="color: #3a81c3;">{</span>
+  some_promise.set_value<span style="color: #6c3163;">(</span>calculate_value<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span> <span style="color: #3a81c3; font-weight: bold;">catch</span> <span style="color: #3a81c3;">(</span>...<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  some_promise.set_exception<span style="color: #6c3163;">(</span><span style="color: #4e3163;">std</span>::current_exception<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span>;
+  <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">alternative:</span>
+  some_promise.set_exception<span style="color: #6c3163;">(</span><span style="color: #4e3163;">std</span>::copy_exception<span style="color: #2d9574;">(</span><span style="color: #4e3163;">std</span>::logic_error<span style="color: #67b11d;">(</span><span style="color: #2d9574;">"foo"</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>std::current_exception()</li>
+<li>prefer the alternative way: Not only does it simplify the code, but it also provides the compiler with greater opportunity to optimize the code.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbc5ca44" class="outline-3">
+<h3 id="orgbc5ca44"><span class="section-number-3">4.6</span> exception for the future</h3>
+<div class="outline-text-3" id="text-4-6">
+<p>
+A call to get() rethrows that stored exception
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga51730f" class="outline-2">
+<h2 id="orga51730f"><span class="section-number-2">5</span> Useful tools</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>std::ref</li>
+<li>std::distance(iter1, iter2)</li>
+<li>std::advance(iter, distance)</li>
+<li>list::splice</li>
+<li>std::partition</li>
+<li>std::ostream_iterator</li>
+</ul>
+</div>
+<div id="outline-container-org9c50da0" class="outline-3">
+<h3 id="org9c50da0"><span class="section-number-3">5.1</span> std::mem_fn</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+useful for std algorithms
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">SomeClass</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">some_func</span><span style="color: #6c3163;">()</span> <span style="color: #6c3163;">{}</span>
+<span style="color: #3a81c3;">}</span>;
+
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">some_func</span> = <span style="color: #4e3163;">std</span>::mem_fn<span style="color: #3a81c3;">(</span>&amp;<span style="color: #4e3163;">SomeClass</span>::some_func<span style="color: #3a81c3;">)</span>;
+<span style="color: #ba2f59; font-weight: bold;">SomeClass</span> <span style="color: #715ab1;">s</span>;
+some_func<span style="color: #3a81c3;">(</span><span style="color: #715ab1;">s</span><span style="color: #3a81c3;">)</span>;
+<span style="color: #4e3163;">std</span>::some_algo<span style="color: #3a81c3;">(</span>iter1, iter2, some_func<span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org52ee3a6" class="outline-3">
+<h3 id="org52ee3a6"><span class="section-number-3">5.2</span> Time Facilities</h3>
+<div class="outline-text-3" id="text-5-2">
+</div>
+<div id="outline-container-org743f176" class="outline-4">
+<h4 id="org743f176"><span class="section-number-4">5.2.1</span> Clocks</h4>
+<div class="outline-text-4" id="text-5-2-1">
+</div>
+<ul class="org-ul">
+<li><a id="org6ed5cab"></a>now<br />
+<div class="outline-text-5" id="text-org6ed5cab">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">time_point</span> = <span style="color: #4e3163;">std</span>::<span style="color: #4e3163;">chrono</span>::<span style="color: #4e3163;">some_clock</span>::now<span style="color: #3a81c3;">()</span>;
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org1b6afb9"></a>tick period<br />
+<div class="outline-text-5" id="text-org1b6afb9">
+<ul class="org-ul">
+<li>std::ratio&lt;1, 25&gt; ticks every 1/25 seconds</li>
+<li>std::ratio&lt;5, 2&gt; ticks every 2.5 seconds</li>
+</ul>
+
+<p>
+There’s <b>no guarantee</b> that the observed tick period in a given run of the program matches the specified period for that clock.
+</p>
+</div>
+</li>
+
+<li><a id="orgb134bb8"></a>steady_clock<br />
+<div class="outline-text-5" id="text-orgb134bb8">
+<p>
+If a clock ticks at a uniform rate and can’t be adjusted, the clock is said to be a steady clock.
+Steady clocks are important for <b>timeout calculations</b>.(system_clock can be changed)
+</p>
+</div>
+</li>
+
+<li><a id="orgfd49960"></a>high<br />
+<div class="outline-text-5" id="text-orgfd49960">
+<p>
+<i>high_resolution_clock</i> provides the smallest possible tick period of all the library-supplied clocks.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org91a5120" class="outline-4">
+<h4 id="org91a5120"><span class="section-number-4">5.2.2</span> Durations</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<p>
+std::duration&lt;representation, std::ratio&lt;&gt;&gt;
+</p>
+<ul class="org-ul">
+<li>example millisecond duration: std::chrono::duration&lt;double, std::ratio&lt;1,1000&gt;&gt;</li>
+<li>std::chrono::duration_cast&lt;&gt;: floor(high_resolution)</li>
+</ul>
+
+<p>
+The time for a duration-based wait is measured using a steady clock internal to the library, even if the system clock was adjusted during the wait
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2f4d149" class="outline-4">
+<h4 id="org2f4d149"><span class="section-number-4">5.2.3</span> Time points</h4>
+<div class="outline-text-4" id="text-5-2-3">
+<p>
+std::chrono::time_point&lt;clock, duration&gt;
+</p>
+<ul class="org-ul">
+<li>time_since_epoch() returns a duration value specifying the length of time since the clock epoch to that particular time point</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga35537c" class="outline-4">
+<h4 id="orga35537c"><span class="section-number-4">5.2.4</span> wait_for &amp; wait_until</h4>
+<div class="outline-text-4" id="text-5-2-4">
+<ul class="org-ul">
+<li>Clock adjustments are taken into account by the <i>wait_until</i></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
