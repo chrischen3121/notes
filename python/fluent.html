@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-08-16 Thu 10:01 -->
+<!-- 2018-08-16 Thu 10:20 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Fluent Python</title>
@@ -237,48 +237,199 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgadb54ee">1. Network&amp;Web</a>
+<li><a href="#org225f77d">1. Data Model</a>
 <ul>
-<li><a href="#orgc986716">1.1. RESTful API Query</a>
+<li><a href="#org5f799bc">1.1. Special Methods</a></li>
+<li><a href="#orgfd117bc">1.2. numeric types</a></li>
+</ul>
+</li>
+<li><a href="#orgadb54ee">2. Network&amp;Web</a>
 <ul>
-<li><a href="#orgefd850f">1.1.1. Testing</a></li>
+<li><a href="#orgc986716">2.1. RESTful API Query</a>
+<ul>
+<li><a href="#orgefd850f">2.1.1. Testing</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org66d1789">2. Interface</a>
+<li><a href="#org66d1789">3. Interface</a>
 <ul>
-<li><a href="#orgbdf4712">2.1. Properties</a></li>
-<li><a href="#orge6ce395">2.2. Sequences</a></li>
-<li><a href="#org9b0d25b">2.3. Monkey Patching</a></li>
+<li><a href="#orgbdf4712">3.1. Properties</a></li>
+<li><a href="#orge6ce395">3.2. Sequences</a></li>
+<li><a href="#org9b0d25b">3.3. Monkey Patching</a></li>
 </ul>
 </li>
-<li><a href="#orgd890cb6">3. asyncio</a>
+<li><a href="#orge37ab55">4. asyncio</a>
 <ul>
-<li><a href="#org7c58d62">3.1. coroutine</a>
+<li><a href="#org7c58d62">4.1. coroutine</a>
 <ul>
-<li><a href="#org67e2f1c">3.1.1. states</a></li>
-<li><a href="#orgeeb1444">3.1.2. generator methods</a></li>
-<li><a href="#org8ac85cf">3.1.3. auto priming</a></li>
-<li><a href="#org2124c0e">3.1.4. Termination &amp; Exception</a></li>
-<li><a href="#org832af09">3.1.5. return value</a></li>
-<li><a href="#orgdd2326a">3.1.6. <b>yield from</b></a></li>
-<li><a href="#orgd1d26ac">3.1.7. example</a></li>
+<li><a href="#org67e2f1c">4.1.1. states</a></li>
+<li><a href="#orgeeb1444">4.1.2. generator methods</a></li>
+<li><a href="#org8ac85cf">4.1.3. auto priming</a></li>
+<li><a href="#org2124c0e">4.1.4. Termination &amp; Exception</a></li>
+<li><a href="#org832af09">4.1.5. return value</a></li>
+<li><a href="#orgdd2326a">4.1.6. <b>yield from</b></a></li>
+<li><a href="#orgd1d26ac">4.1.7. example</a></li>
 </ul>
 </li>
-<li><a href="#org4169b87">3.2. asyncio</a></li>
+<li><a href="#orgd8f3be9">4.2. asyncio</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgadb54ee" class="outline-2">
-<h2 id="orgadb54ee"><span class="section-number-2">1</span> Network&amp;Web</h2>
+<div id="outline-container-org225f77d" class="outline-2">
+<h2 id="org225f77d"><span class="section-number-2">1</span> Data Model</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgc986716" class="outline-3">
-<h3 id="orgc986716"><span class="section-number-3">1.1</span> RESTful API Query</h3>
+<div id="outline-container-org5f799bc" class="outline-3">
+<h3 id="org5f799bc"><span class="section-number-3">1.1</span> Special Methods</h3>
 <div class="outline-text-3" id="text-1-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Category</th>
+<th scope="col" class="org-left">Method names</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">String/bytes representation</td>
+<td class="org-left"><code>__repr__</code> , <code>__str__</code> , <code>__format__</code> , <code>__bytes__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Conversion to number</td>
+<td class="org-left"><code>__abs__</code>, <code>__bool__</code>, <code>__complex__</code>, <code>__int__</code>, <code>__float__</code>, <code>__hash__</code>, <code>__index__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Emulating collections</td>
+<td class="org-left"><code>__len__</code>, <code>__getitem__</code>, <code>__setitem__</code>, <code>__delitem__</code>, <code>__contains__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Iteration</td>
+<td class="org-left"><code>__iter__</code>, <code>__reversed__</code>, <code>__next__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Emulating callables</td>
+<td class="org-left"><code>__call__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Context management</td>
+<td class="org-left"><code>__enter__</code>, <code>__exit__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Instance creation and destruction</td>
+<td class="org-left"><code>__new__</code>, <code>__init__</code>, <code>__del__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Attribute management</td>
+<td class="org-left"><code>__getattr__</code>, <code>__getattribute__</code>, <code>__setattr__</code>, <code>__delattr__</code>, <code>__dir__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Attribute descriptors</td>
+<td class="org-left"><code>__get__</code>, <code>__set__</code>, <code>__delete__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Class services</td>
+<td class="org-left"><code>__prepare__</code>, <code>__instancecheck__</code>, <code>__subclasscheck__</code></td>
+</tr>
+</tbody>
+</table>
+<ul class="org-ul">
+<li>operators</li>
+</ul>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Category</th>
+<th scope="col" class="org-left">Method names</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Unary numeric operators</td>
+<td class="org-left"><code>__neg__ -</code>, <code>__pos__ +</code>, <code>__abs__ abs()</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Rich comparison operators</td>
+<td class="org-left"><code>__lt__ &gt;</code>, <code>__le__ &lt;=</code>, <code>__eq__ ==</code>, <code>__ne__ !=</code>, <code>__gt__ &gt;</code>, <code>__ge__ &gt;=</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Arithmetic operators</td>
+<td class="org-left"><code>__add__ +</code>, <code>__sub__ -</code>, <code>__mul__ =, =__truediv__ /</code>, <code>__floordiv__ //</code>, <code>__mod__\n%</code>, <code>__divmod__ divmod()</code>, <code>__pow__ ** or pow()</code>, <code>__round__ round()</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Reversed arithmetic operators</td>
+<td class="org-left"><code>__radd__</code>, <code>__rsub__</code>, <code>__rmul__</code>, <code>__rtruediv__</code>, <code>__rfloordiv__</code>, <code>__rmod__</code>, <code>__rdivmod__</code>, <code>__rpow__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Augmented assignment  arithmetic operators</td>
+<td class="org-left"><code>__iadd__</code>, <code>__isub__</code>, <code>__imul__</code>, <code>__itruediv__</code>, <code>__ifloordiv__</code>, <code>__imod__</code>, <code>__ipow__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Bitwise operators</td>
+<td class="org-left"><code>__invert__ ~</code>, <code>__lshift__ &lt;&lt;</code>, <code>__rshift__ &gt;&gt;</code>, <code>__and__ &amp;</code>, <code>__or__</code>, <code>__xor__ ^</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Reversed bitwise operators</td>
+<td class="org-left"><code>__rlshift__</code>, <code>__rrshift__</code>, <code>__rand__</code>, <code>__rxor__</code>, <code>__ror__</code></td>
+</tr>
+
+<tr>
+<td class="org-left">Augmented assignment bitwise operators</td>
+<td class="org-left"><code>__ilshift__</code>, <code>__irshift__</code>, <code>__iand__</code>, <code>__ixor__</code>, <code>__ior__</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgfd117bc" class="outline-3">
+<h3 id="orgfd117bc"><span class="section-number-3">1.2</span> numeric types</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>decimal.Decimal</li>
+<li>fractions.Fraction</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgadb54ee" class="outline-2">
+<h2 id="orgadb54ee"><span class="section-number-2">2</span> Network&amp;Web</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgc986716" class="outline-3">
+<h3 id="orgc986716"><span class="section-number-3">2.1</span> RESTful API Query</h3>
+<div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> urllib <span style="color: #3a81c3; font-weight: bold;">import</span> request, parse
 <span style="color: #715ab1;">url</span> = <span style="color: #2d9574;">'http://www.123.com/get'</span>
@@ -318,8 +469,8 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-orgefd850f" class="outline-4">
-<h4 id="orgefd850f"><span class="section-number-4">1.1.1</span> Testing</h4>
-<div class="outline-text-4" id="text-1-1-1">
+<h4 id="orgefd850f"><span class="section-number-4">2.1.1</span> Testing</h4>
+<div class="outline-text-4" id="text-2-1-1">
 <ul class="org-ul">
 <li>use <a href="http://httpbin.org/">httpbin</a></li>
 </ul>
@@ -329,12 +480,12 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-org66d1789" class="outline-2">
-<h2 id="org66d1789"><span class="section-number-2">2</span> Interface</h2>
-<div class="outline-text-2" id="text-2">
+<h2 id="org66d1789"><span class="section-number-2">3</span> Interface</h2>
+<div class="outline-text-2" id="text-3">
 </div>
 <div id="outline-container-orgbdf4712" class="outline-3">
-<h3 id="orgbdf4712"><span class="section-number-3">2.1</span> Properties</h3>
-<div class="outline-text-3" id="text-2-1">
+<h3 id="orgbdf4712"><span class="section-number-3">3.1</span> Properties</h3>
+<div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Prop</span>:
     <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">__init__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, x<span style="color: #3a81c3;">)</span>:
@@ -353,8 +504,8 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-orge6ce395" class="outline-3">
-<h3 id="orge6ce395"><span class="section-number-3">2.2</span> Sequences</h3>
-<div class="outline-text-3" id="text-2-2">
+<h3 id="orge6ce395"><span class="section-number-3">3.2</span> Sequences</h3>
+<div class="outline-text-3" id="text-3-2">
 
 <div class="figure">
 <p><img src="../resources/python/SeqInterface.png" alt="SeqInterface.png" />
@@ -364,8 +515,8 @@ for the JavaScript code in this tag.
 </div>
 
 <div id="outline-container-org9b0d25b" class="outline-3">
-<h3 id="org9b0d25b"><span class="section-number-3">2.3</span> Monkey Patching</h3>
-<div class="outline-text-3" id="text-2-3">
+<h3 id="org9b0d25b"><span class="section-number-3">3.3</span> Monkey Patching</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 Changing a class or module at runtime, without touching the source code.
 </p>
@@ -376,13 +527,13 @@ Changing a class or module at runtime, without touching the source code.
 </div>
 </div>
 </div>
-<div id="outline-container-orgd890cb6" class="outline-2">
-<h2 id="orgd890cb6"><span class="section-number-2">3</span> asyncio</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-orge37ab55" class="outline-2">
+<h2 id="orge37ab55"><span class="section-number-2">4</span> asyncio</h2>
+<div class="outline-text-2" id="text-4">
 </div>
 <div id="outline-container-org7c58d62" class="outline-3">
-<h3 id="org7c58d62"><span class="section-number-3">3.1</span> coroutine</h3>
-<div class="outline-text-3" id="text-3-1">
+<h3 id="org7c58d62"><span class="section-number-3">4.1</span> coroutine</h3>
+<div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">simple_coroutine</span><span style="color: #3a81c3;">()</span>:
     <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'-&gt; coroutine started'</span><span style="color: #3a81c3;">)</span>
@@ -402,8 +553,8 @@ coro.send<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">42<
 </div>
 
 <div id="outline-container-org67e2f1c" class="outline-4">
-<h4 id="org67e2f1c"><span class="section-number-4">3.1.1</span> states</h4>
-<div class="outline-text-4" id="text-3-1-1">
+<h4 id="org67e2f1c"><span class="section-number-4">4.1.1</span> states</h4>
+<div class="outline-text-4" id="text-4-1-1">
 <p>
 use <code>inspect.getgeneratorstate()</code> to get state
 </p>
@@ -417,8 +568,8 @@ use <code>inspect.getgeneratorstate()</code> to get state
 </div>
 
 <div id="outline-container-orgeeb1444" class="outline-4">
-<h4 id="orgeeb1444"><span class="section-number-4">3.1.2</span> generator methods</h4>
-<div class="outline-text-4" id="text-3-1-2">
+<h4 id="orgeeb1444"><span class="section-number-4">4.1.2</span> generator methods</h4>
+<div class="outline-text-4" id="text-4-1-2">
 <ul class="org-ul">
 <li>send(value): the caller can post data that then becomes the value of the yield expression inside the generator.</li>
 <li>throw(): allow the caller to throw an exception to be handled inside the generator.</li>
@@ -428,8 +579,8 @@ use <code>inspect.getgeneratorstate()</code> to get state
 </div>
 
 <div id="outline-container-org8ac85cf" class="outline-4">
-<h4 id="org8ac85cf"><span class="section-number-4">3.1.3</span> auto priming</h4>
-<div class="outline-text-4" id="text-3-1-3">
+<h4 id="org8ac85cf"><span class="section-number-4">4.1.3</span> auto priming</h4>
+<div class="outline-text-4" id="text-4-1-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> functools <span style="color: #3a81c3; font-weight: bold;">import</span> wraps
 <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">coroutine</span><span style="color: #3a81c3;">(</span>func<span style="color: #3a81c3;">)</span>:
@@ -457,8 +608,8 @@ use <code>inspect.getgeneratorstate()</code> to get state
 </div>
 
 <div id="outline-container-org2124c0e" class="outline-4">
-<h4 id="org2124c0e"><span class="section-number-4">3.1.4</span> Termination &amp; Exception</h4>
-<div class="outline-text-4" id="text-3-1-4">
+<h4 id="org2124c0e"><span class="section-number-4">4.1.4</span> Termination &amp; Exception</h4>
+<div class="outline-text-4" id="text-4-1-4">
 </div>
 <ul class="org-ul">
 <li><a id="org05a4bc4"></a>from generator<br />
@@ -487,8 +638,8 @@ wrap the cleanup code in <code>try/finally</code> block
 </div>
 
 <div id="outline-container-org832af09" class="outline-4">
-<h4 id="org832af09"><span class="section-number-4">3.1.5</span> return value</h4>
-<div class="outline-text-4" id="text-3-1-5">
+<h4 id="org832af09"><span class="section-number-4">4.1.5</span> return value</h4>
+<div class="outline-text-4" id="text-4-1-5">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">Result</span> = namedtuple<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Result'</span>, <span style="color: #2d9574;">'count average'</span><span style="color: #3a81c3;">)</span>
 <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">averager</span><span style="color: #3a81c3;">()</span>:
@@ -519,8 +670,8 @@ coro_avg.send<span style="color: #3a81c3;">(</span><span style="color: #4e3163;"
 </div>
 
 <div id="outline-container-orgdd2326a" class="outline-4">
-<h4 id="orgdd2326a"><span class="section-number-4">3.1.6</span> <b>yield from</b></h4>
-<div class="outline-text-4" id="text-3-1-6">
+<h4 id="orgdd2326a"><span class="section-number-4">4.1.6</span> <b>yield from</b></h4>
+<div class="outline-text-4" id="text-4-1-6">
 <p>
 The main feature of <b>yield from</b> is to open a bidirectional channel from the outermost caller to the innermost subgenerator, so that values
 can be sent and yielded back and forth directly from them, and exceptions can be thrown all the way in without adding a lot of exception
@@ -623,11 +774,11 @@ Enables evaluating yield from directly in the <b>iPython</b> console.
 </ul>
 </div>
 <div id="outline-container-orgd1d26ac" class="outline-4">
-<h4 id="orgd1d26ac"><span class="section-number-4">3.1.7</span> example</h4>
+<h4 id="orgd1d26ac"><span class="section-number-4">4.1.7</span> example</h4>
 </div>
 </div>
-<div id="outline-container-org4169b87" class="outline-3">
-<h3 id="org4169b87"><span class="section-number-3">3.2</span> asyncio</h3>
+<div id="outline-container-orgd8f3be9" class="outline-3">
+<h3 id="orgd8f3be9"><span class="section-number-3">4.2</span> asyncio</h3>
 </div>
 </div>
 </div>
