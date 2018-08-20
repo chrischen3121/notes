@@ -8,28 +8,6 @@
 #+EXCLUDE_TAGS: noexport
 #+SETUPFILE: ../../org-templates/level-1.org
 * Managing threads
-** RAII(Resource Acquisition Is Initialization)
-   Use RAII to avoid use of /try/catch/ blocks.
-    #+BEGIN_SRC cpp
-      class ThreadGuard {
-      public:
-        explicit ThreadGuard(std::thread &t) : t_(t) {}
-        ~ThreadGuard() {
-          if (t_.joinable()) {
-            t_.join();
-          }
-        }
-        ThreadGuard(const ThreadGuard &) = delete;
-        ThreadGuard &operator=(const ThreadGuard &) = delete;
-
-      private:
-        std::thread &t_;
-      };
-
-      std::thread t(some_func);
-      ThreadGuard g(t);
-    #+END_SRC
-
 ** Daemon Threads
     #+BEGIN_SRC cpp
       std::thread t(do_background_work);
@@ -42,8 +20,8 @@
      std::thread t(update_ref_data, std::ref(data)); // use std::move for move scenario
    #+END_SRC
 
-** Transferring Ownership of a Thread
-   Instances of std::thread are *movable*, but aren't *copyable*
+** RAII(Resource Acquisition Is Initialization)
+   Use RAII to avoid use of /try/catch/ blocks. Instances of std::thread are *movable*, but aren't *copyable*
    #+BEGIN_SRC cpp
      class ScopedThread {
      public:
@@ -68,7 +46,7 @@
    #+END_SRC
 * Sharing data
 ** Avoiding Deadlock
-*** std::lock
+*** *std::lock*
     A function that can lock two or more mutexes at once without risk of deadlock
     #+BEGIN_SRC cpp
       std::lock(mu1, mu2);
@@ -110,38 +88,17 @@
 
 * Paradigm
   - FP style
+
+    Use future can be passed around between threads to allow the result of one computation to depend on the result of another, without any explicit access to shared data.
+
   - CSP(Communicating Sequential Processes)
+
+    See atm example
+
 * Synchronizing Concurrent Operations
 ** Condition Variables
+   - example: Thread-safe Queue
    #+BEGIN_SRC cpp
-     std::mutex mu;
-     std::queue<data_chunk> data_queue;
-     std::condition_variable data_cond;
-
-     void prepare_data_thread() {
-       while (more_data_to_prepare()) {
-         data_chunk const data = prepare_data();
-         std::lock_guard<std::mutex> lk(mu);
-         data_queue.push(data);
-         data_cond.notify_one();
-       }
-     }
-
-     void data_processing_thread() {
-       while (true) {
-         std::unique_lock<std::mutex> lk(mu);
-         data_cond.wait(lk, [] { return !data_queue.empty(); });
-         data_chunk data=data_queue.front();
-         data_queue.pop();
-         lk.unlock();
-         process(data);
-         if (is_last_chunk(data))
-           break;
-       }
-     }
-   #+END_SRC
-*** Thread-safe Queue
-    #+BEGIN_SRC cpp
       template <typename T> class threadsafe_queue {
       public:
         threadsafe_queue() {}
@@ -158,11 +115,11 @@
         void push(T new_value) {
           std::lock_guard<std::mutex> lk(mu_);
           data_queue_.push(new_value);
-          data_cond_.notify_one();
+          data_cond_.notify_one(); // notify_all
         }
         void wait_and_pop(T &value) {
           std::unique_lock<std::mutex> lk(mu_);
-          data_cond_.wait(lk, [this] { !data_queue_.empty(); });
+          data_cond_.wait(lk, [this] { !data_queue_.empty(); }); // unlock->wait->lock
           value = data_queue.front();
           data_queue.pop();
         }
@@ -172,19 +129,9 @@
         std::queue<T> data_queue_;
         std::condition_variable data_cond_;
       };
-    #+END_SRC
-** future<>
-   - std::future(wrapped by unique_ptr)
-*** shared_future
-    copyable, wrapped by shared_ptr
-    - operations on copied shared_future are thread-safe
-    - std::future -> std::shared_future
-      #+BEGIN_SRC cpp
-        auto sf = future.share();
-        assert(!future.valid()) // future object has been moved
-      #+END_SRC
-
-** async
+   #+END_SRC
+** std::future<> & std::async
+   only moveable, wrapped by unique_ptr
    #+BEGIN_SRC cpp
      std::future<data> result = std::async(find_the_answer);
      do_other_things();
@@ -192,9 +139,27 @@
    #+END_SRC
    options: std::launch::async, std::launch::deferred
 
-** packaged_task<>
+*** std::shared_future
+    copyable, wrapped by shared_ptr
+    - operations on copied shared_future are thread-safe
+    - std::future -> std::shared_future
+    - access to the same shared state from multiple threads is safe if each thread does it through its own *copy* of a ~shared_future~ object.
+
+** std::packaged_task<>
    std::packaged_task<> ties a future to a function or callable object.
-   - definition for a specialization of std::packaged_task<>
+   #+BEGIN_SRC cpp
+     std::packaged_task<int(int, int)> some_task(task_func);
+     auto result = some_task.get_future();
+     std::thread t{std::move(some_task), a, b};
+     result.get();
+     t.join();
+   #+END_SRC
+
+*** when to use
+    - used as a building block for thread pools
+    - task management schemes
+
+*** specialization of std::packaged_task<>
    #+BEGIN_SRC cpp
      template <> class packaged_task<std::string(std::vector<char> *, int)> {
      public:
@@ -203,9 +168,9 @@
        void operator()(std::vector<char> *, int);
      };
    #+END_SRC
-   - You can wrap a task in a std::packaged_task and retrieve the future before passing the std::packaged_task object elsewhere to be invoked in due course.
 
-** promise<>
+** std::promise<>
+   - std::promise<> stores a return value or exception
    std::promise<T> provides a means of setting a value (of type T), which can later be read through an associated std::future<T> object.
    The waiting thread could block on the future, while the thread providing the data could use the promise half of the pairing to set
    the associated value and make the future ready.
@@ -215,6 +180,11 @@
        promise.set_value(42);
      }
 
+     void do_work(std::promise<void> barrier) {
+       std::this_thread::sleep_for(std::chrono::seconds(1));
+       barrier.set_value();
+     }
+
      int main() {
        std::promise<int> promise;
        std::future<int> future = promise.get_future();
@@ -222,31 +192,34 @@
        future.wait();
        std::cout << future.get() << "\n";
        worker.join();
+
+       // Demonstrate using promise<void> to signal state between threads.
+       std::promise<void> barrier;
+       std::future<void> barrier_future = barrier.get_future();
+       std::thread new_work_thread(do_work, std::move(barrier));
+       barrier_future.wait();
+       new_work_thread.join();
        return 0;
      }
-
    #+END_SRC
 *** set_exception()
     #+BEGIN_SRC cpp
       try {
         some_promise.set_value(calculate_value());
       } catch (...) {
-        some_promise.set_exception(std::current_exception());
-        // alternative:
         some_promise.set_exception(std::copy_exception(std::logic_error("foo")));
+        //alternative some_promise.set_exception(std::current_exception());
       }
     #+END_SRC
     - std::current_exception()
-    - prefer the alternative way: Not only does it simplify the code, but it also provides the compiler with greater opportunity to optimize the code.
-
-** exception for the future
-   A call to get() rethrows that stored exception
+    - prefer the ~copy_exception~ way: Not only does it simplify the code, but it also provides the compiler with greater opportunity to optimize the code.
+    - a call to get() rethrows that stored exception
 
 * Useful tools
   - std::ref
   - std::distance(iter1, iter2)
   - std::advance(iter, distance)
-  - list::splice
+  - list::splice:
   - std::partition
   - std::ostream_iterator
 ** std::mem_fn

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-08-16 Thu 09:25 -->
+<!-- 2018-08-20 Mon 11:39 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>C++ Concurrency</title>
@@ -239,11 +239,10 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#org985e3c2">1. Managing threads</a>
 <ul>
-<li><a href="#org495e774">1.1. RAII(Resource Acquisition Is Initialization)</a></li>
-<li><a href="#org45df56e">1.2. Daemon Threads</a></li>
-<li><a href="#orgb28a19d">1.3. Passing Arguments</a></li>
-<li><a href="#org782ad23">1.4. Transferring Ownership of a Thread</a></li>
-<li><a href="#org520e8fd">1.5. hardware_concurrency</a></li>
+<li><a href="#org45df56e">1.1. Daemon Threads</a></li>
+<li><a href="#orgb28a19d">1.2. Passing Arguments</a></li>
+<li><a href="#org495e774">1.3. RAII(Resource Acquisition Is Initialization)</a></li>
+<li><a href="#org520e8fd">1.4. hardware_concurrency</a></li>
 </ul>
 </li>
 <li><a href="#orga367c69">2. Sharing data</a>
@@ -258,11 +257,10 @@ for the JavaScript code in this tag.
 <li><a href="#orgbefa2a9">4. Synchronizing Concurrent Operations</a>
 <ul>
 <li><a href="#org516bd39">4.1. Condition Variables</a></li>
-<li><a href="#org812b082">4.2. future&lt;&gt;</a></li>
-<li><a href="#org5b3dfc2">4.3. async</a></li>
-<li><a href="#orgd619830">4.4. packaged_task&lt;&gt;</a></li>
-<li><a href="#org81a957a">4.5. promise&lt;&gt;</a></li>
-<li><a href="#orgbc5ca44">4.6. exception for the future</a></li>
+<li><a href="#org17b06f0">4.2. std::future &amp; std::async</a></li>
+<li><a href="#orgd619830">4.3. packaged_task&lt;&gt;</a></li>
+<li><a href="#org81a957a">4.4. promise&lt;&gt;</a></li>
+<li><a href="#orgbc5ca44">4.5. exception for the future</a></li>
 </ul>
 </li>
 <li><a href="#orga51730f">5. Useful tools</a>
@@ -278,38 +276,9 @@ for the JavaScript code in this tag.
 <h2 id="org985e3c2"><span class="section-number-2">1</span> Managing threads</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org495e774" class="outline-3">
-<h3 id="org495e774"><span class="section-number-3">1.1</span> RAII(Resource Acquisition Is Initialization)</h3>
-<div class="outline-text-3" id="text-1-1">
-<p>
-Use RAII to avoid use of <i>try/catch</i> blocks.
-</p>
-<div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> <span style="color: #3a81c3;">{</span>
-<span style="color: #3a81c3; font-weight: bold;">public</span>:
-  <span style="color: #3a81c3; font-weight: bold;">explicit</span> <span style="color: #6c3163; font-weight: bold;">ThreadGuard</span><span style="color: #6c3163;">(</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> &amp;<span style="color: #715ab1;">t</span><span style="color: #6c3163;">)</span> : t_<span style="color: #6c3163;">(</span>t<span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{}</span>
-  ~<span style="color: #6c3163; font-weight: bold;">ThreadGuard</span><span style="color: #6c3163;">()</span> <span style="color: #6c3163;">{</span>
-    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>t_.joinable<span style="color: #67b11d;">()</span><span style="color: #2d9574;">)</span> <span style="color: #2d9574;">{</span>
-      t_.join<span style="color: #67b11d;">()</span>;
-    <span style="color: #2d9574;">}</span>
-  <span style="color: #6c3163;">}</span>
-  <span style="color: #6c3163; font-weight: bold;">ThreadGuard</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> &amp;<span style="color: #6c3163;">)</span> = <span style="color: #3a81c3; font-weight: bold;">delete</span>;
-  <span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> &amp;<span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">=</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> &amp;<span style="color: #6c3163;">)</span> = <span style="color: #3a81c3; font-weight: bold;">delete</span>;
-
-<span style="color: #3a81c3; font-weight: bold;">private</span>:
-  <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> &amp;<span style="color: #715ab1;">t_</span>;
-<span style="color: #3a81c3;">}</span>;
-
-<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> <span style="color: #6c3163; font-weight: bold;">t</span><span style="color: #3a81c3;">(</span>some_func<span style="color: #3a81c3;">)</span>;
-<span style="color: #ba2f59; font-weight: bold;">ThreadGuard</span> <span style="color: #6c3163; font-weight: bold;">g</span><span style="color: #3a81c3;">(</span>t<span style="color: #3a81c3;">)</span>;
-</pre>
-</div>
-</div>
-</div>
-
 <div id="outline-container-org45df56e" class="outline-3">
-<h3 id="org45df56e"><span class="section-number-3">1.2</span> Daemon Threads</h3>
-<div class="outline-text-3" id="text-1-2">
+<h3 id="org45df56e"><span class="section-number-3">1.1</span> Daemon Threads</h3>
+<div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">thread</span> <span style="color: #6c3163; font-weight: bold;">t</span><span style="color: #3a81c3;">(</span>do_background_work<span style="color: #3a81c3;">)</span>;
 t.detach<span style="color: #3a81c3;">()</span>;
@@ -319,8 +288,8 @@ t.detach<span style="color: #3a81c3;">()</span>;
 </div>
 
 <div id="outline-container-orgb28a19d" class="outline-3">
-<h3 id="orgb28a19d"><span class="section-number-3">1.3</span> Passing Arguments</h3>
-<div class="outline-text-3" id="text-1-3">
+<h3 id="orgb28a19d"><span class="section-number-3">1.2</span> Passing Arguments</h3>
+<div class="outline-text-3" id="text-1-2">
 <p>
 The arguments are <b>copied</b> into thread's internal storage by default. Use <i>std::ref</i> to bind a reference argument.
 </p>
@@ -331,11 +300,11 @@ The arguments are <b>copied</b> into thread's internal storage by default. Use <
 </div>
 </div>
 
-<div id="outline-container-org782ad23" class="outline-3">
-<h3 id="org782ad23"><span class="section-number-3">1.4</span> Transferring Ownership of a Thread</h3>
-<div class="outline-text-3" id="text-1-4">
+<div id="outline-container-org495e774" class="outline-3">
+<h3 id="org495e774"><span class="section-number-3">1.3</span> RAII(Resource Acquisition Is Initialization)</h3>
+<div class="outline-text-3" id="text-1-3">
 <p>
-Instances of std::thread are <b>movable</b>, but aren't <b>copyable</b>
+Use RAII to avoid use of <i>try/catch</i> blocks. Instances of std::thread are <b>movable</b>, but aren't <b>copyable</b>
 </p>
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">ScopedThread</span> <span style="color: #3a81c3;">{</span>
@@ -359,8 +328,8 @@ Instances of std::thread are <b>movable</b>, but aren't <b>copyable</b>
 </div>
 
 <div id="outline-container-org520e8fd" class="outline-3">
-<h3 id="org520e8fd"><span class="section-number-3">1.5</span> hardware_concurrency</h3>
-<div class="outline-text-3" id="text-1-5">
+<h3 id="org520e8fd"><span class="section-number-3">1.4</span> hardware_concurrency</h3>
+<div class="outline-text-3" id="text-1-4">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #4e3163;">std</span>::cout &lt;&lt; <span style="color: #4e3163;">std</span>::<span style="color: #4e3163;">thread</span>::hardware_concurrency<span style="color: #3a81c3;">()</span> &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
 </pre>
@@ -376,8 +345,8 @@ Instances of std::thread are <b>movable</b>, but aren't <b>copyable</b>
 <h3 id="org05ec606"><span class="section-number-3">2.1</span> Avoiding Deadlock</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-orgff98c65" class="outline-4">
-<h4 id="orgff98c65"><span class="section-number-4">2.1.1</span> std::lock</h4>
+<div id="outline-container-orge6a3476" class="outline-4">
+<h4 id="orge6a3476"><span class="section-number-4">2.1.1</span> <b>std::lock</b></h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 A function that can lock two or more mutexes at once without risk of deadlock
@@ -459,11 +428,25 @@ like transaction in database, this is an active research area.
 <h2 id="org895a9e0"><span class="section-number-2">3</span> Paradigm</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
-<li>FP style</li>
-<li>CSP(Communicating Sequential Processes)</li>
+<li><p>
+FP style
+</p>
+
+<p>
+Use future can be passed around between threads to allow the result of one computation to depend on the result of another, without any explicit access to shared data.
+</p></li>
+
+<li><p>
+CSP(Communicating Sequential Processes)
+</p>
+
+<p>
+See atm example
+</p></li>
 </ul>
 </div>
 </div>
+
 <div id="outline-container-orgbefa2a9" class="outline-2">
 <h2 id="orgbefa2a9"><span class="section-number-2">4</span> Synchronizing Concurrent Operations</h2>
 <div class="outline-text-2" id="text-4">
@@ -471,38 +454,9 @@ like transaction in database, this is an active research area.
 <div id="outline-container-org516bd39" class="outline-3">
 <h3 id="org516bd39"><span class="section-number-3">4.1</span> Condition Variables</h3>
 <div class="outline-text-3" id="text-4-1">
-<div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">mutex</span> <span style="color: #715ab1;">mu</span>;
-<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">queue</span><span style="color: #3a81c3;">&lt;</span>data_chunk<span style="color: #3a81c3;">&gt;</span> <span style="color: #715ab1;">data_queue</span>;
-<span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">condition_variable</span> <span style="color: #715ab1;">data_cond</span>;
-
-<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">prepare_data_thread</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
-  <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #6c3163;">(</span>more_data_to_prepare<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
-    <span style="color: #ba2f59; font-weight: bold;">data_chunk</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #715ab1;">data</span> = prepare_data<span style="color: #2d9574;">()</span>;
-    <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">lock_guard</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">mutex</span><span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu<span style="color: #2d9574;">)</span>;
-    data_queue.push<span style="color: #2d9574;">(</span>data<span style="color: #2d9574;">)</span>;
-    data_cond.notify_one<span style="color: #2d9574;">()</span>;
-  <span style="color: #6c3163;">}</span>
-<span style="color: #3a81c3;">}</span>
-
-<span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">data_processing_thread</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
-  <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #6c3163;">(</span><span style="color: #4e3163;">true</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
-    <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">unique_lock</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">mutex</span><span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu<span style="color: #2d9574;">)</span>;
-    data_cond.wait<span style="color: #2d9574;">(</span>lk, <span style="color: #67b11d;">[]</span> <span style="color: #67b11d;">{</span> <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">!</span>data_queue.empty<span style="color: #b1951d;">()</span>; <span style="color: #67b11d;">}</span><span style="color: #2d9574;">)</span>;
-    <span style="color: #ba2f59; font-weight: bold;">data_chunk</span> <span style="color: #715ab1;">data</span>=data_queue.front<span style="color: #2d9574;">()</span>;
-    data_queue.pop<span style="color: #2d9574;">()</span>;
-    lk.unlock<span style="color: #2d9574;">()</span>;
-    process<span style="color: #2d9574;">(</span>data<span style="color: #2d9574;">)</span>;
-    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">(</span>is_last_chunk<span style="color: #67b11d;">(</span>data<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
-      <span style="color: #3a81c3; font-weight: bold;">break</span>;
-  <span style="color: #6c3163;">}</span>
-<span style="color: #3a81c3;">}</span>
-</pre>
-</div>
-</div>
-<div id="outline-container-org89a35e9" class="outline-4">
-<h4 id="org89a35e9"><span class="section-number-4">4.1.1</span> Thread-safe Queue</h4>
-<div class="outline-text-4" id="text-4-1-1">
+<ul class="org-ul">
+<li>example: Thread-safe Queue</li>
+</ul>
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">template</span> <span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">T</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">threadsafe_queue</span> <span style="color: #3a81c3;">{</span>
 <span style="color: #3a81c3; font-weight: bold;">public</span>:
@@ -520,11 +474,11 @@ like transaction in database, this is an active research area.
   <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">push</span><span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">T</span> <span style="color: #715ab1;">new_value</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
     <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">lock_guard</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::mutex<span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu_<span style="color: #2d9574;">)</span>;
     data_queue_.push<span style="color: #2d9574;">(</span>new_value<span style="color: #2d9574;">)</span>;
-    data_cond_.notify_one<span style="color: #2d9574;">()</span>;
+    data_cond_.notify_one<span style="color: #2d9574;">()</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">notify_all</span>
   <span style="color: #6c3163;">}</span>
   <span style="color: #ba2f59; font-weight: bold;">void</span> <span style="color: #6c3163; font-weight: bold;">wait_and_pop</span><span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">T</span> &amp;<span style="color: #715ab1;">value</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
     <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">unique_lock</span><span style="color: #2d9574;">&lt;</span><span style="color: #4e3163;">std</span>::mutex<span style="color: #2d9574;">&gt;</span> <span style="color: #715ab1;">lk</span><span style="color: #2d9574;">(</span>mu_<span style="color: #2d9574;">)</span>;
-    data_cond_.wait<span style="color: #2d9574;">(</span>lk, <span style="color: #67b11d;">[</span><span style="color: #3a81c3; font-weight: bold;">this</span><span style="color: #67b11d;">]</span> <span style="color: #67b11d;">{</span> <span style="color: #4e3163;">!</span>data_queue_.empty<span style="color: #b1951d;">()</span>; <span style="color: #67b11d;">}</span><span style="color: #2d9574;">)</span>;
+    data_cond_.wait<span style="color: #2d9574;">(</span>lk, <span style="color: #67b11d;">[</span><span style="color: #3a81c3; font-weight: bold;">this</span><span style="color: #67b11d;">]</span> <span style="color: #67b11d;">{</span> <span style="color: #4e3163;">!</span>data_queue_.empty<span style="color: #b1951d;">()</span>; <span style="color: #67b11d;">}</span><span style="color: #2d9574;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">unlock-&gt;wait-&gt;lock</span>
     value = data_queue.front<span style="color: #2d9574;">()</span>;
     data_queue.pop<span style="color: #2d9574;">()</span>;
   <span style="color: #6c3163;">}</span>
@@ -538,24 +492,34 @@ like transaction in database, this is an active research area.
 </div>
 </div>
 </div>
-</div>
-<div id="outline-container-org812b082" class="outline-3">
-<h3 id="org812b082"><span class="section-number-3">4.2</span> future&lt;&gt;</h3>
+<div id="outline-container-org17b06f0" class="outline-3">
+<h3 id="org17b06f0"><span class="section-number-3">4.2</span> std::future &amp; std::async</h3>
 <div class="outline-text-3" id="text-4-2">
-<ul class="org-ul">
-<li>std::future(wrapped by unique_ptr)</li>
-</ul>
+<p>
+only moveable, wrapped by unique_ptr
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">future</span><span style="color: #3a81c3;">&lt;</span>data<span style="color: #3a81c3;">&gt;</span> <span style="color: #715ab1;">result</span> = <span style="color: #4e3163;">std</span>::async<span style="color: #3a81c3;">(</span>find_the_answer<span style="color: #3a81c3;">)</span>;
+do_other_things<span style="color: #3a81c3;">()</span>;
+<span style="color: #4e3163;">std</span>::cout &lt;&lt; result.get<span style="color: #3a81c3;">()</span> &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
+</pre>
 </div>
-<div id="outline-container-org6a25f5c" class="outline-4">
-<h4 id="org6a25f5c"><span class="section-number-4">4.2.1</span> shared_future</h4>
+<p>
+options: std::launch::async, std::launch::deferred
+</p>
+</div>
+
+<div id="outline-container-orgd694110" class="outline-4">
+<h4 id="orgd694110"><span class="section-number-4">4.2.1</span> std::shared_future</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <p>
 copyable, wrapped by shared_ptr
 </p>
 <ul class="org-ul">
 <li>operations on copied shared_future are thread-safe</li>
+<li>std::future -&gt; std::shared_future</li>
 <li><p>
-std::future -&gt; std::shared_future
+Access to the same shared state from multiple threads is safe if each thread does it through its own <b>copy</b> of a <code>shared_future</code> object.
 </p>
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">sf</span> = future.share<span style="color: #3a81c3;">()</span>;
@@ -567,24 +531,9 @@ assert<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">!</spa
 </div>
 </div>
 
-<div id="outline-container-org5b3dfc2" class="outline-3">
-<h3 id="org5b3dfc2"><span class="section-number-3">4.3</span> async</h3>
-<div class="outline-text-3" id="text-4-3">
-<div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">future</span><span style="color: #3a81c3;">&lt;</span>data<span style="color: #3a81c3;">&gt;</span> <span style="color: #715ab1;">result</span> = <span style="color: #4e3163;">std</span>::async<span style="color: #3a81c3;">(</span>find_the_answer<span style="color: #3a81c3;">)</span>;
-do_other_things<span style="color: #3a81c3;">()</span>;
-<span style="color: #4e3163;">std</span>::cout &lt;&lt; result.get<span style="color: #3a81c3;">()</span> &lt;&lt; <span style="color: #2d9574;">"\n"</span>;
-</pre>
-</div>
-<p>
-options: std::launch::async, std::launch::deferred
-</p>
-</div>
-</div>
-
 <div id="outline-container-orgd619830" class="outline-3">
-<h3 id="orgd619830"><span class="section-number-3">4.4</span> packaged_task&lt;&gt;</h3>
-<div class="outline-text-3" id="text-4-4">
+<h3 id="orgd619830"><span class="section-number-3">4.3</span> packaged_task&lt;&gt;</h3>
+<div class="outline-text-3" id="text-4-3">
 <p>
 std::packaged_task&lt;&gt; ties a future to a function or callable object.
 </p>
@@ -607,8 +556,8 @@ std::packaged_task&lt;&gt; ties a future to a function or callable object.
 </div>
 
 <div id="outline-container-org81a957a" class="outline-3">
-<h3 id="org81a957a"><span class="section-number-3">4.5</span> promise&lt;&gt;</h3>
-<div class="outline-text-3" id="text-4-5">
+<h3 id="org81a957a"><span class="section-number-3">4.4</span> promise&lt;&gt;</h3>
+<div class="outline-text-3" id="text-4-4">
 <p>
 std::promise&lt;T&gt; provides a means of setting a value (of type T), which can later be read through an associated std::future&lt;T&gt; object.
 The waiting thread could block on the future, while the thread providing the data could use the promise half of the pairing to set
@@ -634,8 +583,8 @@ the associated value and make the future ready.
 </div>
 </div>
 <div id="outline-container-org52681b9" class="outline-4">
-<h4 id="org52681b9"><span class="section-number-4">4.5.1</span> set_exception()</h4>
-<div class="outline-text-4" id="text-4-5-1">
+<h4 id="org52681b9"><span class="section-number-4">4.4.1</span> set_exception()</h4>
+<div class="outline-text-4" id="text-4-4-1">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">try</span> <span style="color: #3a81c3;">{</span>
   some_promise.set_value<span style="color: #6c3163;">(</span>calculate_value<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span>;
@@ -655,8 +604,8 @@ the associated value and make the future ready.
 </div>
 
 <div id="outline-container-orgbc5ca44" class="outline-3">
-<h3 id="orgbc5ca44"><span class="section-number-3">4.6</span> exception for the future</h3>
-<div class="outline-text-3" id="text-4-6">
+<h3 id="orgbc5ca44"><span class="section-number-3">4.5</span> exception for the future</h3>
+<div class="outline-text-3" id="text-4-5">
 <p>
 A call to get() rethrows that stored exception
 </p>
@@ -671,7 +620,7 @@ A call to get() rethrows that stored exception
 <li>std::ref</li>
 <li>std::distance(iter1, iter2)</li>
 <li>std::advance(iter, distance)</li>
-<li>list::splice</li>
+<li>list::splice:</li>
 <li>std::partition</li>
 <li>std::ostream_iterator</li>
 </ul>
