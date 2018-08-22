@@ -220,7 +220,7 @@
    Every object in a C++ program has a *defined* modification order composed of all the writes to that object from all threads in the program
 
 ** Atomic Types
-   An atomic operation is an indivisible operation. You can’t observe such an operation half-done from any thread in the system; it’s either done or not done.
+   An atomic operation is an indivisible operation. You can't observe such an operation half-done from any thread in the system; it's either done or not done.
    - If you do use atomic operations, the *compiler* is responsible for ensuring that the necessary synchronization is in place.
 
 *** Operations
@@ -234,12 +234,12 @@
 
    Each of the operations on the atomic types has an optional memory-ordering argument.
 
-   - The default ordering for all operations is memory_order_seq_cst.
+   - The default ordering for all operations is /memory_order_seq_cst/.
 **** Store Operations
-     which can have memory_order_relaxed, memory_order_release, or memory_order_seq_cst ordering.
+     which can have /memory_order_relaxed/, /memory_order_release/, or /memory_order_seq_cst/ ordering.
 **** Load Operations
-     which can have memory_order_relaxed, memory_order_consume, memory_order_acquire, or
-     memory_order_seq_cst ordering
+     which can have /memory_order_relaxed/, /memory_order_consume/, /memory_order_acquire/, or
+     /memory_order_seq_cst/ ordering
 **** Read-modify-write Operations
      which can have memory_order_relaxed, memory_order_consume, memory_order_acquire,
      memory_order_release, memory_order_acq_rel, or memory_order_seq_cst ordering
@@ -253,7 +253,7 @@
       bool x = f.test_and_set(); // read-modify-write operation
     #+END_SRC
 
-**** spinlock_mutex
+**** simple spinlock_mutex
      #+BEGIN_SRC cpp
        class spinlock_mutex {
          std::atomic_flag flag;
@@ -277,26 +277,62 @@
       b.store(true);
       x = b.exchange(false, std::memory_order_acq_rel);
     #+END_SRC
-**** *compare/exchange* operation
-     - stores the desired value(new) if expected value(old) == atomic variable
-     - the expected value is updated with atomic variable if they aren't equal
-     - return true if the store was performed
+    - ~std::atomic<bool>~ may not be lock-free
 
+*** *compare/exchange* operation(RMW)
+     - stores the *desired value* if *expected value* is equal to atomic variable
+     - the *expected value* is *updated* with atomic variable if they aren't equal
+     - return true if the store was performed
+     - underlying is a CAS(compare-and-swap) instruction if the processor have one
+     - some platform support a double-word-compare-and-swap (DWCAS) instruction
 **** ~compare_exchange_weak()~
-     the store might not be successful even if the original value was equal to the expected value
+     The store might not be successful even if the original value was equal to the expected value,
+     in which case the value of the variable is unchanged and the return value of ~compare_exchange_weak()~
+     is false. This is due to *spurious failure* on some platforms where a sequence of instructions are used
+     to implement a single CAS instruction.
      #+BEGIN_SRC cpp
-       atomic<bool> b; // set somewhere else
+       bool expected{false};
+       extern atomic<bool> b; // set somewhere else
        while (!b.compare_exchange_weak(expected, true) && !expected)
          ;
      #+END_SRC
+     - Why is ~!expected in~ the example
+       #+BEGIN_QUOTE
+       It depends on the situation and its desired semantics, but usually it is not needed for correctness.
+       Omitting it would yield a very similar semantics. Only in a case where another thread might reset the value to false,
+       the semantics could become slightly different (yet I cannot find a meaningful example where you would want that). See
+       Tony D.'s comment for a detailed explanation. It is simply a fast track when another thread writes true: Then the we
+       abort instead of trying to write true again.
+       #+END_QUOTE
+
+**** ~compare_exchange_strong()~
+     ~compare_exchange_strong()~ is guaranteed to return false only if the actual value wasn't equal to the expected value.
 
 **** weak or strong
      If the calculation of the value to be stored is simple, it may be beneficial to use ~compare_exchange_weak()~
      in order to avoid a double loop on platforms where ~compare_exchange_weak()~ can fail spuriously (and so
      ~compare_exchange_strong()~ contains a loop). On the other hand, if the calculation of the value to be stored is
      itself time consuming, it may make sense to use ~compare_exchange_strong()~ to avoid having to recalculate the value
-     to store when the expected value hasn’t changed.
+     to store when the expected value hasn't changed.
+     - hints:
+       #+BEGIN_QUOTE
+       When a compare-and-exchange is in a loop, the weak version will yield better performance on some platforms. When a
+       weak compare-and-exchange would require a loop and a strong one would not, the strong one is preferable.
+       #+END_QUOTE
 
+**** memory-ordering semantics
+     - one for success
+     - another for failure
+     - if you don't specify an ordering for failure, it's assumed to be the same as that for success
+
+*** atomic<UDT>
+    The type must not have any virtual functions or virtual base classes and must use the
+    compiler-generated copy-assignment operator. This essentially permits the compiler to
+    use ~memcpy()~ and ~memcmp()~.
+    - In general, the compiler will use an *internal lock* for all the operations
+
+*** std::shared_ptr<>
+    - atomic operations available for ~shared_ptr~ are /load, store, exchange, and compare/exchange/
 
 * Useful tools
   - std::ref
@@ -329,10 +365,10 @@
      - std::ratio<1, 25> ticks every 1/25 seconds
      - std::ratio<5, 2> ticks every 2.5 seconds
 
-     There’s *no guarantee* that the observed tick period in a given run of the program matches the specified period for that clock.
+     There's *no guarantee* that the observed tick period in a given run of the program matches the specified period for that clock.
 
 **** steady_clock
-     If a clock ticks at a uniform rate and can’t be adjusted, the clock is said to be a steady clock.
+     If a clock ticks at a uniform rate and can't be adjusted, the clock is said to be a steady clock.
      Steady clocks are important for *timeout calculations*.(system_clock can be changed)
 
 **** high
