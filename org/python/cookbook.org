@@ -136,6 +136,7 @@
 ** groupby
    Since =groupby()= only examines consecutive items, should sort the groupby key first.
    #+BEGIN_SRC python
+     from itertools import groupby
      rows.sort(key=itemgetter('date'))
      for date, items in groupby(rows, key=itemgetter('date')):
          pass
@@ -192,3 +193,125 @@
      values = values.parents
      values['x'] #=> 1
    #+END_SRC
+* String Manipulation
+** modules
+   - *fnmatch*: Filename matching with shell patterns.
+   - *glob*: Filename globbing utility.
+
+** re
+*** find
+    - =match()=
+    - =findall()=
+    - =finditer()=
+    - =scaner()=
+
+*** replace
+    - =sub=
+
+*** regex
+    - named capture group: =r'?P<TOKENNAME>[a-zA-Z]+'=
+    - noncapture
+
+*** tokenize
+    #+BEGIN_SRC python
+      from collections import namedtuple
+      Token = namedtuple('Token', ['type', 'value'])
+
+
+      def generate_tokens(pat, text):
+          scanner = pat.scanner(text)
+          for m in iter(scanner.match, None):
+              yield Token(m.lastgroup, m.group())
+
+
+      # Example use
+      for tok in generate_tokens(master_pat, 'foo = 42'):
+          print(tok)
+
+      # Produces output
+      # Token(type='NAME', value='foo')
+      # Token(type='WS', value=' ')
+      # Token(type='EQ', value='=')
+      # Token(type='WS', value=' ')
+      # Token(type='NUM', value='42')
+    #+END_SRC
+
+*** syntax parser
+    - PyParsing
+    - PLY
+    - Recipe: 2.19
+
+** format
+*** align
+    #+BEGIN_SRC python
+      format('right', '>20')
+      # '               right'
+      format('right', '=>20')
+      # '===============right'
+    #+END_SRC
+
+*** safesub
+    #+BEGIN_SRC python
+      class safesub(dict):
+          def __missing__(self, key):
+              return '{' + key + '}'
+
+      name = 'ABC'
+      n = 5
+      s = '{name} has {n} messages.'
+      s.format_map(safesub(vars()))
+      # 'ABC has 5 messages.'
+    #+END_SRC
+**** frame hack
+     #+BEGIN_SRC python
+       def sub(text):
+           return text.format_map(safesub(sys._getframe(1).f_locals))
+     #+END_SRC
+
+*** textwrap
+    =textwrap.fill()= reformat text for output.
+
+** join
+   - ='abc' + ',' + 'def'=
+   - ='abc' ',' 'def'=
+   - =','.join(('abc', 'def'))=
+   - ='{},{}'.format('abc', 'def')=
+   - =print('abc', 'def', sep=',')=
+
+** combining I/O write operation
+   #+BEGIN_SRC python
+     def combine(source, maxsize):
+         parts = []
+         size = 0
+         for part in source:
+             parts.append(part)
+             size += len(part)
+             if size > maxsize:
+                 yield ''.join(parts)
+                 parts = []
+                 size = 0
+         yield ''.join(parts)
+
+     for part in combine(sample(), 32768):
+         f.write(part)
+   #+END_SRC
+** escape
+   - =html.escape=
+   - =xml.escape=
+
+* Numbers
+** Decimal
+   #+BEGIN_SRC python
+     from decimal import Decimal, localcontext
+     a = Decimal('6.32')
+     b = Decimal('2.41')
+
+     with localcontext() as ctx:
+         ctx.prec = 5
+         print(a/b) # 2.6224
+   #+END_SRC
+
+** math.f***
+   - =math.fsum=
+   - =math.fmod=
+   - =math.fabs=
