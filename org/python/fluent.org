@@ -31,9 +31,21 @@
    | Bitwise operators                          | =__invert__ ~=, =__lshift__ <<=, =__rshift__ >>=, =__and__ &=, =__or__=, =__xor__ ^=                                                                      |
    | Reversed bitwise operators                 | =__rlshift__=, =__rrshift__=, =__rand__=, =__rxor__=, =__ror__=                                                                                           |
    | Augmented assignment bitwise operators     | =__ilshift__=, =__irshift__=, =__iand__=, =__ixor__=, =__ior__=                                                                                           |
+
 ** numeric types
    - decimal.Decimal
    - fractions.Fraction
+
+** Sequence categories
+*** Flat(hold one type)
+    str, bytes, bytearray, memoryview, array.array
+    - If the =list= will only contain numbers, =array.array= is more efficient than a =list=
+
+*** Mutable
+    list, bytearray, array.array, collections.deque, memoryview
+
+*** Immutable
+    tuple, str, bytes
 
 * Network&Web
 ** RESTful API Query
@@ -119,7 +131,7 @@
    #+BEGIN_SRC python
    some_obj.__getitem__ = some_get_function(some_class, position)
    #+END_SRC
-* asyncio
+* Concurrency
 ** coroutine
    #+BEGIN_SRC python
      def simple_coroutine():
@@ -263,4 +275,25 @@
 **** ipython-yf
      Enables evaluating yield from directly in the *iPython* console.
 *** example
+** threads & processes
+*** GIL
+    Restricts only one thread at a time to execute Python bytecodes. However, all standard library functions
+    that perform blocking I/O release the GIL when waiting for a result from the OS.
+
+*** =threading=
+*** =multiprocessing=
+*** TODO *Celery*
+    Distributed Task Queue
+*** utilities
+    - =lelo=
+    - =python-parallelize=
+
 ** asyncio
+
+* Doctest
+* Utilities
+  - =math.hypot=: Return the Euclidean distance, =sqrt(x*x + y*y)=
+  - =b, a = a, b=: swap values without using a temporary variable
+  - Vaurien: chaos monkey, the Chaos TCP Proxy
+  - requests resp: =resp.raise_for_status()=
+  - =itertools.cycle=
