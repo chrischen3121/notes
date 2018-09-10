@@ -31,9 +31,21 @@
    | Bitwise operators                          | =__invert__ ~=, =__lshift__ <<=, =__rshift__ >>=, =__and__ &=, =__or__=, =__xor__ ^=                                                                      |
    | Reversed bitwise operators                 | =__rlshift__=, =__rrshift__=, =__rand__=, =__rxor__=, =__ror__=                                                                                           |
    | Augmented assignment bitwise operators     | =__ilshift__=, =__irshift__=, =__iand__=, =__ixor__=, =__ior__=                                                                                           |
+
 ** numeric types
    - decimal.Decimal
    - fractions.Fraction
+
+** Sequence categories
+*** Flat(hold one type)
+    str, bytes, bytearray, memoryview, array.array
+    - If the =list= will only contain numbers, =array.array= is more efficient than a =list=
+
+*** Mutable
+    list, bytearray, array.array, collections.deque, memoryview
+
+*** Immutable
+    tuple, str, bytes
 
 * Network&Web
 ** RESTful API Query
@@ -119,6 +131,7 @@
    #+BEGIN_SRC python
    some_obj.__getitem__ = some_get_function(some_class, position)
    #+END_SRC
+
 * coroutine
   #+BEGIN_SRC python
     def simple_coroutine():
@@ -142,25 +155,6 @@
    - GEN_CLOSED
 
 ** auto priming
-   #+BEGIN_SRC python
-     from functools import wraps
-     def coroutine(func):
-         """Decorator: primes `func` by advancing to first `yield`"""
-         @wraps(func)
-         def primer(*args,**kwargs):
-             gen = func(*args,**kwargs)
-             next(gen)
-             return gen
-         return primer
-
-     @coroutine
-     def simple_coroutine():
-         x = yield
-
-     coro = simple_coroutine()
-     #-> GEN_SUSPENDED
-   #+END_SRC
-
 ** Termination & Exception
 *** from generator
     An exception within a coroutine propagates to the caller of the next or send that triggered it.
@@ -208,7 +202,6 @@
          # for x in 'abc':
          #     yield x
    #+END_SRC
-
 *** terms
     - delegating generator: The generator function that contains the *yield from <iterable>* expression
     - subgenerator
@@ -255,7 +248,22 @@
 *** ipython-yf
     Enables evaluating yield from directly in the *iPython* console.
 ** example
-* asyncio
+* Currency
+** threads & processes
+*** GIL
+    Restricts only one thread at a time to execute Python bytecodes. However, all standard library functions
+    that perform blocking I/O release the GIL when waiting for a result from the OS.
+
+*** =threading=
+*** =multiprocessing=
+*** TODO *Celery*
+    Distributed Task Queue
+*** utilities
+    - =lelo=
+    - =python-parallelize=
+
+** asyncio
+
 ** asyncio + executor
   #+BEGIN_SRC python
     import asyncio
@@ -300,3 +308,11 @@
      for result in results:
          print(result)
    #+END_SRC
+
+* Doctest
+* Utilities
+  - =math.hypot=: Return the Euclidean distance, =sqrt(x*x + y*y)=
+  - =b, a = a, b=: swap values without using a temporary variable
+  - Vaurien: chaos monkey, the Chaos TCP Proxy
+  - requests resp: =resp.raise_for_status()=
+  - =itertools.cycle=
