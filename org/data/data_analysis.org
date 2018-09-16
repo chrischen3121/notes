@@ -1148,9 +1148,26 @@ reindex args: index, method, fill_value, limit, level, copy
       dset = f.create_dataset('chunked', (100,480,640), dtype='i1', chunks=(1, 64, 64))
     #+END_SRC
 
+*** float data saving space
+    - it’s common practice to store these data points on disk as *single-precision*
+**** read float32 in as double precision
+     - one way
+     #+BEGIN_SRC python
+       big_out = np.empty((100, 1000), dtype=np.float64)
+       dset.read_direct(big_out)
+     #+END_SRC
+     - another way
+     #+BEGIN_SRC python
+       with dset.astype('float64'):
+           out = dset[0,:]
+     #+END_SRC
+
 ** lookup tools
-   - ViTables
-   - h5ls
+*** HDFView
+*** h5ls
+    #+BEGIN_SRC sh
+      h5ls -vlr
+    #+END_SRC
 
 ** notice
    - slice on hdf table will do read&write on disk
