@@ -145,8 +145,8 @@
      for row in rows:
          rows_by_date[row['date']].append(row)
    #+END_SRC
-** compress
-   Takes an iterable and an accompanying Boolean selector sequence as input.
+** itertools.compress
+   Like boolean index in pandas. Takes an iterable and an accompanying Boolean selector sequence as input.
    =list(compress(data, mask))=
 
 ** namedtuple&namedlist
@@ -213,6 +213,9 @@
     - noncapture
 
 *** tokenize
+**** Problem
+     You have a string that you want to parse left to right into a stream of tokens.
+**** Usage
     #+BEGIN_SRC python
       from collections import namedtuple
       Token = namedtuple('Token', ['type', 'value'])
@@ -235,6 +238,8 @@
       # Token(type='WS', value=' ')
       # Token(type='NUM', value='42')
     #+END_SRC
+    =scanner()= method of pattern objects. This method creates a scanner object in which repeated calls to match() step through the
+    supplied text one match at a time
 
 *** syntax parser
     - PyParsing
@@ -269,6 +274,7 @@
      #+END_SRC
 
 *** textwrap
+    The textwrap module is a straightforward way to clean up text for printing.
     =textwrap.fill()= reformat text for output.
 
 ** join
@@ -276,7 +282,7 @@
    - ='abc' ',' 'def'=
    - =','.join(('abc', 'def'))=
    - ='{},{}'.format('abc', 'def')=
-   - =print('abc', 'def', sep=',')=
+   - print('abc', 'def', sep=',')
 
 ** combining I/O write operation
    #+BEGIN_SRC python
@@ -295,11 +301,23 @@
      for part in combine(sample(), 32768):
          f.write(part)
    #+END_SRC
+   - Example: write to socket send buffer
+
 ** escape
    - =html.escape=
    - =xml.escape=
 
 * Numbers
+** round
+   #+BEGIN_SRC python
+     round(1.29, 1)
+     # => 1.3
+     round(1245, -1)
+     # => 1240
+     round(1275, -1)
+     # => 1280
+   #+END_SRC
+
 ** Decimal
    #+BEGIN_SRC python
      from decimal import Decimal, localcontext
@@ -311,7 +329,80 @@
          print(a/b) # 2.6224
    #+END_SRC
 
+** Formatting
+   #+BEGIN_SRC python
+     x = 1234.56789
+     format(x, '0.2f')
+     # => '1234.57'   # round
+     format(x, '>10.1f')
+     # => '    1234.6'
+     format(x, '0,.1f')
+     # => '1,234.6
+
+     x = 1234
+     bin(x)  # others: oct, hex
+     # => '0b10011010010'
+     format(x, 'b')  # others: o, x
+     # => '0011010010'
+     int('10011010010', 2)
+     # => 1234
+   #+END_SRC
+
+** bytes-int conversion
+   #+BEGIN_SRC python
+     data = b'\x00\x124V\x00x\x90\xab\x00\xcd\xef\x01\x00#\x004'
+     x = int.from_bytes(data, 'little') # or 'big'
+     x.to_bytes(16, 'little')
+   #+END_SRC
+   useful in cryptography or networking domains
+
+** cmath for complex math
+** fractions for fraction calculation
+** random
+   - =random.choice=
+   - =random.sample=
+   - =random.shuffle=
+   - =random.randint=
+   - =random.random=: 0 to 1
+   - =random.getrandbits=
+*** seed
+    #+BEGIN_SRC python
+      random.seed()  # Seed based on system time or os.urandom()
+      random.seed(12345)  # Seed based on integer given
+      random.seed(b'bytedata')  # Seed based on byte data
+    #+END_SRC
+
+*** distribution
+    - =random.uniform=
+    - =random.gauss=
+
 ** math.f***
    - =math.fsum=
    - =math.fmod=
    - =math.fabs=
+* Datetime
+** Finding Last Friday
+   #+BEGIN_SRC python
+     from dateutil.relativedelta import relativedelta
+     from dateutil.rrule import FR
+     d = datetime.now()
+     print(d + relativedelta(weekday=FR(-1)))
+   #+END_SRC
+
+** Timezone
+   #+BEGIN_SRC python
+     import pytz
+     d = datetime.now() # no timezone info
+     print(d)
+     # => 2018-12-21 17:14:01.258941
+
+     shanghai = pytz.timezone('Asia/Shanghai')
+     loc_d = shanghai.localize(d) # Localize the date for Shanghai
+     print(loc_d)
+     # => 2018-12-21 17:14:01.258941+08:00
+
+     # Once the date has been localized, it can be converted to other time zones
+     utc_d = loc_d.astimezone(pytz.utc)
+     print(utc_d)
+     # => 2018-12-21 09:14:01.258941+00:00
+   #+END_SRC

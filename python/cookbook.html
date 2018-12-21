@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-08-16 Thu 09:59 -->
+<!-- 2018-12-20 Thu 13:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Python Cookbook</title>
@@ -257,7 +257,7 @@ for the JavaScript code in this tag.
 <li><a href="#org022c7e4">1.12. Sorting a List of Dictionaries</a></li>
 <li><a href="#orgf67ab97">1.13. Sorting Objects Without Native Comparison</a></li>
 <li><a href="#org4f5b6fa">1.14. groupby</a></li>
-<li><a href="#org76a21b0">1.15. compress</a></li>
+<li><a href="#org277504b">1.15. itertools.compress</a></li>
 <li><a href="#orge1682e6">1.16. namedtuple&amp;namedlist</a></li>
 <li><a href="#org9028366">1.17. sum, min,&#x2026;</a></li>
 <li><a href="#org90ca7ef">1.18. ChainMap</a>
@@ -265,6 +265,36 @@ for the JavaScript code in this tag.
 <li><a href="#org906b84d">1.18.1. store scoped values</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#orgfa0c0e9">2. String Manipulation</a>
+<ul>
+<li><a href="#orge605f2b">2.1. modules</a></li>
+<li><a href="#orgbdb39e4">2.2. re</a>
+<ul>
+<li><a href="#org67dab17">2.2.1. find</a></li>
+<li><a href="#org8fc36a7">2.2.2. replace</a></li>
+<li><a href="#org335fcef">2.2.3. regex</a></li>
+<li><a href="#org0ffe2db">2.2.4. tokenize</a></li>
+<li><a href="#org4b0de54">2.2.5. syntax parser</a></li>
+</ul>
+</li>
+<li><a href="#orgbce96df">2.3. format</a>
+<ul>
+<li><a href="#orgf42c8a5">2.3.1. align</a></li>
+<li><a href="#orgc216e82">2.3.2. safesub</a></li>
+<li><a href="#org798aaf0">2.3.3. textwrap</a></li>
+</ul>
+</li>
+<li><a href="#orga57e405">2.4. join</a></li>
+<li><a href="#org9fe29ef">2.5. combining I/O write operation</a></li>
+<li><a href="#orgb0f71e3">2.6. escape</a></li>
+</ul>
+</li>
+<li><a href="#org12fbaa4">3. Numbers</a>
+<ul>
+<li><a href="#org510c5d1">3.1. Decimal</a></li>
+<li><a href="#org3914fb4">3.2. math.f***</a></li>
 </ul>
 </li>
 </ul>
@@ -485,7 +515,8 @@ word_counts1 + word_counts2
 Since <code>groupby()</code> only examines consecutive items, should sort the groupby key first.
 </p>
 <div class="org-src-container">
-<pre class="src src-python">rows.sort<span style="color: #3a81c3;">(</span>key=itemgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'date'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> itertools <span style="color: #3a81c3; font-weight: bold;">import</span> groupby
+rows.sort<span style="color: #3a81c3;">(</span>key=itemgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'date'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
 <span style="color: #3a81c3; font-weight: bold;">for</span> date, items <span style="color: #3a81c3; font-weight: bold;">in</span> groupby<span style="color: #3a81c3;">(</span>rows, key=itemgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'date'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>:
     <span style="color: #3a81c3; font-weight: bold;">pass</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">alternative if memory is no concern, and faster than sort+groupby</span>
@@ -496,11 +527,11 @@ Since <code>groupby()</code> only examines consecutive items, should sort the gr
 </div>
 </div>
 </div>
-<div id="outline-container-org76a21b0" class="outline-3">
-<h3 id="org76a21b0"><span class="section-number-3">1.15</span> compress</h3>
+<div id="outline-container-org277504b" class="outline-3">
+<h3 id="org277504b"><span class="section-number-3">1.15</span> itertools.compress</h3>
 <div class="outline-text-3" id="text-1-15">
 <p>
-Takes an iterable and an accompanying Boolean selector sequence as input.
+Like boolean index in pandas. Takes an iterable and an accompanying Boolean selector sequence as input.
 <code>list(compress(data, mask))</code>
 </p>
 </div>
@@ -576,6 +607,233 @@ values<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</s
 </pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfa0c0e9" class="outline-2">
+<h2 id="orgfa0c0e9"><span class="section-number-2">2</span> String Manipulation</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orge605f2b" class="outline-3">
+<h3 id="orge605f2b"><span class="section-number-3">2.1</span> modules</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li><b>fnmatch</b>: Filename matching with shell patterns.</li>
+<li><b>glob</b>: Filename globbing utility.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbdb39e4" class="outline-3">
+<h3 id="orgbdb39e4"><span class="section-number-3">2.2</span> re</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-org67dab17" class="outline-4">
+<h4 id="org67dab17"><span class="section-number-4">2.2.1</span> find</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<ul class="org-ul">
+<li><code>match()</code></li>
+<li><code>findall()</code></li>
+<li><code>finditer()</code></li>
+<li><code>scaner()</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8fc36a7" class="outline-4">
+<h4 id="org8fc36a7"><span class="section-number-4">2.2.2</span> replace</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<ul class="org-ul">
+<li><code>sub</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org335fcef" class="outline-4">
+<h4 id="org335fcef"><span class="section-number-4">2.2.3</span> regex</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<ul class="org-ul">
+<li>named capture group: <code>r'?P&lt;TOKENNAME&gt;[a-zA-Z]+'</code></li>
+<li>noncapture</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0ffe2db" class="outline-4">
+<h4 id="org0ffe2db"><span class="section-number-4">2.2.4</span> tokenize</h4>
+<div class="outline-text-4" id="text-2-2-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> collections <span style="color: #3a81c3; font-weight: bold;">import</span> namedtuple
+<span style="color: #715ab1;">Token</span> = namedtuple<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Token'</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">'type'</span>, <span style="color: #2d9574;">'value'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">generate_tokens</span><span style="color: #3a81c3;">(</span>pat, text<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">scanner</span> = pat.scanner<span style="color: #3a81c3;">(</span>text<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">for</span> m <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">iter</span><span style="color: #3a81c3;">(</span>scanner.match, <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">yield</span> Token<span style="color: #3a81c3;">(</span>m.lastgroup, m.group<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Example use</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> tok <span style="color: #3a81c3; font-weight: bold;">in</span> generate_tokens<span style="color: #3a81c3;">(</span>master_pat, <span style="color: #2d9574;">'foo = 42'</span><span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>tok<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Produces output</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Token(type='NAME', value='foo')</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Token(type='WS', value=' ')</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Token(type='EQ', value='=')</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Token(type='WS', value=' ')</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Token(type='NUM', value='42')</span>
+</pre>
+</div>
+<p>
+<b>scanner()</b> method of pattern objects. This method creates a scanner object in which repeated calls to match() step through the
+supplied text one match at a time
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4b0de54" class="outline-4">
+<h4 id="org4b0de54"><span class="section-number-4">2.2.5</span> syntax parser</h4>
+<div class="outline-text-4" id="text-2-2-5">
+<ul class="org-ul">
+<li>PyParsing</li>
+<li>PLY</li>
+<li>Recipe: 2.19</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbce96df" class="outline-3">
+<h3 id="orgbce96df"><span class="section-number-3">2.3</span> format</h3>
+<div class="outline-text-3" id="text-2-3">
+</div>
+<div id="outline-container-orgf42c8a5" class="outline-4">
+<h4 id="orgf42c8a5"><span class="section-number-4">2.3.1</span> align</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3;">format</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'right'</span>, <span style="color: #2d9574;">'&gt;20'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">'               right'</span>
+<span style="color: #3a81c3;">format</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'right'</span>, <span style="color: #2d9574;">'=&gt;20'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">'===============right'</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc216e82" class="outline-4">
+<h4 id="orgc216e82"><span class="section-number-4">2.3.2</span> safesub</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">safesub</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">dict</span><span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">__missing__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, key<span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #2d9574;">'{'</span> + key + <span style="color: #2d9574;">'}'</span>
+
+<span style="color: #715ab1;">name</span> = <span style="color: #2d9574;">'ABC'</span>
+<span style="color: #715ab1;">n</span> = <span style="color: #4e3163;">5</span>
+<span style="color: #715ab1;">s</span> = <span style="color: #2d9574;">'{name} has {n} messages.'</span>
+s.format_map<span style="color: #3a81c3;">(</span>safesub<span style="color: #6c3163;">(</span><span style="color: #3a81c3;">vars</span><span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">'ABC has 5 messages.'</span>
+</pre>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="org0ae65a9"></a>frame hack<br />
+<div class="outline-text-5" id="text-org0ae65a9">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">sub</span><span style="color: #3a81c3;">(</span>text<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> text.format_map<span style="color: #3a81c3;">(</span>safesub<span style="color: #6c3163;">(</span>sys._getframe<span style="color: #2d9574;">(</span><span style="color: #4e3163;">1</span><span style="color: #2d9574;">)</span>.f_locals<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org798aaf0" class="outline-4">
+<h4 id="org798aaf0"><span class="section-number-4">2.3.3</span> textwrap</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+<code>textwrap.fill()</code> reformat text for output.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga57e405" class="outline-3">
+<h3 id="orga57e405"><span class="section-number-3">2.4</span> join</h3>
+<div class="outline-text-3" id="text-2-4">
+<ul class="org-ul">
+<li><code>'abc' + ',' + 'def'</code></li>
+<li><code>'abc' ',' 'def'</code></li>
+<li><code>','.join(('abc', 'def'))</code></li>
+<li><code>'{},{}'.format('abc', 'def')</code></li>
+<li><code>print('abc', 'def', sep</code>',')=</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9fe29ef" class="outline-3">
+<h3 id="org9fe29ef"><span class="section-number-3">2.5</span> combining I/O write operation</h3>
+<div class="outline-text-3" id="text-2-5">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">combine</span><span style="color: #3a81c3;">(</span>source, maxsize<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">parts</span> = <span style="color: #3a81c3;">[]</span>
+    <span style="color: #715ab1;">size</span> = <span style="color: #4e3163;">0</span>
+    <span style="color: #3a81c3; font-weight: bold;">for</span> part <span style="color: #3a81c3; font-weight: bold;">in</span> source:
+        parts.append<span style="color: #3a81c3;">(</span>part<span style="color: #3a81c3;">)</span>
+        <span style="color: #715ab1;">size</span> += <span style="color: #3a81c3;">len</span><span style="color: #3a81c3;">(</span>part<span style="color: #3a81c3;">)</span>
+        <span style="color: #3a81c3; font-weight: bold;">if</span> size &gt; maxsize:
+            <span style="color: #3a81c3; font-weight: bold;">yield</span> <span style="color: #2d9574;">''</span>.join<span style="color: #3a81c3;">(</span>parts<span style="color: #3a81c3;">)</span>
+            <span style="color: #715ab1;">parts</span> = <span style="color: #3a81c3;">[]</span>
+            <span style="color: #715ab1;">size</span> = <span style="color: #4e3163;">0</span>
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> <span style="color: #2d9574;">''</span>.join<span style="color: #3a81c3;">(</span>parts<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">for</span> part <span style="color: #3a81c3; font-weight: bold;">in</span> combine<span style="color: #3a81c3;">(</span>sample<span style="color: #6c3163;">()</span>, <span style="color: #4e3163;">32768</span><span style="color: #3a81c3;">)</span>:
+    f.write<span style="color: #3a81c3;">(</span>part<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb0f71e3" class="outline-3">
+<h3 id="orgb0f71e3"><span class="section-number-3">2.6</span> escape</h3>
+<div class="outline-text-3" id="text-2-6">
+<ul class="org-ul">
+<li><code>html.escape</code></li>
+<li><code>xml.escape</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org12fbaa4" class="outline-2">
+<h2 id="org12fbaa4"><span class="section-number-2">3</span> Numbers</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org510c5d1" class="outline-3">
+<h3 id="org510c5d1"><span class="section-number-3">3.1</span> Decimal</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> decimal <span style="color: #3a81c3; font-weight: bold;">import</span> Decimal, localcontext
+<span style="color: #715ab1;">a</span> = Decimal<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'6.32'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">b</span> = Decimal<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'2.41'</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">with</span> localcontext<span style="color: #3a81c3;">()</span> <span style="color: #3a81c3; font-weight: bold;">as</span> ctx:
+    <span style="color: #715ab1;">ctx.prec</span> = <span style="color: #4e3163;">5</span>
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>a/b<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2.6224</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3914fb4" class="outline-3">
+<h3 id="org3914fb4"><span class="section-number-3">3.2</span> math.f***</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li><code>math.fsum</code></li>
+<li><code>math.fmod</code></li>
+<li><code>math.fabs</code></li>
+</ul>
 </div>
 </div>
 </div>
