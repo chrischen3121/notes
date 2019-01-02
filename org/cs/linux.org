@@ -436,8 +436,60 @@ share files by way of the group mechanism, create separate groups for that purpo
    - =wc=: count lines, words, and characters
    - =tee=: copy input to two places
 *** grep
-    | -i, --ignore-case  |                    |
-    | -v, --invert-match | -v, --invert-match |
+    | -i, --ignore-case  |                                                             |
+    | -v, --invert-match | Invert the sense of matching, to select non-matching lines. |
+
+** Expansion
+*** Arithmetic Expansion
+    #+BEGIN_SRC sh
+      echo $((2 + 2))
+    #+END_SRC
+
+*** Brace Expansion
+    #+BEGIN_SRC sh
+      echo Number_{1..5}
+      # => Number_1 Number_2 Number_3 Number_4 Number_5
+
+      echo {Z..A}
+      # => Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
+
+      echo a{A{1,2},B{3,4}}b
+      # => aA1b aA2b aB3b aB4b
+
+      mkdir {2009..2011}-0{1..9} {2009..2011}-{10..12}
+    #+END_SRC
+
+*** Command Substitution
+    #+BEGIN_SRC sh
+      echo $(ls)
+      ls -l $(which cp)
+      # same as
+      ls -l `which cp` # old syntax
+    #+END_SRC
+
+*** Quoting
+    #+BEGIN_SRC sh
+      echo text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER
+      # => text /home/me/ls-output.txt a b foo 4 me
+
+      echo "text ˜/*.txt {a,b} $(echo foo) $((2+2)) $USER"
+      # => text ˜/*.txt {a,b} foo 4 me
+
+      echo 'text ˜/*.txt {a,b} $(echo foo) $((2+2)) $USER' # suppress all expansions
+      # => text ˜/*.txt {a,b} $(echo foo) $((2+2)) $USER
+    #+END_SRC
+
+*** Escaping Characters
+    | \a | Beep            |
+    | \b | Backspace       |
+    | \n | Newline         |
+    | \r | Carriage return |
+    | \t | Tab             |
+    #+BEGIN_SRC sh
+      sleep 10; echo -e  "Time's up\a"
+      # or
+      sleep 10; echo "Time's up" $'\a'
+    #+END_SRC
 
 ** try to write script
    #+BEGIN_SRC bash
