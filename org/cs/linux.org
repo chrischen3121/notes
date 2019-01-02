@@ -353,28 +353,91 @@ share files by way of the group mechanism, create separate groups for that purpo
 * Shell command
 ** File System
 *** ~ls~
-    common options:
-    | -a(--all)            | do not ignore entries starting with .           |
-    | -d(--directory)      | list directories themselves, not their contents |
-    | -F(--classify)       | append indicator to entries                     |
-    | -h(--human-readable) | print human readable sizes                      |
-    | -r(--reverse)        | reverse order while sorting                     |
+    | -a, --all            | do not ignore entries starting with .           |
+    | -d, --directory      | list directories themselves, not their contents |
+    | -F, --classify       | append indicator to entries                     |
+    | -h, --human-readable | print human readable sizes                      |
+    | -r, --reverse        | reverse order while sorting                     |
     | -S                   | sort by file size, largest first                |
     | -t                   | sort by modification time, newest first         |
-
 *** ~file~
     determine file type
+*** ~less~, ~head~, ~tail~
+*** ~mkdir~
+*** ~cp~
+    | -a, --archive     | Copy the files and directories and all of their attributes, including ownerships and permissions.                                                                           |
+    | -i, --interactive | Before overwriting an existing file, prompt the user for confirmation.                                                                                                      |
+    | -r, --recursive   | Recursively copy directories and their contents.                                                                                                                            |
+    | -u, --update      | When copying files from one directory to another, copy only files that either don’t exist or are newer than the existing corresponding files in the destination directory. |
+    | -v, --verbose     | Display informative messages as the copy is performed.                                                                                                                      |
+*** ~mv~
+    similar to cp, common options: -i, -u, -v
 
-*** ~less~
+*** ~rm~
+    similar to cp, common options: -i, -r, -v
+    | -f, --force | Ignore nonexistent files and do not prompt. This overrides the --interactive option. |
+
+*** ~ln~
+    - create soft link: ~ln file link~
+    - create hard link: ~ln -s item link~
+**** hard link limitation
+     - A hard link cannot reference a file outside its own filesystem. This means a link
+     cannot reference a file that is not on the same disk partition as the link itself.
+     - A hard link cannot reference a directory.
+
+*** GLOB pattern
+    | Wildcard        | Matches                                                  |
+    |-----------------+----------------------------------------------------------|
+    | =*=             | Any characters                                           |
+    | =?=             | Any single character                                     |
+    | =[characters]=  | Any character that is a member of the set ~characters~   |
+    | =[!characters]= | Any character that is not a member of the set characters |
+    | =[CLASS]=       | Any character that is a member of the specified class    |
+
+**** most commonly used character classes
+     | =[:alnum:]= | Any alphanumeric character |
+     | =[:alpha:]= | Any alphabetic character   |
+     | =[:digit:]= | Any numeral                |
+     | =[:lower:]= | Any lowercase letter       |
+     | =[:upper:]= | Any uppercase letter       |
+
+** Command Related
+   - =which=: Display which executable program will be executed.
+   - =man=: Display a command’s manual page.
+   - =apropos=: Display a list of appropriate commands. same as =man -k=
+   - =info=: Display a command’s info entry.
+   - =whatis=: Display a very brief description of a command.
+
+*** =type=
+    Indicate how a command name is interpreted. All types:
+    - An executable program
+    - A command built into the shell itself(e.g. cd)
+    - A shell function
+    - An alias(e.g. ls)
+
+*** =alias=
+    Create an alias for a command.
+    #+BEGIN_SRC sh
+      alias foo='cd /usr; ls; cd -'
+      alias # list all aliases
+    #+END_SRC
+
+** Redirection
+*** Redirecting stdout and stderr to one file
+    #+BEGIN_SRC sh
+      some-command > output.txt 2>&1 # old version, the order of the redirections is significant.
+      some-command &> output.txt
+    #+END_SRC
 
 ** Filters
-   - cut: separate lines into fields
-   - sort: sort lines
-   - uniq: print unique lines
-   - wc: count lines, words, and characters
-   - tee: copy input to two places
-   - head & tail
-   - grep: g/regular-expression/p
+   - =cut=: separate lines into fields
+   - =sort=: sort lines
+   - =uniq=: print unique lines
+   - =wc=: count lines, words, and characters
+   - =tee=: copy input to two places
+*** grep
+    | -i, --ignore-case  |                    |
+    | -v, --invert-match | -v, --invert-match |
 
 ** try to write script
    #+BEGIN_SRC bash
