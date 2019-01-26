@@ -9,3 +9,36 @@
   - How to distribute data across a cluster to achieve scale in processing
   - The use of key/value pairs and partitions to group distributed data together
   - Instead of avoiding failure, embracing failure by using replication
+
+* Installing
+  See [[https://github.com/wurstmeister/kafka-docker]]
+  - Change environment ~KAFKA_ADVERTISED_HOST_NAME~
+
+** Verifying
+   #+BEGIN_SRC bash
+     kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+     kafka-topics.sh --zookeeper localhost:2181 --describe --topic test
+     kafka-console-producer.sh --broker-list localhost:32772 --topic test
+     kafka-console-consumer.sh --bootstrap-server localhost:32772 --topic test --from-beginning
+   #+END_SRC
+
+** Choose Number of Partitions
+   Book REF: HOW TO CHOOSE THE NUMBER OF PARTITIONS
+   - suggestion
+
+     If you have some estimate regarding the target throughput of the topic and the
+     expected throughput of the consumers, you can divide the target throughput by
+     the expected consumer throughput and derive the number of partitions this way.
+     So if I want to be able to write and read 1 GB/sec from a topic, and I know each
+     consumer can only process 50 MB/s, then I know I need at least 20 partitions.
+     This way, I can have 20 consumers reading from the topic and achieve 1 GB/sec.
+     If you don’t have this detailed information, our experience suggests that limiting
+     the size of the partition on the disk to less than 6 GB per day of retention often
+     gives satisfactory results.
+
+** Log Configuration
+   - ~log.retention.ms~: The most common configuration for how long Kafka will retain messages is by time.
+   - ~log.retention.bytes~: Another way to expire messages is based on the total number of bytes of messages retained.
+   - ~log.segment.bytes~
+   - ~log.segment.ms~
+   - ~message.max.bytes~: The Kafka broker limits the maximum size of a message that can be produced.
