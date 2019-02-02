@@ -2,8 +2,8 @@
 #+KEYWORDS: python, cookbook
 #+OPTIONS: H:3 toc:3 num:3 ^:nil
 #+LANGUAGE: en-US
-#+AUTHOR: ChrisChen
-#+EMAIL: ChrisChen3121@gmail.com
+#+AUTHOR: chrischen
+#+EMAIL: chrischen3121@gmail.com
 #+SETUPFILE: ../../org-templates/level-1.org
 #+STARTUP: inlineimages
 * Data Structures and Algorithms
@@ -405,4 +405,23 @@
      utc_d = loc_d.astimezone(pytz.utc)
      print(utc_d)
      # => 2018-12-21 09:14:01.258941+00:00
+   #+END_SRC
+
+* Iterator
+** Manually Consuming an Iterator
+   #+BEGIN_SRC python
+     iterable = iter(range(5))  # Invokes range.__iter__()
+     try:
+         while True:
+             line = next(iterable)  # Invokes iterable.__next__()
+             print(line, end='')
+     except StopIteration:
+         pass
+
+     # non exception version
+     while True:
+         line = next(iterable, None)
+         if line is None:
+             break
+         print(line, end='')
    #+END_SRC
