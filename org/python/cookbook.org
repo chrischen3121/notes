@@ -1,6 +1,6 @@
 #+TITLE: Python Cookbook
 #+KEYWORDS: python, cookbook
-#+OPTIONS: H:3 toc:3 num:3 ^:nil
+#+OPTIONS: H:3 toc:1 num:3 ^:nil
 #+LANGUAGE: en-US
 #+AUTHOR: chrischen
 #+EMAIL: chrischen3121@gmail.com
@@ -284,7 +284,7 @@
    - ='{},{}'.format('abc', 'def')=
    - print('abc', 'def', sep=',')
 
-** combining I/O write operation
+** Combining I/O Write Operation
    #+BEGIN_SRC python
      def combine(source, maxsize):
          parts = []
@@ -306,6 +306,42 @@
 ** escape
    - =html.escape=
    - =xml.escape=
+
+** Tokenizing Text
+   #+BEGIN_SRC python
+     import re
+     from collections import namedtuple
+
+     NAME = r'(?P<NAME>[a-zA-Z_][a-zA-Z_0-9]*)'
+     NUM = r'(?P<NUM>\d+)'
+     PLUS = r'(?P<PLUS>\+)'
+     TIMES = r'(?P<TIMES>\*)'
+     EQ = r'(?P<EQ>=)'
+     WS = r'(?P<WS>\s+)'
+
+     master_pat = re.compile('|'.join([NAME, NUM, PLUS, TIMES, EQ, WS]))
+
+     Token = namedtuple('Token', ['type', 'value'])
+
+
+     def generate_tokens(pat, text):
+         # scanner method creates a scanner object in which repeated calls to match()
+         # step through the supplied text one match at a time
+         scanner = pat.scanner(text)
+         for m in iter(scanner.match, None):
+             yield Token(m.lastgroup, m.group())
+
+
+     tokens = (tok for tok in generate_tokens(master_pat, 'foo = 42')
+               if tok.type != 'WS')
+     for tok in tokens:
+         print(tok)
+
+     # Produces output
+     # Token(type='NAME', value='foo')
+     # Token(type='EQ', value='=')
+     # Token(type='NUM', value='42')
+   #+END_SRC
 
 * Numbers
 ** round
@@ -348,16 +384,55 @@
      # => 1234
    #+END_SRC
 
-** bytes-int conversion
+** Bin, Oct, Hex Int
+   #+BEGIN_SRC python
+     x = -1234
+     format(x, 'b')
+     #=> '-10011010010'
+     format(x, 'x')
+     #=> '-4d2'
+     format(2**32 + x, 'b')
+     #=> '11111111111111111111101100101110'
+     format(2**32 + x, 'x')
+     #=> 'fffffb2e'
+     int('4d2', 16)
+     #=> 1234
+     int('10011010010', 2)
+     #=> 1234
+   #+END_SRC
+
+** Bytes2Int
    #+BEGIN_SRC python
      data = b'\x00\x124V\x00x\x90\xab\x00\xcd\xef\x01\x00#\x004'
-     x = int.from_bytes(data, 'little') # or 'big'
+     x = int.from_bytes(data, 'little')  # or 'big
+
+     x = 94522842520747284487117727783387188
      x.to_bytes(16, 'little')
    #+END_SRC
    useful in cryptography or networking domains
+   - ~struct~ module
+   - ~int.bit_length()~
 
-** cmath for complex math
-** fractions for fraction calculation
+** Complex Math
+   #+BEGIN_SRC python
+     a = complex(2, 4)
+     b = 3 - 5j
+     a.conjugate()
+     #=> (2-4j)
+     abs(a)
+     #=> 4.47213595499958
+     a * b
+     #=> (26+2j)
+
+     import cmath
+     cmath.sin(a)
+     #=> (24.83130584894638-11.356612711218174j)
+
+     import numpy as np
+     a = np.array([2 + 3j, 4 + 5j, 6 - 7j, 8 + 9j])
+     np.sin(a)
+   #+END_SRC
+
 ** random
    - =random.choice=
    - =random.sample=
@@ -380,6 +455,7 @@
    - =math.fsum=
    - =math.fmod=
    - =math.fabs=
+
 * Datetime
 ** Finding Last Friday
    #+BEGIN_SRC python
@@ -424,4 +500,110 @@
          if line is None:
              break
          print(line, end='')
+   #+END_SRC
+   - Python’s iterator protocol requires ~__iter__()~ to return a special iterator object that implements a ~__next__()~ method to carry out the actual iteration.
+** Iterating Over Multi Sequences
+   #+BEGIN_SRC python
+     a = [1, 2, 3]
+     b = ['w', 'x', 'y', 'z']
+
+     for i in zip(a, b):
+         print(i)
+     #=> (1, 'w') (2, 'x') (3, 'y')
+
+     from itertools import zip_longest
+     for i in zip_longest(a, b):
+         print(i)
+     #=> (1, 'w') (2, 'x') (3, 'y') (None, 'z')
+   #+END_SRC
+
+** ~dropwhile~
+   Drop all of the initial comment lines.
+
+** Permutation & Combination
+   - ~combinations~, ~permutations~, ~combinations_with_replacement~
+
+** ~itertools.chain~
+   Concatenate two iterables(copy-free)
+** Data Processing Pipelines
+** Flattening a Nested Sequence
+   #+BEGIN_SRC python
+     from collections import Iterable
+
+
+     def flatten(items, ignore_types=(str, bytes)):
+         for x in items:
+             if isinstance(x, Iterable) and not isinstance(x, ignore_types):
+                 yield from flatten(x)
+             else:
+                 yield x
+
+     items = ['Dave', 'Paula', ['Thomas', 'Lewis']]
+     for x in flatten(items):
+         print(x)
+   #+END_SRC
+** Merge Two Sorted Iterables
+   #+BEGIN_SRC python
+     import heapq
+     a = [1, 4, 7, 10]
+     b = [2, 5, 6, 11]
+     for c in heapq.merge(a, b):
+         print(c)
+   #+END_SRC
+** ~iter()~
+   <<iter>>
+   ~iter()~ optionally accepts a zero-argument *callable* and *sentinel* (terminating) value as inputs.
+   #+BEGIN_SRC python
+     for chunk in iter(lambda: fs.read(10), ''):
+         print(chunk)
+   #+END_SRC
+* I/O
+** Encoding
+   #+BEGIN_SRC python
+     with open('somefile.txt', 'rt', encoding='latin-1') as f:
+         ...
+   #+END_SRC
+   *latin-1* encoding is notable in that it will never produce a decoding error when reading text of a possibly unknown encoding.
+   #+BEGIN_SRC python
+     # Replace bad chars with Unicode U+fffd replacement char
+     open('sample.txt', 'rt', encoding='ascii', errors='replace')
+
+     # Ignore bad chars entirely
+     open('sample.txt', 'rt', encoding='ascii', errors='ignore')
+   #+END_SRC
+** ~readinto~
+   #+BEGIN_SRC python
+     import array
+     a = array.array('i', [0, 0, 0, 0, 0, 0, 0, 0])
+     with open('data.bin', 'rb') as f:
+         f.readinto(a)
+   #+END_SRC
+   ~readinto()~ fills the contents of an existing buffer
+   - One caution with using ~f.readinto()~~ is that you must always make sure to check its return code, which is the number of bytes actually read.
+** ~io.StringIO~, ~io.BytesIO~
+** ~gzip.open~, ~bz2.open~
+** Iterating Over Fixed-Sized Records
+   #+BEGIN_SRC python
+     from functools import partial
+
+     RECORD_SIZE = 32
+
+     with open('somefile.data', 'rb') as f:
+         records = iter(partial(f.read, RECORD_SIZE), b'')
+         for r in records:
+             ...
+   #+END_SRC
+   - [[iter]]
+
+** ~nmap~
+   Use the mmap module to memory map files for random access to its contents or to make in-place modifications.
+
+** ~memoryview~
+   #+BEGIN_SRC python
+     buf = bytearray(b'Hello World')
+     m1 = memoryview(buf)
+     m2 = m1[-5:]
+     #m2=> <memory at 0x100681390>
+     m2[:] = b'WORLD'
+     #buf=> bytearray(b'Hello WORLD')
    #+END_SRC
