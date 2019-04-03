@@ -149,14 +149,22 @@
    Like boolean index in pandas. Takes an iterable and an accompanying Boolean selector sequence as input.
    =list(compress(data, mask))=
 
-** namedtuple&namedlist
+** namedtuple & namedlist
    optional or missing fields
    #+BEGIN_SRC python
      Stock = namedtuple('Stock', ['name', 'shares', 'price', 'date', 'time'])
+     Stock.__new__.__defaults__ = ('', 0, 0, None, None)
+     # or
      stock_prototype = Stock('', 0, 0.0, None, None)
+
      def dict_to_stock(s):
          return stock_prototype._replace(**s)
    #+END_SRC
+*** useful method
+    - ~_make~: Make a new Stock object from a sequence or iterable
+    - ~_replace~
+    - ~_fields~
+    - ~_asdict~
 
 ** sum, min,...
    #+BEGIN_SRC python

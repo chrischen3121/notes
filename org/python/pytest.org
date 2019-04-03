@@ -1,0 +1,36 @@
+#+TITLE: Pytest
+#+KEYWORDS: python, test, pytest
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SETUPFILE: ../../org-templates/level-1.org
+#+STARTUP: inlineimages
+* Intro
+** Test Discovery
+   - Test files should be named ==test_<something>.py= or =<something>_test.py=.
+   - Test methods and functions should be named =test_<something>=.
+   - Test classes should be named =Test<Something>=.
+
+** Useful Options
+   - ~--collect-only~
+   - ~-v, --verbose~
+   - ~-x, --exitfirst~: useful when debugging a problem
+   - ~-s, --capture=method~: method should be one of =fd|sys|no=. ~-s~ is shortcut for ~--capture=no~
+   - ~–lf, --last-failed~: only run last failing tests, or use ~–ff, –failed-first~
+   - ~-l, --showlocals~: local variables and their values are displayed with tracebacks for failing tests
+   - ~--tb=style~: useful styles =short=, =line=, and =no=
+   - ~--durations=N~: show N slowest setup/test durations (N=0 for all), helpful to speed up testing
+
+* Markers
+  Markers are one of the best ways to mark a subset of your test functions so that they can be run together.
+  #+BEGIN_SRC python
+    import pytest
+
+    @pytest.mark.somemark
+    def test_func():
+        pass
+  #+END_SRC
+  #+BEGIN_SRC bash
+    pytest -v -m somemark
+  #+END_SRC
