@@ -603,10 +603,12 @@
    #+END_SRC
    - [[iter]]
 
-** ~nmap~
-   Use the mmap module to memory map files for random access to its contents or to make in-place modifications.
+** In-memory Modification
+*** ~nmap~
+    Use the ~mmap~ module to memory map files for random access to its contents or to make in-place modifications.
+    - ~nmap~ also can be used to exchange data between interpreters
 
-** ~memoryview~
+*** ~memoryview~
    #+BEGIN_SRC python
      buf = bytearray(b'Hello World')
      m1 = memoryview(buf)
@@ -615,3 +617,104 @@
      m2[:] = b'WORLD'
      #buf=> bytearray(b'Hello WORLD')
    #+END_SRC
+
+** ~os.path~
+   #+BEGIN_SRC python
+     os.path.basename(path)
+     os.path.dirname(path)
+     os.path.expanduser(path)
+     os.path.splitext(path)  # Split the file extension
+     os.path.exists(path)
+     os.path.isfile(path) # isdir, islink
+     os.path.realpath('/usr/local/bin/python3') # => '/usr/local/bin/python3.3'
+     os.path.getsize() # getmtime
+     os.listdir(dir)
+   #+END_SRC
+   - other module: ~glob~, ~fnmatch~ used for filename matching
+** Changing Encoding of a File
+   #+BEGIN_SRC python
+     import io
+     # decode a binary file
+     with open('some_binary_file.bin', 'rb') as open_file:
+         fs = io.TextIOWrapper(open_file, encoding='utf8')
+         text = fs.read()
+
+     # change encoding
+     import sys
+     sys.stdout.encoding  #=> 'UTF-8'
+     # use its detach() method to remove the existing text encoding layer before replacing it with a new one
+     sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='latin-1')
+     sys.stdout.encoding #=> 'latin-1'
+   #+END_SRC
+   - layers on I/O:
+   #+BEGIN_SRC python
+     f = open('sample.txt', 'w')
+     # a text-handling layer that encodes and decodes Unicode
+     f # => <_io.TextIOWrapper name='sample.txt' mode='w' encoding='UTF-8'>
+
+     # a buffered I/O layer that handles binary data
+     f.buffer # => <_io.BufferedWriter name='sample.txt'>
+     f.buffer.write(b'hello\n') # write bytes to a text file
+
+     # io.FileIO is a raw file representing the low-level file descriptor in the operating system
+     f.buffer.raw # => <_io.FileIO name='sample.txt' mode='wb'>
+   #+END_SRC
+   - ~detach~: disconnects the topmost layer of a file and returns the next lower layer.
+
+** File Descriptor
+   #+BEGIN_SRC python
+     # Create a file object, but don't close underlying fd when done
+     f = open(fd, 'wt', closefd=False)
+
+     def echo_client(client_sock, addr):
+         print('Got connection from', addr)
+
+         # Make text-mode file wrappers for socket reading/writing, only works on Unix-based systems
+         # Use the makefile() method of sockets instead to be cross platform
+         client_in = open(client_sock.fileno(), 'rt', encoding='latin-1',
+                              closefd=False)
+         client_out = open(client_sock.fileno(), 'wt', encoding='latin-1',
+                               closefd=False)
+
+         # Echo lines back to the client using file I/O
+         for line in client_in:
+             client_out.write(line)
+             client_out.flush()
+         client_sock.close()
+   #+END_SRC
+** Temporary Files
+   #+BEGIN_SRC python
+     from tempfile import TemporaryFile, NamedTemporaryFile, TemporaryDirectory
+     with TemporaryFile('w+t', encoding='utf-8', errors='ignore') as f:
+         f.write('Hello World\n')
+
+     with NamedTemporaryFile(
+             'w+t', delete=False, prefix='mytemp', suffix='.txt', dir='/tmp') as f:
+         print('filename is:', f.name)  #=> /tmp/mytemp2tmz4nl5.txt
+
+     with TemporaryDirectory() as dirname:
+         print('dirname is:', dirname)
+   #+END_SRC
+
+** Serializing Python Objects
+   ~pickle~ is a Python-specific self-describing data encoding
+*** Dealing with Multiple Objects
+    #+BEGIN_SRC python
+      import pickle
+      with open('somedata', 'wb') as fs:
+          pickle.dump([1, 2, 3, 4], fs)
+          pickle.dump('hello', fs)
+
+      with open('somedata', 'rb') as fs:
+          pickle.load(fs) # => [1, 2, 3, 4]
+          pickle.load(fs) # => hello
+    #+END_SRC
+
+*** Safety
+    ~pickle.load()~ should never be used on untrusted data
+
+*** User-defined Classes
+    Certain kinds of objects can’t be pickled. These are typically objects that involve some sort of external system state, such as open files,
+    open network connections, threads, processes, stack frames, and so forth. User-defined classes can sometimes work around these limitations
+    by providing ~__getstate__()~ and ~__setstate__()~ methods
+    - ~pickle.dump()~ will call ~__getstate__()~ to get an object that can be pickled
