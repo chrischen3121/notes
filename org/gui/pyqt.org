@@ -8,35 +8,10 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+SETUPFILE: ../../org-templates/level-1.org
-* modules
-** QObject
-   - A widget that has no parent is a top-level window
-   - Adding to layout automatically reparented to the container widget
-
-** QtCore
-   SIGNAL, QTime, QTimer
-*** Qt
-    QT.SplashScreen
-
-** QtGui
-*** QApplication
-*** QDialog
-    - setLayout
-    - connect
-*** Widgets
-    - QLable
-    - QTextBrowser: a read-only multi-line text box that can display both plain text and HTML
-    - QLineEdit: a single-line editable text box that displays plain text
-    - QDial
-    - QSpinBox
-**** QDockWidget
-     need to explicitly pass a parent to it. It will be deleted when its parent is deleted.
-     - setAllowedAreas()
-     - setFeatures()
-
-*** QAction
-*** Layouts
-    QVBoxLayoutx
+* Modules
+  - ~QtCore~
+  - ~QtWidgets~
+  - ~QtGui~
 
 * Dialogs
 ** Dumb Dialogs
@@ -72,7 +47,7 @@
      self.connect(dialog, SIGNAL("changed"), self.refreshSomeWidgets)
      dialog.show()
    #+END_SRC
-*** live
+*** Live
     #+BEGIN_SRC python
       if self.dialog is None:
           self.dialog = FakeDlg(
@@ -82,13 +57,42 @@
       self.dialog.activateWindow()
     #+END_SRC
 
-* Signal
-** short-circuit
-    If we use the SIGNAL() function with an identifier but no parentheses, we are
-    specifying a short-circuit signal.
+* Model
+** ~QtCore.QModelIndex~
+   Every data item in the model can be identified by a unique ~QModelIndex~.
+   Each model index has three important attributes: a row, a column, and a parent.
 
-** Qt/Python signal
-    If we use the SIGNAL() function with a signalSignature (a possibly empty paren-
-    thesized list of comma-separated PyQt types), we are specifying either a
-    Python or a Qt signal. (A Python signal is one that is emitted in Python code; a
-    Qt signal is one emitted from an underlying C++ object.
+** Model Classification
+    - List(1D): Lists are just tables with a single column.
+    - Table(2D)
+    - Trees(Hierarchical)
+
+*** ~QAbstractListModel~
+*** ~QAbstractTableModel~
+**** APIs for read-only
+    - ~data~
+    - ~rowCount~
+    - ~columnCount~
+    - ~headerData~
+
+**** APIs for editable
+    - ~flags~
+    - ~setData~
+    - ~insertRows~
+    - ~removeRows~
+
+*** ~QAbstractTreeModel~
+
+*** ~QListWidget~, ~QTableWidget~, and ~QTreeWidget~
+    are views with models and delegates aggregated inside them.
+
+*** Pure Views
+    ~QListView~, ~QTableView~, and ~QTreeView~
+
+** Method
+*** ~data~ & ~setData~
+
+** Built-in Models
+   - ~QStringListModel~
+   - ~QDirModel~
+   - ~QSqlTableModel~

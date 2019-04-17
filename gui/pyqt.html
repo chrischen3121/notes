@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-08-16 Thu 09:25 -->
+<!-- 2019-04-17 Wed 14:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PyQt</title>
@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -188,7 +201,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -237,111 +250,42 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6851151">1. modules</a>
+<li><a href="#org39f0046">1. Modules</a></li>
+<li><a href="#org56494a7">2. Dialogs</a>
 <ul>
-<li><a href="#org4385d39">1.1. QtCore</a></li>
-<li><a href="#org8fa49ca">1.2. QtGui</a></li>
+<li><a href="#org2fa86f7">2.1. Dumb Dialogs</a></li>
+<li><a href="#org2ade246">2.2. Standard Dialogs</a></li>
+<li><a href="#org0039b9b">2.3. Smart Dialogs</a></li>
 </ul>
 </li>
-<li><a href="#orgbef8055">2. Dialogs</a>
+<li><a href="#org5574f06">3. Model</a>
 <ul>
-<li><a href="#org48fa592">2.1. Dumb Dialogs</a></li>
-<li><a href="#org8a780a0">2.2. Standard Dialogs</a></li>
-<li><a href="#org4cb8806">2.3. Smart Dialogs</a></li>
-</ul>
-</li>
-<li><a href="#orgc95e4af">3. Signal</a>
-<ul>
-<li><a href="#orgd35e869">3.1. short-circuit</a></li>
-<li><a href="#org02bea14">3.2. Qt/Python signal</a></li>
+<li><a href="#orgb2e3844">3.1. <code>QtCore.QModelIndex</code></a></li>
+<li><a href="#orga7bb21e">3.2. Model Classification</a></li>
+<li><a href="#orgcf3d9a9">3.3. Method</a></li>
+<li><a href="#org18def64">3.4. Built-in Models</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org6851151" class="outline-2">
-<h2 id="org6851151"><span class="section-number-2">1</span> modules</h2>
+<div id="outline-container-org39f0046" class="outline-2">
+<h2 id="org39f0046"><span class="section-number-2">1</span> Modules</h2>
 <div class="outline-text-2" id="text-1">
-</div>
-<div id="outline-container-org4385d39" class="outline-3">
-<h3 id="org4385d39"><span class="section-number-3">1.1</span> QtCore</h3>
-<div class="outline-text-3" id="text-1-1">
-<p>
-SIGNAL, QTime, QTimer
-</p>
-</div>
-<div id="outline-container-orge0803d6" class="outline-4">
-<h4 id="orge0803d6"><span class="section-number-4">1.1.1</span> Qt</h4>
-<div class="outline-text-4" id="text-1-1-1">
-<p>
-QT.SplashScreen
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org8fa49ca" class="outline-3">
-<h3 id="org8fa49ca"><span class="section-number-3">1.2</span> QtGui</h3>
-<div class="outline-text-3" id="text-1-2">
-</div>
-<div id="outline-container-orgffa50b7" class="outline-4">
-<h4 id="orgffa50b7"><span class="section-number-4">1.2.1</span> QApplication</h4>
-</div>
-<div id="outline-container-org6899890" class="outline-4">
-<h4 id="org6899890"><span class="section-number-4">1.2.2</span> QDialog</h4>
-<div class="outline-text-4" id="text-1-2-2">
 <ul class="org-ul">
-<li>setLayout</li>
-<li>connect</li>
+<li><code>QtCore</code></li>
+<li><code>QtWidgets</code></li>
+<li><code>QtGui</code></li>
 </ul>
-</div>
-</div>
-<div id="outline-container-org693cae9" class="outline-4">
-<h4 id="org693cae9"><span class="section-number-4">1.2.3</span> Widgets</h4>
-<div class="outline-text-4" id="text-1-2-3">
-<ul class="org-ul">
-<li>QLable</li>
-<li>QTextBrowser: a read-only multi-line text box that can display both plain text and HTML</li>
-<li>QLineEdit: a single-line editable text box that displays plain text</li>
-<li>QDial</li>
-<li>QSpinBox</li>
-</ul>
-</div>
-<ul class="org-ul">
-<li><a id="org12219c3"></a>QDockWidget<br />
-<div class="outline-text-5" id="text-org12219c3">
-<p>
-need to explicitly pass a parent to it. It will be deleted when its parent is deleted.
-</p>
-<ul class="org-ul">
-<li>setAllowedAreas()</li>
-<li>setFeatures()</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-
-<div id="outline-container-org836b5f6" class="outline-4">
-<h4 id="org836b5f6"><span class="section-number-4">1.2.4</span> QAction</h4>
-</div>
-<div id="outline-container-orgcf03d51" class="outline-4">
-<h4 id="orgcf03d51"><span class="section-number-4">1.2.5</span> Layouts</h4>
-<div class="outline-text-4" id="text-1-2-5">
-<p>
-QVBoxLayoutx
-</p>
-</div>
-</div>
 </div>
 </div>
 
-
-<div id="outline-container-orgbef8055" class="outline-2">
-<h2 id="orgbef8055"><span class="section-number-2">2</span> Dialogs</h2>
+<div id="outline-container-org56494a7" class="outline-2">
+<h2 id="org56494a7"><span class="section-number-2">2</span> Dialogs</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org48fa592" class="outline-3">
-<h3 id="org48fa592"><span class="section-number-3">2.1</span> Dumb Dialogs</h3>
+<div id="outline-container-org2fa86f7" class="outline-3">
+<h3 id="org2fa86f7"><span class="section-number-3">2.1</span> Dumb Dialogs</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 We define a “dumb” dialog to be a dialog whose widgets are set to their initial
@@ -362,8 +306,8 @@ Dumb dialogs are normally modal dialogs with an “accept” button (e.g., OK ) 
 </div>
 </div>
 
-<div id="outline-container-org8a780a0" class="outline-3">
-<h3 id="org8a780a0"><span class="section-number-3">2.2</span> Standard Dialogs</h3>
+<div id="outline-container-org2ade246" class="outline-3">
+<h3 id="org2ade246"><span class="section-number-3">2.2</span> Standard Dialogs</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 We consider a dialog to be a “standard” dialog if it initializes its widgets in
@@ -380,8 +324,8 @@ directly from the dialog’s widgets.
 </div>
 </div>
 
-<div id="outline-container-org4cb8806" class="outline-3">
-<h3 id="org4cb8806"><span class="section-number-3">2.3</span> Smart Dialogs</h3>
+<div id="outline-container-org0039b9b" class="outline-3">
+<h3 id="org0039b9b"><span class="section-number-3">2.3</span> Smart Dialogs</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 We define a “smart” dialog to be one that initializes its widgets in accordance
@@ -395,8 +339,8 @@ dialog.show<span style="color: #3a81c3;">()</span>
 </pre>
 </div>
 </div>
-<div id="outline-container-orgfd4f5c6" class="outline-4">
-<h4 id="orgfd4f5c6"><span class="section-number-4">2.3.1</span> live</h4>
+<div id="outline-container-org7ce7750" class="outline-4">
+<h4 id="org7ce7750"><span class="section-number-4">2.3.1</span> live</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3; font-weight: bold;">self</span>.dialog <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #4e3163;">None</span>:
@@ -412,29 +356,64 @@ dialog.show<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 
-<div id="outline-container-orgc95e4af" class="outline-2">
-<h2 id="orgc95e4af"><span class="section-number-2">3</span> Signal</h2>
+<div id="outline-container-org5574f06" class="outline-2">
+<h2 id="org5574f06"><span class="section-number-2">3</span> Model</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgd35e869" class="outline-3">
-<h3 id="orgd35e869"><span class="section-number-3">3.1</span> short-circuit</h3>
+<div id="outline-container-orgb2e3844" class="outline-3">
+<h3 id="orgb2e3844"><span class="section-number-3">3.1</span> <code>QtCore.QModelIndex</code></h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
-If we use the SIGNAL() function with an identifier but no parentheses, we are
-specifying a short-circuit signal.
+Every data item in the model can be identified by a unique <code>QModelIndex</code>.
+Each model index has three important attributes: a row, a column, and a parent.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org02bea14" class="outline-3">
-<h3 id="org02bea14"><span class="section-number-3">3.2</span> Qt/Python signal</h3>
+<div id="outline-container-orga7bb21e" class="outline-3">
+<h3 id="orga7bb21e"><span class="section-number-3">3.2</span> Model Classification</h3>
 <div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li>List(1D): Lists are just tables with a single column.</li>
+<li>Table(2D)</li>
+<li>Trees(Hierarchical)</li>
+</ul>
+</div>
+
+<div id="outline-container-org77ff512" class="outline-4">
+<h4 id="org77ff512"><span class="section-number-4">3.2.1</span> <code>QListWidget</code>, <code>QTableWidget</code>, and <code>QTreeWidget</code></h4>
+<div class="outline-text-4" id="text-3-2-1">
 <p>
-If we use the SIGNAL() function with a signalSignature (a possibly empty paren-
-thesized list of comma-separated PyQt types), we are specifying either a
-Python or a Qt signal. (A Python signal is one that is emitted in Python code; a
-Qt signal is one emitted from an underlying C++ object.
+are views with models and delegates aggregated inside them.
 </p>
+</div>
+</div>
+
+<div id="outline-container-org6aacfd6" class="outline-4">
+<h4 id="org6aacfd6"><span class="section-number-4">3.2.2</span> Pure Views</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+<code>QListView</code>, <code>QTableView</code>, and <code>QTreeView</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcf3d9a9" class="outline-3">
+<h3 id="orgcf3d9a9"><span class="section-number-3">3.3</span> Method</h3>
+<div class="outline-text-3" id="text-3-3">
+</div>
+<div id="outline-container-orgbb19952" class="outline-4">
+<h4 id="orgbb19952"><span class="section-number-4">3.3.1</span> <code>data</code> &amp; <code>setData</code></h4>
+</div>
+</div>
+
+<div id="outline-container-org18def64" class="outline-3">
+<h3 id="org18def64"><span class="section-number-3">3.4</span> Built-in Models</h3>
+<div class="outline-text-3" id="text-3-4">
+<ul class="org-ul">
+<li><code>QStringListModel</code></li>
+</ul>
 </div>
 </div>
 </div>
