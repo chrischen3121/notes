@@ -70,16 +70,24 @@
 *** ~QAbstractListModel~
 *** ~QAbstractTableModel~
 **** APIs for read-only
-    - ~data~
-    - ~rowCount~
-    - ~columnCount~
-    - ~headerData~
+    - ~data(QModelIndex, role: int)~
+    - ~rowCount()~
+    - ~columnCount()~
+    - ~headerData(section: int, Qt.Orientation, role: int)~
 
 **** APIs for editable
-    - ~flags~
-    - ~setData~
-    - ~insertRows~
-    - ~removeRows~
+    - ~flags(QModelIndex)~
+      #+BEGIN_SRC python
+        # example
+        def flags(self, index):
+            return Qt.ItemFlags(super.flags(index) | Qt.ItemIsEditable)
+      #+END_SRC
+
+    - ~setData(QModelIndex, value, role)~
+    - ~insertRow(row: int, parent: QModelIndex)~
+    - ~insertRows(row: int, count: int, parent: QModelIndex)~
+    - ~removeRow(row: int, parent: QModelIndex)~
+    - ~removeRows(row: int, count: int, parent: QModelIndex)~
 
 *** ~QAbstractTreeModel~
 
