@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2019-04-17 Wed 14:27 -->
+<!-- 2019-04-18 Thu 16:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PyQt</title>
@@ -262,8 +262,13 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgb2e3844">3.1. <code>QtCore.QModelIndex</code></a></li>
 <li><a href="#orga7bb21e">3.2. Model Classification</a></li>
-<li><a href="#orgcf3d9a9">3.3. Method</a></li>
-<li><a href="#org18def64">3.4. Built-in Models</a></li>
+<li><a href="#org18def64">3.3. Built-in Models</a></li>
+</ul>
+</li>
+<li><a href="#orgf914287">4. Delegate</a>
+<ul>
+<li><a href="#orgc60a3f2">4.1. APIs for read-only</a></li>
+<li><a href="#org894b8a9">4.2. APIs for editable</a></li>
 </ul>
 </li>
 </ul>
@@ -298,9 +303,9 @@ Dumb dialogs are normally modal dialogs with an “accept” button (e.g., OK ) 
 “reject” button (e.g., Cancel ).
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">dialog</span> = FakeDlg<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">if</span> dialog.exec_<span style="color: #3a81c3;">()</span>:
-    <span style="color: #3a81c3; font-weight: bold;">self</span>.values = dialog.someWidget.value<span style="color: #3a81c3;">()</span>
+<pre class="src src-python"><span style="color: #FD971F;">dialog</span> = FakeDlg<span style="color: #AE81FF;">(</span><span style="color: #F92672;">self</span>.values_to_set, <span style="color: #F92672;">self</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">if</span> dialog.exec_<span style="color: #AE81FF;">()</span>:
+    <span style="color: #F92672;">self</span>.values = dialog.someWidget.value<span style="color: #AE81FF;">()</span>
 </pre>
 </div>
 </div>
@@ -316,9 +321,9 @@ and whose final values are obtained by method calls or from instance variables�
 directly from the dialog’s widgets.
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">dialog</span> = FakeDlg<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">if</span> dialog.exec_<span style="color: #3a81c3;">()</span>:
-    <span style="color: #3a81c3; font-weight: bold;">self</span>.values = dialog.get_values<span style="color: #3a81c3;">()</span>
+<pre class="src src-python"><span style="color: #FD971F;">dialog</span> = FakeDlg<span style="color: #AE81FF;">(</span><span style="color: #F92672;">self</span>.values_to_set, <span style="color: #F92672;">self</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">if</span> dialog.exec_<span style="color: #AE81FF;">()</span>:
+    <span style="color: #F92672;">self</span>.values = dialog.get_values<span style="color: #AE81FF;">()</span>
 </pre>
 </div>
 </div>
@@ -333,22 +338,22 @@ with data references or data structures that are passed to its initializer, and
 which is capable of updating the data directly in response to user interaction.
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">dialog</span> = FakeDlg<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">self</span>.connect<span style="color: #3a81c3;">(</span>dialog, SIGNAL<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"changed"</span><span style="color: #6c3163;">)</span>, <span style="color: #3a81c3; font-weight: bold;">self</span>.refreshSomeWidgets<span style="color: #3a81c3;">)</span>
-dialog.show<span style="color: #3a81c3;">()</span>
+<pre class="src src-python"><span style="color: #FD971F;">dialog</span> = FakeDlg<span style="color: #AE81FF;">(</span><span style="color: #F92672;">self</span>.values_to_set, <span style="color: #F92672;">self</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">self</span>.connect<span style="color: #AE81FF;">(</span>dialog, SIGNAL<span style="color: #66D9EF;">(</span><span style="color: #E6DB74;">"changed"</span><span style="color: #66D9EF;">)</span>, <span style="color: #F92672;">self</span>.refreshSomeWidgets<span style="color: #AE81FF;">)</span>
+dialog.show<span style="color: #AE81FF;">()</span>
 </pre>
 </div>
 </div>
-<div id="outline-container-org7ce7750" class="outline-4">
-<h4 id="org7ce7750"><span class="section-number-4">2.3.1</span> live</h4>
+<div id="outline-container-org9781de5" class="outline-4">
+<h4 id="org9781de5"><span class="section-number-4">2.3.1</span> Live</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3; font-weight: bold;">self</span>.dialog <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #4e3163;">None</span>:
-    <span style="color: #3a81c3; font-weight: bold;">self</span>.dialog = FakeDlg<span style="color: #3a81c3;">(</span>
-        <span style="color: #3a81c3; font-weight: bold;">self</span>.values_to_set, <span style="color: #3a81c3; font-weight: bold;">self</span>.refreshSomeWidgets, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.show<span style="color: #3a81c3;">()</span>
-<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.raise_<span style="color: #3a81c3;">()</span>
-<span style="color: #3a81c3; font-weight: bold;">self</span>.dialog.activateWindow<span style="color: #3a81c3;">()</span>
+<pre class="src src-python"><span style="color: #F92672;">if</span> <span style="color: #F92672;">self</span>.dialog <span style="color: #F92672;">is</span> <span style="color: #AE81FF;">None</span>:
+    <span style="color: #F92672;">self</span>.dialog = FakeDlg<span style="color: #AE81FF;">(</span>
+        <span style="color: #F92672;">self</span>.values_to_set, <span style="color: #F92672;">self</span>.refreshSomeWidgets, <span style="color: #F92672;">self</span><span style="color: #AE81FF;">)</span>
+<span style="color: #F92672;">self</span>.dialog.show<span style="color: #AE81FF;">()</span>
+<span style="color: #F92672;">self</span>.dialog.raise_<span style="color: #AE81FF;">()</span>
+<span style="color: #F92672;">self</span>.dialog.activateWindow<span style="color: #AE81FF;">()</span>
 </pre>
 </div>
 </div>
@@ -380,9 +385,90 @@ Each model index has three important attributes: a row, a column, and a parent.
 </ul>
 </div>
 
-<div id="outline-container-org77ff512" class="outline-4">
-<h4 id="org77ff512"><span class="section-number-4">3.2.1</span> <code>QListWidget</code>, <code>QTableWidget</code>, and <code>QTreeWidget</code></h4>
+<div id="outline-container-orga2d5f23" class="outline-4">
+<h4 id="orga2d5f23"><span class="section-number-4">3.2.1</span> <code>QAbstractListModel</code></h4>
 <div class="outline-text-4" id="text-3-2-1">
+</div>
+<ul class="org-ul">
+<li><a id="org5cc789a"></a>APIs for read-only<br />
+<div class="outline-text-5" id="text-org5cc789a">
+<ul class="org-ul">
+<li><code>data(QModelIndex, role: int)</code></li>
+<li><code>rowCount()</code></li>
+</ul>
+</div>
+</li>
+
+<li><a id="org91119c6"></a>APIs for editable<br />
+<div class="outline-text-5" id="text-org91119c6">
+<ul class="org-ul">
+<li><code>setData</code></li>
+<li><code>flags</code></li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org42b0a07" class="outline-4">
+<h4 id="org42b0a07"><span class="section-number-4">3.2.2</span> <code>QAbstractTableModel</code></h4>
+<div class="outline-text-4" id="text-3-2-2">
+</div>
+<ul class="org-ul">
+<li><a id="org82e434b"></a>APIs for read-only<br />
+<div class="outline-text-5" id="text-org82e434b">
+<ul class="org-ul">
+<li><code>data(QModelIndex, role: int)</code></li>
+<li><code>rowCount()</code></li>
+<li><code>columnCount()</code></li>
+<li><code>headerData(section: int, Qt.Orientation, role: int)</code> (recommended)</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgaa689a0"></a>APIs for editable<br />
+<div class="outline-text-5" id="text-orgaa689a0">
+<ul class="org-ul">
+<li><p>
+<code>flags(QModelIndex) -&gt; QtCore.Qt.ItemFlags</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #75715E;"># </span><span style="color: #75715E;">example</span>
+<span style="color: #F92672;">def</span> <span style="color: #A6E22E;">flags</span><span style="color: #AE81FF;">(</span><span style="color: #F92672;">self</span>, index<span style="color: #AE81FF;">)</span>:
+    <span style="color: #F92672;">return</span> QtCore.Qt.ItemFlags<span style="color: #AE81FF;">(</span><span style="color: #F92672;">super</span>.flags<span style="color: #66D9EF;">(</span>index<span style="color: #66D9EF;">)</span> | QtCore.Qt.ItemIsEditable<span style="color: #AE81FF;">)</span>
+</pre>
+</div></li>
+
+<li><code>setData(QModelIndex, value, role) -&gt; bool</code>: is called when the user completes an edit</li>
+<li><code>insertRow(row: int, parent: QModelIndex)</code></li>
+<li><code>insertRows(row: int, count: int, parent: QModelIndex)</code>
+<ul class="org-ul">
+<li><code>beginInsertRows(parent_index, first, last)</code>, <code>endInsertRows(parent_index, first, last)</code>: <a href="https://doc.qt.io/qt-5/qabstractitemmodel.html#beginInsertRows">reference</a></li>
+</ul></li>
+<li><code>removeRow(row: int, parent: QModelIndex)</code></li>
+<li><code>removeRows(row: int, count: int, parent: QModelIndex)</code></li>
+</ul>
+</div>
+</li>
+
+<li><a id="org9ef4a8f"></a>Signals<br />
+<div class="outline-text-5" id="text-org9ef4a8f">
+<ul class="org-ul">
+<li><code>dataChanged[topleft_index, bottomright_index]</code></li>
+<li><code>modelReset()</code></li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgf49365e" class="outline-4">
+<h4 id="orgf49365e"><span class="section-number-4">3.2.3</span> <code>QAbstractTreeModel</code></h4>
+</div>
+
+<div id="outline-container-org77ff512" class="outline-4">
+<h4 id="org77ff512"><span class="section-number-4">3.2.4</span> <code>QListWidget</code>, <code>QTableWidget</code>, and <code>QTreeWidget</code></h4>
+<div class="outline-text-4" id="text-3-2-4">
 <p>
 are views with models and delegates aggregated inside them.
 </p>
@@ -390,8 +476,8 @@ are views with models and delegates aggregated inside them.
 </div>
 
 <div id="outline-container-org6aacfd6" class="outline-4">
-<h4 id="org6aacfd6"><span class="section-number-4">3.2.2</span> Pure Views</h4>
-<div class="outline-text-4" id="text-3-2-2">
+<h4 id="org6aacfd6"><span class="section-number-4">3.2.5</span> Pure Views</h4>
+<div class="outline-text-4" id="text-3-2-5">
 <p>
 <code>QListView</code>, <code>QTableView</code>, and <code>QTreeView</code>
 </p>
@@ -399,20 +485,39 @@ are views with models and delegates aggregated inside them.
 </div>
 </div>
 
-<div id="outline-container-orgcf3d9a9" class="outline-3">
-<h3 id="orgcf3d9a9"><span class="section-number-3">3.3</span> Method</h3>
+<div id="outline-container-org18def64" class="outline-3">
+<h3 id="org18def64"><span class="section-number-3">3.3</span> Built-in Models</h3>
 <div class="outline-text-3" id="text-3-3">
+<ul class="org-ul">
+<li><code>QStringListModel</code></li>
+<li><code>QDirModel</code></li>
+<li><code>QSqlTableModel</code></li>
+</ul>
 </div>
-<div id="outline-container-orgbb19952" class="outline-4">
-<h4 id="orgbb19952"><span class="section-number-4">3.3.1</span> <code>data</code> &amp; <code>setData</code></h4>
+</div>
+</div>
+<div id="outline-container-orgf914287" class="outline-2">
+<h2 id="orgf914287"><span class="section-number-2">4</span> Delegate</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgc60a3f2" class="outline-3">
+<h3 id="orgc60a3f2"><span class="section-number-3">4.1</span> APIs for read-only</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li><code>paint(painter, option, index)</code></li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-org18def64" class="outline-3">
-<h3 id="org18def64"><span class="section-number-3">3.4</span> Built-in Models</h3>
-<div class="outline-text-3" id="text-3-4">
+<div id="outline-container-org894b8a9" class="outline-3">
+<h3 id="org894b8a9"><span class="section-number-3">4.2</span> APIs for editable</h3>
+<div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
-<li><code>QStringListModel</code></li>
+<li><code>createEditor()</code></li>
+<li><code>setEditorData()</code></li>
+<li><code>setModelData()</code></li>
+<li><code>commitAndCloseEditor()</code> (recommended if we use <code>QLineEdit</code> or <code>QTextEdit</code> for editing)</li>
+<li><code>sizeHint()</code> (sometimes)</li>
 </ul>
 </div>
 </div>

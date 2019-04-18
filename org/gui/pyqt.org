@@ -68,26 +68,39 @@
     - Trees(Hierarchical)
 
 *** ~QAbstractListModel~
-*** ~QAbstractTableModel~
 **** APIs for read-only
-    - ~data(QModelIndex, role: int)~
-    - ~rowCount()~
-    - ~columnCount()~
-    - ~headerData(section: int, Qt.Orientation, role: int)~
+     - ~data(QModelIndex, role: int)~
+     - ~rowCount()~
 
 **** APIs for editable
-    - ~flags(QModelIndex)~
-      #+BEGIN_SRC python
-        # example
-        def flags(self, index):
-            return Qt.ItemFlags(super.flags(index) | Qt.ItemIsEditable)
-      #+END_SRC
+     - ~setData~
+     - ~flags~
 
-    - ~setData(QModelIndex, value, role)~
-    - ~insertRow(row: int, parent: QModelIndex)~
-    - ~insertRows(row: int, count: int, parent: QModelIndex)~
-    - ~removeRow(row: int, parent: QModelIndex)~
-    - ~removeRows(row: int, count: int, parent: QModelIndex)~
+*** ~QAbstractTableModel~
+**** APIs for read-only
+     - ~data(QModelIndex, role: int)~
+     - ~rowCount()~
+     - ~columnCount()~
+     - ~headerData(section: int, Qt.Orientation, role: int)~ (recommended)
+
+**** APIs for editable
+     - ~flags(QModelIndex) -> QtCore.Qt.ItemFlags~
+       #+BEGIN_SRC python
+         # example
+         def flags(self, index):
+             return QtCore.Qt.ItemFlags(super.flags(index) | QtCore.Qt.ItemIsEditable)
+       #+END_SRC
+
+     - ~setData(QModelIndex, value, role) -> bool~: is called when the user completes an edit
+     - ~insertRow(row: int, parent: QModelIndex)~
+     - ~insertRows(row: int, count: int, parent: QModelIndex)~
+       - ~beginInsertRows(parent_index, first, last)~, ~endInsertRows(parent_index, first, last)~: [[https://doc.qt.io/qt-5/qabstractitemmodel.html#beginInsertRows][reference]]
+     - ~removeRow(row: int, parent: QModelIndex)~
+     - ~removeRows(row: int, count: int, parent: QModelIndex)~
+
+**** Signals
+     - ~dataChanged[topleft_index, bottomright_index]~
+     - ~modelReset()~
 
 *** ~QAbstractTreeModel~
 
@@ -97,10 +110,17 @@
 *** Pure Views
     ~QListView~, ~QTableView~, and ~QTreeView~
 
-** Method
-*** ~data~ & ~setData~
-
 ** Built-in Models
    - ~QStringListModel~
    - ~QDirModel~
    - ~QSqlTableModel~
+* Delegate
+** APIs for read-only
+   - ~paint(painter, option, index)~
+
+** APIs for editable
+   - ~createEditor()~
+   - ~setEditorData()~
+   - ~setModelData()~
+   - ~commitAndCloseEditor()~ (recommended if we use ~QLineEdit~ or ~QTextEdit~ for editing)
+   - ~sizeHint()~ (sometimes)
