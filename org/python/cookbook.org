@@ -491,6 +491,9 @@
      # => 2018-12-21 09:14:01.258941+00:00
    #+END_SRC
 
+   - ~datetime.replace~
+   - ~datetime.astimezone~
+
 * Iterator
 ** Manually Consuming an Iterator
    #+BEGIN_SRC python
@@ -718,3 +721,35 @@
     open network connections, threads, processes, stack frames, and so forth. User-defined classes can sometimes work around these limitations
     by providing ~__getstate__()~ and ~__setstate__()~ methods
     - ~pickle.dump()~ will call ~__getstate__()~ to get an object that can be pickled
+
+* Encoding
+** csv
+*** ~reader~
+    #+BEGIN_SRC python
+      from collections import namedtuple
+      import re
+      import csv
+      with open('stock.csv') as f:
+          f_csv = csv.reader(f)
+          headings = next(f_csv)
+          Row = namedtuple('Row', headings)
+          for r in f_csv:
+              row = Row(*r)
+              # Process row
+    #+END_SRC
+
+*** ~DictReader~
+   #+BEGIN_SRC python
+     import csv
+     with open('stocks.csv') as f:
+         f_csv = csv.DictReader(f)
+         for row in f_csv:
+             # process row
+             ...
+   #+END_SRC
+
+*** ~writer~
+    - ~writer.writerow~ and ~writer.writerows~
+
+*** ~DictWriter~
+    - ~writer.writeheader~ and ~writer.writerows~
