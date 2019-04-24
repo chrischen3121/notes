@@ -753,3 +753,101 @@
 
 *** ~DictWriter~
     - ~writer.writeheader~ and ~writer.writerows~
+** json2object
+   - use ~object_pairs_hook~ and ~object_hook~ options
+   #+BEGIN_SRC python
+     import json
+     from collections import OrderedDict
+     s = '{"name": "ACME", "shares": 50, "price": 490.1}'
+     data = json.loads(s, object_pairs_hook=OrderedDict)
+     # data => OrderedDict([('name', 'ACME'), ('shares', 50), ('price', 490.1)])
+
+     class JSONObject:
+         def __init__(self, d):
+             self.__dict__ = d
+
+         def __str__(self):
+             return str(self.__dict__)
+
+
+     obj = json.loads(s, object_hook=JSONObject)
+     obj.name = 'def'
+
+     json.dumps(vars(obj)) # vars(obj) same as obj.__dict__
+     # or
+     json.dumps(obj, default=vars) # use vars as a serializing function
+   #+END_SRC
+
+** xml
+   #+BEGIN_SRC python
+     from xml.etree.ElementTree import parse
+     doc = parse(xml_str)
+   #+END_SRC
+   - ~lxml~
+   - for huge xml: =Recipe 6.4=
+   - more: =Recipe 6.3~6.7=
+
+** hex encoding
+   - ~binascii~
+   #+BEGIN_SRC python
+     import binascii
+
+     s = b'hello'
+     h = binascii.b2a_hex(s) # bytes2hexbytes b'68656c6c6f'
+     b = binascii.a2b_hex(h) # hexbytes2bytes
+   #+END_SRC
+   - ~base64~
+   #+BEGIN_SRC python
+     import base64
+     s = b'hello'
+     h = base64.b16encode(s) # b'68656C6C6F' uppercase
+     b = base64.b16decode(h)
+   #+END_SRC
+
+** base64
+   - ~base64.b64encode~
+   - ~base64.b64decode~
+
+** struct
+   #+BEGIN_SRC python
+     from struct import Struct
+
+     def write_records(records: tuple, format, f):
+         record_struct = Struct(format)
+         for r in records:
+             f.write(record_struct.pack(*r))
+
+     def read_records(format, f) -> tuple:
+         record_struct = Struct(format)
+         chunks = iter(lambda: f.read(record_struct.size), b'') # star!
+         return (record_struct.unpack(chunk) for chunk in chunks) # star!
+
+   #+END_SRC
+   - more to explore =Recipe 6.12=
+
+* Functions
+** Keyword-only Arguments
+   #+BEGIN_SRC python
+     def recv(maxsize, *, block):
+         pass
+
+     recv(1024, True)# TypeError
+     recv(1024, block=True) # OK
+   #+END_SRC
+
+** Capture Variables
+   #+BEGIN_SRC python
+     x = 10
+     a = lambda y, x=x: x + y # use x=x to bind at definition time
+     x = 20
+     a(5) # => 15
+   #+END_SRC
+
+** Replace Single-method Classes with Closures
+
+** Callback Shared State
+   =Recipe 7.10= four ways:
+   - single-method class
+   - closure
+   - coroutine: use coroutine.send as callback
+   - use ~functools.partial~
