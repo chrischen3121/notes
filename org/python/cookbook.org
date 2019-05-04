@@ -851,3 +851,71 @@
    - closure
    - coroutine: use coroutine.send as callback
    - use ~functools.partial~
+* Class
+** String Representation
+   - ~__repr__~: returns the code representation of an instance, and is usually the text you would type to recreate the instance. ~eval(repr(x)) == x~
+   - ~__str__~: converts the instance to a string.
+
+** ~__format__~
+   #+BEGIN_SRC python
+     _formats = {
+         'ymd' : '{d.year}-{d.month}-{d.day}',
+         'mdy' : '{d.month}/{d.day}/{d.year}',
+         'dmy' : '{d.day}/{d.month}/{d.year}'
+         }
+     from datetime import date
+     d = date.today()
+     format(d, 'mdy')
+     'The date is {:ymd}'.format(d)
+   #+END_SRC
+
+** Context Management
+   #+BEGIN_SRC python
+     class Connection:
+         def __enter__(self):
+             self.fs = open('somefile.txt', 'rt')
+             return self.fs
+
+         def __exit__(self, exc_ty, exc_val, tb):
+             self.fs.close()
+             self.fs = None
+   #+END_SRC
+
+** Saving Memory ~__slots__~
+   - Instances are built around a small fixed-sized array instead of a dictionary.
+   - A side effect of using slots is that it is no longer possible to add new attributes to instances.
+   #+BEGIN_SRC python
+     class Date:
+         __slots__ = ['year', 'month', 'day']
+         def __init__(self, year, month, day):
+             self.year = year
+             self.month = month
+             self.day = day
+   #+END_SRC
+
+** Attributes
+   #+BEGIN_SRC python
+     class Object:
+         @property
+         def attr(self):
+             return self.__attr
+
+         @attr.setter
+         def attr(self, value):
+             self.__attr = value
+
+         @attr.deleter
+         def attr(self):
+             self.__attr = None
+         # del obj.attr
+   #+END_SRC
+
+** ~super()~
+   - To avoid double-invocation when involving multiple inheritance.
+   - Use ~__mro__~ to see method resolution order.
+*** MRO
+    The actual determination of the MRO list itself is made using a technique known as C3 Linearization.
+    - Child classes get checked before parents.
+    - Multiple parents get checked in the order listed.
+    - If there are two valid choices for the next class, pick the one from the first parent.
+    When you use the ~super()~ function, Python continues its search starting with the next class on the MRO. See Chapter 8.7.
