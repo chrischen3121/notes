@@ -1200,4 +1200,79 @@
    - ~Sequence~: ~__getitem__~, ~__len__~
    - ~MutableSequence~: ~__delitem__~, ~__getitem__~, ~__len__~, ~__setitem__~, ~insert~
 
-next: 8.15
+** Proxy Class
+   Implement ~__getattr__~, ~__setattr__~, ~__delattr__~
+   - ~__getattr__~ method is actually a fallback method that only gets called when an attribute is not found.
+
+** Multiple Constructors
+   - Use ~@classmethod~, example: ~Date.today~
+   - Use ~cls.__new__(cls)~ to create instance without initialization.
+
+** Mixin Class
+   - To enhance the functionality of existing classes with optional features.
+   - See Recipe 8.18, example: ~ThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer)~
+   - Mixin classes are never meant to be instantiated directly.
+   - Mixin classes typically have no state of their own(not a restriction)
+   - Use ~__slots__ = ()~ to serve as a strong hint that the mixin classes do not have their own instance data.
+   - Use class decorator to patch method(preferred approach)
+
+** State Machine
+   Based on state design pattern. See Recipe 8.19, should use ~__class__~
+
+** Calling a Method by Name
+   - ~getattr~
+   - ~operator.methodcaller()~
+
+** Visitor Pattern
+   *Recipe 8.21*
+*** *Without Recursion*
+    *Recipe 8.22*
+    - Use *stack* (like depth-first traversal) and generator
+    #+BEGIN_SRC python
+      import types
+
+
+      class Node:
+          pass
+
+
+      class NodeVisitor:
+          def visit(self, node):
+              stack = [node]
+              last_result = None
+              while stack:
+                  try:
+                      last = stack[-1]
+                      if isinstance(last, types.GeneratorType):
+                          stack.append(last.send(last_result))
+                          last_result = None
+                      elif isinstance(last, Node):
+                          stack.append(self._visit(stack.pop()))
+                      else:
+                          last_result = stack.pop()
+                  except StopIteration:
+                      stack.pop()
+              return last_result
+
+
+      def _visit(self, node):
+          methname = 'visit_' + type(node).__name__
+          meth = getattr(self, methname, None)
+          if meth is None:
+              meth = self.generic_visit
+          return meth(node)
+
+
+      def generic_visit(self, node):
+          raise RuntimeError('No {} method'.format('visit_' + type(node).__name__))
+    #+END_SRC
+
+** Comparison
+   ~__le__~, ~__ge__~, ~__lt__~, ~__gt__~, ~__eq__~
+
+** ~weakref~
+*** Avoid Cyclic Reference
+    ~weakref.ref~
+
+*** Cache Instances(like ~logging.getLogger~)
+    Use ~weakref.WeakValueDictionary~ to store instances as weak reference
