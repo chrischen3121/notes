@@ -893,7 +893,7 @@
              self.day = day
    #+END_SRC
 
-** Attributes
+** Properties
    #+BEGIN_SRC python
      class Object:
          @property
@@ -909,6 +909,34 @@
              self.__attr = None
          # del obj.attr
    #+END_SRC
+*** Extending a Property
+    #+BEGIN_SRC python
+      class SubPerson(Person):
+          @property
+          def name(self):
+              print('Getting name')
+              return super().name
+
+          @name.setter
+          def name(self, value):
+              print('Setting name to', value)
+              # the only way to get to setter method is to access it as a class variable
+              super(SubPerson, SubPerson).name.__set__(self, value)
+
+          @name.deleter
+          def name(self):
+              print('Deleting name')
+              super(SubPerson, SubPerson).name.__delete__(self)
+    #+END_SRC
+    - Extending only ~getter~ method
+      #+BEGIN_SRC python
+        class SubPerson(Person):
+            @Person.name.getter
+            def name(self):
+                print('Getting name')
+                return super().name
+      #+END_SRC
+
 
 ** ~super()~
    - To avoid double-invocation when involving multiple inheritance.
@@ -918,4 +946,10 @@
     - Child classes get checked before parents.
     - Multiple parents get checked in the order listed.
     - If there are two valid choices for the next class, pick the one from the first parent.
-    When you use the ~super()~ function, Python continues its search starting with the next class on the MRO. See Chapter 8.7. [[https://rhettinger.wordpress.com/2011/05/26/super-considered-super/][More details]].
+    When you use the ~super()~ function, Python continues its search starting with the next class on the MRO. See Chapter 8.7 [[https://rhettinger.wordpress.com/2011/05/26/super-considered-super/][More details]].
+
+** Descriptor
+   - ~__get__~
+   - ~__set__~
+
+   next: Recipe 8.9
