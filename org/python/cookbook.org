@@ -937,7 +937,6 @@
                 return super().name
       #+END_SRC
 
-
 ** ~super()~
    - To avoid double-invocation when involving multiple inheritance.
    - Use ~__mro__~ to see method resolution order.
@@ -948,8 +947,257 @@
     - If there are two valid choices for the next class, pick the one from the first parent.
     When you use the ~super()~ function, Python continues its search starting with the next class on the MRO. See Chapter 8.7 [[https://rhettinger.wordpress.com/2011/05/26/super-considered-super/][More details]].
 
-** Descriptor
-   - ~__get__~
-   - ~__set__~
+** *Descriptor*
+   Descriptors provide the underlying magic for most of Python’s class features, such as ~@classmethod~, ~@staticmethod~, ~@property~.
+   - ~__get__(self, instance, cls)~
+   - ~__set__(self, instance, value)~
+   - ~__delete__(self, instance)~
+   #+BEGIN_SRC python
+     class String:
+         def __init__(self, name):
+             self.name = name
 
-   next: Recipe 8.9
+         def __get__(self, instance, cls):
+             if instance is None:  # called as class variable
+                 return self
+             return instance.__dict__[self.name]
+
+         def __set__(self, instance, value):
+             if not isinstance(value, str):
+                 raise TypeError('Expected a string')
+             instance.__dict__[self.name] = value
+
+         def __delete__(self, instance):
+             del instance.__dict__[self.name]
+
+
+     class Person:
+         name = String('name')
+
+         def __init__(self, name):
+             self.name = name
+   #+END_SRC
+*** Advanced Usage
+    #+BEGIN_SRC python
+      # Descriptor for a type-checked attribute
+      class Typed:
+          def __init__(self, name, expected_type):
+              self.name = name
+              self.expected_type = expected_type
+
+          def __get__(self, instance, cls):
+              if instance is None:
+                  return self
+              else:
+                  return instance.__dict__[self.name]
+
+          def __set__(self, instance, value):
+              if not isinstance(value, self.expected_type):
+                  raise TypeError('Expected ' + str(self.expected_type))
+              instance.__dict__[self.name] = value
+
+          def __delete__(self, instance):
+              del instance.__dict__[self.name]
+
+
+      # Class decorator that applies it to selected attributes
+      def typeassert(**kwargs):
+          def decorate(cls):
+              for name, expected_type in kwargs.items():
+                  # Attach a Typed descriptor to the class
+                  setattr(cls, name, Typed(name, expected_type))
+                  return cls
+
+          return decorate
+
+
+      # Example use
+      @typeassert(name=str, shares=int, price=float)
+      class Stock:
+          def __init__(self, name, shares, price):
+              self.name = name
+              self.shares = shares
+              self.price = price
+    #+END_SRC
+
+*** Lazy Properties
+    Define a read-only attribute as a property that only gets computed on access.
+    #+BEGIN_SRC python
+      class lazyproperty:
+          def __init__(self, func):
+              self.func = func
+
+          def __get__(self, instance, cls):
+              if instance is None:
+                  return self
+              else:
+                  value = self.func(instance)
+                  setattr(instance, self.func.__name__, value)
+                  return value
+
+
+      class Circle:
+          def __init__(self, radius):
+              self.radius = radius
+
+          @lazyproperty
+          def area(self):
+              print('Computing area')
+              return math.pi * self.radius**2
+    #+END_SRC
+
+*** Data Model
+    #+BEGIN_SRC python
+      # Base class. Uses a descriptor to set a value
+      class Descriptor:
+          def __init__(self, name=None, **opts):
+              self.name = name
+              for key, value in opts.items():
+                  setattr(self, key, value)
+
+          def __set__(self, instance, value):
+              instance.__dict__[self.name] = value
+
+
+      # Descriptor for enforcing types
+      class Typed(Descriptor):
+          expected_type = type(None)
+
+          def __set__(self, instance, value):
+              if not isinstance(value, self.expected_type):
+                  raise TypeError('expected ' + str(self.expected_type))
+              super().__set__(instance, value)
+
+
+      # Descriptor for enforcing values
+      class Unsigned(Descriptor):
+          def __set__(self, instance, value):
+              if value < 0:
+                  raise ValueError('Expected >= 0')
+              super().__set__(instance, value)
+
+
+      class Integer(Typed):
+          expected_type = int
+
+
+      class UnsignedInteger(Integer, Unsigned):
+          pass
+    #+END_SRC
+
+**** Simplify the Specification by Class Decorator
+     #+BEGIN_SRC python
+       # Class decorator to apply constraints
+       def check_attributes(**kwargs):
+           def decorate(cls):
+               for key, value in kwargs.items():
+                   if isinstance(value, Descriptor):
+                       value.name = key
+                       setattr(cls, key, value)
+                   else:
+                       setattr(cls, key, value(key))
+               return cls
+           return decorate
+
+       # Example
+       @check_attributes(name=SizedString(size=8),
+                         shares=UnsignedInteger,
+                         price=UnsignedFloat)
+       class Stock:
+           def __init__(self, name, shares, price):
+               self.name = name
+               self.shares = shares
+               self.price = price
+     #+END_SRC
+
+**** Simplify the Specification by Metaclass
+     #+BEGIN_SRC python
+       # A metaclass that applies checking
+       class checkedmeta(type):
+           def __new__(cls, clsname, bases, methods):
+               # Attach attribute names to the descriptors
+               for key, value in methods.items():
+                   if isinstance(value, Descriptor):
+                       value.name = key
+                   return type.__new__(cls, clsname, bases, methods)
+
+
+       # Example
+       class Stock(metaclass=checkedmeta):
+           name = SizedString(size=8)
+           shares = UnsignedInteger() # no need to give a name
+           price = UnsignedFloat()
+
+           def __init__(self, name, shares, price):
+               self.name = name
+               self.shares = shares
+               self.price = price
+     #+END_SRC
+
+**** Decorator Version(Preferred Approach)
+     #+BEGIN_SRC python
+       # Base class. Uses a descriptor to set a value
+       class Descriptor:
+           def __init__(self, name=None, **opts):
+               self.name = name
+               for key, value in opts.items():
+                   setattr(self, key, value)
+
+           def __set__(self, instance, value):
+               instance.__dict__[self.name] = value
+
+
+       # Decorator for applying type checking
+       def Typed(expected_type, cls=None):
+           if cls is None:
+               return lambda cls: Typed(expected_type, cls)
+
+           super_set = cls.__set__
+
+           def __set__(self, instance, value):
+               if not isinstance(value, expected_type):
+                   raise TypeError('expected ' + str(expected_type))
+               super_set(self, instance, value)
+
+           cls.__set__ = __set__
+           return cls
+
+
+       @Typed(int)
+       class Integer(Descriptor):
+           pass
+     #+END_SRC
+
+** Simplifying Initialization
+   #+BEGIN_SRC python
+     class Structure:
+         # Class variable that specifies expected fields
+         _fields = []
+
+         def __init__(self, *args):
+             if len(args) != len(self._fields):
+                 raise TypeError('Expected {} arguments'.format(len(self._fields)))
+
+             # Set the arguments
+             for name, value in zip(self._fields, args):
+                 setattr(self, name, value)
+
+
+     class Stock(Structure):
+         _fields = ['name', 'shares', 'price']
+   #+END_SRC
+   - Downside: documentation and help features of IDEs. It can be solved by attaching or enforcing a type signature
+
+** Abstract Base Class
+   - Define an abc class: ~class AbstractBase(metaclass=abc.ABCMeta)~
+   - Using ~register~ to bind other class which is already defined
+   - ~@abstractmethod~ can work with ~@staticmethod~, ~@classmethod~
+
+** Implementing Custom Containers
+   - ~Container~: ~__contains__~
+   - ~Iterable~: ~__iter__~
+   - ~Sized~: ~__len__~
+   - ~Sequence~: ~__getitem__~, ~__len__~
+   - ~MutableSequence~: ~__delitem__~, ~__getitem__~, ~__len__~, ~__setitem__~, ~insert~
+
+next: 8.15
