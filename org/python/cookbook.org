@@ -1276,3 +1276,104 @@
 
 *** Cache Instances(like ~logging.getLogger~)
     Use ~weakref.WeakValueDictionary~ to store instances as weak reference
+* Metaprogramming
+** ~functools.wrap~
+   - Preserving function metadata, ~__name__~, ~__doc__~, ~__annotations__~.
+   - original function in ~__wrapped__~ (hint: ~@classmethod~ and ~@staticmethod~ store original function in ~__func__~)
+
+** Decorator with get/set
+   #+BEGIN_SRC python
+     def attach_wrapper(obj, func=None):
+         if func is None:
+             return partial(attach_wrapper, obj)
+         setattr(obj, func.__name__, func)
+         return func
+   #+END_SRC
+
+** Decorator with Optional Arguments
+   example:
+   #+BEGIN_SRC python
+     import logging
+     from functools import partial, wraps
+
+
+     def logged(func=None, *, level=logging.DEBUG, name=None, message=None):
+         if func is None:
+             return partial(logged, level=level, name=name, message=message)
+         logname = name if name else func.__module__
+         log = logging.getLogger(logname)
+         logmsg = message if message else func.__name__
+
+         @wraps(func)
+         def wrapper(*args, **kwargs):
+             log.log(level, logmsg)
+             return func(*args, **kwargs)
+
+         return wrapper
+   #+END_SRC
+
+** TODO Type Checking Decorator
+   See Recipe 9.7
+   #+BEGIN_SRC python
+     from inspect import signature
+     from functools import wraps
+
+
+     def typeassert(*ty_args, **ty_kwargs):
+         def decorate(func):
+             # If in optimized mode, disable type checking
+             if not __debug__:
+                 return func
+             # Map function argument names to supplied types
+             sig = signature(func)
+             bound_types = sig.bind_partial(*ty_args, **ty_kwargs).arguments
+
+             @wraps(func)
+             def wrapper(*args, **kwargs):
+                 bound_values = sig.bind(*args, **kwargs)
+                 # Enforce type assertions across supplied arguments
+                 for name, value in bound_values.arguments.items():
+                     if name in bound_types:
+                         if not isinstance(value, bound_types[name]):
+                             raise TypeError('Argument {} must be {}'.format(
+                                 name, bound_types[name]))
+                 return func(*args, **kwargs)
+             return wrapper
+         return decorate
+
+
+     @typeassert(int, z=int)
+     def add(x, y, z=42):
+         return x + y + z
+   #+END_SRC
+
+** TODO Decorator as Functional Class
+   #+BEGIN_SRC python
+     import types
+     from functools import wraps
+
+
+     class Profiled:
+         def __init__(self, func):
+             wraps(func)(self)
+             self.ncalls = 0
+
+             def __call__(self, *args, **kwargs):
+                 self.ncalls += 1
+                 return self.__wrapped__(*args, **kwargs)
+
+             def __get__(self, instance, cls):
+                 if instance is None:
+                     return self
+                 else:
+                     return types.MethodType(self, instance)
+
+
+     @Profiled
+     def add(x, y):
+         return x + y
+
+
+     add(4, 5)
+     print(add.ncalls)
+   #+END_SRC
