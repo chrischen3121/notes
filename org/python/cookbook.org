@@ -1347,7 +1347,7 @@
          return x + y + z
    #+END_SRC
 
-** TODO Decorator as Functional Class
+** Decorator as Functional Class
    #+BEGIN_SRC python
      import types
      from functools import wraps
@@ -1358,15 +1358,15 @@
              wraps(func)(self)
              self.ncalls = 0
 
-             def __call__(self, *args, **kwargs):
-                 self.ncalls += 1
-                 return self.__wrapped__(*args, **kwargs)
+         def __call__(self, *args, **kwargs):
+             self.ncalls += 1
+             return self.__wrapped__(*args, **kwargs)
 
-             def __get__(self, instance, cls):
-                 if instance is None:
-                     return self
-                 else:
-                     return types.MethodType(self, instance)
+         def __get__(self, instance, cls):
+             if instance is None:
+                 return self
+             else:
+                 return types.MethodType(self, instance)
 
 
      @Profiled
@@ -1376,4 +1376,19 @@
 
      add(4, 5)
      print(add.ncalls)
+   #+END_SRC
+** ~inspect~
+   - signature
+   - getargspec
+   - Parameter
+
+** Using Decorators to Patch Class Definitions
+   #+BEGIN_SRC python
+     def patch(cls):
+         orig_method = cls.method
+
+         def new_method(self):
+             return orig_method(self)
+
+         cls.method = new_method
    #+END_SRC

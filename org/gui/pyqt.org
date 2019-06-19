@@ -69,8 +69,8 @@
 
 *** ~QAbstractListModel~
 **** APIs for read-only
-     - ~data(QModelIndex, role: int)~
-     - ~rowCount()~
+     - ~data(index: QModelIndex, role: int)~
+     - ~rowCount(parent: QModelIndex)~
 
 **** APIs for editable
      - ~setData~
@@ -78,25 +78,26 @@
 
 *** ~QAbstractTableModel~
 **** APIs for read-only
-     - ~data(QModelIndex, role: int)~
-     - ~rowCount()~
-     - ~columnCount()~
-     - ~headerData(section: int, Qt.Orientation, role: int)~ (recommended)
+     - ~data(index: QModelIndex, role: int)~
+     - ~rowCount(parent: QModelIndex)~
+     - ~columnCount(parent: QModelIndex)~
+     - ~headerData(section: int, orientation: Qt.Orientation, role: int)~ (recommended)
 
 **** APIs for editable
-     - ~flags(QModelIndex) -> QtCore.Qt.ItemFlags~
+     - ~flags(index: QModelIndex) -> QtCore.Qt.ItemFlags~
        #+BEGIN_SRC python
          # example
          def flags(self, index):
              return QtCore.Qt.ItemFlags(super.flags(index) | QtCore.Qt.ItemIsEditable)
        #+END_SRC
 
-     - ~setData(QModelIndex, value, role) -> bool~: is called when the user completes an edit
+     - ~setData(index: QtCore.QModelIndex, value, role: int = Qt.EditRole) -> bool~: is called when the user completes an edit
      - ~insertRow(row: int, parent: QModelIndex)~
      - ~insertRows(row: int, count: int, parent: QModelIndex)~
-       - ~beginInsertRows(parent_index, first, last)~, ~endInsertRows(parent_index, first, last)~: [[https://doc.qt.io/qt-5/qabstractitemmodel.html#beginInsertRows][reference]]
+       - ~beginInsertRows(parent, first, last)~, ~endInsertRows(parent, first, last)~: [[https://doc.qt.io/qt-5/qabstractitemmodel.html#beginInsertRows][reference]]
      - ~removeRow(row: int, parent: QModelIndex)~
      - ~removeRows(row: int, count: int, parent: QModelIndex)~
+       - ~beginRemoveRows~, ~endRemoveRows~
 
 **** Signals
      - ~dataChanged[topleft_index, bottomright_index]~
