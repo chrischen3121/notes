@@ -1312,8 +1312,7 @@
          return wrapper
    #+END_SRC
 
-** TODO Type Checking Decorator
-   See Recipe 9.7
+** Type Checking Decorator
    #+BEGIN_SRC python
      from inspect import signature
      from functools import wraps
@@ -1391,4 +1390,70 @@
              return orig_method(self)
 
          cls.method = new_method
+   #+END_SRC
+
+* Metaclass
+** NoInstances
+   #+BEGIN_SRC python
+     class NoInstances(type):
+         def __call__(self, *args, **kwargs):
+             raise TypeError("Can't instantiate directly")
+
+     # Example
+     class Spam(metaclass=NoInstances):
+         @staticmethod
+         def grok(x):
+             print('Spam.grok')
+   #+END_SRC
+
+** Singleton
+   #+BEGIN_SRC python
+     class Singleton(type):
+         def __init__(self, *args, **kwargs):
+             self.__instance = None
+             super().__init__(*args, **kwargs)
+
+         def __call__(self, *args, **kwargs):
+             if self.__instance is None:
+                 self.__instance = super().__call__(*args, **kwargs)
+                 return self.__instance
+             else:
+                 return self.__instance
+   #+END_SRC
+
+** Cached Instances
+   #+BEGIN_SRC python
+     import weakref
+
+     class Cached(type):
+         def __init__(self, *args, **kwargs):
+             super().__init__(*args, **kwargs)
+             self.__cache = weakref.WeakValueDictionary()
+
+         def __call__(self, *args):
+             if args in self.__cache:
+                 return self.__cache[args]
+             else:
+                 obj = super().__call__(*args)
+                 self.__cache[args] = obj
+                 return obj
+   #+END_SRC
+** ~__prepare__()~
+   This method is invoked immediately at the start of a class definition with the class name and base classes. It must then return a mapping object to use when processing the class body.
+   #+BEGIN_SRC python
+     # Metaclass that uses an OrderedDict for class body
+     class OrderedMeta(type):
+         def __new__(cls, clsname, bases, clsdict):
+             d = dict(clsdict)
+             order = []
+             for name, value in clsdict.items():
+                 if isinstance(value, Typed):
+                     value._name = name
+                     order.append(name)
+             d['_order'] = order
+             return type.__new__(cls, clsname, bases, d)
+
+         @classmethod
+         def __prepare__(cls, clsname, bases):
+             return OrderedDict()
    #+END_SRC
