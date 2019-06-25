@@ -940,12 +940,43 @@
 ** ~super()~
    - To avoid double-invocation when involving multiple inheritance.
    - Use ~__mro__~ to see method resolution order.
+
 *** MRO
     The actual determination of the MRO list itself is made using a technique known as C3 Linearization.
     - Child classes get checked before parents.
     - Multiple parents get checked in the order listed.
     - If there are two valid choices for the next class, pick the one from the first parent.
     When you use the ~super()~ function, Python continues its search starting with the next class on the MRO. See Chapter 8.7 [[https://rhettinger.wordpress.com/2011/05/26/super-considered-super/][More details]].
+
+    - Hint: ~super(MyClass, self).__init__()~ provides the next ~__init__~ method according to the used Method Resolution Ordering(MRO)
+*** Multiple Inheritance with Different Arguments to Constructors
+   #+BEGIN_SRC python
+     class A:
+         def __init__(self, a, **kw):
+             super().__init__(**kw)
+             print('A a', a)
+
+
+     class B:
+         def __init__(self, b, c=0, **kw):
+             super().__init__(**kw)
+             print('B b', b)
+             print('B c', c)
+
+
+     class C(A, B):
+         def __init__(self, a, b, c, d):
+             super().__init__(a=a, b=b, c=c)
+             print('C d', d)
+   #+END_SRC
+   or
+   #+BEGIN_SRC python
+     class C(A, B):
+         def __init__(self, a, b, c):
+             A.__init__(self, a)
+             B.__init__(self, b, c)
+    # should be careful with double-invocation
+   #+END_SRC
 
 ** *Descriptor*
    Descriptors provide the underlying magic for most of Python’s class features, such as ~@classmethod~, ~@staticmethod~, ~@property~.
@@ -1276,6 +1307,7 @@
 
 *** Cache Instances(like ~logging.getLogger~)
     Use ~weakref.WeakValueDictionary~ to store instances as weak reference
+
 * Metaprogramming
 ** ~functools.wrap~
    - Preserving function metadata, ~__name__~, ~__doc__~, ~__annotations__~.
@@ -1391,8 +1423,128 @@
 
          cls.method = new_method
    #+END_SRC
+** Enforcing an Argument Signature on *args and **kwargs
+*** Creating a Function Signature
+    #+BEGIN_SRC python
+      from inspect import Signature, Parameter
+
+      # Make a signature for a func(x, y=42, *, z=None)
+
+      parms = [
+          Parameter('x', Parameter.POSITIONAL_OR_KEYWORD),
+          Parameter('y', Parameter.POSITIONAL_OR_KEYWORD, default=42),
+          Parameter('z', Parameter.KEYWORD_ONLY, default=None)
+      ]
+      sig = Signature(parms)
+      print(sig)
+
+      def func(*args, **kwargs):
+          bound_values = sig.bind(*args, **kwargs)
+    #+END_SRC
+
+*** *Enforcing Function Signatures*
+    #+BEGIN_SRC python
+      from inspect import Signature, Parameter
+      def make_sig(*names):
+          parms = [Parameter(name, Parameter.POSITIONAL_OR_KEYWORD)
+                   for name in names]
+          return Signature(parms)
+
+      class Structure:
+          __signature__ = make_sig() # inspect.signature will lookup __signature__
+          def __init__(self, *args, **kwargs):
+              bound_values = self.__signature__.bind(*args, **kwargs)
+              for name, value in bound_values.arguments.items():
+                  setattr(self, name, value)
+
+      class Stock(Structure):
+          __signature__ = make_sig('name', 'shares', 'price')
+          def __init__(self, *args, **kwargs):
+              super().__init__(*args, **kwargs)
+    #+END_SRC
+
+*** Metaclass Approach
+    #+BEGIN_SRC python
+      from inspect import Signature, Parameter
+
+
+      def make_sig(*names):
+          parms = [
+              Parameter(name, Parameter.POSITIONAL_OR_KEYWORD) for name in names
+          ]
+          return Signature(parms)
+
+
+      class StructureMeta(type):
+          def __new__(cls, clsname, bases, clsdict):
+              clsdict['__signature__'] = make_sig(*clsdict.get('_fields', []))
+              return super().__new__(cls, clsname, bases, clsdict)
+
+
+      class Structure(metaclass=StructureMeta):
+          fields = []
+
+          def __init__(self, *args, **kwargs):
+              bound_values = self.__signature__.bind(*args, **kwargs)
+              for name, value in bound_values.arguments.items():
+                  setattr(self, name, value)
+    #+END_SRC
+** Parsing and Analyzing Python Source
+   - ~eval('2 + 3*4 + x')~
+*** ~exec~
+   - ~exec('for i in range(10): print(i)')~
+   #+BEGIN_SRC python
+     def test1():
+         x = 0
+         exec('x += 1')
+         print(x) # => 0
+
+     def test2():
+         x = 0
+         loc = locals()
+         exec('x += 1')
+         x = loc['x']
+         print(x) # => 1
+   #+END_SRC
+
+*** ~ast~
+    compile Python source code into an abstract syntax tree(AST)
+    #+BEGIN_SRC python
+      import ast
+      ex = ast.parse('2 + 3*4 + x', mode='eval')
+      ast.dump(ex)
+      # "Expression(body=BinOp(left=BinOp(left=Num(n=2), op=Add(), right=BinOp(left=Num(n=3), op=Mult(), right=Num(n=4))), op=Add(), right=Name(id='x', ctx=Load())))"
+    #+END_SRC
+
+*** Rewriting AST to Achieve Performance Improvement
+    - see 9.24
+
+** ~dis~
+   - ~dis.dis~
+   - disassembled code: ~some_func.__code__.co_code~
 
 * Metaclass
+** Basic
+   When writing metaclasses, it is somewhat common to only define a ~__new__()~ or ~__init__()~ method, *but not both*.
+   #+BEGIN_SRC python
+     class MyMeta(type):
+         def __new__(self, clsname, bases, clsdict):
+             # self is a class object
+             # clsname is name of class being defined
+             # bases is tuple of base classes
+             # clsdict is class dictionary
+             return super().__new__(self, clsname, bases, clsdict)
+   #+END_SRC
+   or
+   #+BEGIN_SRC python
+     class MyMeta(type):
+         def __init__(cls, clsname, bases, clsdict):
+             super().__init__(clsname, bases, clsdict)
+   #+END_SRC
+   - ~__prepare__~ :: is called first and used to *create the class namespace* prior to the body of any class definition being processed. Normally, this method simply returns a dictionary or other mapping object
+   - ~__new__~  :: is invoked prior to class creation and is typically used when a metaclass wants to alter the class definition in some way
+   - ~__init__~ :: is invoked after a class has been created, and is useful if you want to write code that works with the fully formed class object.
+
 ** NoInstances
    #+BEGIN_SRC python
      class NoInstances(type):
@@ -1438,7 +1590,7 @@
                  self.__cache[args] = obj
                  return obj
    #+END_SRC
-** ~__prepare__()~
+** OrderedDict for Class Body
    This method is invoked immediately at the start of a class definition with the class name and base classes. It must then return a mapping object to use when processing the class body.
    #+BEGIN_SRC python
      # Metaclass that uses an OrderedDict for class body
@@ -1456,4 +1608,56 @@
          @classmethod
          def __prepare__(cls, clsname, bases):
              return OrderedDict()
+   #+END_SRC
+
+** Optional Arguments on Class Definitions
+   #+BEGIN_SRC python
+     class Spam(metaclass=MyMeta, debug=True, synchronize=True):
+         ...
+   #+END_SRC
+   To support such keyword arguments in a metaclass, make sure you define them on the
+   ~__prepare__()~, ~__new__()~, and ~__init__()~ methods using keyword-only arguments
+   #+BEGIN_SRC python
+     class MyMeta(type):
+         # Optional
+         @classmethod
+         def __prepare__(cls, name, bases, *, debug=False, synchronize=False):
+             # Custom processing
+             ...
+             return super().__prepare__(name, bases)
+
+         # Required
+         def __new__(cls, name, bases, ns, *, debug=False, synchronize=False):
+             # Custom processing
+             ...
+             return super().__new__(cls, name, bases, ns)
+
+         # Required
+         def __init__(self, name, bases, ns, *, debug=False, synchronize=False):
+             # Custom processing
+             ...
+             super().__init__(name, bases, ns)
+   #+END_SRC
+
+* Packages and Modules
+** Lazy Import
+   #+BEGIN_SRC python
+     # __init__.py
+     def A():
+         from .a import A
+         return A()
+   #+END_SRC
+
+** Organize Add-on Packages into a Common Package
+   #+BEGIN_SRC python
+     # foo-package/
+     #   spam/
+     #     blah.py
+     # bar-package/
+     #   spam/
+     #     grok.py
+     import sys
+     sys.path.extend(['foo-package', 'bar-package'])
+     import spam.blah
+     import spam.grok
    #+END_SRC
