@@ -109,7 +109,11 @@
    #+END_SRC
 
 ** Counting
-   #+BEGIN_SRC python
+  @contextmanager
+def list_transaction(orig_list):
+    working = list(orig_list)
+    yield working
+    orig_list[:] = working #+BEGIN_SRC python
      from collections import Counter
      word_counts1 = Counter(words1)
      word_counts2 = Counter(words2)
@@ -1522,6 +1526,84 @@
 ** ~dis~
    - ~dis.dis~
    - disassembled code: ~some_func.__code__.co_code~
+
+** Simple namedtuple
+   #+BEGIN_SRC python
+     import operator
+
+     class StructTupleMeta(type):
+         def __init__(cls, *args, **kwargs):
+             super().__init__(*args, **kwargs)
+             for n, name in enumerate(cls._fields):
+                 setattr(cls, name, property(operator.itemgetter(n)))
+                 # After f = itemgetter(2), the call f(r) returns r[2]
+
+     class StructTuple(tuple, metaclass=StructTupleMeta):
+         _fields = []
+
+         def __new__(cls, *args):
+             if len(args) != len(cls._fields):
+                 raise ValueError('{} arguments required'.format(len(cls._fields)))
+             return super().__new__(cls, args)
+
+     class Stock(StructTuple):
+         _fields = ['name', 'shares', 'price']
+
+     s = Stock('ACME', 50, 91.1)
+   #+END_SRC
+** Multimethod 9.20
+** Avoiding Repetitive Property
+   #+BEGIN_SRC python
+     def typed_property(name, expected_type):
+         storage_name = '_' + name
+
+         @property
+         def prop(self):
+             return getattr(self, storage_name)
+
+         @prop.setter
+         def prop(self, value):
+             if not isinstance(value, expected_type):
+                 raise TypeError('{} must be a {}'.format(name, expected_type))
+             setattr(self, storage_name, value)
+         return prop
+
+     from functools import partial
+     String = partial(typed_property, expected_type=str)
+     Integer = partial(typed_property, expected_type=int)
+
+     # Example use
+     class Person:
+         name = String('name')
+         age = Integer('age')
+
+         def __init__(self, name, age):
+             self.name = name
+             self.age = age
+   #+END_SRC
+
+** Defining Context Manager the Easy Way
+   #+BEGIN_SRC python
+     import time
+     from contextlib import contextmanager
+
+     @contextmanager
+     def timethis(label):
+         start = time.time()
+         try:
+             yield
+         finally:
+             end = time.time()
+             print('{}: {}'.format(label, end - start))
+
+     # Example use
+     with timethis('counting'):
+         n = 10000000
+         while n > 0:
+             n -= 1
+   #+END_SRC
+   - all of the code prior to the yield executes as the ~__enter__()~ method of a context manager. All of the code after the ~yield~ executes as the ~__exit__()~ method
+   - If there was an exception, it is *raised* at the ~yield~ statement.
 
 * Metaclass
 ** Basic
