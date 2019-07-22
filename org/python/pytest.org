@@ -32,5 +32,50 @@
         pass
   #+END_SRC
   #+BEGIN_SRC bash
-    pytest -v -m somemark
+    pytest -v -m 'some mark'
   #+END_SRC
+** Skip Test on Some Versions
+   #+BEGIN_SRC python
+     @pytest.mark.skipif(tasks.__version__ < ​'0.2.0'​,
+                         reason=​'not supported until version 0.2.0'​)
+   #+END_SRC
+
+** Parametrized
+   Parametrized testing is a way to send multiple sets of data through the same test and
+   have pytest report if any of the sets failed. ~@pytest.mark.parametrize~
+
+* Fixtures
+** Tracing Fixture Execution
+   - ~--setup-show~
+
+** Fixtures for Test Data
+   #+BEGIN_SRC python
+     @pytest.fixture()
+     def a_tuple():
+         return (1, 2, 3)
+   #+END_SRC
+
+** Fixtures for Resource
+   #+BEGIN_SRC python
+     @pytest.fixture()
+     def resource():
+         # Setup
+         yield
+         # Teardown
+   #+END_SRC
+
+** Fixture Scope
+   function(default), class, module, session
+*** Class Scope
+   #+BEGIN_SRC python
+     # class scope
+     @pytest.fixture(scope=​'class'​)
+     ​def​ class_scope():
+         """A class scope fixture."""
+
+     @pytest.mark.usefixtures(​'class_scope'​)
+     class TestClass:
+         def test_method(self):
+             # use class_scope fixture
+             pass
+   #+END_SRC
