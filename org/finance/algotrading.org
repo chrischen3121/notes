@@ -1,0 +1,80 @@
+#+TITLE: Algorithmic Trading
+#+KEYWORDS: algo, trading
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LaTeX: t
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ../../org-templates/level-1.org
+* Overview
+  | Algorithms               | Type          | Focus        | Dynamic | Pre-determine | Price     | Volume    |
+  |--------------------------+---------------+--------------+---------+---------------+-----------+-----------|
+  | TWAP                     | Impact-driven | Time         | Y       |               |           |           |
+  | VWAP                     | Impact-driven | Volume       | Y       |               |           |           |
+  | Percentage Of Volume     | Impact-driven | Volume       |         | Y             |           | often     |
+  | Minimal impact           | Impact-driven | Impact       | Y       |               | sometimes | sometimes |
+  | Implementation Shortfall | Cost-driven   | Price/Risk   |         | Y             | sometimes | sometimes |
+  | Adaptive Shortfall       | Cost-driven   | Price/Risk   |         | Y             | often     | sometimes |
+  | Market On Close          | Cost-driven   | Price/Risk   | Y       |               | sometimes | sometimes |
+  | Price Inline             | Opportunistic | Price        |         | Y             | often     | sometimes |
+  | Liquidity-driven         | Opportunistic | Liquidity    |         | Y             | sometimes | sometimes |
+  | Pair/Spread trading      | Opportunistic | Ratio/Spread |         | Y             | often     |           |
+
+* Impact-driven
+ TWAP and VWAP are first generation of impact-driven algorithms, their main focus is their respective benchmarks.
+
+** TWAP
+   - predictable way
+   - considerable signalling risk
+   - the only thing other participants do not know is the total size of order
+
+*** randomize
+    - avoid unfavourable market conditions(small best bid/offer sizes, large price jumps)
+    - increasing the risk of missing the TWAP benchmark
+
+*** variations
+**** aggressive/passive factor
+    - a aggressive approach issue more orders early on, help reduce timing risk
+    - a passive approach should result in lower market impact costs
+
+**** price adaptive
+     adjust the trading schedule dynamically based on the market price(a simple price inline algorithm)
+
+*** parameters
+**** tracking
+     limit how far it may go ahead(or behind) schedule(pecentage or a cash value)
+
+**** interval frequency
+     use randommisations
+
+** VWAP
+   - use historical volume profiles. $avg_period/avg_total$
+   - condition: the day's trading volume follows a similar pattern to the historical profile
+   - modern VWAP determine whether they may get ahead of schedule, and how best to catch up if they are behind their target
+   - performance: 1. how well they track the target; 2.how well they predict market volume
+
+*** variations
+   - vulnerable to sudden shifts, some versions may monitor current market conditions
+   - some variants tracks short-term price and volume trends and dynamically adjusts their target execution profile accordingly
+
+*** parameters
+**** tracking
+     control over how closely they track the target completion profile via custom parameters or an execution style parameter
+
+**** start/end
+
+**** trending/tilting
+     some versions may provide parameters that let the target execution profile be tilted towards either the start or the end of the day
+
+** POV(Percent of Volume)
+   - also called volume inline, participation, target volume or follow algorithms
+   - tracking a participation rate: a 20% participation rate of 100,000 total should execute 20,000
+   - keep in line with the observed volume
+
+*** adjust our participation rate
+    to account for our own trading. e.g. to track participation rate 20% for 1000 executed
+    - $Participation rate = 200/(1000+200) = 16.667%$, not right
+    - adjustment $1/(1-p)$. e.g $1/(1-0.2) = 25%$ of each observed new trade
+    - $Participation rate = 250/(1000+250) = 20%$

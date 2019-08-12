@@ -158,16 +158,32 @@
     #+BEGIN_SRC bash
       sudo docker run -t -i host:port/user/repo:tag /bin/bash
     #+END_SRC
-* Networking
-  #+BEGIN_SRC sh
+* 建立连接
+** Docker 内部网络
+   - ~ip a show docker0~: show docker0 interface
+   - 接口 docker0 是一个虚拟的以太网桥,用于连接容器和本地宿主网络
+   - 每个容器都有一个接口，一端连接容器里的 eth0 接口，另一端为在宿主机上的 veth****接口。veth****直接连上 docker0 网桥
+   - ~sudo iptables -t nat -L -n~
+   - ~docker inspect container~
+
+   最大的问题在于容器重启会改变 IP
+
+** Docker Networking
+    #+BEGIN_SRC sh
     docker network create app # 创建
     docker network inspect app # 查看
 
     docker network ls # list
-  #+END_SRC
-  使用 *--network* 参数指定容器运行网络
+    #+END_SRC
+    使用 ~--network~ 参数指定容器运行网络
 *** 已有容器网络操作
     #+BEGIN_SRC sh
       docker network connect app container1
       docker network disconnect app container1
     #+END_SRC
+
+** Docker Link
+   - ~--link targetname:alias~: try ping alias in container
+   - 容器内新增环境变量 ~ALIAS_NAME, ALIAS_PORT~
+* Docker Compose
+* Docker Swarm
