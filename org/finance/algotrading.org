@@ -22,8 +22,25 @@
   | Liquidity-driven         | Opportunistic | Liquidity    |         | Y             | sometimes | sometimes |
   | Pair/Spread trading      | Opportunistic | Ratio/Spread |         | Y             | often     |           |
 
+  At the macro level use a more schedule-driven algorithms, while at the micro level they focus on balancing the trade-off between cost and risk
+
+** categories
+  - Schedule-driven: follow a strictly defined trading trajectory, created statically from historical data
+  - Opportunistic: completely dynamic, react to favourable market conditions. more aggressive when market becomes favourable
+  - Evaluative: middle between these two extremes
+
+** generic parameters
+   - start/end
+   - limit price
+   - Must-be-filled
+   - execution style: aggressive, passive
+   - volume limit: maximum, child, minimum
+   - auctions: flag, enable trading in the pre-market or post-market period
+
 * Impact-driven
+ Impact-driven algorithms aim to minimize the overall market impact.
  TWAP and VWAP are first generation of impact-driven algorithms, their main focus is their respective benchmarks.
+ - these algorithms has timing risk, particularly for volatile assets
 
 ** TWAP
    - predictable way
@@ -47,7 +64,7 @@
      limit how far it may go ahead(or behind) schedule(pecentage or a cash value)
 
 **** interval frequency
-     use randommisations
+     use randomizations
 
 ** VWAP
    - use historical volume profiles. $avg_period/avg_total$
@@ -72,9 +89,73 @@
    - also called volume inline, participation, target volume or follow algorithms
    - tracking a participation rate: a 20% participation rate of 100,000 total should execute 20,000
    - keep in line with the observed volume
+   - if several POVs competing for an illiquid asset, they could drive each other on. Use limit price
+   - simply splits a new child order each time is predictable, try to trade more periodically or use aggressive
+   - sudden volume cause a sharp increase in volume, use safe guard, like comparing the target size with the currently available volume on the order book or set a max trade size.
 
 *** adjust our participation rate
     to account for our own trading. e.g. to track participation rate 20% for 1000 executed
     - $Participation rate = 200/(1000+200) = 16.667%$, not right
     - adjustment $1/(1-p)$. e.g $1/(1-0.2) = 25%$ of each observed new trade
     - $Participation rate = 250/(1000+250) = 20%$
+
+*** variations
+**** incorporate forecasting
+     based on a mixture of historical volume profile, current observed volume and quantitative analytics
+
+**** price adaptive
+     - adjust the participation rate based on how the current market price compares to a benchmark
+     - some will adapt to the relative price changes for other assets, such as sector or market indices, ETFs
+
+*** parameters
+**** participation rate
+**** tracking
+     how closely they track the target participation rate, allow a more dynamic adjustment of the participation rate
+
+**** volume filter
+     help prevent the algorithm needlessly chasing volume
+
+**** start/end
+
+**** must-be-filled
+     allow the algorithm to change its trading style when it is running out of time
+
+**** limit price
+**** execution style
+     - passive: to achieve price improvement
+     - aggressive: track the participation rate more closely
+
+     for illiquid assets more aggressive trading may be necessary to prevent getting behind its targets
+** Minimal Impact
+   Next logical progression from VWAP and POV algorithms. Not to track a market-driven benchmark; focused on minimising market impact
+   - avoid signalling risk which depends on both our order size and asset's liquidity
+   - use hidden order types to reduce this risk
+   - use dark pool: Dark pools came about primarily to facilitate block trading by institutional investors who did not wish to impact the markets with their large orders and obtain adverse prices for their trades
+   - may trade 80% on the dark pool(ATS) and trade the remainder using a passive VWAP or POV algorithm
+
+*** variations
+    - estimate the probability of being filled on the ATS
+    - use impact cost models to forecast the overall potential cost
+
+*** parameters
+**** visibility
+**** must be filled
+
+* Cost-driven
+  Cost-driven algorithms seek to reduce the overall transaction costs, much more than just commissions and spreads.
+  Implicit costs such as market impact and timing risk are important components of the overall cost.
+  - *strike a balance between market impact and the overall exposure to timing risk*
+  - early cost-driven evolved from impact-driven ones by incorporating factors such as timing risk
+
+** Implementation Shortfall(IS)
+*** definition
+    represents the diff between the decision price decides to trade and the average price that is actually achieved
+    - benchmark: decision price
+
+*** aim
+    to achieve an average price that minimizes the shortfall when compared with the decision price
+    - key: strike the right balance between market impact and timing risk
+
+
+* Opportunistic
+  Opportunistic algorithms take advantage whenever the market conditions are favourable
