@@ -616,3 +616,40 @@ share files by way of the group mechanism, create separate groups for that purpo
   - =/etc/fstab=, a table of storage devices and their associated mount points
 
 * NFS
+* LDAP
+  | Attribute   | Stands for        | Description                                     |
+  |-------------+-------------------+-------------------------------------------------|
+  | o           | Organization      | Often identifies a site's top-level entry       |
+  | ou          | Organization unit | A logical subdivision                           |
+  | cn          | Common name       | The most natural name to represent the entry    |
+  | dc          | Domain component  | Used at sites that model their hierarchy on DNS |
+  | objectClass | Object class      | Schema to which this entry's attributes conform |
+
+** openldap
+   - command: *slapd*
+   - cluster: *slurpd* (master server)
+   - configuration: =/etc/openldap/slapd.conf=
+     #+BEGIN_SRC conf
+       database bdb # default: Berkely DB
+       suffix "dc=mydomain, dc=com" # LDAP basename, like DNS domain name
+       rootdn "cn=admin, dc=mydomain, dc=com" # administrator name
+       rootpw {crypt}abcDEFg/uiR # hashed password
+       directory /var/lib/ldap
+     #+END_SRC
+   - configuration: =/etc/openldap/lapd.conf=, set the /base/ to the same value as the suffix
+     #+BEGIN_SRC conf
+       BASE dc=mydomain,dc=com
+       URI ldap://xxx.mydomain.com
+     #+END_SRC
+
+   - use *slappasswd* to change password
+
+** 389 Directory Server
+   Advantages:
+   - Multimaster replication
+   - Active Directory user and group synchronization
+   - A graphical console for all facets of user, group, and server management
+
+** phpLDAPadmin
+** ldapsearch
+   command-line tool
