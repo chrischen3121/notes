@@ -1927,6 +1927,168 @@ def list_transaction(orig_list):
 ** Threading
    - ~Thread~ methods: ~start~, ~is_alive~, ~join~, ~terminate~
    - ~Thread~ interface: ~run~
+*** Daemonic Thread
+    #+BEGIN_SRC python
+      t = Thread(target=countdown, args=(10,), daemon=True)
+      t.start()
+    #+END_SRC
+
+*** Storing Thread-Specific State
+    - ~threading.local()~ : create a thread-local storage object
+
+*** Threading Pool
+    - ~from concurrent.futures import ThreadPoolExecutor~
 
 ** Synchronization Primitives
 *** Event
+    Event instances are similar to a "sticky" flag that allows threads to wait for something to happan.
+
+*** Avoid Deadlock
+    #+BEGIN_SRC python
+      import threading
+      from contextlib import contextmanager
+
+      # Thread-local state to stored information on locks already acquired
+      _local = threading.local()
+
+
+      @contextmanager
+      def acquire(*locks):
+          # Sort locks by object identifier
+          locks = sorted(locks, key=lambda x: id(x))
+
+          # Make sure lock order of previously acquired locks is not violated
+          acquired = getattr(_local, 'acquired', [])
+          if acquired and max(id(lock) for lock in acquired) >= id(locks[0]):
+              raise RuntimeError('Lock Order Violation')
+
+          # Acquire all of the locks
+          acquired.extend(locks)
+          _local.acquired = acquired
+          try:
+              for lock in locks:
+                  lock.acquire()
+              yield
+          finally:
+              # Release locks in reverse order of acquisition
+              for lock in reversed(locks):
+                  lock.release()
+              del acquired[-len(locks):]
+
+
+      import threading
+      x_lock = threading.Lock()
+      y_lock = threading.Lock()
+
+      def thread_1():
+          while True:
+              with acquire(x_lock, y_lock):
+                  print('Thread-1')
+
+      def thread_2():
+          while True:
+              with acquire(y_lock, x_lock):
+                  print('Thread-2')
+    #+END_SRC
+
+** Message Queue
+   - ZeroMQ
+   - Celery
+*** Actor Model
+    #+BEGIN_SRC python
+      from queue import Queue
+      from threading import Thread, Event
+
+
+      # Sentinel used for shutdown
+      class ActorExit(Exception):
+          pass
+
+
+      class Actor:
+          def __init__(self):
+              self._mailbox = Queue()
+
+          def send(self, msg):
+              '''
+              Send a message to the actor
+              '''
+              self._mailbox.put(msg)
+
+          def recv(self):
+              '''
+              Receive an incoming message
+              '''
+              msg = self._mailbox.get()
+              if msg is ActorExit:
+                  raise ActorExit()
+              return msg
+
+          def close(self):
+              '''
+              Close the actor, thus shutting it down
+              '''
+              self.send(ActorExit)
+
+          def start(self):
+              '''
+              Start concurrent execution
+              '''
+              self._terminated = Event()
+              t = Thread(target=self._bootstrap)
+              t.daemon = True
+              t.start()
+
+          def _bootstrap(self):
+              try:
+                  self.run()
+              except ActorExit:
+                  pass
+              finally:
+                  self._terminated.set()
+
+          def join(self):
+              self._terminated.wait()
+
+          def run(self):
+              '''
+              Run method to be implemented by the user
+              '''
+              while True:
+                  msg = self.recv()
+    #+END_SRC
+
+* System Utilities
+  - ~getpass~: prompting for a password
+
+** Subprocess
+   #+BEGIN_SRC python
+     import subprocess
+     out_bytes = subprocess.check_output(['netstat','-a'])
+     out_text = out_bytes.decode('utf-8')
+   #+END_SRC
+
+** Performance Counter
+   use ~time.perf_counter~ for wall-time, ~time.process_time~ for CPU time
+** CPU&memory Limits
+   #+BEGIN_SRC python
+     import signal
+     import resource
+     import os
+
+
+     def time_exceeded(signo, frame):
+         print("Time's up!")
+         raise SystemExit(1)
+
+
+     def set_max_runtime(seconds):
+         # Install the signal handler and set a resource limit
+         soft, hard = resource.getrlimit(resource.RLIMIT_CPU)
+         resource.setrlimit(resource.RLIMIT_CPU, (seconds, hard))
+         signal.signal(signal.SIGXCPU, time_exceeded)
+
+     def limit_memory(maxsize):
+         soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+         resource.setrlimit(resource.RLIMIT_AS, (maxsize, hard))
+   #+END_SRC
