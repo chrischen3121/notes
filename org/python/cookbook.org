@@ -2092,3 +2092,68 @@ def list_transaction(orig_list):
          soft, hard = resource.getrlimit(resource.RLIMIT_AS)
          resource.setrlimit(resource.RLIMIT_AS, (maxsize, hard))
    #+END_SRC
+
+** webbrowser
+   ~get~, ~open~, ~open_new~, ~open_new_tab~
+
+* Testing
+** Mock
+   - ~unittest.mock.patch~
+   - ~@patch('somefunc')~ or ~with patch('somefunc') as mock~
+   - patch value: ~with patch(__main__.x, 'patched_value')~
+
+** Assert Regex
+   #+BEGIN_SRC python
+     with self.assertRaisesRegex(ValueError, 'error*'):
+         ...
+   #+END_SRC
+
+** Raise from another exception
+   - ~raise ... from e~
+
+** Warnings
+   #+BEGIN_SRC python
+     import warnings
+     warnings.warn('logfile argument deprecated', DeprecationWarning)
+   #+END_SRC
+
+* Debuging
+   - ~python3 -i~: starts an shell as soon as a program terminates, then uses =pdb=
+** Traceback
+   - ~traceback.print_exc(file=sys.stderr)~
+   - ~traceback.print_stack(file=sys.stderr)~
+
+** Profiling
+   The first rule of optimization might be  to "not do it" the second rule is almost certainly "don't optimize the unimportant"
+*** Decorator Version
+   #+BEGIN_SRC python
+     import time
+     from functools import wraps
+
+     def timethis(func):
+         @wraps(func)
+         def wrapper(*args, **kwargs):
+             start = time.perf_counter()
+             r = func(*args, **kwargs)
+             end = time.perf_counter()
+             print('{}.{} : {}'.format(func.__module__, func.__name__, end - start))
+             return r
+         return wrapper
+   #+END_SRC
+
+*** Contextmanager Version
+    #+BEGIN_SRC python
+      import time
+      from contextlib import contextmanager
+
+      @contextmanager
+      def timeblock(label):
+          start = time.perf_counter()
+          try:
+              yield
+          finally:
+              end = time.perf_counter()
+              print('{} : {}'.format(label, end - start))
+    #+END_SRC
+
+*** ~time.process_time()~
