@@ -34,6 +34,7 @@
   1. Start init/systemd as PID 1
   1. Execute startup scripts
   1. Running system
+
 ** BIOS vs. UEFI
 *** Legacy BIOS(Basic Input/Output System)
     BIOS assumes that the boot device starts with a record called the MBR.
@@ -49,6 +50,7 @@
     - /boot/grub/grub.cfg
 
       Use *grub-mkconfig* to generate grub.cfg, *update-grub* stub for *grub-mkconfig* on Ubuntu
+
 ** init
 *** modes
 **** Single-user mode
@@ -65,7 +67,6 @@
      system modes are known as "run levels"
 **** BSD *init*
 **** *systemd* for linux
-
 **** *launchd* for macOS
 **** *Upstart* for ubuntu
 ** systemd
@@ -83,6 +84,7 @@
     #+END_SRC
     unit directory: */usr/lib/systemd/system* or */lib/systemd/system*.
     */run/systemd/system* that’s a scratch area for transient units.
+
 *** systemctl
 **** Subcommands
      | Subcommand                | Function                                           |
@@ -97,7 +99,8 @@
      | status /unit/             |                                                    |
      | kill /pattern/            | Sends a signal to units matching /pattern/         |
      | daemon-reload             | Reloads unit files and *systemd* configuration     |
-     | list-unit                 |                                                    |
+     | list-units                |                                                    |
+
 **** States
      | State    | Meaning                                                        |
      |----------+----------------------------------------------------------------|
@@ -108,6 +111,7 @@
      | linked   | Unit file available through a symlink                          |
      | masked   | Banished from the *systemd* world from a logical perspective   |
      | static   | Depended upon by another unit; has no install requirements     |
+
 **** Targets
      Target is a group of Units
      #+CAPTION: Mapping between init run levels and systemd targets
@@ -164,6 +168,7 @@
 *** useful man to write unit file
     - *man systemd.service* to see complete list of options for service
     - *man systemd.unit* to see common options for all types
+
 *** customizations
     Add *conf* file to */etc/systemd/system/xxx.service.d* directory.
     - easy way:
@@ -178,6 +183,7 @@
     forward them to a remote syslog server.
 
     *journalctl* displays log entries. *-u* to specify which service to display.
+
 *** Utilities
     - systemctl
     - systemd-analyze
@@ -185,6 +191,7 @@
     - localectl
     - timedatectl
     - loginctl
+    - networkctl
 
 ** shutdown
 *** *halt*
@@ -194,6 +201,7 @@
 *** *shutdown*
     The shutdown command is a layer over halt and reboot that provides for scheduled shutdowns
     and ominous warnings to logged-in users
+
 * Access Control
 ** /etc/passwd
 *** Login name
@@ -203,8 +211,7 @@
 *** UID (user ID) number
 *** Default GID (group ID) number
 *** GECOS information
-    Use *finger* command to interpert GECOS,
-    use *chfn* to change GECOS
+    Use *finger* command to interpert GECOS, use *chfn* to change GECOS
     - full name
     - office number and building
     - office telephone extension
@@ -230,6 +237,8 @@
 - Encrypted password or a placeholder
 - GID number
 - List of members, separated by commas
+
+
 It is possible to enter a group password to allow users not belonging to
 a group to enter it with the *newgrp* command.
 
@@ -244,7 +253,9 @@ share files by way of the group mechanism, create separate groups for that purpo
      lynda    ALL=(ALL)ALL, !SOME_CMND_ALIAS
      %wheel    ALL, !SOME_HOST_ALIAS = NOPASSWD: SOME_CMND_ALIAS
    #+END_SRC
+
    Whitelist the environment variables by adding them to the sudoers file’s env_keep list
+
 ** users basic
 *** Required
 **** Sign policy agreement
@@ -319,6 +330,7 @@ share files by way of the group mechanism, create separate groups for that purpo
    - Information about the files and network ports the process has opened
    - The process’s signal mask (a record of which signals are blocked)
    - The owner of the process
+
 ** Signals
    | No | Name  | Description          | Default   | Can catch? | Can block? | Dump core? |
    |----+-------+----------------------+-----------+------------+------------+------------|
@@ -341,17 +353,111 @@ share files by way of the group mechanism, create separate groups for that purpo
    - pkill: search for process to kill
 ** *ps*
    Useful options
-   - aux
+   - aux: *a* show all processes; *x* show processes that don't have a control terminal; *u* user oriented output format
    - lax: faster than aux(UID only), aslo includes PPID, NI(niceness) and wait channel
      - ww: enable unlimited column width
+
 *** with *grep*
     ps aux | grep -v grep | grep xxxx
-*** alternative *pidof*, *pgrep*
+*** alternative command
+    - *pidof* :: determine the PID of a process
+    - *pgrep*
+
 ** *top*
    1: show loads of individual cores
    - H: show threads
+
 *** alternative *htop*
-* Shell Command
+
+** *nice*
+   - Niceness range: ~-20~ to ~19~
+   - Only root can run a command with high priority
+   - *renice*
+
+** =/proc=
+   *ps* and *top* read their process status information from the =/proc= directory
+*** useful process files
+    cgroups, cmd, cmdline, cwd, environ, exe, fdinfo, ns, root, stat, statm
+    - fd :: reperents open files
+    - maps :: libraries dependencies
+
+** *strace*(lower level)
+   Display every system call that a process makes and every signal it receives
+   - ~-f~ to trace sub processes
+
+* Important Directories
+  | =/root=          | The root directory.                                                                                                                                                     |
+  | =/bin=           | Contains binaries (programs) that must be present for the system to boot and run.                                                                                       |
+  | =/boot=          | Contains the Linux kernel, initial RAM disk image, and the boot loader.                                                                                                 |
+  | =/dev=           | This is a special directory that contains device nodes.                                                                                                                 |
+  | =/etc=           | Contains all of the system-wide configuration files.                                                                                                                    |
+  | =/home=          |                                                                                                                                                                         |
+  | =/lib=           | Contains shared library files used by the core system programs.                                                                                                         |
+  | =/lost+found=    | It is used in the case of a partial recovery from a filesystem corruption event.                                                                                        |
+  | =/media=         | Contain the mount points for removable media such as USB drives, CD-ROMs, etc.                                                                                          |
+  | =/opt=           | The =/opt= directory is used to install "optional" software. This is mainly used to hold commercial software products that may be installed on your system.             |
+  | =/proc=          | It is a virtual filesystem maintained by the Linux kernel. The files are readable and will give you a picture of how the kernel sees your computer.                     |
+  | =/root=          | This is the home directory for the root account.                                                                                                                        |
+  | =/sbin=          | This directory contains 'system' binaries. These are programs that perform vital system tasks that are generally reserved for the superuser.                            |
+  | =/tmp=           | The =/tmp= directory is intended for storage of temporary, transient files created by various programs.                                                                 |
+  | =/usr=           | The =/usr= directory tree is likely the largest one on a Linux system. It contains all the programs and support files used by regular users.                            |
+  | =/usr/bin=       | Contains the executable programs installed by your Linux distribution                                                                                                   |
+  | =/usr/lib=       | The shared libraries for the programs in =/usr/bin=.                                                                                                                    |
+  | =/usr/local=     | The =/usr/local= tree is where programs that are not included with your distribution but are intended for system-wide use are installed.                                |
+  | =/usr/sbin=      | Contains more system administration programs.                                                                                                                           |
+  | =/usr/share=     | Contains all the shared data used by programs in =/usr/bin=.                                                                                                            |
+  | =/usr/share/doc= | Most packages installed on the system will include some kind of documentation.                                                                                          |
+  | =/var=           | The =/var= directory tree is where data that is likely to change is stored. Various databases, spool files, user mail, etc. are located here.                           |
+  | =/var/log=       | Contains log files, records of various system activity. These are very important and should be monitored from time to time. The most useful one is =/var/log/messages=. |
+
+** interesting files
+  - =/boot/grub/grub.cfg=, which are used to configure the boot loader
+  - =/boot/vmlinuz=, the Linux kernel
+  - =/etc/crontab=, a file that defines when automated jobs will run
+  - =/etc/fstab=, a table of storage devices and their associated mount points1
+
+* NFS
+* LDAP
+  | Attribute   | Stands for        | Description                                     |
+  |-------------+-------------------+-------------------------------------------------|
+  | o           | Organization      | Often identifies a site's top-level entry       |
+  | ou          | Organization unit | A logical subdivision                           |
+  | cn          | Common name       | The most natural name to represent the entry    |
+  | dc          | Domain component  | Used at sites that model their hierarchy on DNS |
+  | objectClass | Object class      | Schema to which this entry's attributes conform |
+
+** openldap
+   - command: *slapd*
+   - cluster: *slurpd* (master server)
+   - configuration: =/etc/openldap/slapd.conf=
+     #+BEGIN_SRC conf
+       database bdb # default: Berkely DB
+       suffix "dc=mydomain,dc=com" # LDAP basename, like DNS domain name
+       rootdn "cn=admin,dc=mydomain,dc=com" # administrator name
+       rootpw {crypt}abcDEFg/uiR # hashed password
+       directory /var/lib/ldap
+     #+END_SRC
+   - configuration: =/etc/openldap/lapd.conf=, set the /base/ to the same value as the suffix
+     #+BEGIN_SRC conf
+       BASE dc=mydomain,dc=com
+       URI ldap://xxx.mydomain.com
+     #+END_SRC
+
+   - use *slappasswd* to change password
+
+** 389 Directory Server
+   Advantages:
+   - Multimaster replication
+   - Active Directory user and group synchronization
+   - A graphical console for all facets of user, group, and server management
+
+** phpLDAPadmin
+** ldapsearch
+   command-line tool
+* Networking
+** Troubleshooting
+
+* Useful Command
 ** os
    - ~uname -a~
    - ~lsb_release -a~
@@ -495,7 +601,8 @@ share files by way of the group mechanism, create separate groups for that purpo
       sleep 10; echo "Time's up" $'\a'
     #+END_SRC
 
-** try to write script
+* Writing Script
+  - an example
    #+BEGIN_SRC bash
      find . -name '*log '
      find . -type f -name '*.log '
@@ -537,6 +644,7 @@ share files by way of the group mechanism, create separate groups for that purpo
           ,*) message_level_text="Other"
       esac
     #+END_SRC
+
 *** comparison operators
    | String | Numeric |
    |--------+---------|
@@ -548,6 +656,7 @@ share files by way of the group mechanism, create separate groups for that purpo
    | x >= y | x -ge y |
    | -n x   | -       |
    | -z x   | -       |
+
 *** bash file operators
    | Operator        | True if                            |
    |-----------------+------------------------------------|
@@ -583,73 +692,3 @@ share files by way of the group mechanism, create separate groups for that purpo
     Use *${array_name[subscript]}* to access individual elements.
     The subscripts * and @ refer to the array as a whole, and the special
     forms *${#array_name[*]}* and *${#array_name[@]}* yield the number of elements in the array.
-
-* Important Directories
-  | =/root=          | The root directory.                                                                                                                                                     |
-  | =/bin=           | Contains binaries (programs) that must be present for the system to boot and run.                                                                                       |
-  | =/boot=          | Contains the Linux kernel, initial RAM disk image, and the boot loader.                                                                                                 |
-  | =/dev=           | This is a special directory that contains device nodes.                                                                                                                 |
-  | =/etc=           | Contains all of the system-wide configuration files.                                                                                                                    |
-  | =/home=          |                                                                                                                                                                         |
-  | =/lib=           | Contains shared library files used by the core system programs.                                                                                                         |
-  | =/lost+found=    | It is used in the case of a partial recovery from a filesystem corruption event.                                                                                        |
-  | =/media=         | Contain the mount points for removable media such as USB drives, CD-ROMs, etc.                                                                                          |
-  | =/opt=           | The =/opt= directory is used to install "optional" software. This is mainly used to hold commercial software products that may be installed on your system.             |
-  | =/proc=          | It is a virtual filesystem maintained by the Linux kernel. The files are readable and will give you a picture of how the kernel sees your computer.                     |
-  | =/root=          | This is the home directory for the root account.                                                                                                                        |
-  | =/sbin=          | This directory contains 'system' binaries. These are programs that perform vital system tasks that are generally reserved for the superuser.                            |
-  | =/tmp=           | The =/tmp= directory is intended for storage of temporary, transient files created by various programs.                                                                 |
-  | =/usr=           | The =/usr= directory tree is likely the largest one on a Linux system. It contains all the programs and support files used by regular users.                            |
-  | =/usr/bin=       | Contains the executable programs installed by your Linux distribution                                                                                                   |
-  | =/usr/lib=       | The shared libraries for the programs in =/usr/bin=.                                                                                                                    |
-  | =/usr/local=     | The =/usr/local= tree is where programs that are not included with your distribution but are intended for system-wide use are installed.                                |
-  | =/usr/sbin=      | Contains more system administration programs.                                                                                                                           |
-  | =/usr/share=     | Contains all the shared data used by programs in =/usr/bin=.                                                                                                            |
-  | =/usr/share/doc= | Most packages installed on the system will include some kind of documentation.                                                                                          |
-  | =/var=           | The =/var= directory tree is where data that is likely to change is stored. Various databases, spool files, user mail, etc. are located here.                           |
-  | =/var/log=       | Contains log files, records of various system activity. These are very important and should be monitored from time to time. The most useful one is =/var/log/messages=. |
-
-** interesting files
-  - =/boot/grub/grub.cfg=, which are used to configure the boot loader
-  - =/boot/vmlinuz=, the Linux kernel
-  - =/etc/crontab=, a file that defines when automated jobs will run
-  - =/etc/fstab=, a table of storage devices and their associated mount points
-
-* NFS
-* LDAP
-  | Attribute   | Stands for        | Description                                     |
-  |-------------+-------------------+-------------------------------------------------|
-  | o           | Organization      | Often identifies a site's top-level entry       |
-  | ou          | Organization unit | A logical subdivision                           |
-  | cn          | Common name       | The most natural name to represent the entry    |
-  | dc          | Domain component  | Used at sites that model their hierarchy on DNS |
-  | objectClass | Object class      | Schema to which this entry's attributes conform |
-
-** openldap
-   - command: *slapd*
-   - cluster: *slurpd* (master server)
-   - configuration: =/etc/openldap/slapd.conf=
-     #+BEGIN_SRC conf
-       database bdb # default: Berkely DB
-       suffix "dc=mydomain,dc=com" # LDAP basename, like DNS domain name
-       rootdn "cn=admin,dc=mydomain,dc=com" # administrator name
-       rootpw {crypt}abcDEFg/uiR # hashed password
-       directory /var/lib/ldap
-     #+END_SRC
-   - configuration: =/etc/openldap/lapd.conf=, set the /base/ to the same value as the suffix
-     #+BEGIN_SRC conf
-       BASE dc=mydomain,dc=com
-       URI ldap://xxx.mydomain.com
-     #+END_SRC
-
-   - use *slappasswd* to change password
-
-** 389 Directory Server
-   Advantages:
-   - Multimaster replication
-   - Active Directory user and group synchronization
-   - A graphical console for all facets of user, group, and server management
-
-** phpLDAPadmin
-** ldapsearch
-   command-line tool
