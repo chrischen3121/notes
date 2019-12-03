@@ -1,0 +1,50 @@
+#+TITLE: elisp
+#+AUTHOR: ChrisChen
+#+EMAIL: chrischen3121@gmail.com
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LANGUAGE: en-US
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+SETUPFILE: ../../org-templates/level-1.org
+* Char Representation
+  - ~?\U, ?\u, ?\x, ?\101~
+  - ~?^I, ?\C-I, ?\M-I ?\S-I~
+
+* Symbol
+** Creating Symbols
+   #+BEGIN_SRC elisp
+     (symbol-name 'foo)
+
+     ;; returns a newly-allocated, uninterned symbol whose name is NAME (which must be a string)
+     (make-symbol "foo")
+
+     ;; returns the interned symbol.  If OBARRAY is omitted, the value of the global variable 'obarray' is used
+     (intern "foo" other-obarray)
+
+     ;; returns the symbol in OBARRAY whose name is NAME, or‘nil’ if OBARRAY has no symbol with that name.
+     (intern-soft "foo")
+
+     ;; map on obarray
+     (mapatoms functions &optional obarray)
+
+     ;; deletes SYMBOL from the obarray OBARRAY
+     (unintern symbol obarray)
+   #+END_SRC
+
+* Sequence
+  an ordered set of elements
+** lists
+   #+BEGIN_SRC elisp
+     (eq () nil) ; -> t
+     (A 2 "A") ; A list of three elements.
+   #+END_SRC
+   A cons cell is made for each element.  The CAR slot of the cons cell holds
+   the element, and its CDR slot refers to the next cons cell of the list, which
+   holds the next element in the list. The CDR slot of the last cons cell is set
+   to hold 'nil'.
+** arrays(fixed-length)
+* Useful Functions & Marcos
+  - ~ash~: shift
+  - ~car~, ~cdr~
+  - ~defvar~, ~setq~, ~setf~, ~let~
+  - ~cl-flet~: defining local function
