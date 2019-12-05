@@ -1,7 +1,7 @@
 #+TITLE: elisp
 #+AUTHOR: ChrisChen
 #+EMAIL: chrischen3121@gmail.com
-#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+OPTIONS: H:3 toc:2 num:2 ^:nil
 #+LANGUAGE: en-US
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
@@ -49,16 +49,34 @@
 * Special Forms
   Special forms are something like built-in macros, examples: ~if~, ~progn~
 
+* Association List(alist)
+  #+BEGIN_SRC elisp
+    (defvar *dict* '((key1 value1)
+                     (key2 value2)
+                     (key3 value3)))
+
+    (assoc 'key1 *dict*) ; -> (key1 value1)
+  #+END_SRC
+* Quasiquoting[`]
+  #+BEGIN_SRC elisp
+    `(there are ,(+ 1 4) apples) ; -> there are 5 apples
+  #+END_SRC
+
+* Function Operator[#']
+  ~#'sqrt~ will be converted to ~(function sqrt)~ by Lisp reader
+
 * Useful Functions & Marcos
   - ~ash~: shift
   - ~car~, ~cdr~, ~cons~, ~cadr~, ~cadadr~, ...
   - ~defvar~, ~setq~, ~setf~, ~let~
   - ~cl-flet~: defining local function, ~cl-labels~
   - ~()~, ~'()~, ~'nil~, ~nil~ are all false
+  - ~mapcar~, ~apply~
+
 ** conditionals
    ~if~, ~when~, ~unless~, ~cond~, ~or~, ~case~, ~and~
 *** ~when~, ~unless~
-    Eliminating the pain of ~progn~
+    Eliminates the pain of ~progn~
 *** ~cond~
     The ~cond~ form is the classic way to do branching in Lisp. Through the
     liberal use of parentheses, it allows for an implicit ~progn~, can handle
@@ -66,3 +84,9 @@
     - using last ~t~ condition to guarantee that at least the last branch will be evaluated.
 *** ~case~
     - ~otherwise~ like ~default~ in other language
+
+** ~push/assoc~ idiom
+   The ~assoc~ command always returns the first item it finds in a list. Using
+   the ~push~ and ~assoc~ commands together allows us to pretend that values in
+   an alist are changing, while still preserving old values(keep history of all
+   old values).
