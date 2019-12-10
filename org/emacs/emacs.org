@@ -71,7 +71,7 @@
   | C-M-- C-M-<SPC> | Marks the previouss s-expression |
 
 * Searching
-** /occur/
+** /occur/(M-s o)
 *** Show Context Line
     ~list-matching-lines-default-context-lines~
 
@@ -79,11 +79,53 @@
     for multiple buffers
     - ~multi-occur-in-matching-buffers~: match with regex
 
+*** Edit Matches
+    Type /e/ to entry editable mode. Type ~C-c C-c~ to commit the
+    changes. The feature is especially great for keyboard macros and
+    search & replace.
+
+** Query & Replace
+   | Key Binding        | Purpose                         |
+   |--------------------+---------------------------------|
+   | C-M-%              | Query regexp search and replace |
+   | M-%                | Query search and replace        |
+
+** Emacs Regexp Engine
+   - These constructs require backslashes or Emacs will treat
+   them like literal characters: ~\|~, ~\(~, ~\)~, ~\{~, ~\}~
+   - no ~\d~: use ~[0-9]~ or ~[:digit:]~
+
+*** Emacs-only features
+    | Constructs    | Description                                                 |
+    |---------------+-------------------------------------------------------------|
+    | ~\<~, ~\>~    | Matches beginning and end of word                           |
+    | ~\_<~, ~\_>~  | Matches beginning and end of symbol                         |
+    | ~\scode~      | Matches any character whose syntax table code is ~code~     |
+    | ~\Scode~      | Matches any character whose syntax table code is not ~code~ |
+    | ~\1~ to ~\9~  | Inserts text from group ~\N~                                |
+    | ~\?~          | Prompts for text input from user. *Useful*                  |
+    | ~\#~          | Inserts a number incremented from 0                         |
+    | ~\&~          | Inserts whole match string                                  |
+    | ~,(form ...)~ | Call an elisp form                                          |
+
+    - Some syntax classes:
+      - Whitespace characters ~-~
+      - Word constituents ~w~
+      - Symbol constituents ~_~
+      - Punctuation characters ~.~
+      - String characters ~"~
+   - ~\s-~: to search all whitespace chars
+   - Examples of calling elisp form: ~\,(upcase \N)~, ~\,(format "%.2f" \#N)~
+
+** Counting
+   Commands: ~count-lines-region~, ~count-matches~, ~count-words~,
+   ~count-words-region(M-=)~
 ** *Very Useful Keybinding*
-  | Key Binding | Purpose          |
-  |-------------+------------------|
-  | M-g M-n     | next "error"     |
-  | M-g M-p     | previous "error" |
+  | Key Binding | Purpose              |
+  |-------------+----------------------|
+  | M-g M-n     | next "error"         |
+  | M-g M-p     | previous "error"     |
+  | C-x =       | what-cursor-position |
 
 * Editing
 ** Kill & Yank
@@ -133,6 +175,18 @@
     | comment-end     | Character(s) to mark end of comment                    |
     | comment-padding | Padding used between comment character(s) and the text |
 
+** Changing Case
+  | Key Binding                | Purpose                   |
+  |----------------------------+---------------------------|
+  | C-x C-u                    | Uppercases the region     |
+  | C-x C-l                    | Lowercases the region     |
+  | M-x upcase-initials-region | Capitalizes the region    |
+  | M-c                        | Capitalizes the next word |
+  | M-u                        | Uppercases the next word  |
+  | M-l                        | Lowercases the next word  |
+  - maintain the tempo: ~M-- M-2 M-u~
+** Text Manipulation
+   - Delete duplicates: ~M-x delete-duplicate-lines~. Use ~C-u C-u C-u~ not to delete adjacent
 * Mapping Ctrl on Windows
   #+BEGIN_EXAMPLE
     Windows Registry Editor Version 5.00
