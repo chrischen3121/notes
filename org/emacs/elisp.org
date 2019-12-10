@@ -90,3 +90,31 @@
    the ~push~ and ~assoc~ commands together allows us to pretend that values in
    an alist are changing, while still preserving old values(keep history of all
    old values).
+* Loading Process
+- add to ~load-path~
+- ~load-file~
+- ~provide~, ~require~
+** autoload
+Things that can be auto-loaded generally involve anything "definable",
+such as functions, macros, major or minor modes, groups, classes, and
+so on.
+#+BEGIN_SRC elisp
+  (autoload 'some-function "some-file")
+
+  ;;;###autoload
+  (defun my-function ()
+    ;; Source code...
+    )
+
+  ;;;###autoload
+  (require 'helm)
+#+END_SRC
+
+** Eval after load
+#+BEGIN_SRC elisp
+  (with-eval-after-load 'helm
+    ;; Code
+    )
+#+END_SRC
+
+** use-package
