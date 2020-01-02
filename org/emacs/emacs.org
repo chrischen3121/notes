@@ -297,19 +297,107 @@ the counter: creating numbered lists is the most obvious.
 | C-x C-k l            | Edits the last 300 keystrokes                     |
 | M-x insert-kbd-macro | Inserts macro as elisp for saving macro to a file |
 
-** TRAMP: Remote File Editing
+* TRAMP: Remote File Editing
+   - */protocol:[user@]hostname[#port]:path*
+   - automatically uses *~/.ssh/config*
+   - can use with bookmark
 
+** Multi-Hops
+    - syntax for local: */sudo:user@localhost:/etc/fstab*
+    - syntax: */ssh:user@host|sudo:host:/etc/fstab*
+
+* Dired
+  - ~C-x 4 d~: open dired in another window
+  - ~dired-listing-switches~: change the switches for ~ls~ (default: ~ls -al~)
+
+** Marking/Flagging
+   | Keys       | Description                 |
+   |------------+-----------------------------|
+   | ~* m~      | Marks region                |
+   | ~* u~      | Unmarks region              |
+   | ~* %~      | Marks files by regexp       |
+   | ~* .~      | Marks files by extension    |
+   | ~t~, ~* t~ | Toggles(Inverts) marking    |
+   | ~* c~      | Changes mark(e.g. =* -> D=) |
+   - The prefix key ~*~ is full of mark commands
+
+** Actions
+   | Keys        | Description                             |
+   |-------------+-----------------------------------------|
+   | ~i~         | Insert sub-directory in the same buffer |
+   | ~g~         | Refreshes dired buffer                  |
+   | ~~          | Creates a sub-directory                 |
+   | ~C~         | Copy marked                             |
+   | ~R~         | Renames/moves marked                    |
+   | ~O~         | chown marked                            |
+   | ~G~         | chgrp marked                            |
+   | ~M~         | chmod marked                            |
+   | ~D~         | Deletes marked                          |
+   | ~x~         | Deletes flagged                         |
+   | ~F~         | Visits marked (requires dired-x)        |
+   | ~M-s a C-s~ | ISearches all marked files              |
+   | ~Q~         | Query replace regexp marked files       |
+   | ~!~         | Shell command on marked files           |
+   | ~&~         | Async shell command on marked files     |
+   | ~C-x s~     | Save some buffers                       |
+
+   - ~!~ and ~&~ will attempt to guess the next operation on that file
+   - With marks, the shell key take every marked file as arguments by default.
+   - Use ~command *~ to inserts all marked files as one long argument to a single command.
+
+** Find
+   | Command              | Description                         |
+   |----------------------+-------------------------------------|
+   | find-dired           | Calls *find* with a pattern         |
+   | find-name-dired      | Calls *find* with -name             |
+   | find-grep-dired      | Calls *find* with *grep*            |
+   | find-lisp-find-dired | Uses Emacs and regexp to find files |
+   | find-grep            |                                     |
+
+* Shell Commands
+** Executing Command
+  | Key         | Description                           |
+  |-------------+---------------------------------------|
+  | M-!         | Calls shell command and prints output |
+  | C-u M-!     | As above, but inserts into buffer     |
+  | M-&         | Like M-! but asynchronous             |
+  | C-u M-&     | Like C-u M-! but asynchronous         |
+  | M-\vert     | Pipes region to shell command         |
+  | C-u M-\vert | Likes M-\vert but replaces region     |
+
+** Compiling
+   | Command              | Description                           |
+   |----------------------+---------------------------------------|
+   | M-x compile          | Runs a command, and *tracks errors*   |
+   | M-x recompile        | Re-runs last command                  |
+   | ~M-g M-n~, ~M-g M-p~ | Jumps to next/previous error (global) |
+   | ~g~                  | Re-runs last command                  |
+
+** Shell Choice
+*** ~shell~
+    Useful Features:
+    | Keys    | Description                       |
+    |---------+-----------------------------------|
+    | C-c C-s | Saves command output to file      |
+    | C-c C-o | Kills command output to kill ring |
+    | C-c C-l | Lists command history             |
+    | C-c C-z | Sends stop sub job                |
+
+*** ~eshell~
+*** ~ansi-term~
+    - ~C-c C-j~: term-line-mode
+    - ~C-c C-k~: term-char-mode
 
 * Read Only Mode
-  | Keys                        | Description                         |
-  |-----------------------------+-------------------------------------|
-  | ~C-x C-r~                   | Opens file in read only mode        |
-  | ~C-x C-q~                   | Toggles read only mode              |
-  | ~M-x flush-lines~           | Flushes lines matching a pattern    |
-  | ~M-x keep-lines~            | Keeps only lines matching a pattern |
-  | ~M-s o~                     | List lines matching a pattern       |
-  | ~M-x auto-revert-mode~      | Reverts buffer when file changes    |
-  | ~M-x auto-revert-tail-mode~ | Appends changes when file changes   |
+  | Keys                      | Description                         |
+  |---------------------------+-------------------------------------|
+  | C-x C-r                   | Opens file in read only mode        |
+  | C-x C-q                   | Toggles read only mode              |
+  | M-x flush-lines           | Flushes lines matching a pattern    |
+  | M-x keep-lines            | Keeps only lines matching a pattern |
+  | M-s o                     | List lines matching a pattern       |
+  | M-x auto-revert-mode      | Reverts buffer when file changes    |
+  | M-x auto-revert-tail-mode | Appends changes when file changes   |
 
 * Mapping Ctrl on Windows
   #+BEGIN_EXAMPLE
