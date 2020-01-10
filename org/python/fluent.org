@@ -6,6 +6,22 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SETUPFILE: ../../org-templates/level-1.org
 #+STARTUP: inlineimages
+* Philosophy
+- EAFP(python way)
+
+Easier to ask for forgiveness than permission. This common Python coding style assumes the existence of valid keys
+or attributes and catches exceptions if the assumption proves false. This clean and fast style is characterized by
+the presence of many try and except statements. The technique contrasts with the LBYL style common to many other
+languages such as C.
+
+- LBYL(contrast with EAFP)
+
+Look before you leap. This coding style explicitly tests for pre-conditions before making calls or lookups. This
+style contrasts with the EAFP approach and is characterized by the presence of many if statements. In a multi-threaded
+environment, the LBYL approach can risk introducing a race condition between “the looking” and “the leaping”.
+For example, the code, if key in mapping: return mapping[key] can fail if another thread removes key from mapping
+after the test, but before the lookup. This issue can be solved with locks or by using the EAFP approach.
+
 * Data Model
 ** Special Methods
    | Category                          | Method names                                                                          |
@@ -155,6 +171,129 @@
              process_line(line)
    #+END_SRC
    - when a sentinel returned by the callable, causes the iterator to *raise StopIteration* instead of *yielding the sentinel*.
+
+* ~else~ keyword
+** with ~for/while~
+   #+BEGIN_SRC python
+     for item in my_list:
+         if item.flavor == 'banana':
+             break
+     else:
+         raise ValueError('No banana flavor found!')
+   #+END_SRC
+
+** with ~try~
+   #+BEGIN_SRC python
+     try:
+         dangerous_call()
+     except OSError:
+         log('OSError...')
+     else:
+         after_call()
+   #+END_SRC
+
+* Context Manager
+  - The ~with~ statement was designed to simplify the try/finally pattern
+  - ~__enter__()~~
+  - ~__exit__(self, exc_type, exc_value, traceback)~: arguments are None, None, None if all went well
+
+    - return True to tell the interpreter that the exception was handled.
+    - If returns None or anything but True, any exception raised in the with block will be propagated.
+
+** Novel Usages
+   - Managing transactions in the sqlite3 module
+   - Holding locks, conditions, and semaphores in threading code(RAII)
+   - Setting up environments for arithmetic operations with Decimal objects
+   - Applying temporary patches to objects for testing
+
+** ~contextlib~
+*** ~@contextmanager~ & ~@asynccontextmanager~
+    A decorator that lets you build a context manager from a simple generator function, instead of creating a class and implementing the protocol.
+    - Use ~yield~ to produce whatever you want the ~__enter__~ method to return
+    - Essentially the contextlib.contextmanager decorator wraps the function in a class that implements the ~__enter__~ and ~__exit__~ methods.
+    - ~__enter__~
+
+      1. Invokes the generator function and holds on to the generator object—let's call it /gen/.
+      2. Calls ~next(gen)~ to make it run to the ~yield~ keyword.
+      3. Returns the value yielded by ~next(gen)~, so it can be bound to a target variable in the ~with/as~ form.
+
+    - ~__exit__~
+
+      1. Checks an exception was passed as ~exc_type~; if so, ~gen.throw(exception)~ is invoked, causing the exception to be raised in the yield line inside the generator function body.
+      2. Otherwise, ~next(gen)~ is called, resuming the execution of the generator function body after the yield.
+
+**** Tips
+     - The ~__exit__~ method provided by the decorator assumes any exception sent into the generator is handled and should be suppressed.
+     You must explicitly re-raise an exception in the decorated function if you don't want ~@contextmanager~ to suppress it.
+
+     - Having a ~try/finally~ (or a ~with~ block) around the ~yield~ is an *unavoidable* price of using ~@contextmanager~,
+     because you never know what the users of your context manager are going to do inside their with block.
+
+**** Example
+     A context manager for rewriting files in place
+     #+BEGIN_SRC python
+       import csv
+
+       with inplace(csvfilename, 'r', newline='') as (infh, outfh):
+           reader = csv.reader(infh)
+           writer = csv.writer(outfh)
+
+           for row in reader:
+               row += ['new', 'columns']
+               writer.writerow(row)
+     #+END_SRC
+
+
+*** closing
+    A function to build context managers out of objects that provide a close() method but don’t implement the ~__enter__/__exit__~ protocol.
+    #+BEGIN_SRC python
+      from contextlib import closing
+      from urllib.request import urlopen
+
+      with closing(urlopen('http://www.python.org')) as page:
+          for line in page:
+              print(line)
+    #+END_SRC
+
+*** suppress
+    A context manager to temporarily ignore specified exceptions.
+    #+BEGIN_SRC python
+      from contextlib import suppress
+
+      with suppress(FileNotFoundError):
+          os.remove('somefile.tmp')
+    #+END_SRC
+
+*** ContextDecorator
+    A base class for defining class-based context managers that can also be used as function decorators, running the entire function within a managed context.
+    #+BEGIN_SRC python
+      from contextlib import ContextDecorator
+      class mycontext(ContextDecorator):
+          def __enter__(self):
+              print('Starting')
+              return self
+
+          def __exit__(self, *exc):
+              print('Finishing')
+              return False
+
+      @mycontext()
+      def function():
+          print('The bit in the middle')
+    #+END_SRC
+
+*** ExitStack & AsyncExitStack
+    A context manager that lets you enter a variable number of context managers. When the with block ends, ExitStack calls the stacked context managers' ~__exit__~ methods in LIFO order
+    #+BEGIN_SRC python
+      with ExitStack() as stack:
+          files = [stack.enter_context(open(fname)) for fname in filenames]
+          # All opened files will automatically be closed at the end of
+          # the with statement, even if attempts to open files later
+          # in the list raise an exception
+    #+END_SRC
+
+*** others
+   - ~redirect_stdout~, ~redirect_stderr~
 
 * Coroutine
   - Generators produce data for iteration
