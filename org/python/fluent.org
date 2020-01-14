@@ -106,6 +106,7 @@ after the test, but before the lookup. This issue can be solved with locks or by
   - Iterator is a Iterable, they both have a ~__iter__~ method
   - In addition, Iterator has a ~__next__~ method
   - Iterator ~__iter__~ often return itself
+  - To support multiple traversals of aggregate objects
 
 * Functional Programming
 ** Filtering
@@ -314,7 +315,8 @@ after the test, but before the lookup. This issue can be solved with locks or by
     coro.send(42) # GEN_SUSPENDED->GEN_RUNNING->GEN_CLOSED
     #-> coroutine received: 42
   #+END_SRC
-  - next(coro) is often describe as "priming" the coroutine(advancing it to the first yield)
+  - ~next(coro)~ is often describe as "priming" the coroutine(advancing it to the first ~yield~, the EXPR after first yield will be executed)
+
 
 ** states
    use ~inspect.getgeneratorstate()~ to get state
@@ -323,75 +325,37 @@ after the test, but before the lookup. This issue can be solved with locks or by
    - GEN_SUSPENDED: Currently suspended at a yield expression
    - GEN_CLOSED
 
-** auto priming
 ** Termination & Exception
-*** from generator
-    An exception within a coroutine propagates to the caller of the next or send that triggered it.
-*** to generator
-    - ~throw~: Causes the yield expression where the generator was paused to raise the exception given.
-    - ~close~: Causes the yield expression where the generator was paused to raise a Generator Exit exception.
-*** cleanup code
-    wrap the cleanup code in ~try/finally~ block
+   The coroutine will only terminate when the caller calls ~.close()~ on it, or when it's garbage collected
 
-** return value
-   #+BEGIN_SRC python
-     Result = namedtuple('Result', 'count average')
-     def averager():
-         total = 0.0
-         count = 0
-         average = None
-         while True:
-             term = yield # yield None
-             if term is None:
-                 break # use a sentinel to terminate the coroutine normally
-             total += term
-             count += 1
-             average = total/count
-         return Result(count, average)
+*** Return Value
+    The value attribute of the StopIteration carries the value returned
 
-     coro_avg = averager()
-     coro_avg.send(10)
-     try:
-         coro_avg.send(None)
-     except StopIteration as exc:
-         result = exc.value # Result(count=3, average=15.5)
-   #+END_SRC
-   - in order to return a value, a coroutine must terminate normally
+*** Exception From Generator
+    An exception within a coroutine propagates to the caller that triggered it.
 
-** *yield from*
-   The main feature of *yield from* is to open a bidirectional channel from the outermost caller to the innermost subgenerator, so that values
-   can be sent and yielded back and forth directly from them, and exceptions can be thrown all the way in without adding a lot of exception
-   handling boilerplate code in the intermediate coroutines.
+*** Terminate Generator
+    - ~throw(exc_type[, exc_value[, traceback]])~: Causes the yield expression where the generator was paused to raise the exception given.
+    - ~close~: Causes the yield expression where the generator was paused to raise a ~GeneratorExit~ exception.
 
-   - similar constructs in other languages are called *await*
-   #+BEGIN_SRC python
-     def gen():
-         yield from 'abc'
-         # shortcut for forloop
-         # for x in 'abc':
-         #     yield x
-   #+END_SRC
-*** terms
-    - delegating generator: The generator function that contains the *yield from <iterable>* expression
-    - subgenerator
-    - caller
+*** Sentinel Values
+    ~None~, ~...~
 
-    #+CAPTION: Coroutine
-    #+ATTR_HTML: align="center"
-    file:../resources/python/coroutine.png
+** ~yield from~
+   The main feature of ~yield from~ is to open a ~bidirectional~ channel from the outermost caller to the innermost subgenerator.
+   - Any values that the subgenerator yields are passed directly to the caller of the delegating generator
+   -  Any values sent to the delegating generator using ~send()~ are passed directly to the subgenerator.
+   - return expr in a generator (or subgenerator) causes ~StopIteration(expr)~ to be raised upon exit from the generator.
+   - The value of the ~yield from~ expression is the first argument to the ~StopIteration~ exception raised by the subgenerator when it terminates.
+   - Exception Handling: Exceptions other than ~GeneratorExit~ thrown into the delegating generator are passed to the ~throw()~ method of
+   the subgenerator. If the call raises ~StopIteration~, the delegating generator is resumed. Any other exception is propagated to the
+   delegating generator.
+   - If a ~GeneratorExit~ exception is thrown into the delegating generator, or the ~close()~ method of the delegating generator is called,
+   then the ~close()~ method of the subgenerator is called if it has one. If this call results in an exception, it is propagated to the
+   delegating generator. Otherwise, ~GeneratorExit~ is raised in the delegating generator.
 
-*** meaning of *yield from*
-**** Any values that the subgenerator yields are passed directly to the caller of the delegating generator
-**** Any values sent to the delegating generator using *send()* are passed directly to the subgenerator.
-
-    If the sent value is *None*, the subgenerator's *__next__()* method is called. If the sent value is
-    not *None*, the subgenerator's *send()* method is called. If the call raises *StopIteration*, the delegating
-    generator is resumed. Any other exception is propagated to the delegating generator.
-
-**** return expr in a generator (or subgenerator) causes *StopIteration(expr)* to be raised upon exit from the generator.
-**** The value of the *yield from* expression is the first argument to the *StopIteration* exception raised by the subgenerator when it terminates.
-
-*** pseudocode
+*** Pseudocode
+**** Simple Version
     #+BEGIN_SRC python
       _i = iter(EXPR)
       try:
@@ -414,22 +378,83 @@ after the test, but before the lookup. This issue can be solved with locks or by
     - _s(sent): A value sent by the caller to the delegating generator, which is forwarded to the subgenerator
     - _e(exception): An exception
 
-*** ipython-yf
-    Enables evaluating yield from directly in the *iPython* console.
-** example
+**** Complete Version
+     #+BEGIN_SRC python
+       _i = iter(EXPR)
+       try:
+           _y = next(_i)
+       except StopIteration as _e:
+           _r = _e.value
+       else:
+           while 1:
+               try:
+                   _s = yield _y
+               except GeneratorExit as _e:
+                   try:
+                       _m = _i.close
+                   except AttributeError:
+                       pass
+                   else:
+                       _m()
+                   raise _e
+               except BaseException as _e:
+                   _x = sys.exc_info()
+                   try:
+                       _m = _i.throw
+                   except AttributeError:
+                       raise _e
+                   else:
+                       try:
+                           _y = _m(*_x)
+                       except StopIteration as _e:
+                           _r = _e.value
+                           break
+               else:
+                   try:
+                       if _s is None:
+                           _y = next(_i)
+                       else:
+                           _y = _i.send(_s)
+                   except StopIteration as _e:
+                       _r = _e.value
+                       break
+
+       RESULT = _r
+     #+END_SRC
+
+** Discrete Event Simulations(DES)
+   ~SimPy~
+
 * Currency
-** threads & processes
+** Threads & Processes
+*** Executor
+    #+BEGIN_SRC python
+      from concurrent import futures
+      with futures.ThreadPoolExecutor(4) as executor:
+          results = executor.map(process_one, sorted(args))
+          # map: 1. create and schedule futures 2. retrive the future.result() one by one
+          print(results)
+
+      # equivalent to
+      with futures.ThreadPoolExecutor(4) as executor:
+          fs = [executor.submit(process_one, arg) for arg in args]
+          for completed_future in futures.as_completed(fs):
+              print(completed_future.result())
+          return len(list(results))
+    #+END_SRC
 *** GIL
     Restricts only one thread at a time to execute Python bytecodes. However, all standard library functions
     that perform blocking I/O release the GIL when waiting for a result from the OS.
+    - All standard library functions that perform blocking I/O release the GIL when waiting for a result from the OS. I/O bound program can benefit from using threads.
 
-*** =threading=
-*** =multiprocessing=
 *** TODO *Celery*
     Distributed Task Queue
 *** utilities
     - =lelo=
     - =python-parallelize=
+
+** Future
+   Interface: cancel, cancelled, running, done, result(timeout=None), exception(timeout=None), add_done_callback(fn)
 
 ** asyncio
 
@@ -480,42 +505,9 @@ after the test, but before the lookup. This issue can be solved with locks or by
 
 * Doctest
 * Utilities
-  - =math.hypot=: Return the Euclidean distance, =sqrt(x*x + y*y)=
-  - =b, a = a, b=: swap values without using a temporary variable
-  - Vaurien: chaos monkey, the Chaos TCP Proxy
-  - requests resp: =resp.raise_for_status()=
-  - =itertools.cycle=
-* Network&Web
-** RESTful API Query
-   #+BEGIN_SRC python
-     from urllib import request, parse
-     url = 'http://www.123.com/get'
-     params = {
-         'name1' : 'value1',
-         'name2' : 'value2'
-     }
-     query_string = parse.urlencode(params)
-
-     # headers
-     headers = {
-         'User-agent' : 'none/ofyourbusiness',
-         'Spam' : 'Eggs'
-     }
-
-     u = request.urlopen(url+'?' + query_string.encode('ascii'), headers=headers)
-     resp = u.read() # resp.text(unicode),  resp.content(raw binary), resp.json
-   #+END_SRC
-   - useful resp data
-     - ~resp.status_code~
-     - ~resp.headers['last-modified']~
-     - ~resp.headers['content-type']~
-     - ~resp.headers['content-length']~
-
-   - urlopen useful args
-     - headers
-     - cookies
-     - files
-     - auth
-
-*** Testing
-    - use [[http://httpbin.org/][httpbin]]
+  - ~math.hypot~: Return the Euclidean distance, ~sqrt(x*x + y*y)~
+  - ~b, a = a, b~: swap values without using a temporary variable
+  - *Vaurien*: chaos monkey, the Chaos TCP Proxy
+  - requests resp: ~resp.raise_for_status()~
+  - ~httpbin~
+  - ~SimPy~: DES simulation
