@@ -442,21 +442,47 @@ after the test, but before the lookup. This issue can be solved with locks or by
               print(completed_future.result())
           return len(list(results))
     #+END_SRC
+    - The combination of ~executor.submit~ and ~futures.as_completed~ is more flexible than ~executor.map~
+    because you can submit different callables and arguments, while ~executor.map~ is designed to run the
+    same callable on the different arguments.
+    - Future is hashable
+
 *** GIL
     Restricts only one thread at a time to execute Python bytecodes. However, all standard library functions
     that perform blocking I/O release the GIL when waiting for a result from the OS.
     - All standard library functions that perform blocking I/O release the GIL when waiting for a result from the OS. I/O bound program can benefit from using threads.
 
-*** TODO *Celery*
-    Distributed Task Queue
-*** utilities
-    - =lelo=
-    - =python-parallelize=
+*** Spin Example
+    #+BEGIN_SRC python
+      class Signal:
+          go = True
+
+      def spin(msg, signal):
+          write, flush = sys.stdout.write, sys.stdout.flush
+          for char in itertools.cycle('|/-\\'):
+              status = char + ' ' + msg
+              write(status)
+              flush()
+              write('\x08' * len(status))
+              time.sleep(.1)
+              if not signal.go:
+                  break
+          write(' ' * len(status) + '\x08' * len(status))
+
+      def supervisor():
+          signal = Signal()
+          spinner = threading.Thread(target=spin,
+                                     args=('thinking!', signal))
+          print('spinner object:', spinner)
+          spinner.start()
+          result = slow_function()
+          signal.go = False
+          spinner.join()
+          return result
+    #+END_SRC
 
 ** Future
    Interface: cancel, cancelled, running, done, result(timeout=None), exception(timeout=None), add_done_callback(fn)
-
-** asyncio
 
 ** asyncio + executor
   #+BEGIN_SRC python
@@ -503,6 +529,15 @@ after the test, but before the lookup. This issue can be solved with locks or by
          print(result)
    #+END_SRC
 
+* asyncio
+** ~loop.create_future~
+   This is a preferred way to create futures in asyncio, as event loop implementations
+   can provide alternative implementations of the Future class
+
+** ~loop.create_task~ vs. ~asyncio.ensure_future~
+   Always use ~loop.create_task~ to schedule coroutines, however use ~asyncio.ensure_future~ for
+   other awaitable objects(like Futures, Tasks)
+
 * Doctest
 * Utilities
   - ~math.hypot~: Return the Euclidean distance, ~sqrt(x*x + y*y)~
@@ -511,3 +546,6 @@ after the test, but before the lookup. This issue can be solved with locks or by
   - requests resp: ~resp.raise_for_status()~
   - ~httpbin~
   - ~SimPy~: DES simulation
+  - ~lelo~
+  - ~python-parallelize~
+  - ~Celery~
