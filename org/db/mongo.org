@@ -1,6 +1,6 @@
-#+TITLE: MongoDB reference
+#+TITLE: MongoDB
 #+KEYWORDS: MongoDB
-#+OPTIONS: H:4 toc:2 num:3 ^:nil
+#+OPTIONS: H:3 toc:2 num:2 ^:nil
 #+LaTeX: t
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
@@ -8,3 +8,94 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+SETUPFILE: ../../org-templates/level-1.org
+* Basic
+** CRUD
+
+create, read, update, and delete
+
+- create: insertOne
+- read: find, findOne
+- update: updateOne
+- delete: deleteOne
+
+** Types
+   ~null~, Boolean, Number, String, Date(int64 since epoch), Regular expression(query only), Array, Embedded document
+   - Binary data: Binary data is the only way to save non-UTF-8 strings to the database.
+   - Code: MongoDB also makes it possible to store arbitrary JavaScript in queries and documents: ~{"x" : function() { /* ... */ }}~
+*** Object ID
+    12-byte ID for documents
+    |                  0 |      1 |                            2 | 3 4 5 6 7 8 9 10 11 |
+    |--------------------+--------+------------------------------+---------------------|
+    | Timestamp(seconds) | Random | Counter (random start value) |                     |
+
+** Mongo Shell
+   #+BEGIN_SRC js
+     conn = new Mongo("host:port")
+     db = conn.getDB("myDB")
+   #+END_SRC
+   - help
+
+*** Useful Helpers
+    | Helper           | Equivalent              |
+    |------------------+-------------------------|
+    | use db           | db.getSisterDB("db")    |
+    | show dbs         | db.getMongo().getDBs()  |
+    | show collections | db.getCollectionNames() |
+    - ~pwd()~:
+    - ~run("ls", "-l", "/home/myUser/my-scripts/")~
+
+*** Custom Helper
+    1. define helper function in js
+    2. load js
+    3. ~typeof helper_function~
+
+*** Frequently Loaded Scripts
+    Use ~.mongorc.js~ in your home directory, This file is run whenever you start up the shell.
+    - common example in ~.mongorc.js~: remove some of the more "dangerous" shell helpers
+    #+BEGIN_SRC js
+      var no = function() {
+          print("Not on my watch.");
+      };
+
+      // Prevent dropping databases
+      db.dropDatabase = DB.prototype.dropDatabase = no;
+
+      // Prevent dropping collections
+      DBCollection.prototype.drop = no;
+
+      // Prevent dropping an index
+      DBCollection.prototype.dropIndex = no;
+
+      // Prevent dropping indexes
+      DBCollection.prototype.dropIndexes = no;
+    #+END_SRC
+    - use ~--norc~ option to disable ~.mongorc.js~
+
+*** Customizing Your Prompt
+    Just set the ~prompt~ variable
+    #+BEGIN_SRC js
+      prompt = function() {
+          if (typeof db == 'undefined') {
+              return '(nodb)> ';
+          }
+
+          // Check the last db operation
+          try {
+              db.runCommand({getLastError:1});
+          }
+          catch (e) {
+              print(e);
+          }
+
+          return db+"> ";
+      };
+    #+END_SRC
+
+** Tools
+   - ~mongoimport~: importing raw data from a data feed or MySQL
+* CRUD
+** insertMany
+   - Batch inserts limit: 48 MB. Drivers will split up the batch insert into multiple 48 MB batch inserts
+*** ordererd vs unordered
+    - Executing an ordered list of operations on a sharded collection will generally be slower than executing an unordered list since with an ordered list, each operation must wait for the previous operation to finish.
+   - For unordered inserts, MongoDB will attempt to insert all documents, regardless of whether some insertions produce errors. execute the operations in parallel
