@@ -93,6 +93,7 @@ create, read, update, and delete
 
 ** Tools
    - ~mongoimport~: importing raw data from a data feed or MySQL
+
 * CRUD
 ** insert
 *** insertMany
@@ -103,3 +104,48 @@ create, read, update, and delete
 
 *** insert
 Old method before mongo 3.0. Use insertOne and insertMany instead
+
+** delete
+   - ~deleteOne~
+   - ~deleteMany~
+   - Clear an entire collection: ~drop~
+
+** update
+   Updating a document is atomic
+   - ~updateOne~
+   - ~updateMany~
+   - ~replaceOne~: takes a filter as the first parameter, but as the second parameter replaceOne expects a document with which it will replace the document matching the filter.
+   This can be useful to do a dramatic schema migration.
+*** update operaters
+    - ~{"$inc": {"field": 1}}~: create or increment 1
+    - ~{"$set": {"new/existed field": "newValue"}}~, ~{"$unset": {"field": 1}}~
+    - change embedded documents: ~{"$set": {"field.sub": "newValue"}}~
+**** array operaters
+     - ~{"$push": {"field": document}}~ adds elements to the end of an array if the array exists and creates a new array if it does not.
+     - ~$each~: e.g. ~{"$push" : {"hourly" : {"$each" : [562.776, 562.790, 559.123]}}})~~
+     - ~$slice~ can be used to create a queue in a document. e.g. ~{"$push" : {"last5" : {"$each" : ["Nightmare on Elm Street", "Saw"], "$slice" : -5}}})~
+     - ~$sort~ If you only want the array to grow to a certain length, you can use the ~$slice~ modifier effectively making a “top N” list of items.
+     #+BEGIN_SRC js
+       db.movies.updateOne({"genre" : "horror"},
+                           {"$push" : {"top10" : {"$each" : [{"name" : "Nightmare on Elm Street",
+                                                              "rating" : 6.6},
+                                                             {"name" : "Saw", "rating" : 4.3}],
+                                                  "$slice" : -10,
+                                                  "$sort" : {"rating" : -1}}}})
+     #+END_SRC
+     - ~$addToSet~: used to prevent duplicates
+     - ~{"$pop" : {"key" : 1}}~ removes an element from the end of the array. ~{"$pop" : {"key" : -1}}~ removes it from the beginning.
+     - ~$pull~ is used to remove elements of an array that match the given criteria.
+     - update first match: e.g. set in comments array ~{"$set" : {"comments.$.author" : "Jim"}}~
+     - ~$arrayFilters~
+     #+BEGIN_SRC js
+       db.blog.updateOne(
+           {"post" : post_id },
+           { $set: { "comments.$[elem].hidden" : true } },
+           {
+               arrayFilters: [ { "elem.votes": { $lte: -5 } } ]
+           }
+       )
+       // This command defines elem as the identifier for each matching element in the "comments" array. If the votes value for the comment
+       // identified by elem is less than or equal to -5, we will add a field called "hidden" to the "comments" document and set its value to true.
+     #+END_SRC
