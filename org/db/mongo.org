@@ -95,6 +95,38 @@ create, read, update, and delete
    - ~mongoimport~: importing raw data from a data feed or MySQL
 
 * CRUD
+** query
+   - some query condition: ~$nin~, ~$or~, ~$exists~, ~$regex~
+   - Mongo uses the Perl Compatible Regular Expression
+*** querying arrays
+    - contains
+    #+BEGIN_SRC js
+      db.food.insertOne({"fruit" : ["apple", "banana", "peach"]})
+      db.food.find({"fruit" : "banana"}) // successfully match the document
+    #+END_SRC
+    - contains all: ~db.food.find({fruit : {$all : ["apple", "banana"]}})~
+    - exact match: ~db.food.find({"fruit" : ["apple", "banana", "peach"]})~
+    - index match: ~db.food.find({"fruit.2" : "peach"})~
+    - ~$size~: not working with ~$gt~
+    - ~$slice~: ~db.blog.posts.findOne(criteria, {"comments" : {"$slice" : [23, 10]}})~, ~db.blog.posts.findOne(criteria, {"comments" : {"$slice" : -1}})~
+    - ~db.blog.posts.find({"comments.name" : "bob"}, {"comments.$" : 1})~: return the matching element with the ~$~
+    - range query on array elements: ~db.test.find({"x" : {"$elemMatch" : {"$gt" : 10, "$lt" : 20}}})~
+*** query embedded documents
+    - ~db.people.find({"name.first" : "Joe", "name.last" : "Schmoe"})~
+
+*** ~$where~
+    - Allows you to execute arbitrary JavaScript as part of your query.(Insecure)
+
+    "$where" queries should not be used unless *strictly necessary*: they are much slower than regular queries.
+    Each document has to be converted from BSON to a JavaScript object and then run through the "$where" expression.
+
+*** query options
+    limit, skip, sort
+    - Avoiding Large Skips: large skips are not very performant; there are suggestions for how to avoid them in the next section.
+
+*** immortal cursors
+    Tells the database not to time out the cursor.
+
 ** insert
 *** insertMany
 - Batch inserts limit: 48 MB. Drivers will split up the batch insert into multiple 48 MB batch inserts
@@ -116,10 +148,16 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
    - ~updateMany~
    - ~replaceOne~: takes a filter as the first parameter, but as the second parameter replaceOne expects a document with which it will replace the document matching the filter.
    This can be useful to do a dramatic schema migration.
+
 *** update operaters
     - ~{"$inc": {"field": 1}}~: create or increment 1
     - ~{"$set": {"new/existed field": "newValue"}}~, ~{"$unset": {"field": 1}}~
     - change embedded documents: ~{"$set": {"field.sub": "newValue"}}~
+    - ~{"$setOnInsert" : {"createdAt" : new Date()}}~: can be useful for creating padding, initializing counters, and for collections that do not use ObjectIds.
+    - ~findOneAndUpdate~ (after 4.2): can return the item and update it in a single operation
+    - ~findOneAndReplace~
+    - ~findOneAndDelete~
+
 **** array operaters
      - ~{"$push": {"field": document}}~ adds elements to the end of an array if the array exists and creates a new array if it does not.
      - ~$each~: e.g. ~{"$push" : {"hourly" : {"$each" : [562.776, 562.790, 559.123]}}})~~
@@ -149,3 +187,8 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
        // This command defines elem as the identifier for each matching element in the "comments" array. If the votes value for the comment
        // identified by elem is less than or equal to -5, we will add a field called "hidden" to the "comments" document and set its value to true.
      #+END_SRC
+
+*** upsert
+    Eliminating race condition: query->if exists->update
+* Server Administration
+** mongod options
