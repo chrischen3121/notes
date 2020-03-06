@@ -192,3 +192,39 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     Eliminating race condition: query->if exists->update
 * Server Administration
 ** mongod options
+* Indexing
+** Test Dataset
+   #+BEGIN_SRC js
+     for (i=0; i<1000000; i++) {
+         db.users.insertOne(
+             {
+                 "i" : i,
+                 "username" : "user"+i,
+                 "age" : Math.floor(Math.random()*120),
+                 "created" : new Date()
+             }
+         );
+     }
+   #+END_SRC
+
+*** Profiling
+   ~cursor.explain("executionStats")~
+
+*** Stages
+    - FETCH: "FETCH" stage will retrieve the documents themselves and return them in batches as the client requests them.
+    - SORT: means MongoDB would have been unable to sort the result set in the database using an index and instead would have had to do an in-memory sort.
+
+*** Query Types
+    - equality filter: {"age": 25}
+    - multivalue filter: {"age": {"$gte": 40}}
+    - sort component
+
+** Designing Indexes
+   - selectivity: minimize the number of records scanned. "nReturned" is very close to "totalKeysExamined".
+*** Designing a Compound Index
+    1. Keys for equality filters should appear first.
+    1. Keys used for sorting should appear before multivalue fields.
+    1. Keys for multivalue filters should appear last.
+
+** Specifying an Index to Use
+   - ~hint([indexname])~ or ~hint([indexshape])~
