@@ -349,3 +349,31 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     - "chunkSize": The size of each chunk comprising the file, in bytes. The default is 255 KB, but this can be adjusted if needed.
     - "uploadDate": A timestamp representing when this file was stored in GridFS.
     - "md5": An MD5 checksum of this file’s contents, generated on the server side.
+* Replication
+** ~rs~
+   ~rs~ is a global variable that contains replication helper functions
+   #+BEGIN_SRC js
+     rsconf = {
+         _id: "replSetName",
+         members: [
+             {_id: 0, host: "localhost:27017"},
+             {_id: 1, host: "localhost:27018"},
+             {_id: 2, host: "localhost:27019"}
+         ]
+     }
+     rs.initiate(rsconf)
+     rs.status()
+   #+END_SRC
+   - ~rs.add~
+   - ~rs.remove~
+   - ~rs.config~
+   #+BEGIN_SRC js
+     // change hostname
+     var config = rs.config()
+     config.members[0].host = "localhost:27017"
+     rs.reconfig(config)
+   #+END_SRC
+
+* Cluster
+** Tools
+   - MongoDB Ops Manager
