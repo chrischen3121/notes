@@ -192,6 +192,8 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     Eliminating race condition: query->if exists->update
 * Server Administration
 ** mongod options
+** Troubleshoot
+   - ~getLastError~
 * Indexing
 ** Test Dataset
    #+BEGIN_SRC js
@@ -221,6 +223,12 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 
 ** Designing Indexes
    - selectivity: minimize the number of records scanned. "nReturned" is very close to "totalKeysExamined".
+
+*** *Cardinality*
+    Cardinality refers to how many distinct values there are for a field in a collection.
+    e.g. "gender" low cardinality. "username" high cardinality
+    In general, the greater the cardinality of a field, the more helpful an index on that field can be
+
 *** Designing a Compound Index
     1. Keys for equality filters should appear first.
     1. Keys used for sorting should appear before multivalue fields.
@@ -228,8 +236,116 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 
 ** Specifying an Index to Use
    - ~hint([indexname])~ or ~hint([indexshape])~
-** Using Covered Queries
-   When an index contains all the values requested by a query, the query is considered to be covered.
-   Whenever practical, use covered queries in preference to avoid querying documents.
-** Inefficient Operators
+** Other Tips
+*** Inefficient Operators
    - ~$ne~: they basically have to scan the entire index.
+   - ~$not~: will fall back to doing a table scan
+   - ~$nin~: always uses a table scan
+
+*** ~$or~
+    Performs two queries and then merges the results. In general, doing two queries and merging the results
+    is much less efficient than doing a single query; thus, whenever possible, prefer ~$in~ to ~$or~
+** Special Indexes
+*** Index Options
+    - unique. notice: unique index count ~null~ as a value.
+**** partial
+     Partial indexes in MongoDB are only created on a subset of the data(the key existed)
+     #+BEGIN_SRC js
+       db.users.ensureIndex({"email" : 1},
+                            {"partialFilterExpression": {email: {$exists: true}}})
+     #+END_SRC
+     It is unlike sparse indexes on relational databases, which create fewer index entries pointing to a block of data.
+**** Sparse
+     "partial" index is the super set of "sparse" index.  always prefer "partial" to "sparse"
+
+*** Geospatial Indexes
+*** Full Text Search
+    - poorer write performance on text-indexed collections than on others
+**** Create Text Indexes
+    #+BEGIN_SRC js
+      db.articles.createIndex({"title": "text",
+                               "body" : "text"},
+                              {"weights" : {
+                                  "title" : 3,
+                                  "body" : 2}},
+                              {"default_language" : "chinese"})
+
+      // create not only indexes all top-level string fields,
+      // but also searches embedded documents and arrays for string fields
+      db.articles.createIndex({"$**" : "text"})
+    #+END_SRC
+**** Text Search
+     #+BEGIN_SRC js
+       db.articles.find({"$text": {"$search": "impact crater lunar"}},
+                        {title: 1}
+                       ).limit(10)
+     #+END_SRC
+     - ~$text~: will tokenize the search string using whitespace and most punctuation as delimiters.
+
+*** TTL Indexes
+    TTL indexes expire and remove data from normal collections based on the value of a date-typed field
+    and a TTL value for the index.
+    #+BEGIN_SRC js
+      db.sessions.createIndex({"lastUpdated" : 1}, {"expireAfterSeconds" : 60*60*24})
+
+      // change the expireAfterSeconds
+      db.runCommand({"collMod" : "someapp.cache",
+                     "index" : {"keyPattern" : {"lastUpdated" : 1},
+                                "expireAfterSeconds" : 3600 }});
+    #+END_SRC
+    - MongoDB sweeps the TTL index once per minute
+
+** Special Collections
+*** Capped Collections
+    like circular queues
+    - TTL indexes are recommended over capped collections because they perform better with the WiredTiger storage engine
+    #+BEGIN_SRC js
+      db.createCollection("my_collection",
+                          {"capped" : true,
+                           "size" : 100000, // collection has a fixed size of 100,000 bytes
+                           "max": 100}); // max number of documents
+
+      // convert the test collection to a capped collection of 10,000 bytes
+      db.runCommand({"convertToCapped" : "test", "size" : 10000});
+    #+END_SRC
+
+** Tailable Cursors
+   Tailable cursors are a special type of cursor that are not closed when their results are exhausted.
+   They were inspired by the ~tail -f~ command
+
+** Changing Indexes
+   - Background indexing is much slower than foreground indexing.
+   - 4.2 introduced a hybrid index build. It only holds the exclusive lock at the beginning and end of the index build.
+** GridFS
+   - /mongofiles/: upload(put), download(get), list, search for, or delete files in GridFS.
+*** PyMongo API
+    #+BEGIN_SRC python
+      import pymongo
+      import gridfs
+      client = pymongo.MongoClient()
+      db = client.test
+      fs = gridfs.GridFS(db)
+      file_id = fs.put(b"Hello, world", filename="foo.txt")
+      fs.list() # ['foo.txt']
+      fs.get(file_id).read() # b'Hello, world'
+    #+END_SRC
+
+*** Chunk
+    #+BEGIN_SRC js
+      // chunk in fs.chunks
+      {
+          "_id" : ObjectId("..."),
+          "n" : 0,
+          "data" : BinData("..."),
+          "files_id" : ObjectId("...")
+      }
+    #+END_SRC
+    - "files_id": The "_id" of the file document that contains the metadata for the file this chunk is from
+    - "n": The chunk's position in the file, relative to the other chunks
+    - "data": The bytes in this chunk of the file
+
+*** File Metadata
+    - "length": The total number of bytes making up the content of the file.
+    - "chunkSize": The size of each chunk comprising the file, in bytes. The default is 255 KB, but this can be adjusted if needed.
+    - "uploadDate": A timestamp representing when this file was stored in GridFS.
+    - "md5": An MD5 checksum of this file’s contents, generated on the server side.
