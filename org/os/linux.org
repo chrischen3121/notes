@@ -165,6 +165,7 @@
       [Install]
       WantedBy=multi-user.target
     #+END_SRC
+
 *** useful man to write unit file
     - *man systemd.service* to see complete list of options for service
     - *man systemd.unit* to see common options for all types
@@ -176,6 +177,7 @@
       systemctl edit xxx.service
       systemctl restart xxx.service
     #+END_SRC
+
 *** logging
     System messages captured by *journald* are stored in the */run* directory.
 
@@ -319,7 +321,6 @@ share files by way of the group mechanism, create separate groups for that purpo
 *** MAC
 *** RBAC
 *** Implementations
-**** SELinux
 **** AppArmor
 * Process Control
 ** kernel related data in memory
@@ -348,9 +349,11 @@ share files by way of the group mechanism, create separate groups for that purpo
    | 30 | USR1  | User-defined #1      | Terminate | Y          | Y          | N          |
    | 31 | USR2  | User-defined #2      | Terminate | Y          | Y          | N          |
    *kill -l* to list signals.
+
 ** *kill*
    - killall: kill by process name
    - pkill: search for process to kill
+
 ** *ps*
    Useful options
    - aux: *a* show all processes; *x* show processes that don't have a control terminal; *u* user oriented output format
@@ -358,7 +361,7 @@ share files by way of the group mechanism, create separate groups for that purpo
      - ww: enable unlimited column width
 
 *** with *grep*
-    ps aux | grep -v grep | grep xxxx
+    ps -aux | grep -v grep | grep xxxx
 *** alternative command
     - *pidof* :: determine the PID of a process
     - *pgrep*
@@ -390,7 +393,7 @@ share files by way of the group mechanism, create separate groups for that purpo
 
 ** identify processes using files or sockets
    - *fuser*
-   - *lsof*
+   - *lsof*: list open files
 
 ** periodic processes
    - crontab
@@ -485,7 +488,6 @@ share files by way of the group mechanism, create separate groups for that purpo
    command-line tool
 * Networking
 ** Troubleshooting
-
 * Useful Command
 ** os
    - ~uname -a~
@@ -721,3 +723,23 @@ share files by way of the group mechanism, create separate groups for that purpo
     Use *${array_name[subscript]}* to access individual elements.
     The subscripts * and @ refer to the array as a whole, and the special
     forms *${#array_name[*]}* and *${#array_name[@]}* yield the number of elements in the array.
+* Profiler
+** Hardware Info
+   - /proc/cpuinfo
+   - /proc/meminfo
+   - /proc/diskstats
+   - ~dmidecode -t~
+** CPU
+   - ~apt install sysstat~
+   - ~vmstat 5 5~: 5 updates; delay between updates is 5 secs
+   - ~mpstat -P ALL~
+   - ~uptime~
+   - ~ps -aux~
+** Memory
+   - /proc/sys/vm/swappiness
+   - ~swapon -s~
+
+** Disk IO
+   - ~iostat 5 5~
+   - ~xdd~
+   - ~sar -[ndA]~
