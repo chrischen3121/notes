@@ -349,6 +349,30 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     - "chunkSize": The size of each chunk comprising the file, in bytes. The default is 255 KB, but this can be adjusted if needed.
     - "uploadDate": A timestamp representing when this file was stored in GridFS.
     - "md5": An MD5 checksum of this file’s contents, generated on the server side.
+* Aggregation
+** Expressions
+   - Match: $match, $exists
+   - Projection: $project, $unwind
+   - Array: $arrayElemAt, $slice, $filter
+   - Accumulators: $max, $sum, etc.
+** Grouping
+   $group
+** Writing Results to a Collection
+   $out, $merge
+   - $merge was introduced in MongoDB version 4.2 and is the preferred stage for writing to a collection
+* Transactions
+* Design Patterns
+  see [[https://www.mongodb.com/blog/post/building-with-patterns-a-summary][Summary]]
+** Embedding vs References
+   | Embedding is better for...                                     | References are better for...                    |
+   |----------------------------------------------------------------+-------------------------------------------------|
+   | Small subdocuments                                             | Large subdocuments                              |
+   | Data that does not change regularly                            | Volatile data                                   |
+   | When eventual consistency is acceptable                        | When immediate consistency is necessary         |
+   | Documents that grow by a small amount                          | Documents that grow by a large amount           |
+   | Data that you'll often need to perform a second query to fetch | Data that you'll often exclude from the results |
+   | Fast reads                                                     | Fast writes                                     |
+
 * Replication
 ** ~rs~
    ~rs~ is a global variable that contains replication helper functions
