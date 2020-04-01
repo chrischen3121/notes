@@ -122,7 +122,7 @@ create, read, update, and delete
 
 *** query options
     limit, skip, sort
-    - Avoiding Large Skips: large skips are not very performant; there are suggestions for how to avoid them in the next section.
+    - Avoiding Large Skips: large skips are not very efficient
 
 *** immortal cursors
     Tells the database not to time out the cursor.
@@ -130,6 +130,7 @@ create, read, update, and delete
 ** insert
 *** insertMany
 - Batch inserts limit: 48 MB. Drivers will split up the batch insert into multiple 48 MB batch inserts
+
 **** ordererd vs unordered
 - Executing an ordered list of operations on a sharded collection will generally be slower than executing an unordered list since with an ordered list, each operation must wait for the previous operation to finish.
 - For unordered inserts, MongoDB will attempt to insert all documents, regardless of whether some insertions produce errors. execute the operations in parallel
@@ -164,12 +165,14 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
      - ~$slice~ can be used to create a queue in a document. e.g. ~{"$push" : {"last5" : {"$each" : ["Nightmare on Elm Street", "Saw"], "$slice" : -5}}})~
      - ~$sort~ If you only want the array to grow to a certain length, you can use the ~$slice~ modifier effectively making a “top N” list of items.
      #+BEGIN_SRC js
-       db.movies.updateOne({"genre" : "horror"},
-                           {"$push" : {"top10" : {"$each" : [{"name" : "Nightmare on Elm Street",
-                                                              "rating" : 6.6},
-                                                             {"name" : "Saw", "rating" : 4.3}],
-                                                  "$slice" : -10,
-                                                  "$sort" : {"rating" : -1}}}})
+       db.movies.updateOne(
+           {"genre" : "horror"},
+           {"$push" : {"top10" : {"$each" : [{"name" : "Nightmare on Elm Street",
+                                              "rating" : 6.6},
+                                             {"name" : "Saw", "rating" : 4.3}],
+                                  "$slice" : -10,
+                                  "$sort" : {"rating" : -1}}}}
+       )
      #+END_SRC
      - ~$addToSet~: used to prevent duplicates
      - ~{"$pop" : {"key" : 1}}~ removes an element from the end of the array. ~{"$pop" : {"key" : -1}}~ removes it from the beginning.
@@ -184,8 +187,10 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
                arrayFilters: [ { "elem.votes": { $lte: -5 } } ]
            }
        )
-       // This command defines elem as the identifier for each matching element in the "comments" array. If the votes value for the comment
-       // identified by elem is less than or equal to -5, we will add a field called "hidden" to the "comments" document and set its value to true.
+       // This command defines elem as the identifier for each matching element in the "comments" array.
+       // If the votes value for the comment
+       // identified by elem is less than or equal to -5, we will add a field called "hidden" to the
+       // "comments" document and set its value to true.
      #+END_SRC
 
 *** upsert
@@ -349,6 +354,7 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     - "chunkSize": The size of each chunk comprising the file, in bytes. The default is 255 KB, but this can be adjusted if needed.
     - "uploadDate": A timestamp representing when this file was stored in GridFS.
     - "md5": An MD5 checksum of this file’s contents, generated on the server side.
+
 * Aggregation
 ** Expressions
    - Match: $match, $exists
