@@ -57,3 +57,26 @@
 
 (defun inventory ()
   (cons 'items- (objects-at 'body *objects* *object-locations*)))
+
+(defun simple-game-repl ()
+  (loop (print (eval (read))))) ;; REPL
+
+(defun game-read ()
+  (let ((cmd (read-from-string
+              (concatenate 'string "(" (read-line) ")"))))
+    (flet ((quote-it (x)
+                     (list 'quote x)))
+      (cons (car cmd) (mapcar #'quote-it (cdr cmd))))))
+
+(defvar *allowed-commands* '(look walk pickup inventory))
+
+(defun game-eval (sexp)
+  (if (member (car sexp) *allowed-commands*)
+      (eval sexp)
+    '(i do not know that command.)))
+
+(defun game-repl ()
+  (let ((cmd (game-read)))
+    (unless (eq (car cmd) 'quit)
+      (game-print (game-eval cmd))
+      (game-repl))))
