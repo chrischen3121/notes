@@ -358,14 +358,40 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 * Aggregation
 ** Expressions
    - Match: $match, $exists
-   - Projection: $project, $unwind
-   - Array: $arrayElemAt, $slice, $filter
+     #+BEGIN_SRC js
+       db.companies.aggregate([
+         {$match: {founded_year: 2004}},
+         {$limit: 5},
+         {$project: {
+           _id: 0,
+           name: 1,
+           founded_year: 1
+         }}
+       ])
+     #+END_SRC
+
+   - Projection: $project
+   - Array: $arrayElemAt, $slice, $filter, $unwind
+     #+BEGIN_SRC js
+       // bars is a list of 1440 records
+       db.getCollection("minbar").aggregate([{$match: {"symbol": "btc.usdt/okex"}},
+                                             {$limit: 50},
+                                             {$project: {"_id": 0, "symbol": 1, "date": 1, "bars": 1,
+                                                         "open": {"$arrayElemAt": ["$bars.open", 0]},
+                                                         "high": {"$max": "$bars.high"},
+                                                         "low": {"$min": "$bars.low"},
+                                                         "close": {"$arrayElemAt": ["$bars.close", -1]},
+                                                         "volume": {"$sum": "$bars.volume"}}}])
+     #+END_SRC
+
    - Accumulators: $max, $sum, etc.
+
 ** Grouping
    $group
 ** Writing Results to a Collection
    $out, $merge
    - $merge was introduced in MongoDB version 4.2 and is the preferred stage for writing to a collection
+
 * Transactions
 * Design Patterns
   see [[https://www.mongodb.com/blog/post/building-with-patterns-a-summary][Summary]]
