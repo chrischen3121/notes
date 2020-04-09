@@ -356,6 +356,9 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     - "md5": An MD5 checksum of this file’s contents, generated on the server side.
 
 * Aggregation
+** Reference
+   [[https://docs.mongodb.com/manual/meta/aggregation-quick-reference/][Aggregation Quick Guide]]
+
 ** Expressions
    - Match: $match, $exists
      #+BEGIN_SRC js
@@ -384,15 +387,181 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
                                                          "volume": {"$sum": "$bars.volume"}}}])
      #+END_SRC
 
-   - Accumulators: $max, $sum, etc.
+** Accumulators
+   $max, $min, $sum, $avg, $first, $last, $push, $addToSet, $mergeObjects
+*** Project Stage
+    #+BEGIN_SRC js
+      db.companies.aggregate([
+          { $match: { "funding_rounds": { $exists: true, $ne: [ ]} } },
+          { $project: {
+              _id: 0,
+              name: 1,
+              largest_round: { $max: "$funding_rounds.raised_amount" }
+          } }
+      ])
+    #+END_SRC
 
-** Grouping
-   $group
+*** Group Stage
+    Fundamental to the group stage is the "_id" field that we specify as part of the document.
+    This is the value of the $group operator itself, using a very strict interpretation.
+    #+BEGIN_SRC js
+      db.companies.aggregate([
+          { $group: {
+              _id: { founded_year: "$founded_year" },
+              average_number_of_employees: { $avg: "$number_of_employees" }
+          } },
+          { $sort: { average_number_of_employees: -1 } }
+
+      ])
+
+      db.companies.aggregate( [
+          { $match: { "relationships.person": { $ne: null } } },
+          { $project: { relationships: 1, _id: 0 } },
+          { $unwind: "$relationships" },
+          { $group: {
+              _id: "$relationships.person",
+              count: { $sum: 1 }
+          } },
+          { $sort: { count: -1 } }
+      ]).pretty()
+    #+END_SRC
+*** Complex Example
+    #+BEGIN_SRC js
+      db.companies.aggregate([
+          { $match: { funding_rounds: { $exists: true, $ne: [ ] } } },
+          { $unwind: "$funding_rounds" },
+          { $sort: { "funding_rounds.funded_year": 1,
+                     "funding_rounds.funded_month": 1,
+                     "funding_rounds.funded_day": 1 } },
+          { $group: {
+              _id: { company: "$name" },
+              first_round: { $first: "$funding_rounds" },
+              last_round: { $last: "$funding_rounds" },
+              num_rounds: { $sum: 1 },
+              total_raised: { $sum: "$funding_rounds.raised_amount" }
+          } },
+          { $project: {
+              _id: 0,
+              company: "$_id.company",
+              first_round: {
+                  amount: "$first_round.raised_amount",
+                  article: "$first_round.source_url",
+                  year: "$first_round.funded_year"
+              },
+              last_round: {
+                  amount: "$last_round.raised_amount",
+                  article: "$last_round.source_url",
+                  year: "$last_round.funded_year"
+              },
+              num_rounds: 1,
+              total_raised: 1,
+          } },
+          { $sort: { total_raised: -1 } }
+      ] ).pretty()
+    #+END_SRC
+
 ** Writing Results to a Collection
    $out, $merge
    - $merge was introduced in MongoDB version 4.2 and is the preferred stage for writing to a collection
 
 * Transactions
+** Core API VS. Callback API
+   | Core API                                                                                                                                                                                                | Callback API                                                                                                      |
+   |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------|
+   | Requires explicit call to start the transaction and commit the transaction.                                                                                                                             | Starts a transaction, executes the specified operations, and commits (or aborts on error).                        |
+   | Does not incorporate error-handling logic for TransientTransactionError and UnknownTransactionCommitResult, and instead provides the flexibility to incorporate custom error handling for these errors. | Automatically incorporates error-handling logic for TransientTransactionError and UnknownTransactionCommitResult. |
+   | Requires explicit logical session to be passed to API for the specific transaction.                                                                                                                     | Requires explicit logical session to be passed to API for the specific transaction.                               |
+** Core API Example
+   #+BEGIN_SRC python
+     uri = 'mongodb+srv://server.example.com/'
+     client = MongoClient(uriString)
+
+     my_wc_majority = WriteConcern('majority', wtimeout=1000)
+
+
+     client.get_database( "webshop",
+                          write_concern=my_wc_majority).orders.insert_one({"sku":
+                          "abc123", "qty":0})
+     client.get_database( "webshop",
+                          write_concern=my_wc_majority).inventory.insert_one(
+                          {"sku": "abc123", "qty": 1000})
+
+     def update_orders_and_inventory(my_session):
+         orders = session.client.webshop.orders
+         inventory = session.client.webshop.inventory
+
+
+         with session.start_transaction(
+                 read_concern=ReadConcern("snapshot"),
+                 write_concern=WriteConcern(w="majority"),
+                 read_preference=ReadPreference.PRIMARY):
+
+             orders.insert_one({"sku": "abc123", "qty": 100}, session=my_session)
+             inventory.update_one({"sku": "abc123", "qty": {"$gte": 100}},
+                                  {"$inc": {"qty": -100}}, session=my_session)
+             commit_with_retry(my_session)
+
+     def commit_with_retry(session):
+         while True:
+             try:
+                 # Commit uses write concern set at transaction start.
+                 session.commit_transaction()
+                 print("Transaction committed.")
+                 break
+             except (ConnectionFailure, OperationFailure) as exc:
+                 # Can retry commit
+                 if exc.has_error_label("UnknownTransactionCommitResult"):
+                     print("UnknownTransactionCommitResult, retrying "
+                           "commit operation ...")
+                     continue
+                 else:
+                     print("Error during commit ...")
+                     raise
+
+     def run_transaction_with_retry(txn_func, session):
+         while True:
+             try:
+                 txn_func(session)  # performs transaction
+                 break
+             except (ConnectionFailure, OperationFailure) as exc:
+                 # If transient error, retry the whole transaction
+                 if exc.has_error_label("TransientTransactionError"):
+                     print("TransientTransactionError, retrying transaction ...")
+                     continue
+                 else:
+                     raise
+
+     with client.start_session() as my_session:
+         try:
+             run_transaction_with_retry(update_orders_and_inventory, my_session)
+         except Exception as exc:
+             # Do something with error. The error handling code is not
+             # implemented for you with the Core API.
+             raise
+   #+END_SRC
+
+** Callback API Example
+   #+BEGIN_SRC python
+     uriString = 'mongodb+srv://server.example.com/'
+     client = MongoClient(uriString)
+     def callback(my_session):
+         orders = my_session.client.webshop.orders
+         inventory = my_session.client.webshop.inventory
+
+         # Important:: You must pass the session variable 'my_session' to
+         # the operations.
+
+         orders.insert_one({"sku": "abc123", "qty": 100}, session=my_session)
+         inventory.update_one({"sku": "abc123", "qty": {"$gte": 100}},
+                              {"$inc": {"qty": -100}}, session=my_session)
+
+     with client.start_session() as session:
+         session.with_transaction(callback,
+                                  read_concern=ReadConcern('local'),
+                                  write_concern=my_write_concern_majority,
+                                  read_preference=ReadPreference.PRIMARY)
+   #+END_SRC
+
 * Design Patterns
   see [[https://www.mongodb.com/blog/post/building-with-patterns-a-summary][Summary]]
 ** Embedding vs References
