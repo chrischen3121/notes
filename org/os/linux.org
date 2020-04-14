@@ -493,6 +493,16 @@ share files by way of the group mechanism, create separate groups for that purpo
    command-line tool
 * Networking
 ** Troubleshooting
+* Text Processing
+   - =cut=: separate lines into fields
+   - =sort=: sort lines
+   - =uniq=: print unique lines
+   - =wc=: count lines, words, and characters
+   - =tee=: copy input to two places
+** grep
+    | -i, --ignore-case  |                                                             |
+    | -v, --invert-match | Invert the sense of matching, to select non-matching lines. |
+
 * Useful Command
 ** os
    - ~uname -a~
@@ -575,16 +585,6 @@ share files by way of the group mechanism, create separate groups for that purpo
       some-command &> output.txt
     #+END_SRC
 
-** Filters
-   - =cut=: separate lines into fields
-   - =sort=: sort lines
-   - =uniq=: print unique lines
-   - =wc=: count lines, words, and characters
-   - =tee=: copy input to two places
-*** grep
-    | -i, --ignore-case  |                                                             |
-    | -v, --invert-match | Invert the sense of matching, to select non-matching lines. |
-
 ** Expansion
 *** Arithmetic Expansion
     #+BEGIN_SRC sh
@@ -638,7 +638,92 @@ share files by way of the group mechanism, create separate groups for that purpo
     #+END_SRC
 
 * Writing Script
-  - an example
+** set
+   #+BEGIN_SRC bash
+     set -eux
+     set -o pipefail
+   #+END_SRC
+
+** variables
+   #+BEGIN_SRC bash
+     etcdir='/etc'
+     echo $etcdir
+     echo ${etcdir}
+     echo "$etcdir"
+     echo "${etcdir}"
+   #+END_SRC
+
+** arguments
+   - ~$0~: command
+   - ~$1~, ~$2~: arguments
+   - ~$#~: argument count
+   - ~$*~: all arguments
+   - ~$?~: return value of last command
+
+** comparison
+   - eq, ne, lt, le, gt, ge, -n, -z
+   - file: -d, -e, -f, -r, -s, -w, -nt(newer than), -ot(older than)
+
+** command currying
+   #+BEGIN_SRC bash
+     function ssh {
+         /usr/bin/ssh -p 7988 $*
+     }
+     # same as
+     alias ssh="/usr/bin/ssh -p 7988"
+   #+END_SRC
+
+** loop
+   #+BEGIN_SRC bash
+     for var in $*; do
+         echo $var
+     done
+
+     for ((i=0; i < $CPU_COUNT; i++)); do
+         echo $i
+     done
+
+     while read line; do
+         echo $line
+     done
+   #+END_SRC
+
+** show usage
+   #+BEGIN_SRC bash
+     #!/bin/bash
+     function show_usage {
+         echo "Usage: $0 source_dir dest_dir"
+         exit 1
+     }
+
+     # Main starts here
+     if [ $# -ne 2 ]; then
+         show_usage
+     else # There are two arguments
+         if [ -d $1]; then
+             source_dir=$1
+         else
+             echo "Invalid source directory"
+             show_usage
+         fi
+         if [ -d $2]; then
+             dest_dir=$2
+         else
+             echo "Invalid dest directory"
+             show_usage
+         fi
+     fi
+   #+END_SRC
+
+** quotes
+   #+BEGIN_SRC bash
+     mylang="Chinese"
+     echo "I speak ${mylang}" #-> I speak Chinese
+     echo 'I speak ${mylang}' #=> I speak ${mylang}
+     echo "There are `wc -l /etc/passwd` lines in the passwd file"
+   #+END_SRC
+
+** an example
    #+BEGIN_SRC bash
      find . -name '*log '
      find . -type f -name '*.log '
