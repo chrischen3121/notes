@@ -366,6 +366,11 @@ share files by way of the group mechanism, create separate groups for that purpo
     - *pidof* :: determine the PID of a process
     - *pgrep*
 
+** *pstree*
+** *pidstat*
+   #+BEGIN_SRC bash
+     pidstat -d -p PID 1 3
+   #+END_SRC
 ** *top*
    1: show loads of individual cores
    - H: show threads
@@ -377,6 +382,7 @@ share files by way of the group mechanism, create separate groups for that purpo
    - Only root can run a command with high priority
    - *renice*
 
+** *execsnoop*
 ** =/proc=
    *ps* and *top* read their process status information from the =/proc= directory
 *** useful process files
@@ -398,6 +404,13 @@ share files by way of the group mechanism, create separate groups for that purpo
 ** periodic processes
    - crontab
    - systemd timer
+
+** process state
+   - R: Running/Runnable
+   - D: Disk Sleep (Uninterruptible Sleep)
+   - Z: Zombie
+   - S: Interruptible Sleep
+   - I: Idle
 
 * Filesystem
 ** mount
@@ -816,17 +829,22 @@ share files by way of the group mechanism, create separate groups for that purpo
 * Profiler
 ** Performance Tools
    [[file:../resources/os/perftools.png]]
+
 ** Hardware Info
    - /proc/cpuinfo
    - /proc/meminfo
    - /proc/diskstats
    - ~dmidecode -t~
+
 ** CPU
    - ~apt install sysstat~
    - ~vmstat 5 5~: 5 updates; delay between updates is 5 secs
    - ~mpstat -P ALL~
    - ~uptime~
    - ~ps -aux~
+   - ~pidstat~
+   - *dstat*
+   - *perf top*, *perf record*, *perf report*
 
 ** Memory
    - /proc/sys/vm/swappiness
@@ -836,3 +854,11 @@ share files by way of the group mechanism, create separate groups for that purpo
    - ~iostat 5 5~
    - ~xdd~
    - ~sar -[ndA]~
+
+** Web Profiler
+*** ApacheBench
+    #+BEGIN_SRC bash
+      ab -c 10 -n 100 http://192.168.0.10:10000/
+    #+END_SRC
+** Stress Test
+   - stress
