@@ -193,7 +193,9 @@
     | abs, fabs      | Use *fabs* as a faster alternative for non-complex-valued data                             |
     | modf           | Return factional and integral parts of array as separate array                             |
     | rint           | Round elements to the nearest integer, preserving the dtype                                |
-    | average        | Compute the weighted average along the specified axis.                                     |
+    | average        | Compute the *weighted* average along the specified axis.                                     |
+    | exp            | Calculate the exponential of all elements in the input array.                              |
+
 *** Linear Algebra
     | Function | Description                                                         |
     |----------+---------------------------------------------------------------------|
@@ -260,22 +262,6 @@
   df.columns
   # Index([u'c1'], dtype='object')
 #+END_SRC
-** Indexing Options
-   - Common use: =obj[val], obj.ix[val], obj.ix[:, val], obj.ix[val1, val2], reindex=
-   - Others:
-
-     | Type                  | Notes                                                                      |
-     |-----------------------+----------------------------------------------------------------------------|
-     | xs                    | Select single row or column as a Series by label                           |
-     | icol, irow, iloc, iat | Select single column or row, respectively, as a Series by integer location |
-     | get_value, set_value  | Select single value by row and column label                                |
-*** difference
-    - loc: only work on index
-    - iloc: work on position
-    - ix: can get data from dataframe without it being in the index
-    - at: get scalar values. It's a very fast loc
-    - iat: get scalar values. It's a very fast iloc
-
 ** Index
    Index objects are immutable, functions as a fixed-size set.
    - main type: =Index, Int64Index, MultiIndex, DatetimeIndex, PeriodIndex=
@@ -293,7 +279,9 @@
    | is_monotonic | Returns True if each element is greater than or equal to the previous element             |
    | is_unique    | Returns True if the Index has no duplicate values                                         |
    | unique       | Compute the array of unique values in the Index                                           |
-*** pd.PeriodIndex
+
+*** ~rename~ with functions
+    - ~data.rename(index=str.title, columns=str.upper)~
 
 ** Functionality
 *** Reindexing
@@ -390,13 +378,13 @@ reindex args: index, method, fill_value, limit, level, copy
       # 3  6.0 NaN   9.0 NaN
       # 4  9.0 NaN  12.0 NaN
     #+END_SRC
-*** Apply
+*** Applying
     #+BEGIN_SRC python
       f = lambda x: x.max()
       frame.apply(f)
       frame.apply(f, axis=1)
     #+END_SRC
-    *apply* can also return a Series
+    ~apply~ *can also return a Series*
     #+BEGIN_SRC python
       def f(x):
           return pd.Series([x.min(), x.max()], index=['min', 'max'])
@@ -407,7 +395,7 @@ reindex args: index, method, fill_value, limit, level, copy
     #+END_SRC
     - *map* method for applying an element-wise function on a Series
     - *applymap* for applying an element-wise function on a DataFrame
-*** Sort
+*** Sorting
   #+BEGIN_SRC python
     df.sort_index()
 
@@ -417,7 +405,7 @@ reindex args: index, method, fill_value, limit, level, copy
 
     series.sort_values()
   #+END_SRC
-*** Rank
+*** Ranking
     By default, rank breaks ties by assigning each group the mean rank
     - args: 'average'(default), 'min', 'max', 'first'
     #+BEGIN_SRC python
@@ -443,6 +431,19 @@ reindex args: index, method, fill_value, limit, level, copy
       # 6    4.0
     #+END_SRC
 
+*** Binning
+    - ~cut~
+    #+BEGIN_SRC python
+      bins = [18, 25, 35, 60, 100]
+      cats = pd.cut(ages, bins)
+      cats # Categories object [(18,25], (25, 35], ...]
+    #+END_SRC
+    useful options: ~labels~, ~precision~
+    - ~qcut~
+    #+BEGIN_SRC python
+      pd.qcut(data, [0, 0.1, 0.5, 0.9, 1.]) # pass quantiles
+    #+END_SRC
+
 *** Other funtions
 - numpy *ufancs* works fine with pandas objects
 - isnull, notnull, dropna, fillna
@@ -450,7 +451,7 @@ reindex args: index, method, fill_value, limit, level, copy
 - set_index, reset_index
 - unique(series based), value_counts(series based), isin(element-wise)
 - all, any
-- replace
+- replace: ~data.replace(-999, np.nan)~
 - cut, qcut
 
 ** Statistic methods
@@ -489,8 +490,10 @@ reindex args: index, method, fill_value, limit, level, copy
       returns.MSFT.cov(returns.IBM)
 
       returns.corr()
-      returns.corrwith(returns.IBM)
+
+      factors_df.corrwith(prices)
     #+END_SRC
+    - ~DataFrame.corrwith~: Compute pairwise correlation.
 
 *** common args
      | Method | Description                                                                |
@@ -655,7 +658,15 @@ reindex args: index, method, fill_value, limit, level, copy
 **** expanding window mean
      It is just a special case where the window is the length of the time series.
 
-* wrangling
+** config options
+   pd.options categories:
+   - compute
+   - display
+   - io
+   - mode
+   - plotting
+
+* Wrangling
 ** Evaluate Data
 *** Quality
     Data in low quality is called *dirty* data.
@@ -692,11 +703,20 @@ reindex args: index, method, fill_value, limit, level, copy
 *** Hints
    - *from_csv*: a convenience method simpler than read_csv
    - pickle related: *load*, *save*
+*** Useful ~read_csv~ parameters
+    - nrows
+    - chunksize
+    #+BEGIN_SRC python
+      chunker = pd.read_csv("data.csv", chunksize=1000)
+      for piece_df in chunker:
+          # do somethine with piece_df
+          ...
+    #+END_SRC
 ** Concatenation
    - *pd.merge*, *merge* method
    - *join* method: performs a left join on the join keys
    - *pd.concat*
-   - *combine_first*: patching missing data with arg object(df.update(overwrite=False))
+   - *combine_first*: patching missing data from another df
    - *align*: align two object on their axes with the specified join method for each axis Index
 *** concat args
     | Argument         | Description                                                                                                           |
@@ -751,7 +771,7 @@ reindex args: index, method, fill_value, limit, level, copy
       # c  2  5
     #+END_SRC
 
-*** pivot
+*** pivot & melt
     *pivot* is a shortcut for creating a hierarchical index using *set_index* and reshaping with *unstack*
     #+BEGIN_SRC python
       quotes.head()
@@ -782,7 +802,8 @@ reindex args: index, method, fill_value, limit, level, copy
       # 2010-01-08  211.980005  602.021036  130.850006  30.660000
     #+END_SRC
 
-** Permutation(randomly reordering)
+** Random Sampling
+   ~df.take~, ~df.sample~
    #+BEGIN_SRC python
      df = DataFrame(np.arange(5 * 4).reshape(5, 4))
      df
@@ -793,9 +814,13 @@ reindex args: index, method, fill_value, limit, level, copy
      # 2   8   9  10  11
      # 3  12  13  14  15
      # 4  16  17  18  19
+
+     # simple sampling
+     df.sample(n=3)
+
      sampler = np.random.permutation(5)
      sampler
-     #=> array([1,0,2,3,4])
+     #=> array([1, 3, 4, 0, 2])
      df.take(sampler)
      #=>
      #     0   1   2   3
@@ -813,11 +838,31 @@ reindex args: index, method, fill_value, limit, level, copy
     slice, split, strip/rstrip/lstrip
 ** Check Duplicates
    pandas.Index.is_unique, pandas.Series.is_unique
-** Others
-*** TODO Indicator/Dummy(for statistical model)
-    *pd.get_dummies*
-* plotting
-** Basic
+** Indicator/Dummy
+   Converting Categorical Variable into "dummy" Matrix, use ~~pd.get_dummies~
+   #+BEGIN_SRC python
+     df = pd.DataFrame({'key': ['b', 'b', 'a', 'c', 'a', 'b']})
+     df
+     #   key
+     # 0   b
+     # 1   b
+     # 2   a
+     # 3   c
+     # 4   a
+     # 5   b
+
+     pd.get_dummies(df['key'])
+     #    a  b  c
+     # 0  0  1  0
+     # 1  0  1  0
+     # 2  1  0  0
+     # 3  0  0  1
+     # 4  1  0  0
+     # 5  0  1  0
+   #+END_SRC
+
+* Plotting
+** Matplotlib Basic
 *** Figures and Subplots
     #+BEGIN_SRC python
       fig = plt.figure()
@@ -828,6 +873,7 @@ reindex args: index, method, fill_value, limit, level, copy
       # all in one subplots
       fig, axes = plt.subplots(2,3, figsize=(14, 8))
     #+END_SRC
+
 *** subplots options
     | Argument  | Description                            |
     |-----------+----------------------------------------|
@@ -838,6 +884,7 @@ reindex args: index, method, fill_value, limit, level, copy
     | *sharey*  | see above                              |
     | subpot_kw | creating dict of keywords              |
     | **fig_kw  | Additional keywords                    |
+
 *** Adjusting Size
     subplots_adjust
     - args: left, right, bottom, top, wspace, hspace
@@ -852,39 +899,36 @@ reindex args: index, method, fill_value, limit, level, copy
                       : 'small'}
       plt.rc('font', **font_options)
     #+END_SRC
-** plot function
-*** plotting range
-    plt.xlim, plt.ylim, ax.set_xlim, ax.set_ylim
 
-*** title, label, tick, ticklabel
-    set_title, set_xlabel, set_xticks, set_xticklabels
+*** Choosing Plotting Range
+    ~plt.xlim~, ~plt.ylim~, ~ax.set_xlim~, ~ax.set_ylim~
 
-*** legend
+*** title, label, tick, ticklabel, legend
+    ~set_title~, ~set_xlabel~, ~set_xticks~, ~set_xticklabels~, ~set~
     #+BEGIN_SRC python
-      fig = plt.figure()
-      ax = fig.add_subplot(1, 1, 1)
-      ax.plot(randn(1000).cumsum(), 'k', label='one')
+      ticks = ax.set_xticks([0, 250, 500, 750, 1000])
+      labels = ax.set_xticklabels(["one", "tow", "three", "four", "five"])
+
+      # ax.set
+      props = {
+          "title": "My first matplotlib plot",
+          "xlabel": "Stages"
+      }
+      ax.set(**props)
+
+      # legend
       ax.legend(loc='best') #show the label
     #+END_SRC
 
 *** Annotations
-**** *text, arrows, annotate* functions
+    ~ax.text~, ~ax.arrow~, ~ax.annotate~
      #+BEGIN_SRC python
        ax.annotate(label, xy=(date, spx.asof(date) + 50),
                    xytext=(date, spx.asof(date) + 200),
                    arrowprops=dict(facecolor='black'),
                    horizontalalignment='left', verticalalignment='top')
      #+END_SRC
-**** shapes
-     matplotlib.patches
-     #+BEGIN_SRC python
-       fig = plt.figure()
-       ax = fig.add_subplot(1, 1, 1)
-       rect = plt.Rectangle((0.2, 0.75), 0.4, 0.15, color='k', alpha=0.3)
-       circ = plt.Circle((0.7, 0.2), 0.15, color='b', alpha=0.3)
-       ax.add_patch(rect)
-       ax.add_patch(circ)
-     #+END_SRC
+     - util function: ~asof~
 
 ** pandas Plotting
 *** Line Plots
@@ -895,6 +939,7 @@ reindex args: index, method, fill_value, limit, level, copy
      | ax       | matplotlib subplot object to plot on. If nothing passed, uses active matplotlib subplot |
      | style    | Style string, like 'ko--' , to be passed to matplotlib                                  |
      | alpha    | The plot fill opacity (from 0 to 1)                                                     |
+
 **** DataFrame
      | Argument       | Description                                      |
      |----------------+--------------------------------------------------|
@@ -913,6 +958,9 @@ reindex args: index, method, fill_value, limit, level, copy
      | title          | Plot title as string                             |
      | legend         | Add a subplot legend ( True by default)          |
      | sort_columns   | Plot columns in alphabetical order               |
+
+**** steps
+     ~plt.plot(data, drawstyle="steps-post")~
 
 *** Bar Plots
     - kind='bar': for vertical bars, 'barh' for horizontal bars
@@ -946,7 +994,7 @@ reindex args: index, method, fill_value, limit, level, copy
    - *basemap* /cartopy: projection and mapping(plotting 2D data on maps)
    - *seaborn* /holoviews/ggplot: higher-level plotting interfaces
    - axes_grid:  axes and axis helpers
-* aggregation
+* Group
 ** group by
    #+BEGIN_SRC python
      # series groupby
@@ -964,20 +1012,22 @@ reindex args: index, method, fill_value, limit, level, copy
      for name, group in df.groupby('key1'):
          print name, group
    #+END_SRC
-*** via dict
+
+*** Using Mapping Dict(or Series)
     #+BEGIN_SRC python
       # using mapping dict
       mapping = {'a': 'group1', 'b': 'group1', 'c': 'group2'}
       df.groupby(mapping, axis=1)
     #+END_SRC
-*** via function
+
+*** Using a Function
     Any function passed as a group key will be called once per
     index value, with the return values being used as the group names
     #+BEGIN_SRC python
       # using function
       df.groupby(len).sum()
     #+END_SRC
-*** via mixing
+*** Using Mixing
     Mixing functions with arrays, dicts or Series is not a problem as
     everything gets converted to arrays internally
     #+BEGIN_SRC python
@@ -986,7 +1036,7 @@ reindex args: index, method, fill_value, limit, level, copy
     #+END_SRC
 
 ** groupby aggregation
-   #+CAPTION: Optimized grouby methods
+   #+CAPTION: Optimized Groupby Methods
    | Name        | Description                                                  |
    |-------------+--------------------------------------------------------------|
    | count       | Number of non-NA values in the groupNumber of non            |
@@ -997,63 +1047,91 @@ reindex args: index, method, fill_value, limit, level, copy
    | min, max    | Minimum and maximum of non-NA values                         |
    | prod        | Product of non-NA values                                     |
    | first, last | First and last non-NA values                                 |
-*** *aggregate* / *agg* method
+*** ~agg~
 **** Series
      #+BEGIN_SRC python
-       s.agg(['mean', 'std'])
-       s.agg([('foo', 'mean'), ('bar', 'np.std')]) # foo bar will be the column name of result df
+       grouped = series.groupby(group_key)
+       grouped.agg(['mean', 'std', transform_function])
+       grouped.agg([('foo', 'mean'), ('bar', 'np.std')]) # foo bar will be the column name of result df
+       grouped.agg({"tip": np.max, "size": "sum"})
      #+END_SRC
+
 **** DataFrame
      #+BEGIN_SRC python
-       df.agg({'col1': 'mean', 'col2': 'std', 'col3': np.max})
-       df.agg({'col1': ['mean', 'std']})
+       grouped = df.groupby("column")
+       grouped.agg({'col1': 'mean', 'col2': 'std', 'col3': np.max})
+       grouped.agg({'col1': ['mean', 'std']})
      #+END_SRC
+
 *** apply
     apply function has args:
     #+BEGIN_SRC python
       df.groupby(['key1', 'key2']).apply(top, n=1)
     #+END_SRC
-**** GroupBy method
-     #+BEGIN_SRC python
-       grouped.describe()
-       # is just shortcut of
-       f = lambda x: x.describe()
-       grouped.apply(f)
-     #+END_SRC
-*** transform
-    *transform* is a more specialized function having rigid requirements.
-    *transform* applies a funtion to *each group*, then places the results
-    in the appropriate locations. If each group produces a scalar value, it
-    will be *propagated(broadcasted)*.
-**** Standardizing data (zscore) within group
-     #+BEGIN_SRC python
-       key = lambda x: x.year
-       zscore = lambda x: (x - x.mean()) / x.std()
-       transformed = ts.groupby(key).transform(zscore)
-     #+END_SRC
 
-**** Filling NAs within groups with a value derived from each group
-     #+BEGIN_SRC python
-       f = lambda x: x.fillna(x.mean())
-       transformed = grouped.transform(f)
-     #+END_SRC
-** cut & qcut
-** fillna with group value
+*** transform
+    Like ~apply~, ~transform~ works with functions that return Series, but the result must be
+    the *same size* as the input
+
+*** fillna with group value
    #+BEGIN_SRC python
      grouped.apply(lambda g: g.fillna(g.mean()))
 
      fill_values = {'a': 5, 'b': 4}
      grouped.fillna(lambda g: g.fillna(fill_values[g.name]))
    #+END_SRC
-** pivot_table
-   *pivot_table* aggregates a table of data by one or more keys,
-   arranging the data in a rectangle with some of the group keys along the rows and some
-   along the columns. default aggfunc: mean
-*** crosstab
-    A cross-tabulation (or crosstab for short) is a special case of a pivot table
-    that computes group frequencies.
 
-* other tools
+** ~pivot_table~
+   In addition to providing a convenience interface to ~groupby~ + ~reshape~
+   [[file:../resources/data/pivot_table.jpg]]
+   - ~crossbar~ is a special case of a pivot table.
+** Examples
+*** Group Weighted Average
+    #+BEGIN_SRC python
+      df = pd.DataFrame({'category': ['a', 'a', 'a', 'a',
+                                      'b', 'b', 'b', 'b'],
+                         'data': np.random.randn(8),
+                         'weights': np.random.rand(8)})
+      df.groupby("category").apply(lambda g: np.average(g['data'], weights=g['weights']))
+    #+END_SRC
+
+*** *Group Correlation*
+    #+BEGIN_SRC python
+      prices.columns
+      # AAPL,MSFT,XOM,SPX
+
+      spx_corr = lambda x: x.corrwith(x['SPX'])
+      rets = prices.pct_change().dropna()
+
+      get_year = lambda x: x.year
+      by_year = rets.groupby(get_year)
+      by_year.apply(spx_corr)
+      #    AAPL MSFT XOM SPX
+      # 2003 0.541124 0.745174 0.661265 1.0
+      # 2004 0.374283 0.588531 0.557742 1.0
+    #+END_SRC
+
+*** Group-Wise Linear Regression
+    #+BEGIN_SRC python
+      prices.columns
+      # AAPL,MSFT,XOM,SPX
+      rets = prices.pct_change().dropna()
+
+      get_year = lambda x: x.year
+      by_year = rets.groupby(get_year)
+
+      import statsmodels.api as sm
+      def regress(data, yvar, xvars):
+          Y = data[yvar]
+          X = data[xvars]
+          X['intercept'] = 1.
+          result = sm.OLS(Y, X).fit()
+          return result.params
+
+      by_year.apply(regress, 'AAPL', ['SPX'])
+    #+END_SRC
+
+* Other Tools
 ** ipyparallel
    #+BEGIN_SRC sh
      ipcluster start --n=4
@@ -1070,6 +1148,7 @@ reindex args: index, method, fill_value, limit, level, copy
      dview.execute('b=sum(a)')
      dview.gather('b').r # reduce
    #+END_SRC
+
 ** Scipy
 ** statsmodels
 ** Sympy
@@ -1102,6 +1181,7 @@ reindex args: index, method, fill_value, limit, level, copy
     - non pure-python module.
 ** seaborn
    Beautifully formatted plots
+** plotly
 ** scikits
 *** scikit-learn
 *** scikit-image

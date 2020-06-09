@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2020-06-09 Tue 16:20 -->
+<!-- 2020-06-09 Tue 16:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cryptocurrencies</title>
+<title>Redis in action</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
-<meta name="keywords" content="Cryptocurrency" />
+<meta name="keywords" content="redis" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -232,88 +232,277 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Cryptocurrencies</h1>
+<h1 class="title">Redis in action</h1>
 <div id="table-of-contents">
-<h2>Table of Contents</h2>
+<h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org36c84c1">1. Crypto Basic</a></li>
+<li><a href="#org08263cc">1. 类型</a></li>
+<li><a href="#org9965250">2. 命令</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org36c84c1" class="outline-2">
-<h2 id="org36c84c1"><span class="section-number-2">1</span> Crypto Basic</h2>
+<div id="outline-container-org08263cc" class="outline-2">
+<h2 id="org08263cc"><span class="section-number-2">1</span> 类型</h2>
 <div class="outline-text-2" id="text-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">类型</td>
+<td class="org-left">存储格式</td>
+</tr>
+
+<tr>
+<td class="org-left">STRING</td>
+<td class="org-left">字符串、整数或浮点数</td>
+</tr>
+
+<tr>
+<td class="org-left">LIST</td>
+<td class="org-left">链表</td>
+</tr>
+
+<tr>
+<td class="org-left">SET</td>
+<td class="org-left">无序集合</td>
+</tr>
+
+<tr>
+<td class="org-left">HASH</td>
+<td class="org-left">无序散列表</td>
+</tr>
+
+<tr>
+<td class="org-left">ZSET</td>
+<td class="org-left">有序映射</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="outline-container-orgedea475" class="outline-3">
-<h3 id="orgedea475"><span class="section-number-3">1.1</span> Hash Function</h3>
+<div id="outline-container-org14b0de6" class="outline-3">
+<h3 id="org14b0de6"><span class="section-number-3">1.1</span> STRING</h3>
 <div class="outline-text-3" id="text-1-1">
-<ul class="org-ul">
-<li>takes any string as input</li>
-<li>fixed-size output</li>
-<li>efficiently computable (<code>O(n)</code> for n-bit string)</li>
-</ul>
-
 <p>
-for crypto security, additional three features:
+存储类型：byte string, int, float
+常用命令：GET, SET, DEL, INCR, DECR, INCRBY, DECRBY, INCRBYFLOAT
+其他命令：APPEND, GETRANGE, SETRANGE, GETBIT, SETBIT, BITCOUNT, BITOP
 </p>
-<ul class="org-ul">
-<li>collision-resistance</li>
-<li>hiding</li>
-<li>puzzle-friendliness</li>
-</ul>
 </div>
 </div>
 
-<div id="outline-container-orgff69468" class="outline-3">
-<h3 id="orgff69468"><span class="section-number-3">1.2</span> Hash Pointers</h3>
+<div id="outline-container-org5ad0c74" class="outline-3">
+<h3 id="org5ad0c74"><span class="section-number-3">1.2</span> LIST</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
-Pointer to where some info is stored, and hash of the info
-</p>
-</div>
-
-<div id="outline-container-org70d2f69" class="outline-4">
-<h4 id="org70d2f69"><span class="section-number-4">1.2.1</span> Data Structure with Hash Pointers</h4>
-<div class="outline-text-4" id="text-1-2-1">
-<ul class="org-ul">
-<li>Block Chain: Hash pointer with linked list</li>
-</ul>
-
-<div class="figure">
-<p><img src="../resources/finance/blockchain_structure.png" alt="blockchain_structure.png" />
-</p>
-</div>
-<ul class="org-ul">
-<li>Merkle Tree: Hash pointer with binary tree</li>
-</ul>
-
-<div class="figure">
-<p><img src="../resources/finance/merkle_tree.png" alt="merkle_tree.png" />
+常用命令：LPUSH/RPUSH, LPOP/RPOP, LRANGE, LINDEX, LTRIM
+其他命令：RPOLPUSH, BLPOP, BRPOP, BRPOPLPUSH; B 开头为阻塞式调用
 </p>
 </div>
 </div>
-</div>
-</div>
 
-<div id="outline-container-org49cee53" class="outline-3">
-<h3 id="org49cee53"><span class="section-number-3">1.3</span> Digital Signatures</h3>
+<div id="outline-container-org61f9051" class="outline-3">
+<h3 id="org61f9051"><span class="section-number-3">1.3</span> SET</h3>
 <div class="outline-text-3" id="text-1-3">
+<p>
+常用命令：SADD, SREM, SISMEMBER, SMEMBERS
+其他命令：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">SCARD</td>
+<td class="org-left">返回元素数量</td>
+</tr>
+
+<tr>
+<td class="org-left">SRANDMEMBER</td>
+<td class="org-left">随机返回一个或多个元素，count 参数控制随机元素是否可重复</td>
+</tr>
+
+<tr>
+<td class="org-left">SPOP</td>
+<td class="org-left">随机移除并返回一个元素</td>
+</tr>
+
+<tr>
+<td class="org-left">SMOVE</td>
+<td class="org-left">SMOVE source-set dest-set item</td>
+</tr>
+</tbody>
+</table>
+<p>
+集合命令：SDIFF, SDIFFSTORE, SINTER, SUNION, SUNIONSTORE
+</p>
 </div>
-<div id="outline-container-org26432ea" class="outline-4">
-<h4 id="org26432ea"><span class="section-number-4">1.3.1</span> APIs</h4>
-<div class="outline-text-4" id="text-1-3-1">
-<ul class="org-ul">
-<li><code>(sk, pk) := generateKeys(keysize)</code></li>
-<li><code>sig := sign(sk, message)</code></li>
-<li><code>isValid := verify(pk, message, sig)</code></li>
-</ul>
+</div>
+
+<div id="outline-container-orgd494303" class="outline-3">
+<h3 id="orgd494303"><span class="section-number-3">1.4</span> HASH</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+常用命令：HSET/HMSET, HGET/HMGET, HDEL, HLEN
+其他命令：HEXISTS, HKEYS, HVALS, HGETALL, HINCRBY, HINCRBYFLOAT
+</p>
+</div>
+</div>
+
+<div id="outline-container-org369d39b" class="outline-3">
+<h3 id="org369d39b"><span class="section-number-3">1.5</span> ZSET</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+常用命令：ZADD, ZREM, ZCARD
+其他命令：ZINCRBY, ZINTERSTORE, ZCOUNT, ZSCORE,
+范围获取/删除命令：ZRANGE/ZREVRANGE, ZRANK/ZREVRANK, ZRANGEBYSCORE/ZREVRANGEBYSCORE, ZREMRANGEBYRANK,
+ZREMRANGEBYSCORE
+集合命令：ZINTERSTORE, ZUNIONSTORE; 可指定 score 的运算方式
+</p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgcb4d730" class="outline-3">
-<h3 id="orgcb4d730"><span class="section-number-3">1.4</span> Public Keys</h3>
+<div id="outline-container-org9965250" class="outline-2">
+<h2 id="org9965250"><span class="section-number-2">2</span> 命令</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org60a1711" class="outline-3">
+<h3 id="org60a1711"><span class="section-number-3">2.1</span> 通用命令</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-orgaa82734" class="outline-4">
+<h4 id="orgaa82734"><span class="section-number-4">2.1.1</span> SORT</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+SORT cource-key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern &#x2026;]] [ASC|DESC] [ALPHA] [STORE dest-key]
+</p>
+</div>
+</div>
+<div id="outline-container-org4b69822" class="outline-4">
+<h4 id="org4b69822"><span class="section-number-4">2.1.2</span> Basic transaction</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+WATCH, MULTI, EXEC, UNWATCH, DISCARD.
+事务可以通过减少客户端和服务端之间的通信次数提升性能
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org8df9eae"></a>python pipeline<br />
+<div class="outline-text-5" id="text-org8df9eae">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">conn</span> = redis.Redis()
+<span style="color: #715ab1;">pipeline</span> = conn.pipeline()
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">... #-&gt; operations in transitions</span>
+pipeline.excute()
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org9717161" class="outline-4">
+<h4 id="org9717161"><span class="section-number-4">2.1.3</span> Expire time</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">PERSIST</td>
+<td class="org-left">PERSIST key-name 移除键过期时间</td>
+</tr>
+
+<tr>
+<td class="org-left">TTL</td>
+<td class="org-left">TTL key-name 查看距离过期剩余多少秒</td>
+</tr>
+
+<tr>
+<td class="org-left">EXPIRE</td>
+<td class="org-left">EXPIRE key-name seconds</td>
+</tr>
+
+<tr>
+<td class="org-left">EXPIREAT</td>
+<td class="org-left">EXPIREAT key-name timestamp</td>
+</tr>
+
+<tr>
+<td class="org-left">PTTL</td>
+<td class="org-left">PTTL key-name 同 TTL，单位毫秒</td>
+</tr>
+
+<tr>
+<td class="org-left">PEXPIRE</td>
+<td class="org-left">毫秒级 PEXPIRE</td>
+</tr>
+
+<tr>
+<td class="org-left">PEXPIREAT</td>
+<td class="org-left">毫秒级 EXPIREAT</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga9bdc55" class="outline-3">
+<h3 id="orga9bdc55"><span class="section-number-3">2.2</span> 发布订阅</h3>
+<div class="outline-text-3" id="text-2-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">SUBSCRIBE</td>
+<td class="org-left">SUBSCRIBE channel [channel &#x2026;] 订阅单个或多个频道</td>
+</tr>
+
+<tr>
+<td class="org-left">UNSUBSCRIBE</td>
+<td class="org-left">UNSUBSCRIBE channel [channel &#x2026;]</td>
+</tr>
+
+<tr>
+<td class="org-left">PUBLISH</td>
+<td class="org-left">PUBLISH channel message</td>
+</tr>
+
+<tr>
+<td class="org-left">PSUBSCRIBE</td>
+<td class="org-left">PSUBSCRIBE pattern [pattern &#x2026;]</td>
+</tr>
+
+<tr>
+<td class="org-left">PUNSUBSCRIBE</td>
+<td class="org-left">PUNSUBSCRIBE pattern [pattern &#x2026;]</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>

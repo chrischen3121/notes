@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-08-26 Sun 18:07 -->
+<!-- 2020-06-09 Tue 16:22 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>boost cookbook</title>
@@ -188,7 +188,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -237,55 +237,55 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf64725c">1. Data Structure</a>
+<li><a href="#orgc5294ab">1. Data Structure</a>
 <ul>
-<li><a href="#org9b6d062">1.1. any</a></li>
-<li><a href="#org8d75786">1.2. variant</a></li>
-<li><a href="#orgba5b5bf">1.3. optional</a></li>
-<li><a href="#org8cb2972">1.4. tuple</a></li>
-<li><a href="#org6bd6d5a">1.5. others</a></li>
+<li><a href="#org2942051">1.1. any</a></li>
+<li><a href="#org1bf0ec8">1.2. variant</a></li>
+<li><a href="#org57f42fd">1.3. optional</a></li>
+<li><a href="#org5ef6de7">1.4. tuple</a></li>
+<li><a href="#org71d624c">1.5. others</a></li>
 </ul>
 </li>
-<li><a href="#org3770807">2. Functional</a>
+<li><a href="#org4d45d7e">2. Functional</a>
 <ul>
-<li><a href="#org0f13d72">2.1. bind</a></li>
+<li><a href="#org6273984">2.1. bind</a></li>
 </ul>
 </li>
-<li><a href="#orgd8b3aec">3. Managing Resources</a></li>
-<li><a href="#org8054c41">4. Utilities</a>
+<li><a href="#org7424ded">3. Managing Resources</a></li>
+<li><a href="#org3bc8923">4. Utilities</a>
 <ul>
-<li><a href="#org13ca9ae">4.1. boost::algorithm</a></li>
-<li><a href="#org109a313">4.2. swap</a></li>
+<li><a href="#org3ac9069">4.1. boost::algorithm</a></li>
+<li><a href="#orga5a894e">4.2. swap</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf64725c" class="outline-2">
-<h2 id="orgf64725c"><span class="section-number-2">1</span> Data Structure</h2>
+<div id="outline-container-orgc5294ab" class="outline-2">
+<h2 id="orgc5294ab"><span class="section-number-2">1</span> Data Structure</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org9b6d062" class="outline-3">
-<h3 id="org9b6d062"><span class="section-number-3">1.1</span> any</h3>
+<div id="outline-container-org2942051" class="outline-3">
+<h3 id="org2942051"><span class="section-number-3">1.1</span> any</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-org45d5406" class="outline-4">
-<h4 id="org45d5406"><span class="section-number-4">1.1.1</span> how it works</h4>
+<div id="outline-container-org4a7b185" class="outline-4">
+<h4 id="org4a7b185"><span class="section-number-4">1.1.1</span> how it works</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 On the assignment of some variable of type T, Boost.Any instantiates a holder&lt;T&gt; type that may store
 a value of the specified type T and is derived from some base-type placeholder.
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">placeholder</span> <span style="color: #3a81c3;">{</span>
-  <span style="color: #3a81c3; font-weight: bold;">virtual</span> ~<span style="color: #6c3163; font-weight: bold;">placeholder</span><span style="color: #6c3163;">()</span> <span style="color: #6c3163;">{}</span>
-  <span style="color: #3a81c3; font-weight: bold;">virtual</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">type_info</span> &amp;<span style="color: #6c3163; font-weight: bold;">type</span><span style="color: #6c3163;">()</span> <span style="color: #3a81c3; font-weight: bold;">const</span> = <span style="color: #4e3163;">0</span>;
-<span style="color: #3a81c3;">}</span>;
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">placeholder</span> {
+  <span style="color: #3a81c3; font-weight: bold;">virtual</span> ~<span style="color: #6c3163; font-weight: bold;">placeholder</span>() {}
+  <span style="color: #3a81c3; font-weight: bold;">virtual</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">type_info</span> &amp;<span style="color: #6c3163; font-weight: bold;">type</span>() <span style="color: #3a81c3; font-weight: bold;">const</span> = 0;
+};
 
-<span style="color: #3a81c3; font-weight: bold;">template</span> <span style="color: #3a81c3;">&lt;</span><span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">ValueType</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">holder</span> : <span style="color: #3a81c3; font-weight: bold;">public</span> <span style="color: #ba2f59; font-weight: bold;">placeholder</span> <span style="color: #3a81c3;">{</span>
-  <span style="color: #3a81c3; font-weight: bold;">virtual</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">type_info</span> &amp;<span style="color: #6c3163; font-weight: bold;">type</span><span style="color: #6c3163;">()</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #6c3163;">{</span> <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3; font-weight: bold;">typeid</span><span style="color: #2d9574;">(</span>ValueType<span style="color: #2d9574;">)</span>; <span style="color: #6c3163;">}</span>
+<span style="color: #3a81c3; font-weight: bold;">template</span> &lt;<span style="color: #3a81c3; font-weight: bold;">typename</span> <span style="color: #ba2f59; font-weight: bold;">ValueType</span>&gt; <span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">holder</span> : <span style="color: #3a81c3; font-weight: bold;">public</span> <span style="color: #ba2f59; font-weight: bold;">placeholder</span> {
+  <span style="color: #3a81c3; font-weight: bold;">virtual</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">type_info</span> &amp;<span style="color: #6c3163; font-weight: bold;">type</span>() <span style="color: #3a81c3; font-weight: bold;">const</span> { <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3; font-weight: bold;">typeid</span>(ValueType); }
   <span style="color: #ba2f59; font-weight: bold;">ValueType</span> <span style="color: #715ab1;">held</span>;
-<span style="color: #3a81c3;">}</span>;
+};
 </pre>
 </div>
 <p>
@@ -298,42 +298,42 @@ a value of the specified type T and is derived from some base-type placeholder.
 </div>
 </div>
 
-<div id="outline-container-org8d75786" class="outline-3">
-<h3 id="org8d75786"><span class="section-number-3">1.2</span> variant</h3>
+<div id="outline-container-org1bf0ec8" class="outline-3">
+<h3 id="org1bf0ec8"><span class="section-number-3">1.2</span> variant</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Boost variant emulates a union but it does not use a union in its implementation. Instead it uses aligned storage and placement new.
 You have to manage the construction and destruction of non POD types by yourself when you use C++11 unions.
 </p>
 </div>
-<div id="outline-container-orgf95f378" class="outline-4">
-<h4 id="orgf95f378"><span class="section-number-4">1.2.1</span> hints</h4>
+<div id="outline-container-org3ffa251" class="outline-4">
+<h4 id="org3ffa251"><span class="section-number-4">1.2.1</span> hints</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <ul class="org-ul">
 <li>To achieve maximum performance, make sure that there is a simple type in the list of supported types at the first position, such as boost::blank</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc195f92" class="outline-4">
-<h4 id="orgc195f92"><span class="section-number-4">1.2.2</span> <code>boost::apply_visitor</code></h4>
+<div id="outline-container-orgc6cfe69" class="outline-4">
+<h4 id="orgc6cfe69"><span class="section-number-4">1.2.2</span> <code>boost::apply_visitor</code></h4>
 <div class="outline-text-4" id="text-1-2-2">
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">typedef</span> <span style="color: #4e3163;">boost</span>::<span style="color: #ba2f59; font-weight: bold;">variant</span><span style="color: #3a81c3;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">int</span>, <span style="color: #ba2f59; font-weight: bold;">float</span>, <span style="color: #4e3163;">std</span>::string<span style="color: #3a81c3;">&gt;</span> <span style="color: #ba2f59; font-weight: bold;">cell_t</span>;
-<span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">db_sum_visitor</span> : <span style="color: #3a81c3; font-weight: bold;">public</span> <span style="color: #4e3163;">boost</span>::<span style="color: #ba2f59; font-weight: bold;">static_visitor</span><span style="color: #3a81c3;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">double</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #3a81c3;">{</span>
-  <span style="color: #ba2f59; font-weight: bold;">double</span> <span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">()</span><span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">value</span><span style="color: #6c3163;">)</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #6c3163;">{</span> <span style="color: #3a81c3; font-weight: bold;">return</span> value; <span style="color: #6c3163;">}</span>
-  <span style="color: #ba2f59; font-weight: bold;">double</span> <span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">()</span><span style="color: #6c3163;">(</span><span style="color: #ba2f59; font-weight: bold;">float</span> <span style="color: #715ab1;">value</span><span style="color: #6c3163;">)</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #6c3163;">{</span> <span style="color: #3a81c3; font-weight: bold;">return</span> value; <span style="color: #6c3163;">}</span>
-  <span style="color: #ba2f59; font-weight: bold;">double</span> <span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">()</span><span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">string</span> &amp; <span style="color: #2aa1ae; background-color: #ecf3ec;">/*</span><span style="color: #2aa1ae; background-color: #ecf3ec;">value*/</span><span style="color: #6c3163;">)</span> <span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #6c3163;">{</span> <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">0.0</span>; <span style="color: #6c3163;">}</span>
-<span style="color: #3a81c3;">}</span>;
+<pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">typedef</span> <span style="color: #4e3163;">boost</span>::<span style="color: #ba2f59; font-weight: bold;">variant</span>&lt;<span style="color: #ba2f59; font-weight: bold;">int</span>, <span style="color: #ba2f59; font-weight: bold;">float</span>, <span style="color: #4e3163;">std</span>::string&gt; <span style="color: #ba2f59; font-weight: bold;">cell_t</span>;
+<span style="color: #3a81c3; font-weight: bold;">struct</span> <span style="color: #ba2f59; font-weight: bold;">db_sum_visitor</span> : <span style="color: #3a81c3; font-weight: bold;">public</span> <span style="color: #4e3163;">boost</span>::<span style="color: #ba2f59; font-weight: bold;">static_visitor</span>&lt;<span style="color: #ba2f59; font-weight: bold;">double</span>&gt; {
+  <span style="color: #ba2f59; font-weight: bold;">double</span> <span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">()</span>(<span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">value</span>) <span style="color: #3a81c3; font-weight: bold;">const</span> { <span style="color: #3a81c3; font-weight: bold;">return</span> value; }
+  <span style="color: #ba2f59; font-weight: bold;">double</span> <span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">()</span>(<span style="color: #ba2f59; font-weight: bold;">float</span> <span style="color: #715ab1;">value</span>) <span style="color: #3a81c3; font-weight: bold;">const</span> { <span style="color: #3a81c3; font-weight: bold;">return</span> value; }
+  <span style="color: #ba2f59; font-weight: bold;">double</span> <span style="color: #3a81c3; font-weight: bold;">operator</span><span style="color: #6c3163; font-weight: bold;">()</span>(<span style="color: #3a81c3; font-weight: bold;">const</span> <span style="color: #4e3163;">std</span>::<span style="color: #ba2f59; font-weight: bold;">string</span> &amp; <span style="color: #2aa1ae; background-color: #ecf3ec;">/*</span><span style="color: #2aa1ae; background-color: #ecf3ec;">value*/</span>) <span style="color: #3a81c3; font-weight: bold;">const</span> { <span style="color: #3a81c3; font-weight: bold;">return</span> 0.0; }
+};
 
-<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #ba2f59; font-weight: bold;">result</span> = <span style="color: #4e3163;">boost</span>::apply_visitor<span style="color: #3a81c3;">(</span>db_sum_visitor<span style="color: #6c3163;">()</span>, variant<span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">auto</span> <span style="color: #715ab1;">result</span> = <span style="color: #4e3163;">boost</span>::apply_visitor(db_sum_visitor(), variant);
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgba5b5bf" class="outline-3">
-<h3 id="orgba5b5bf"><span class="section-number-3">1.3</span> optional</h3>
+<div id="outline-container-org57f42fd" class="outline-3">
+<h3 id="org57f42fd"><span class="section-number-3">1.3</span> optional</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 use <code>boost::none</code> to set empty value
@@ -341,23 +341,23 @@ use <code>boost::none</code> to set empty value
 </div>
 </div>
 
-<div id="outline-container-org8cb2972" class="outline-3">
-<h3 id="org8cb2972"><span class="section-number-3">1.4</span> tuple</h3>
+<div id="outline-container-org5ef6de7" class="outline-3">
+<h3 id="org5ef6de7"><span class="section-number-3">1.4</span> tuple</h3>
 <div class="outline-text-3" id="text-1-4">
 </div>
-<div id="outline-container-org9d5e0f0" class="outline-4">
-<h4 id="org9d5e0f0"><span class="section-number-4">1.4.1</span> std::tie</h4>
+<div id="outline-container-org0cafffa" class="outline-4">
+<h4 id="org0cafffa"><span class="section-number-4">1.4.1</span> std::tie</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <div class="org-src-container">
-<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::tie<span style="color: #3a81c3;">(</span>i, f, d<span style="color: #3a81c3;">)</span> = some_tuple;
+<pre class="src src-cpp"><span style="color: #4e3163;">std</span>::tie(i, f, d) = some_tuple;
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org6bd6d5a" class="outline-3">
-<h3 id="org6bd6d5a"><span class="section-number-3">1.5</span> others</h3>
+<div id="outline-container-org71d624c" class="outline-3">
+<h3 id="org71d624c"><span class="section-number-3">1.5</span> others</h3>
 <div class="outline-text-3" id="text-1-5">
 <ul class="org-ul">
 <li>boost::container::small_vector</li>
@@ -369,19 +369,19 @@ use <code>boost::none</code> to set empty value
 </div>
 </div>
 
-<div id="outline-container-org3770807" class="outline-2">
-<h2 id="org3770807"><span class="section-number-2">2</span> Functional</h2>
+<div id="outline-container-org4d45d7e" class="outline-2">
+<h2 id="org4d45d7e"><span class="section-number-2">2</span> Functional</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org0f13d72" class="outline-3">
-<h3 id="org0f13d72"><span class="section-number-3">2.1</span> bind</h3>
+<div id="outline-container-org6273984" class="outline-3">
+<h3 id="org6273984"><span class="section-number-3">2.1</span> bind</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 <code>bind</code>: <b>copy</b> a value into a functional object
 </p>
 </div>
-<div id="outline-container-org1d25151" class="outline-4">
-<h4 id="org1d25151"><span class="section-number-4">2.1.1</span> <code>ref()</code> &amp; <code>cref()</code></h4>
+<div id="outline-container-org73eb4d3" class="outline-4">
+<h4 id="org73eb4d3"><span class="section-number-4">2.1.1</span> <code>ref()</code> &amp; <code>cref()</code></h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 The <code>ref()</code> and <code>cref()</code> functions just construct an object of type <code>reference_wrapper&lt;T&gt;</code> or <code>reference_wrapper&lt;const T&gt;</code>,
@@ -389,8 +389,8 @@ which is implicitly convertible to a reference type.
 </p>
 </div>
 </div>
-<div id="outline-container-orgab82e36" class="outline-4">
-<h4 id="orgab82e36"><span class="section-number-4">2.1.2</span> hints</h4>
+<div id="outline-container-orgeaa855f" class="outline-4">
+<h4 id="orgeaa855f"><span class="section-number-4">2.1.2</span> hints</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 If you are using the C++14 compiler, then use generic lambdas instead of <code>std::bind</code> and <code>boost::bind</code>, as they are less obscure and simpler to understand.
@@ -401,16 +401,16 @@ C++17 lambdas are usable with <code>constexpr</code>, unlike <code>std::bind</co
 </div>
 </div>
 
-<div id="outline-container-orgd8b3aec" class="outline-2">
-<h2 id="orgd8b3aec"><span class="section-number-2">3</span> Managing Resources</h2>
+<div id="outline-container-org7424ded" class="outline-2">
+<h2 id="org7424ded"><span class="section-number-2">3</span> Managing Resources</h2>
 </div>
 
-<div id="outline-container-org8054c41" class="outline-2">
-<h2 id="org8054c41"><span class="section-number-2">4</span> Utilities</h2>
+<div id="outline-container-org3bc8923" class="outline-2">
+<h2 id="org3bc8923"><span class="section-number-2">4</span> Utilities</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org13ca9ae" class="outline-3">
-<h3 id="org13ca9ae"><span class="section-number-3">4.1</span> <a href="http://boost.org/libs/algorithm">boost::algorithm</a></h3>
+<div id="outline-container-org3ac9069" class="outline-3">
+<h3 id="org3ac9069"><span class="section-number-3">4.1</span> <a href="http://boost.org/libs/algorithm">boost::algorithm</a></h3>
 <div class="outline-text-3" id="text-4-1">
 <ul class="org-ul">
 <li>boost::algorithm::hex</li>
@@ -418,8 +418,8 @@ C++17 lambdas are usable with <code>constexpr</code>, unlike <code>std::bind</co
 </div>
 </div>
 
-<div id="outline-container-org109a313" class="outline-3">
-<h3 id="org109a313"><span class="section-number-3">4.2</span> swap</h3>
+<div id="outline-container-orga5a894e" class="outline-3">
+<h3 id="orga5a894e"><span class="section-number-3">4.2</span> swap</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 <code>boost::swap</code> first searches for a swap function in the namespace of a variable, and if there is

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-05-16 Wed 08:43 -->
+<!-- 2020-06-09 Tue 16:21 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux Administration</title>
@@ -182,13 +182,13 @@
   /*]]>*/-->
 </style>
 <link rel="stylesheet" type="text/css" href="../styles/demo/css/demo.css"/>
-<link href="https://fonts.proxy.ustclug.org/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -229,6 +229,28 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "left",
+        displayIndent: "2em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "left",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -237,79 +259,143 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgdd3413e">1. findutils</a>
+<li><a href="#orgebdda60">1. findutils</a>
 <ul>
-<li><a href="#orgb8d856c">1.1. which</a></li>
-<li><a href="#org17c4225">1.2. whereis</a></li>
-<li><a href="#org190751d">1.3. locate</a></li>
+<li><a href="#orgd7446e3">1.1. <code>which</code></a></li>
+<li><a href="#org8eb3637">1.2. <code>whereis</code></a></li>
+<li><a href="#org036c2f2">1.3. <code>locate</code></a></li>
 </ul>
 </li>
-<li><a href="#orgb7c1a1c">2. Help</a>
+<li><a href="#orgd96ff01">2. Help</a>
 <ul>
-<li><a href="#org6d50a56">2.1. man</a></li>
+<li><a href="#org6ee6d89">2.1. man</a></li>
 </ul>
 </li>
-<li><a href="#org2d59972">3. Booting</a>
+<li><a href="#org0b1e460">3. Booting</a>
 <ul>
-<li><a href="#orgc4d7e9f">3.1. BIOS vs. UEFI</a></li>
-<li><a href="#org79b0c92">3.2. GRUB 2</a></li>
-<li><a href="#orgf3734c2">3.3. init</a></li>
-<li><a href="#orgf1cd85e">3.4. systemd</a></li>
-<li><a href="#org6cd93c6">3.5. shutdown</a></li>
+<li><a href="#orgeaf958e">3.1. BIOS vs. UEFI</a></li>
+<li><a href="#org09c8241">3.2. GRUB 2</a></li>
+<li><a href="#org64aabb6">3.3. init</a></li>
+<li><a href="#org56de55e">3.4. systemd</a></li>
+<li><a href="#orgd58d909">3.5. shutdown</a></li>
 </ul>
 </li>
-<li><a href="#org19c528c">4. Access Control</a>
+<li><a href="#org73a2660">4. Access Control</a>
 <ul>
-<li><a href="#org7a6da47">4.1. /etc/passwd</a></li>
-<li><a href="#org607d3c7">4.2. /etc/shadow</a></li>
-<li><a href="#org973064c">4.3. /etc/group</a></li>
-<li><a href="#org3b502d0">4.4. /etc/sudoers</a></li>
-<li><a href="#orgeac8dfc">4.5. users basic</a></li>
-<li><a href="#orgc3d1740">4.6. <b>useradd</b> command</a></li>
-<li><a href="#orgffd0f3b">4.7. Disabling logins</a></li>
-<li><a href="#org20bdb29">4.8. Centralizing account management</a></li>
-<li><a href="#org69e9997">4.9. Authentication</a></li>
-<li><a href="#orgd122a3f">4.10. Modern Access Control</a></li>
+<li><a href="#orga4d217c">4.1. /etc/passwd</a></li>
+<li><a href="#orgd27fb98">4.2. /etc/shadow</a></li>
+<li><a href="#org74f0f4f">4.3. /etc/group</a></li>
+<li><a href="#orge4bf7cf">4.4. /etc/sudoers</a></li>
+<li><a href="#org4ad4e08">4.5. users basic</a></li>
+<li><a href="#org95cfbb1">4.6. <b>useradd</b> command</a></li>
+<li><a href="#org33be0da">4.7. Disabling logins</a></li>
+<li><a href="#org64e3ca8">4.8. Centralizing account management</a></li>
+<li><a href="#org3e8fbd2">4.9. Authentication</a></li>
+<li><a href="#orgaa13b7b">4.10. Modern Access Control</a></li>
 </ul>
 </li>
-<li><a href="#org5220a33">5. Process Control</a>
+<li><a href="#org08098fc">5. Process Control</a>
 <ul>
-<li><a href="#orge85b409">5.1. kernel related data in memory</a></li>
-<li><a href="#org07cb824">5.2. Signals</a></li>
-<li><a href="#org7d70be7">5.3. <b>kill</b></a></li>
-<li><a href="#org1b0f2a8">5.4. <b>ps</b></a></li>
-<li><a href="#org237c335">5.5. <b>top</b></a></li>
+<li><a href="#org84e91fe">5.1. kernel related data in memory</a></li>
+<li><a href="#org34acaf3">5.2. Signals</a></li>
+<li><a href="#orgdc81bd0">5.3. <b>kill</b></a></li>
+<li><a href="#org0237358">5.4. <b>ps</b></a></li>
+<li><a href="#org63fb13c">5.5. <b>pstree</b></a></li>
+<li><a href="#orgab3d662">5.6. <b>pidstat</b></a></li>
+<li><a href="#orgcbac237">5.7. <b>top</b></a></li>
+<li><a href="#org99e9a4f">5.8. <b>nice</b></a></li>
+<li><a href="#org1af3f19">5.9. <b>execsnoop</b></a></li>
+<li><a href="#orgeabde52">5.10. <code>/proc</code></a></li>
+<li><a href="#orge425ecf">5.11. *strace*(lower level)</a></li>
+<li><a href="#org64354db">5.12. load average</a></li>
+<li><a href="#org15852a6">5.13. identify processes using files or sockets</a></li>
+<li><a href="#org7b1070d">5.14. periodic processes</a></li>
+<li><a href="#org69dff71">5.15. process state</a></li>
 </ul>
 </li>
-<li><a href="#org62b24d6">6. Shell command</a>
+<li><a href="#orgd1bac00">6. Filesystem</a>
 <ul>
-<li><a href="#org55c3756">6.1. Filters</a></li>
-<li><a href="#org8d08303">6.2. try to write script</a></li>
-<li><a href="#orgce21678">6.3. args</a></li>
-<li><a href="#org93fe1fd">6.4. Control flow</a></li>
+<li><a href="#org3dbc46d">6.1. mount</a></li>
+<li><a href="#orgfd11bba">6.2. mounting</a></li>
+<li><a href="#org2c81e12">6.3. File type</a></li>
+<li><a href="#orgbd22e03">6.4. Important Directories</a></li>
+<li><a href="#org6b9cd14">6.5. interesting files</a></li>
 </ul>
 </li>
-<li><a href="#org36e67a2">7. NFS</a></li>
+<li><a href="#orgd28a46e">7. NFS</a></li>
+<li><a href="#org1ed2d69">8. LDAP</a>
+<ul>
+<li><a href="#orgcd1ba77">8.1. openldap</a></li>
+<li><a href="#orga8353a2">8.2. 389 Directory Server</a></li>
+<li><a href="#org0f6f95b">8.3. phpLDAPadmin</a></li>
+<li><a href="#orga34d09d">8.4. ldapsearch</a></li>
+</ul>
+</li>
+<li><a href="#org51d05e8">9. Networking</a>
+<ul>
+<li><a href="#org0e61899">9.1. Troubleshooting</a></li>
+</ul>
+</li>
+<li><a href="#org6805865">10. Text Processing</a>
+<ul>
+<li><a href="#orge2a1748">10.1. grep</a></li>
+</ul>
+</li>
+<li><a href="#orgb461ffa">11. Useful Command</a>
+<ul>
+<li><a href="#org22be06f">11.1. os</a></li>
+<li><a href="#orgabef194">11.2. File System</a></li>
+<li><a href="#orgf0cf0ea">11.3. Command Related</a></li>
+<li><a href="#orgf498816">11.4. Redirection</a></li>
+<li><a href="#orgca250fb">11.5. Expansion</a></li>
+</ul>
+</li>
+<li><a href="#orga2bbf7a">12. Writing Script</a>
+<ul>
+<li><a href="#orgb58464c">12.1. set</a></li>
+<li><a href="#org3478c89">12.2. variables</a></li>
+<li><a href="#org266f91f">12.3. arguments</a></li>
+<li><a href="#org0d46ddd">12.4. comparison</a></li>
+<li><a href="#orgc43f8db">12.5. command currying</a></li>
+<li><a href="#org11aa8f4">12.6. loop</a></li>
+<li><a href="#org5c9d336">12.7. show usage</a></li>
+<li><a href="#org338138b">12.8. quotes</a></li>
+<li><a href="#orga6dce19">12.9. an example</a></li>
+<li><a href="#orgd4760ac">12.10. args</a></li>
+<li><a href="#org43a0521">12.11. Control flow</a></li>
+</ul>
+</li>
+<li><a href="#org10752d2">13. Profiler</a>
+<ul>
+<li><a href="#orgacdb6b1">13.1. Performance Tools</a></li>
+<li><a href="#org68486c4">13.2. Hardware Info</a></li>
+<li><a href="#org4900ad6">13.3. CPU</a></li>
+<li><a href="#org6d1621c">13.4. Memory</a></li>
+<li><a href="#org9c5e132">13.5. Disk IO</a></li>
+<li><a href="#org2d34933">13.6. Web Profiler</a></li>
+<li><a href="#orge7098a9">13.7. Stress Test</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgdd3413e" class="outline-2">
-<h2 id="orgdd3413e"><span class="section-number-2">1</span> findutils</h2>
+<div id="outline-container-orgebdda60" class="outline-2">
+<h2 id="orgebdda60"><span class="section-number-2">1</span> findutils</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgb8d856c" class="outline-3">
-<h3 id="orgb8d856c"><span class="section-number-3">1.1</span> which</h3>
+<div id="outline-container-orgd7446e3" class="outline-3">
+<h3 id="orgd7446e3"><span class="section-number-3">1.1</span> <code>which</code></h3>
 </div>
-<div id="outline-container-org17c4225" class="outline-3">
-<h3 id="org17c4225"><span class="section-number-3">1.2</span> whereis</h3>
+<div id="outline-container-org8eb3637" class="outline-3">
+<h3 id="org8eb3637"><span class="section-number-3">1.2</span> <code>whereis</code></h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 searches a broader range of system directories and is independent of your shell’s search path
 </p>
 </div>
 </div>
-<div id="outline-container-org190751d" class="outline-3">
-<h3 id="org190751d"><span class="section-number-3">1.3</span> locate</h3>
+<div id="outline-container-org036c2f2" class="outline-3">
+<h3 id="org036c2f2"><span class="section-number-3">1.3</span> <code>locate</code></h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 consults a precompiled index of the filesystem to locate file
@@ -318,12 +404,12 @@ consults a precompiled index of the filesystem to locate file
 </div>
 </div>
 
-<div id="outline-container-orgb7c1a1c" class="outline-2">
-<h2 id="orgb7c1a1c"><span class="section-number-2">2</span> Help</h2>
+<div id="outline-container-orgd96ff01" class="outline-2">
+<h2 id="orgd96ff01"><span class="section-number-2">2</span> Help</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org6d50a56" class="outline-3">
-<h3 id="org6d50a56"><span class="section-number-3">2.1</span> man</h3>
+<div id="outline-container-org6ee6d89" class="outline-3">
+<h3 id="org6ee6d89"><span class="section-number-3">2.1</span> man</h3>
 <div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 <pre class="src src-shell">man -k regexp
@@ -332,19 +418,19 @@ man -f command <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span
 </div>
 </div>
 
-<div id="outline-container-org6d47fdf" class="outline-4">
-<h4 id="org6d47fdf"><span class="section-number-4">2.1.1</span> manpath</h4>
+<div id="outline-container-orgdaac4f5" class="outline-4">
+<h4 id="orgdaac4f5"><span class="section-number-4">2.1.1</span> <code>manpath</code></h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
-Use <b>manpath</b> to see locations of the man files
+Use <code>manpath</code> to see locations of the man files
 </p>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org2d59972" class="outline-2">
-<h2 id="org2d59972"><span class="section-number-2">3</span> Booting</h2>
+<div id="outline-container-org0b1e460" class="outline-2">
+<h2 id="org0b1e460"><span class="section-number-2">3</span> Booting</h2>
 <div class="outline-text-2" id="text-3">
 <ol class="org-ol">
 <li>Loading BIOS/UEFI from NVRAM</li>
@@ -360,12 +446,13 @@ Use <b>manpath</b> to see locations of the man files
 <li>Running system</li>
 </ol>
 </div>
-<div id="outline-container-orgc4d7e9f" class="outline-3">
-<h3 id="orgc4d7e9f"><span class="section-number-3">3.1</span> BIOS vs. UEFI</h3>
+
+<div id="outline-container-orgeaf958e" class="outline-3">
+<h3 id="orgeaf958e"><span class="section-number-3">3.1</span> BIOS vs. UEFI</h3>
 <div class="outline-text-3" id="text-3-1">
 </div>
-<div id="outline-container-org46efbe3" class="outline-4">
-<h4 id="org46efbe3"><span class="section-number-4">3.1.1</span> Legacy BIOS(Basic Input/Output System)</h4>
+<div id="outline-container-org30131ba" class="outline-4">
+<h4 id="org30131ba"><span class="section-number-4">3.1.1</span> Legacy BIOS(Basic Input/Output System)</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 BIOS assumes that the boot device starts with a record called the MBR.
@@ -374,8 +461,8 @@ MBR reads and executes the second-stage boot loader(volume boot record)
 </div>
 </div>
 
-<div id="outline-container-org4c98589" class="outline-4">
-<h4 id="org4c98589"><span class="section-number-4">3.1.2</span> UFEI(Unified Extensible Firmware Interface)</h4>
+<div id="outline-container-org733af2d" class="outline-4">
+<h4 id="org733af2d"><span class="section-number-4">3.1.2</span> UFEI(Unified Extensible Firmware Interface)</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 The UEFI specification includes a modern disk partitioning scheme known as GPT(GUID Partition Table).
@@ -384,12 +471,12 @@ The UEFI specification includes a modern disk partitioning scheme known as GPT(G
 </div>
 </div>
 
-<div id="outline-container-org79b0c92" class="outline-3">
-<h3 id="org79b0c92"><span class="section-number-3">3.2</span> GRUB 2</h3>
+<div id="outline-container-org09c8241" class="outline-3">
+<h3 id="org09c8241"><span class="section-number-3">3.2</span> GRUB 2</h3>
 <div class="outline-text-3" id="text-3-2">
 </div>
-<div id="outline-container-org8a4630d" class="outline-4">
-<h4 id="org8a4630d"><span class="section-number-4">3.2.1</span> config</h4>
+<div id="outline-container-org0660120" class="outline-4">
+<h4 id="org0660120"><span class="section-number-4">3.2.1</span> config</h4>
 <div class="outline-text-4" id="text-3-2-1">
 <ul class="org-ul">
 <li>/etc/default/grub</li>
@@ -405,25 +492,26 @@ Use <b>grub-mkconfig</b> to generate grub.cfg, <b>update-grub</b> stub for <b>gr
 </div>
 </div>
 </div>
-<div id="outline-container-orgf3734c2" class="outline-3">
-<h3 id="orgf3734c2"><span class="section-number-3">3.3</span> init</h3>
+
+<div id="outline-container-org64aabb6" class="outline-3">
+<h3 id="org64aabb6"><span class="section-number-3">3.3</span> init</h3>
 <div class="outline-text-3" id="text-3-3">
 </div>
-<div id="outline-container-org24e80f0" class="outline-4">
-<h4 id="org24e80f0"><span class="section-number-4">3.3.1</span> modes</h4>
+<div id="outline-container-org1682614" class="outline-4">
+<h4 id="org1682614"><span class="section-number-4">3.3.1</span> modes</h4>
 <div class="outline-text-4" id="text-3-3-1">
 </div>
 <ul class="org-ul">
-<li><a id="org628ccab"></a>Single-user mode<br />
-<div class="outline-text-5" id="text-org628ccab">
+<li><a id="orgea8bacc"></a>Single-user mode<br />
+<div class="outline-text-5" id="text-orgea8bacc">
 <p>
 in which only a minimal set of filesystems is mounted, no services
 are running, and a root shell is started on the console.
 </p>
 </div>
 </li>
-<li><a id="org8d7f14a"></a>Multiuser mode<br />
-<div class="outline-text-5" id="text-org8d7f14a">
+<li><a id="org33214fc"></a>Multiuser mode<br />
+<div class="outline-text-5" id="text-org33214fc">
 <p>
 in which all customary filesystems are mounted and all configured
 network services have been started, along with a window system and graphical login
@@ -431,8 +519,8 @@ manager for the console
 </p>
 </div>
 </li>
-<li><a id="orgff60350"></a>Server mode<br />
-<div class="outline-text-5" id="text-orgff60350">
+<li><a id="org3893fe6"></a>Server mode<br />
+<div class="outline-text-5" id="text-org3893fe6">
 <p>
 similar to multiuser mode, but with no GUI running on the console
 </p>
@@ -440,32 +528,31 @@ similar to multiuser mode, but with no GUI running on the console
 </li>
 </ul>
 </div>
-<div id="outline-container-org7d4191d" class="outline-4">
-<h4 id="org7d4191d"><span class="section-number-4">3.3.2</span> Implementations</h4>
+<div id="outline-container-org2ccd1b2" class="outline-4">
+<h4 id="org2ccd1b2"><span class="section-number-4">3.3.2</span> Implementations</h4>
 <div class="outline-text-4" id="text-3-3-2">
 </div>
 <ul class="org-ul">
-<li><a id="orgc33d6e7"></a>"traditional <b>init</b>" from AT&amp;T’s System V UNIX<br />
-<div class="outline-text-5" id="text-orgc33d6e7">
+<li><a id="orgd8d1664"></a>"traditional <b>init</b>" from AT&amp;T’s System V UNIX<br />
+<div class="outline-text-5" id="text-orgd8d1664">
 <p>
 system modes are known as "run levels"
 </p>
 </div>
 </li>
-<li><a id="org0ccebdb"></a>BSD <b>init</b><br /></li>
-<li><a id="org6fc5ed9"></a><b>systemd</b> for linux<br /></li>
-
-<li><a id="org47a381e"></a><b>launchd</b> for macOS<br /></li>
-<li><a id="org7f3cb11"></a><b>Upstart</b> for ubuntu<br /></li>
+<li><a id="orgbb5d292"></a>BSD <b>init</b><br /></li>
+<li><a id="orgcf20a43"></a><b>systemd</b> for linux<br /></li>
+<li><a id="org5535d5e"></a><b>launchd</b> for macOS<br /></li>
+<li><a id="org04bbd43"></a><b>Upstart</b> for ubuntu<br /></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf1cd85e" class="outline-3">
-<h3 id="orgf1cd85e"><span class="section-number-3">3.4</span> systemd</h3>
+<div id="outline-container-org56de55e" class="outline-3">
+<h3 id="org56de55e"><span class="section-number-3">3.4</span> systemd</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
-<div id="outline-container-org77aa81b" class="outline-4">
-<h4 id="org77aa81b"><span class="section-number-4">3.4.1</span> <b>unit</b> file</h4>
+<div id="outline-container-org21f4ea8" class="outline-4">
+<h4 id="org21f4ea8"><span class="section-number-4">3.4.1</span> <b>unit</b> file</h4>
 <div class="outline-text-4" id="text-3-4-1">
 <div class="org-src-container">
 <pre class="src src-systemd">[Unit]
@@ -485,13 +572,14 @@ unit directory: <b>/usr/lib/systemd/system</b> or <b>/lib/systemd/system</b>.
 </p>
 </div>
 </div>
-<div id="outline-container-org0d38238" class="outline-4">
-<h4 id="org0d38238"><span class="section-number-4">3.4.2</span> systemctl</h4>
+
+<div id="outline-container-org645407c" class="outline-4">
+<h4 id="org645407c"><span class="section-number-4">3.4.2</span> systemctl</h4>
 <div class="outline-text-4" id="text-3-4-2">
 </div>
 <ul class="org-ul">
-<li><a id="org0827483"></a>Subcommands<br />
-<div class="outline-text-5" id="text-org0827483">
+<li><a id="org2769071"></a>Subcommands<br />
+<div class="outline-text-5" id="text-org2769071">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -558,15 +646,16 @@ unit directory: <b>/usr/lib/systemd/system</b> or <b>/lib/systemd/system</b>.
 </tr>
 
 <tr>
-<td class="org-left">list-unit</td>
+<td class="org-left">list-units</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 </tbody>
 </table>
 </div>
 </li>
-<li><a id="orga114e3f"></a>States<br />
-<div class="outline-text-5" id="text-orga114e3f">
+
+<li><a id="org9a882b8"></a>States<br />
+<div class="outline-text-5" id="text-org9a882b8">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -620,8 +709,9 @@ unit directory: <b>/usr/lib/systemd/system</b> or <b>/lib/systemd/system</b>.
 </table>
 </div>
 </li>
-<li><a id="org3cd4d16"></a>Targets<br />
-<div class="outline-text-5" id="text-org3cd4d16">
+
+<li><a id="org86c46a9"></a>Targets<br />
+<div class="outline-text-5" id="text-org86c46a9">
 <p>
 Target is a group of Units
 </p>
@@ -701,8 +791,8 @@ To change current operating mode, use <b>systemctl isolate</b>, like <b>telinit<
 </ul>
 </div>
 
-<div id="outline-container-orgada9c06" class="outline-4">
-<h4 id="orgada9c06"><span class="section-number-4">3.4.3</span> Dependencies</h4>
+<div id="outline-container-orgd1eb36b" class="outline-4">
+<h4 id="orgd1eb36b"><span class="section-number-4">3.4.3</span> Dependencies</h4>
 <div class="outline-text-4" id="text-3-4-3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 2:</span> Explict dependencies in the [Unit] section</caption>
@@ -757,8 +847,8 @@ Or add option <b>WantedBy</b> or <b>RequiredBy</b> to [Install] section.
 </div>
 </div>
 
-<div id="outline-container-orgf917829" class="outline-4">
-<h4 id="orgf917829"><span class="section-number-4">3.4.4</span> Execution order</h4>
+<div id="outline-container-orgd4e8c80" class="outline-4">
+<h4 id="orgd4e8c80"><span class="section-number-4">3.4.4</span> Execution order</h4>
 <div class="outline-text-4" id="text-3-4-4">
 <p>
 Use Before/After clauses from the unit files to sort the work list.
@@ -766,8 +856,8 @@ Use Before/After clauses from the unit files to sort the work list.
 </div>
 </div>
 
-<div id="outline-container-orga59f598" class="outline-4">
-<h4 id="orga59f598"><span class="section-number-4">3.4.5</span> a more complex example</h4>
+<div id="outline-container-org718354c" class="outline-4">
+<h4 id="org718354c"><span class="section-number-4">3.4.5</span> a more complex example</h4>
 <div class="outline-text-4" id="text-3-4-5">
 <div class="org-src-container">
 <pre class="src src-systemd">[Unit]
@@ -792,8 +882,9 @@ WantedBy=multi-user.target
 </div>
 </div>
 </div>
-<div id="outline-container-orgc7d3ade" class="outline-4">
-<h4 id="orgc7d3ade"><span class="section-number-4">3.4.6</span> useful man to write unit file</h4>
+
+<div id="outline-container-orgb14f272" class="outline-4">
+<h4 id="orgb14f272"><span class="section-number-4">3.4.6</span> useful man to write unit file</h4>
 <div class="outline-text-4" id="text-3-4-6">
 <ul class="org-ul">
 <li><b>man systemd.service</b> to see complete list of options for service</li>
@@ -801,8 +892,9 @@ WantedBy=multi-user.target
 </ul>
 </div>
 </div>
-<div id="outline-container-org9389bec" class="outline-4">
-<h4 id="org9389bec"><span class="section-number-4">3.4.7</span> customizations</h4>
+
+<div id="outline-container-org6a876f3" class="outline-4">
+<h4 id="org6a876f3"><span class="section-number-4">3.4.7</span> customizations</h4>
 <div class="outline-text-4" id="text-3-4-7">
 <p>
 Add <b>conf</b> file to <b>/etc/systemd/system/xxx.service.d</b> directory.
@@ -817,8 +909,9 @@ systemctl restart xxx.service
 </div>
 </div>
 </div>
-<div id="outline-container-org57f12e1" class="outline-4">
-<h4 id="org57f12e1"><span class="section-number-4">3.4.8</span> logging</h4>
+
+<div id="outline-container-org66c4e95" class="outline-4">
+<h4 id="org66c4e95"><span class="section-number-4">3.4.8</span> logging</h4>
 <div class="outline-text-4" id="text-3-4-8">
 <p>
 System messages captured by <b>journald</b> are stored in the <b>/run</b> directory.
@@ -834,8 +927,9 @@ forward them to a remote syslog server.
 </p>
 </div>
 </div>
-<div id="outline-container-orgdf78141" class="outline-4">
-<h4 id="orgdf78141"><span class="section-number-4">3.4.9</span> Utilities</h4>
+
+<div id="outline-container-org05941ee" class="outline-4">
+<h4 id="org05941ee"><span class="section-number-4">3.4.9</span> Utilities</h4>
 <div class="outline-text-4" id="text-3-4-9">
 <ul class="org-ul">
 <li>systemctl</li>
@@ -844,33 +938,34 @@ forward them to a remote syslog server.
 <li>localectl</li>
 <li>timedatectl</li>
 <li>loginctl</li>
+<li>networkctl</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org6cd93c6" class="outline-3">
-<h3 id="org6cd93c6"><span class="section-number-3">3.5</span> shutdown</h3>
+<div id="outline-container-orgd58d909" class="outline-3">
+<h3 id="orgd58d909"><span class="section-number-3">3.5</span> shutdown</h3>
 <div class="outline-text-3" id="text-3-5">
 </div>
-<div id="outline-container-org5327cd3" class="outline-4">
-<h4 id="org5327cd3"><span class="section-number-4">3.5.1</span> <b>halt</b></h4>
+<div id="outline-container-org6996788" class="outline-4">
+<h4 id="org6996788"><span class="section-number-4">3.5.1</span> <b>halt</b></h4>
 <div class="outline-text-4" id="text-3-5-1">
 <p>
 Performs the essential duties required for shutting down the system
 </p>
 </div>
 </div>
-<div id="outline-container-org54e07d6" class="outline-4">
-<h4 id="org54e07d6"><span class="section-number-4">3.5.2</span> <b>reboot</b></h4>
+<div id="outline-container-org634bcdf" class="outline-4">
+<h4 id="org634bcdf"><span class="section-number-4">3.5.2</span> <b>reboot</b></h4>
 <div class="outline-text-4" id="text-3-5-2">
 <p>
 Essentially identical to halt, but it causes the machine to reboot instead of halting
 </p>
 </div>
 </div>
-<div id="outline-container-org9ba2c69" class="outline-4">
-<h4 id="org9ba2c69"><span class="section-number-4">3.5.3</span> <b>shutdown</b></h4>
+<div id="outline-container-org7066a1b" class="outline-4">
+<h4 id="org7066a1b"><span class="section-number-4">3.5.3</span> <b>shutdown</b></h4>
 <div class="outline-text-4" id="text-3-5-3">
 <p>
 The shutdown command is a layer over halt and reboot that provides for scheduled shutdowns
@@ -880,19 +975,20 @@ and ominous warnings to logged-in users
 </div>
 </div>
 </div>
-<div id="outline-container-org19c528c" class="outline-2">
-<h2 id="org19c528c"><span class="section-number-2">4</span> Access Control</h2>
+
+<div id="outline-container-org73a2660" class="outline-2">
+<h2 id="org73a2660"><span class="section-number-2">4</span> Access Control</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org7a6da47" class="outline-3">
-<h3 id="org7a6da47"><span class="section-number-3">4.1</span> /etc/passwd</h3>
+<div id="outline-container-orga4d217c" class="outline-3">
+<h3 id="orga4d217c"><span class="section-number-3">4.1</span> /etc/passwd</h3>
 <div class="outline-text-3" id="text-4-1">
 </div>
-<div id="outline-container-org01aa650" class="outline-4">
-<h4 id="org01aa650"><span class="section-number-4">4.1.1</span> Login name</h4>
+<div id="outline-container-orge00c7d6" class="outline-4">
+<h4 id="orge00c7d6"><span class="section-number-4">4.1.1</span> Login name</h4>
 </div>
-<div id="outline-container-org5d25ec7" class="outline-4">
-<h4 id="org5d25ec7"><span class="section-number-4">4.1.2</span> Encrypted password placeholder</h4>
+<div id="outline-container-org97354ea" class="outline-4">
+<h4 id="org97354ea"><span class="section-number-4">4.1.2</span> Encrypted password placeholder</h4>
 <div class="outline-text-4" id="text-4-1-2">
 <ul class="org-ul">
 <li>actual password in <b>/etc/shadow</b></li>
@@ -900,18 +996,17 @@ and ominous warnings to logged-in users
 </ul>
 </div>
 </div>
-<div id="outline-container-org3fb6a58" class="outline-4">
-<h4 id="org3fb6a58"><span class="section-number-4">4.1.3</span> UID (user ID) number</h4>
+<div id="outline-container-org6c18242" class="outline-4">
+<h4 id="org6c18242"><span class="section-number-4">4.1.3</span> UID (user ID) number</h4>
 </div>
-<div id="outline-container-org9791d87" class="outline-4">
-<h4 id="org9791d87"><span class="section-number-4">4.1.4</span> Default GID (group ID) number</h4>
+<div id="outline-container-orgeb8782f" class="outline-4">
+<h4 id="orgeb8782f"><span class="section-number-4">4.1.4</span> Default GID (group ID) number</h4>
 </div>
-<div id="outline-container-org3953c0f" class="outline-4">
-<h4 id="org3953c0f"><span class="section-number-4">4.1.5</span> GECOS information</h4>
+<div id="outline-container-org7ff0ffa" class="outline-4">
+<h4 id="org7ff0ffa"><span class="section-number-4">4.1.5</span> GECOS information</h4>
 <div class="outline-text-4" id="text-4-1-5">
 <p>
-Use <b>finger</b> command to interpert GECOS,
-use <b>chfn</b> to change GECOS
+Use <b>finger</b> command to interpert GECOS, use <b>chfn</b> to change GECOS
 </p>
 <ul class="org-ul">
 <li>full name</li>
@@ -922,11 +1017,11 @@ use <b>chfn</b> to change GECOS
 </div>
 </div>
 
-<div id="outline-container-orge67fafa" class="outline-4">
-<h4 id="orge67fafa"><span class="section-number-4">4.1.6</span> Home directory</h4>
+<div id="outline-container-orgb2fa9fb" class="outline-4">
+<h4 id="orgb2fa9fb"><span class="section-number-4">4.1.6</span> Home directory</h4>
 </div>
-<div id="outline-container-org1f95938" class="outline-4">
-<h4 id="org1f95938"><span class="section-number-4">4.1.7</span> Login shell</h4>
+<div id="outline-container-org42ee1fb" class="outline-4">
+<h4 id="org42ee1fb"><span class="section-number-4">4.1.7</span> Login shell</h4>
 <div class="outline-text-4" id="text-4-1-7">
 <p>
 Use <b>chsh</b> to change login shell listed in <b>/etc/shells</b>.
@@ -935,8 +1030,8 @@ Use <b>chsh</b> to change login shell listed in <b>/etc/shells</b>.
 </div>
 </div>
 
-<div id="outline-container-org607d3c7" class="outline-3">
-<h3 id="org607d3c7"><span class="section-number-3">4.2</span> /etc/shadow</h3>
+<div id="outline-container-orgd27fb98" class="outline-3">
+<h3 id="orgd27fb98"><span class="section-number-3">4.2</span> /etc/shadow</h3>
 <div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
 <li>Login name <b>required</b></li>
@@ -952,8 +1047,8 @@ Use <b>chsh</b> to change login shell listed in <b>/etc/shells</b>.
 </div>
 </div>
 
-<div id="outline-container-org973064c" class="outline-3">
-<h3 id="org973064c"><span class="section-number-3">4.3</span> /etc/group</h3>
+<div id="outline-container-org74f0f4f" class="outline-3">
+<h3 id="org74f0f4f"><span class="section-number-3">4.3</span> /etc/group</h3>
 <div class="outline-text-3" id="text-4-3">
 <ul class="org-ul">
 <li>Group name</li>
@@ -961,6 +1056,8 @@ Use <b>chsh</b> to change login shell listed in <b>/etc/shells</b>.
 <li>GID number</li>
 <li>List of members, separated by commas</li>
 </ul>
+
+
 <p>
 It is possible to enter a group password to allow users not belonging to
 a group to enter it with the <b>newgrp</b> command.
@@ -976,40 +1073,42 @@ share files by way of the group mechanism, create separate groups for that purpo
 </p>
 </div>
 </div>
-<div id="outline-container-org3b502d0" class="outline-3">
-<h3 id="org3b502d0"><span class="section-number-3">4.4</span> /etc/sudoers</h3>
+<div id="outline-container-orge4bf7cf" class="outline-3">
+<h3 id="orge4bf7cf"><span class="section-number-3">4.4</span> /etc/sudoers</h3>
 <div class="outline-text-3" id="text-4-4">
 <div class="org-src-container">
 <pre class="src src-shell">mark, ed    <span style="color: #715ab1;">SOME_HOST_ALIAS</span>=ALL
-herb    <span style="color: #715ab1;">SOME_HOST_ALIAS</span>=/usr/sbin/tcpdump : !<span style="color: #715ab1;">SOME_HOST_ALIAS</span>=<span style="color: #3a81c3;">(</span>operator<span style="color: #3a81c3;">)</span> DUMP
-lynda    <span style="color: #715ab1;">ALL</span>=<span style="color: #3a81c3;">(</span>ALL<span style="color: #3a81c3;">)</span>ALL, !SOME_CMND_ALIAS
+herb    <span style="color: #715ab1;">SOME_HOST_ALIAS</span>=/usr/sbin/tcpdump : !<span style="color: #715ab1;">SOME_HOST_ALIAS</span>=(operator) DUMP
+lynda    <span style="color: #715ab1;">ALL</span>=(ALL)ALL, !SOME_CMND_ALIAS
 %wheel    ALL, !<span style="color: #715ab1;">SOME_HOST_ALIAS</span> = NOPASSWD: SOME_CMND_ALIAS
 </pre>
 </div>
+
 <p>
 Whitelist the environment variables by adding them to the sudoers file’s env_keep list
 </p>
 </div>
 </div>
-<div id="outline-container-orgeac8dfc" class="outline-3">
-<h3 id="orgeac8dfc"><span class="section-number-3">4.5</span> users basic</h3>
+
+<div id="outline-container-org4ad4e08" class="outline-3">
+<h3 id="org4ad4e08"><span class="section-number-3">4.5</span> users basic</h3>
 <div class="outline-text-3" id="text-4-5">
 </div>
-<div id="outline-container-org4245f9f" class="outline-4">
-<h4 id="org4245f9f"><span class="section-number-4">4.5.1</span> Required</h4>
+<div id="outline-container-org3bc368f" class="outline-4">
+<h4 id="org3bc368f"><span class="section-number-4">4.5.1</span> Required</h4>
 <div class="outline-text-4" id="text-4-5-1">
 </div>
 <ul class="org-ul">
-<li><a id="orgb984a66"></a>Sign policy agreement<br /></li>
-<li><a id="orgb5a6b34"></a>Edit the <b>passwd</b> and <b>shadow</b> files to define user<br />
-<div class="outline-text-5" id="text-orgb5a6b34">
+<li><a id="org321f378"></a>Sign policy agreement<br /></li>
+<li><a id="orgc516304"></a>Edit the <b>passwd</b> and <b>shadow</b> files to define user<br />
+<div class="outline-text-5" id="text-orgc516304">
 <p>
 Use <b>vipw</b> to edit <b>passwd</b> and <b>shadow</b>
 </p>
 </div>
 </li>
-<li><a id="org65e903c"></a>Add the user to the /etc/group file(optional)<br />
-<div class="outline-text-5" id="text-org65e903c">
+<li><a id="org03ddf46"></a>Add the user to the /etc/group file(optional)<br />
+<div class="outline-text-5" id="text-org03ddf46">
 <p>
 If the new user should be a member of more groups than just the default group
 specified in the passwd file, you must edit the /etc/group file and add the user’s
@@ -1017,47 +1116,47 @@ login name to each of the additional groups.
 </p>
 </div>
 </li>
-<li><a id="org4e98636"></a>Set an initial password<br />
-<div class="outline-text-5" id="text-org4e98636">
+<li><a id="org7fbcf3f"></a>Set an initial password<br />
+<div class="outline-text-5" id="text-org7fbcf3f">
 <p>
 Use <b>passwd</b>
 </p>
 </div>
 </li>
-<li><a id="org1ce41db"></a>Create, <b>chown</b>, and <b>chmod</b> the user’s home directory.<br />
-<div class="outline-text-5" id="text-org1ce41db">
+<li><a id="org34bf3ac"></a>Create, <b>chown</b>, and <b>chmod</b> the user’s home directory.<br />
+<div class="outline-text-5" id="text-org34bf3ac">
 <div class="org-src-container">
 <pre class="src src-bash">sudo chown -R newuser:newgroup ~newuser
 </pre>
 </div>
 </div>
 </li>
-<li><a id="org179da56"></a>Configure roles and permissions(RBAC)<br /></li>
+<li><a id="org95f6cb1"></a>Configure roles and permissions(RBAC)<br /></li>
 </ul>
 </div>
 
-<div id="outline-container-orgc436400" class="outline-4">
-<h4 id="orgc436400"><span class="section-number-4">4.5.2</span> For the user</h4>
+<div id="outline-container-org694f11b" class="outline-4">
+<h4 id="org694f11b"><span class="section-number-4">4.5.2</span> For the user</h4>
 <div class="outline-text-4" id="text-4-5-2">
 </div>
 <ul class="org-ul">
-<li><a id="org51dfb69"></a>Copy default startup files to the user’s home directory.<br /></li>
-<li><a id="orgec4c694"></a>Set the user’s mail home and establish mail aliases.<br /></li>
+<li><a id="org2e66936"></a>Copy default startup files to the user’s home directory.<br /></li>
+<li><a id="org198e79c"></a>Set the user’s mail home and establish mail aliases.<br /></li>
 </ul>
 </div>
 
-<div id="outline-container-org7287cd0" class="outline-4">
-<h4 id="org7287cd0"><span class="section-number-4">4.5.3</span> For administrator</h4>
+<div id="outline-container-org4748bb7" class="outline-4">
+<h4 id="org4748bb7"><span class="section-number-4">4.5.3</span> For administrator</h4>
 <div class="outline-text-4" id="text-4-5-3">
 </div>
 <ul class="org-ul">
-<li><a id="orga753751"></a>Verify that the account is set up correctly.<br /></li>
-<li><a id="org19ba72d"></a>Add the user’s contact information and account status to your database.<br /></li>
+<li><a id="orgffc721b"></a>Verify that the account is set up correctly.<br /></li>
+<li><a id="org16ac290"></a>Add the user’s contact information and account status to your database.<br /></li>
 </ul>
 </div>
 
-<div id="outline-container-org89e43f2" class="outline-4">
-<h4 id="org89e43f2"><span class="section-number-4">4.5.4</span> Verification</h4>
+<div id="outline-container-orgf46cc8f" class="outline-4">
+<h4 id="orgf46cc8f"><span class="section-number-4">4.5.4</span> Verification</h4>
 <div class="outline-text-4" id="text-4-5-4">
 <div class="org-src-container">
 <pre class="src src-bash">$ pwd /* verify home directory */
@@ -1068,21 +1167,22 @@ $ ls -al /* check owner/group of startup files */
 </div>
 </div>
 
-<div id="outline-container-orgc3d1740" class="outline-3">
-<h3 id="orgc3d1740"><span class="section-number-3">4.6</span> <b>useradd</b> command</h3>
+<div id="outline-container-org95cfbb1" class="outline-3">
+<h3 id="org95cfbb1"><span class="section-number-3">4.6</span> <b>useradd</b> command</h3>
 <div class="outline-text-3" id="text-4-6">
 </div>
-<div id="outline-container-orgf24465f" class="outline-4">
-<h4 id="orgf24465f"><span class="section-number-4">4.6.1</span> examples</h4>
+<div id="outline-container-org143dad9" class="outline-4">
+<h4 id="org143dad9"><span class="section-number-4">4.6.1</span> examples</h4>
 <div class="outline-text-4" id="text-4-6-1">
 <div class="org-src-container">
-<pre class="src src-bash">sudo useradd -c <span style="color: #2d9574;">"David Hilbert"</span> -d /home/math/hilbert -g hilbert -G famous -m -s /bin/tcsh hilbert
+<pre class="src src-bash">sudo useradd -c <span style="color: #2d9574;">"chrischen"</span> -d /home/chrischen -m -s /bin/zsh chrischen
+sudo usermod -aG sudo chrishcen
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org022cd8f" class="outline-4">
-<h4 id="org022cd8f"><span class="section-number-4">4.6.2</span> ubuntu</h4>
+<div id="outline-container-org717d64d" class="outline-4">
+<h4 id="org717d64d"><span class="section-number-4">4.6.2</span> ubuntu</h4>
 <div class="outline-text-4" id="text-4-6-2">
 <p>
 Ubuntu provides two ways to add users: <b>adduser</b> and <b>useradd</b>. <b>adduser</b> is a Perl
@@ -1097,8 +1197,8 @@ startup files, etc.).
 </div>
 </div>
 
-<div id="outline-container-orgffd0f3b" class="outline-3">
-<h3 id="orgffd0f3b"><span class="section-number-3">4.7</span> Disabling logins</h3>
+<div id="outline-container-org33be0da" class="outline-3">
+<h3 id="org33be0da"><span class="section-number-3">4.7</span> Disabling logins</h3>
 <div class="outline-text-3" id="text-4-7">
 <ul class="org-ul">
 <li><b>usermod -L</b> to lock user</li>
@@ -1106,31 +1206,31 @@ startup files, etc.).
 </ul>
 </div>
 </div>
-<div id="outline-container-org20bdb29" class="outline-3">
-<h3 id="org20bdb29"><span class="section-number-3">4.8</span> Centralizing account management</h3>
+<div id="outline-container-org64e3ca8" class="outline-3">
+<h3 id="org64e3ca8"><span class="section-number-3">4.8</span> Centralizing account management</h3>
 <div class="outline-text-3" id="text-4-8">
 </div>
-<div id="outline-container-org630f429" class="outline-4">
-<h4 id="org630f429"><span class="section-number-4">4.8.1</span> LDAP</h4>
+<div id="outline-container-org5ffff8e" class="outline-4">
+<h4 id="org5ffff8e"><span class="section-number-4">4.8.1</span> LDAP</h4>
 </div>
-<div id="outline-container-org7678444" class="outline-4">
-<h4 id="org7678444"><span class="section-number-4">4.8.2</span> Identity management systems</h4>
+<div id="outline-container-org0a8629c" class="outline-4">
+<h4 id="org0a8629c"><span class="section-number-4">4.8.2</span> Identity management systems</h4>
 </div>
 </div>
-<div id="outline-container-org69e9997" class="outline-3">
-<h3 id="org69e9997"><span class="section-number-3">4.9</span> Authentication</h3>
+<div id="outline-container-org3e8fbd2" class="outline-3">
+<h3 id="org3e8fbd2"><span class="section-number-3">4.9</span> Authentication</h3>
 <div class="outline-text-3" id="text-4-9">
 </div>
-<div id="outline-container-orgdc82a9a" class="outline-4">
-<h4 id="orgdc82a9a"><span class="section-number-4">4.9.1</span> PAM(Pluggable Authentication Modules)</h4>
+<div id="outline-container-orgdf88613" class="outline-4">
+<h4 id="orgdf88613"><span class="section-number-4">4.9.1</span> PAM(Pluggable Authentication Modules)</h4>
 <div class="outline-text-4" id="text-4-9-1">
 <p>
 PAM is a wrapper for a variety of method-specific authentication libraries.
 </p>
 </div>
 </div>
-<div id="outline-container-orgc3166ad" class="outline-4">
-<h4 id="orgc3166ad"><span class="section-number-4">4.9.2</span> Kerberos: network cryptographic authentication</h4>
+<div id="outline-container-org81b82ad" class="outline-4">
+<h4 id="org81b82ad"><span class="section-number-4">4.9.2</span> Kerberos: network cryptographic authentication</h4>
 <div class="outline-text-4" id="text-4-9-2">
 <p>
 PAM is an authentication framework, Kerberos is a specific authentication method,
@@ -1138,43 +1238,42 @@ PAM and Kerberos generally work together
 </p>
 </div>
 </div>
-<div id="outline-container-org7c50932" class="outline-4">
-<h4 id="org7c50932"><span class="section-number-4">4.9.3</span> Filesystem ACL</h4>
+<div id="outline-container-org47ed1e7" class="outline-4">
+<h4 id="org47ed1e7"><span class="section-number-4">4.9.3</span> Filesystem ACL</h4>
 </div>
-<div id="outline-container-orgfef124b" class="outline-4">
-<h4 id="orgfef124b"><span class="section-number-4">4.9.4</span> Linux capabilities</h4>
+<div id="outline-container-org70dadd7" class="outline-4">
+<h4 id="org70dadd7"><span class="section-number-4">4.9.4</span> Linux capabilities</h4>
 </div>
-<div id="outline-container-orgdbedf9f" class="outline-4">
-<h4 id="orgdbedf9f"><span class="section-number-4">4.9.5</span> Linux namespaces</h4>
+<div id="outline-container-org1410417" class="outline-4">
+<h4 id="org1410417"><span class="section-number-4">4.9.5</span> Linux namespaces</h4>
 </div>
 </div>
-<div id="outline-container-orgd122a3f" class="outline-3">
-<h3 id="orgd122a3f"><span class="section-number-3">4.10</span> Modern Access Control</h3>
+<div id="outline-container-orgaa13b7b" class="outline-3">
+<h3 id="orgaa13b7b"><span class="section-number-3">4.10</span> Modern Access Control</h3>
 <div class="outline-text-3" id="text-4-10">
 </div>
-<div id="outline-container-orgdafe6df" class="outline-4">
-<h4 id="orgdafe6df"><span class="section-number-4">4.10.1</span> MAC</h4>
+<div id="outline-container-orge9fd00a" class="outline-4">
+<h4 id="orge9fd00a"><span class="section-number-4">4.10.1</span> MAC</h4>
 </div>
-<div id="outline-container-org2147d00" class="outline-4">
-<h4 id="org2147d00"><span class="section-number-4">4.10.2</span> RBAC</h4>
+<div id="outline-container-org47f1ad8" class="outline-4">
+<h4 id="org47f1ad8"><span class="section-number-4">4.10.2</span> RBAC</h4>
 </div>
-<div id="outline-container-orgeda81a3" class="outline-4">
-<h4 id="orgeda81a3"><span class="section-number-4">4.10.3</span> Implementations</h4>
+<div id="outline-container-org4eb073f" class="outline-4">
+<h4 id="org4eb073f"><span class="section-number-4">4.10.3</span> Implementations</h4>
 <div class="outline-text-4" id="text-4-10-3">
 </div>
 <ul class="org-ul">
-<li><a id="orgb033504"></a>SELinux<br /></li>
-<li><a id="orgef8b56d"></a>AppArmor<br /></li>
+<li><a id="orgd2d5510"></a>AppArmor<br /></li>
 </ul>
 </div>
 </div>
 </div>
-<div id="outline-container-org5220a33" class="outline-2">
-<h2 id="org5220a33"><span class="section-number-2">5</span> Process Control</h2>
+<div id="outline-container-org08098fc" class="outline-2">
+<h2 id="org08098fc"><span class="section-number-2">5</span> Process Control</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orge85b409" class="outline-3">
-<h3 id="orge85b409"><span class="section-number-3">5.1</span> kernel related data in memory</h3>
+<div id="outline-container-org84e91fe" class="outline-3">
+<h3 id="org84e91fe"><span class="section-number-3">5.1</span> kernel related data in memory</h3>
 <div class="outline-text-3" id="text-5-1">
 <ul class="org-ul">
 <li>The process’s address space map</li>
@@ -1187,8 +1286,9 @@ PAM and Kerberos generally work together
 </ul>
 </div>
 </div>
-<div id="outline-container-org07cb824" class="outline-3">
-<h3 id="org07cb824"><span class="section-number-3">5.2</span> Signals</h3>
+
+<div id="outline-container-org34acaf3" class="outline-3">
+<h3 id="org34acaf3"><span class="section-number-3">5.2</span> Signals</h3>
 <div class="outline-text-3" id="text-5-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -1356,8 +1456,9 @@ PAM and Kerberos generally work together
 </p>
 </div>
 </div>
-<div id="outline-container-org7d70be7" class="outline-3">
-<h3 id="org7d70be7"><span class="section-number-3">5.3</span> <b>kill</b></h3>
+
+<div id="outline-container-orgdc81bd0" class="outline-3">
+<h3 id="orgdc81bd0"><span class="section-number-3">5.3</span> <b>kill</b></h3>
 <div class="outline-text-3" id="text-5-3">
 <ul class="org-ul">
 <li>killall: kill by process name</li>
@@ -1365,35 +1466,56 @@ PAM and Kerberos generally work together
 </ul>
 </div>
 </div>
-<div id="outline-container-org1b0f2a8" class="outline-3">
-<h3 id="org1b0f2a8"><span class="section-number-3">5.4</span> <b>ps</b></h3>
+
+<div id="outline-container-org0237358" class="outline-3">
+<h3 id="org0237358"><span class="section-number-3">5.4</span> <b>ps</b></h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 Useful options
 </p>
 <ul class="org-ul">
-<li>aux</li>
+<li>aux: <b>a</b> show all processes; <b>x</b> show processes that don't have a control terminal; <b>u</b> user oriented output format</li>
 <li>lax: faster than aux(UID only), aslo includes PPID, NI(niceness) and wait channel
 <ul class="org-ul">
 <li>ww: enable unlimited column width</li>
 </ul></li>
 </ul>
 </div>
-<div id="outline-container-org7ebe932" class="outline-4">
-<h4 id="org7ebe932"><span class="section-number-4">5.4.1</span> with <b>grep</b></h4>
+
+<div id="outline-container-org493274b" class="outline-4">
+<h4 id="org493274b"><span class="section-number-4">5.4.1</span> with <b>grep</b></h4>
 <div class="outline-text-4" id="text-5-4-1">
 <p>
-ps aux | grep -v grep | grep xxxx
+ps -aux | grep -v grep | grep xxxx
 </p>
 </div>
 </div>
-<div id="outline-container-org2f30385" class="outline-4">
-<h4 id="org2f30385"><span class="section-number-4">5.4.2</span> alternative <b>pidof</b>, <b>pgrep</b></h4>
+<div id="outline-container-org838faee" class="outline-4">
+<h4 id="org838faee"><span class="section-number-4">5.4.2</span> alternative command</h4>
+<div class="outline-text-4" id="text-5-4-2">
+<dl class="org-dl">
+<dt><b>pidof</b></dt><dd>determine the PID of a process</dd>
+<dt>(no term)</dt><dd><b>pgrep</b></dd>
+</dl>
 </div>
 </div>
-<div id="outline-container-org237c335" class="outline-3">
-<h3 id="org237c335"><span class="section-number-3">5.5</span> <b>top</b></h3>
-<div class="outline-text-3" id="text-5-5">
+</div>
+
+<div id="outline-container-org63fb13c" class="outline-3">
+<h3 id="org63fb13c"><span class="section-number-3">5.5</span> <b>pstree</b></h3>
+</div>
+<div id="outline-container-orgab3d662" class="outline-3">
+<h3 id="orgab3d662"><span class="section-number-3">5.6</span> <b>pidstat</b></h3>
+<div class="outline-text-3" id="text-5-6">
+<div class="org-src-container">
+<pre class="src src-bash">pidstat -d -p PID 1 3
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgcbac237" class="outline-3">
+<h3 id="orgcbac237"><span class="section-number-3">5.7</span> <b>top</b></h3>
+<div class="outline-text-3" id="text-5-7">
 <p>
 1: show loads of individual cores
 </p>
@@ -1401,43 +1523,1086 @@ ps aux | grep -v grep | grep xxxx
 <li>H: show threads</li>
 </ul>
 </div>
-<div id="outline-container-org3ff402e" class="outline-4">
-<h4 id="org3ff402e"><span class="section-number-4">5.5.1</span> alternative <b>htop</b></h4>
+
+<div id="outline-container-org33d250c" class="outline-4">
+<h4 id="org33d250c"><span class="section-number-4">5.7.1</span> alternative <b>htop</b></h4>
 </div>
 </div>
-</div>
-<div id="outline-container-org62b24d6" class="outline-2">
-<h2 id="org62b24d6"><span class="section-number-2">6</span> Shell command</h2>
-<div class="outline-text-2" id="text-6">
-</div>
-<div id="outline-container-org55c3756" class="outline-3">
-<h3 id="org55c3756"><span class="section-number-3">6.1</span> Filters</h3>
-<div class="outline-text-3" id="text-6-1">
+
+<div id="outline-container-org99e9a4f" class="outline-3">
+<h3 id="org99e9a4f"><span class="section-number-3">5.8</span> <b>nice</b></h3>
+<div class="outline-text-3" id="text-5-8">
 <ul class="org-ul">
-<li>cut: separate lines into fields</li>
-<li>sort: sort lines</li>
-<li>uniq: print unique lines</li>
-<li>wc: count lines, words, and characters</li>
-<li>tee: copy input to two places</li>
-<li>head &amp; tail</li>
-<li>grep: g/regular-expression/p</li>
+<li>Niceness range: <code>-20</code> to <code>19</code></li>
+<li>Only root can run a command with high priority</li>
+<li><b>renice</b></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org8d08303" class="outline-3">
-<h3 id="org8d08303"><span class="section-number-3">6.2</span> try to write script</h3>
+
+<div id="outline-container-org1af3f19" class="outline-3">
+<h3 id="org1af3f19"><span class="section-number-3">5.9</span> <b>execsnoop</b></h3>
+</div>
+<div id="outline-container-orgeabde52" class="outline-3">
+<h3 id="orgeabde52"><span class="section-number-3">5.10</span> <code>/proc</code></h3>
+<div class="outline-text-3" id="text-5-10">
+<p>
+<b>ps</b> and <b>top</b> read their process status information from the <code>/proc</code> directory
+</p>
+</div>
+<div id="outline-container-org6f5b927" class="outline-4">
+<h4 id="org6f5b927"><span class="section-number-4">5.10.1</span> useful process files</h4>
+<div class="outline-text-4" id="text-5-10-1">
+<p>
+cgroups, cmd, cmdline, cwd, environ, exe, fdinfo, ns, root, stat, statm
+</p>
+<dl class="org-dl">
+<dt>fd</dt><dd>reperents open files</dd>
+<dt>maps</dt><dd>libraries dependencies</dd>
+</dl>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge425ecf" class="outline-3">
+<h3 id="orge425ecf"><span class="section-number-3">5.11</span> *strace*(lower level)</h3>
+<div class="outline-text-3" id="text-5-11">
+<p>
+Display every system call that a process makes and every signal it receives
+</p>
+<ul class="org-ul">
+<li><code>-f</code> to trace sub processes</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org64354db" class="outline-3">
+<h3 id="org64354db"><span class="section-number-3">5.12</span> load average</h3>
+<div class="outline-text-3" id="text-5-12">
+<ul class="org-ul">
+<li><b>uptime</b>: load average of 1-, 5-, 15-minute intervals(cpu&amp;io)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org15852a6" class="outline-3">
+<h3 id="org15852a6"><span class="section-number-3">5.13</span> identify processes using files or sockets</h3>
+<div class="outline-text-3" id="text-5-13">
+<ul class="org-ul">
+<li><b>fuser</b></li>
+<li><b>lsof</b>: list open files</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7b1070d" class="outline-3">
+<h3 id="org7b1070d"><span class="section-number-3">5.14</span> periodic processes</h3>
+<div class="outline-text-3" id="text-5-14">
+<ul class="org-ul">
+<li>crontab</li>
+<li>systemd timer</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org69dff71" class="outline-3">
+<h3 id="org69dff71"><span class="section-number-3">5.15</span> process state</h3>
+<div class="outline-text-3" id="text-5-15">
+<ul class="org-ul">
+<li>R: Running/Runnable</li>
+<li>D: Disk Sleep (Uninterruptible Sleep)</li>
+<li>Z: Zombie</li>
+<li>S: Interruptible Sleep</li>
+<li>I: Idle</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd1bac00" class="outline-2">
+<h2 id="orgd1bac00"><span class="section-number-2">6</span> Filesystem</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org3dbc46d" class="outline-3">
+<h3 id="org3dbc46d"><span class="section-number-3">6.1</span> mount</h3>
+<div class="outline-text-3" id="text-6-1">
+<ol class="org-ol">
+<li><code>mkfs.type</code></li>
+<li><code>mount -t type /dev/sda [mountpoint]</code></li>
+<li><code>umount [mountpoint]</code></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgfd11bba" class="outline-3">
+<h3 id="orgfd11bba"><span class="section-number-3">6.2</span> mounting</h3>
 <div class="outline-text-3" id="text-6-2">
+<dl class="org-dl">
+<dt><code>/etc/fstab</code></dt><dd>lists filesystems that are normally mounted on the system.</dd>
+<dt><b>fuser -c mountpoint</b></dt><dd>prints the PID of every process that’s using a file or directory on that filesystem. uses <b>-v</b> to display command name</dd>
+<dt><b>lsof</b></dt><dd>alternative to <b>fusr</b>, <b>-F</b> for easy parsing</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org2c81e12" class="outline-3">
+<h3 id="org2c81e12"><span class="section-number-3">6.3</span> File type</h3>
+<div class="outline-text-3" id="text-6-3">
+<ul class="org-ul">
+<li><p>
+investigating file type: <code>file</code> or <code>ls</code>
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Symbol</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Created by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">-</td>
+<td class="org-left">regular file</td>
+<td class="org-left">editors</td>
+</tr>
+
+<tr>
+<td class="org-left">d</td>
+<td class="org-left">directory</td>
+<td class="org-left"><code>mkdir</code></td>
+</tr>
+
+<tr>
+<td class="org-left">c</td>
+<td class="org-left">character device file</td>
+<td class="org-left"><code>mknod</code></td>
+</tr>
+
+<tr>
+<td class="org-left">b</td>
+<td class="org-left">block device file</td>
+<td class="org-left"><code>mknod</code></td>
+</tr>
+
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">domain socket</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">p</td>
+<td class="org-left">named pipe</td>
+<td class="org-left"><code>mknod</code></td>
+</tr>
+
+<tr>
+<td class="org-left">l</td>
+<td class="org-left">symbolic link</td>
+<td class="org-left"><code>ln -s</code></td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbd22e03" class="outline-3">
+<h3 id="orgbd22e03"><span class="section-number-3">6.4</span> Important Directories</h3>
+<div class="outline-text-3" id="text-6-4">
+<ul class="org-ul">
+<li><code>man hier</code></li>
+</ul>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>/bin</code></td>
+<td class="org-left">Contains binaries (programs) that must be present for the system to boot and run.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/boot</code></td>
+<td class="org-left">Contains the Linux kernel, initial RAM disk image, and the boot loader.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/dev</code></td>
+<td class="org-left">This is a special directory that contains device nodes.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/etc</code></td>
+<td class="org-left">Contains all of the system-wide configuration files.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/home</code></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/lib</code></td>
+<td class="org-left">Contains shared library files used by the core system programs.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/lost+found</code></td>
+<td class="org-left">It is used in the case of a partial recovery from a filesystem corruption event.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/media</code></td>
+<td class="org-left">Contain the mount points for removable media such as USB drives, CD-ROMs, etc.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/opt</code></td>
+<td class="org-left">The <code>/opt</code> directory is used to install "optional" software. This is mainly used to hold commercial software products that may be installed on your system.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/proc</code></td>
+<td class="org-left">It is a virtual filesystem maintained by the Linux kernel. The files are readable and will give you a picture of how the kernel sees your computer.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/root</code></td>
+<td class="org-left">This is the home directory for the root account.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/sbin</code></td>
+<td class="org-left">This directory contains 'system' binaries. These are programs that perform vital system tasks that are generally reserved for the superuser.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/tmp</code></td>
+<td class="org-left">The <code>/tmp</code> directory is intended for storage of temporary, transient files created by various programs.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/usr</code></td>
+<td class="org-left">The <code>/usr</code> directory tree is likely the largest one on a Linux system. It contains all the programs and support files used by regular users.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/usr/bin</code></td>
+<td class="org-left">Contains the executable programs installed by your Linux distribution</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/usr/lib</code></td>
+<td class="org-left">The shared libraries for the programs in <code>/usr/bin</code>.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/usr/local</code></td>
+<td class="org-left">The <code>/usr/local</code> tree is where programs that are not included with your distribution but are intended for system-wide use are installed.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/usr/sbin</code></td>
+<td class="org-left">Contains more system administration programs.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/usr/share</code></td>
+<td class="org-left">Contains all the shared data used by programs in <code>/usr/bin</code>.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/usr/share/doc</code></td>
+<td class="org-left">Most packages installed on the system will include some kind of documentation.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/var</code></td>
+<td class="org-left">The <code>/var</code> directory tree is where data that is likely to change is stored. Various databases, spool files, user mail, etc. are located here.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/var/log</code></td>
+<td class="org-left">Contains log files, records of various system activity. These are very important and should be monitored from time to time. The most useful one is <code>/var/log/messages</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org6b9cd14" class="outline-3">
+<h3 id="org6b9cd14"><span class="section-number-3">6.5</span> interesting files</h3>
+<div class="outline-text-3" id="text-6-5">
+<ul class="org-ul">
+<li><code>/boot/grub/grub.cfg</code>, which are used to configure the boot loader</li>
+<li><code>/boot/vmlinuz</code>, the Linux kernel</li>
+<li><code>/etc/crontab</code>, a file that defines when automated jobs will run</li>
+<li><code>/etc/fstab</code>, a table of storage devices and their associated mount points1</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd28a46e" class="outline-2">
+<h2 id="orgd28a46e"><span class="section-number-2">7</span> NFS</h2>
+</div>
+<div id="outline-container-org1ed2d69" class="outline-2">
+<h2 id="org1ed2d69"><span class="section-number-2">8</span> LDAP</h2>
+<div class="outline-text-2" id="text-8">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Attribute</th>
+<th scope="col" class="org-left">Stands for</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">o</td>
+<td class="org-left">Organization</td>
+<td class="org-left">Often identifies a site's top-level entry</td>
+</tr>
+
+<tr>
+<td class="org-left">ou</td>
+<td class="org-left">Organization unit</td>
+<td class="org-left">A logical subdivision</td>
+</tr>
+
+<tr>
+<td class="org-left">cn</td>
+<td class="org-left">Common name</td>
+<td class="org-left">The most natural name to represent the entry</td>
+</tr>
+
+<tr>
+<td class="org-left">dc</td>
+<td class="org-left">Domain component</td>
+<td class="org-left">Used at sites that model their hierarchy on DNS</td>
+</tr>
+
+<tr>
+<td class="org-left">objectClass</td>
+<td class="org-left">Object class</td>
+<td class="org-left">Schema to which this entry's attributes conform</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-orgcd1ba77" class="outline-3">
+<h3 id="orgcd1ba77"><span class="section-number-3">8.1</span> openldap</h3>
+<div class="outline-text-3" id="text-8-1">
+<ul class="org-ul">
+<li>command: <b>slapd</b></li>
+<li>cluster: <b>slurpd</b> (master server)</li>
+<li><p>
+configuration: <code>/etc/openldap/slapd.conf</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-conf">database bdb <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">default: Berkely DB</span>
+suffix <span style="color: #2d9574;">"dc=mydomain,dc=com"</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">LDAP basename, like DNS domain name</span>
+rootdn <span style="color: #2d9574;">"cn=admin,dc=mydomain,dc=com"</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">administrator name</span>
+rootpw {crypt}abcDEFg/uiR <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">hashed password</span>
+directory /var/lib/ldap
+</pre>
+</div></li>
+<li><p>
+configuration: <code>/etc/openldap/lapd.conf</code>, set the <i>base</i> to the same value as the suffix
+</p>
+<div class="org-src-container">
+<pre class="src src-conf"><span style="color: #715ab1;">BASE dc</span>=mydomain,dc=com
+URI ldap://xxx.mydomain.com
+</pre>
+</div></li>
+
+<li>use <b>slappasswd</b> to change password</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga8353a2" class="outline-3">
+<h3 id="orga8353a2"><span class="section-number-3">8.2</span> 389 Directory Server</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+Advantages:
+</p>
+<ul class="org-ul">
+<li>Multimaster replication</li>
+<li>Active Directory user and group synchronization</li>
+<li>A graphical console for all facets of user, group, and server management</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0f6f95b" class="outline-3">
+<h3 id="org0f6f95b"><span class="section-number-3">8.3</span> phpLDAPadmin</h3>
+</div>
+<div id="outline-container-orga34d09d" class="outline-3">
+<h3 id="orga34d09d"><span class="section-number-3">8.4</span> ldapsearch</h3>
+<div class="outline-text-3" id="text-8-4">
+<p>
+command-line tool
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org51d05e8" class="outline-2">
+<h2 id="org51d05e8"><span class="section-number-2">9</span> Networking</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-org0e61899" class="outline-3">
+<h3 id="org0e61899"><span class="section-number-3">9.1</span> Troubleshooting</h3>
+</div>
+</div>
+<div id="outline-container-org6805865" class="outline-2">
+<h2 id="org6805865"><span class="section-number-2">10</span> Text Processing</h2>
+<div class="outline-text-2" id="text-10">
+<ul class="org-ul">
+<li><code>cut</code>: separate lines into fields</li>
+<li><code>sort</code>: sort lines</li>
+<li><code>uniq</code>: print unique lines</li>
+<li><code>wc</code>: count lines, words, and characters</li>
+<li><code>tee</code>: copy input to two places</li>
+</ul>
+</div>
+<div id="outline-container-orge2a1748" class="outline-3">
+<h3 id="orge2a1748"><span class="section-number-3">10.1</span> grep</h3>
+<div class="outline-text-3" id="text-10-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">-i, &#x2013;ignore-case</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">-v, &#x2013;invert-match</td>
+<td class="org-left">Invert the sense of matching, to select non-matching lines.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb461ffa" class="outline-2">
+<h2 id="orgb461ffa"><span class="section-number-2">11</span> Useful Command</h2>
+<div class="outline-text-2" id="text-11">
+</div>
+<div id="outline-container-org22be06f" class="outline-3">
+<h3 id="org22be06f"><span class="section-number-3">11.1</span> os</h3>
+<div class="outline-text-3" id="text-11-1">
+<ul class="org-ul">
+<li><code>uname -a</code></li>
+<li><code>lsb_release -a</code></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgabef194" class="outline-3">
+<h3 id="orgabef194"><span class="section-number-3">11.2</span> File System</h3>
+<div class="outline-text-3" id="text-11-2">
+</div>
+<div id="outline-container-org15e2884" class="outline-4">
+<h4 id="org15e2884"><span class="section-number-4">11.2.1</span> <code>ls</code></h4>
+<div class="outline-text-4" id="text-11-2-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">-a, &#x2013;all</td>
+<td class="org-left">do not ignore entries starting with .</td>
+</tr>
+
+<tr>
+<td class="org-left">-d, &#x2013;directory</td>
+<td class="org-left">list directories themselves, not their contents</td>
+</tr>
+
+<tr>
+<td class="org-left">-F, &#x2013;classify</td>
+<td class="org-left">append indicator to entries</td>
+</tr>
+
+<tr>
+<td class="org-left">-h, &#x2013;human-readable</td>
+<td class="org-left">print human readable sizes</td>
+</tr>
+
+<tr>
+<td class="org-left">-r, &#x2013;reverse</td>
+<td class="org-left">reverse order while sorting</td>
+</tr>
+
+<tr>
+<td class="org-left">-S</td>
+<td class="org-left">sort by file size, largest first</td>
+</tr>
+
+<tr>
+<td class="org-left">-t</td>
+<td class="org-left">sort by modification time, newest first</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org0917974" class="outline-4">
+<h4 id="org0917974"><span class="section-number-4">11.2.2</span> <code>file</code></h4>
+<div class="outline-text-4" id="text-11-2-2">
+<p>
+determine file type
+</p>
+</div>
+</div>
+<div id="outline-container-org785e7b6" class="outline-4">
+<h4 id="org785e7b6"><span class="section-number-4">11.2.3</span> <code>less</code>, <code>head</code>, <code>tail</code></h4>
+</div>
+<div id="outline-container-org1679ed8" class="outline-4">
+<h4 id="org1679ed8"><span class="section-number-4">11.2.4</span> <code>mkdir</code></h4>
+</div>
+<div id="outline-container-org546c796" class="outline-4">
+<h4 id="org546c796"><span class="section-number-4">11.2.5</span> <code>cp</code></h4>
+<div class="outline-text-4" id="text-11-2-5">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">-a, &#x2013;archive</td>
+<td class="org-left">Copy the files and directories and all of their attributes, including ownerships and permissions.</td>
+</tr>
+
+<tr>
+<td class="org-left">-i, &#x2013;interactive</td>
+<td class="org-left">Before overwriting an existing file, prompt the user for confirmation.</td>
+</tr>
+
+<tr>
+<td class="org-left">-r, &#x2013;recursive</td>
+<td class="org-left">Recursively copy directories and their contents.</td>
+</tr>
+
+<tr>
+<td class="org-left">-u, &#x2013;update</td>
+<td class="org-left">When copying files from one directory to another, copy only files that either don’t exist or are newer than the existing corresponding files in the destination directory.</td>
+</tr>
+
+<tr>
+<td class="org-left">-v, &#x2013;verbose</td>
+<td class="org-left">Display informative messages as the copy is performed.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org0ed94a6" class="outline-4">
+<h4 id="org0ed94a6"><span class="section-number-4">11.2.6</span> <code>mv</code></h4>
+<div class="outline-text-4" id="text-11-2-6">
+<p>
+similar to cp, common options: -i, -u, -v
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdca872e" class="outline-4">
+<h4 id="orgdca872e"><span class="section-number-4">11.2.7</span> <code>rm</code></h4>
+<div class="outline-text-4" id="text-11-2-7">
+<p>
+similar to cp, common options: -i, -r, -v
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">-f, &#x2013;force</td>
+<td class="org-left">Ignore nonexistent files and do not prompt. This overrides the &#x2013;interactive option.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org0fa14fc" class="outline-4">
+<h4 id="org0fa14fc"><span class="section-number-4">11.2.8</span> <code>ln</code></h4>
+<div class="outline-text-4" id="text-11-2-8">
+<ul class="org-ul">
+<li>create soft link: <code>ln file link</code></li>
+<li>create hard link: <code>ln -s item link</code></li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="org84e622b"></a>hard link limitation<br />
+<div class="outline-text-5" id="text-org84e622b">
+<ul class="org-ul">
+<li>A hard link cannot reference a file outside its own filesystem. This means a link</li>
+</ul>
+<p>
+cannot reference a file that is not on the same disk partition as the link itself.
+</p>
+<ul class="org-ul">
+<li>A hard link cannot reference a directory.</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgd49d5d0" class="outline-4">
+<h4 id="orgd49d5d0"><span class="section-number-4">11.2.9</span> GLOB pattern</h4>
+<div class="outline-text-4" id="text-11-2-9">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Wildcard</th>
+<th scope="col" class="org-left">Matches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>*</code></td>
+<td class="org-left">Any characters</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>?</code></td>
+<td class="org-left">Any single character</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[characters]</code></td>
+<td class="org-left">Any character that is a member of the set <code>characters</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[!characters]</code></td>
+<td class="org-left">Any character that is not a member of the set characters</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[CLASS]</code></td>
+<td class="org-left">Any character that is a member of the specified class</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgf63d910"></a>most commonly used character classes<br />
+<div class="outline-text-5" id="text-orgf63d910">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>[:alnum:]</code></td>
+<td class="org-left">Any alphanumeric character</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[:alpha:]</code></td>
+<td class="org-left">Any alphabetic character</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[:digit:]</code></td>
+<td class="org-left">Any numeral</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[:lower:]</code></td>
+<td class="org-left">Any lowercase letter</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[:upper:]</code></td>
+<td class="org-left">Any uppercase letter</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf0cf0ea" class="outline-3">
+<h3 id="orgf0cf0ea"><span class="section-number-3">11.3</span> Command Related</h3>
+<div class="outline-text-3" id="text-11-3">
+<ul class="org-ul">
+<li><code>which</code>: Display which executable program will be executed.</li>
+<li><code>man</code>: Display a command’s manual page.</li>
+<li><code>apropos</code>: Display a list of appropriate commands. same as <code>man -k</code></li>
+<li><code>info</code>: Display a command’s info entry.</li>
+<li><code>whatis</code>: Display a very brief description of a command.</li>
+</ul>
+</div>
+
+<div id="outline-container-org96604d7" class="outline-4">
+<h4 id="org96604d7"><span class="section-number-4">11.3.1</span> <code>type</code></h4>
+<div class="outline-text-4" id="text-11-3-1">
+<p>
+Indicate how a command name is interpreted. All types:
+</p>
+<ul class="org-ul">
+<li>An executable program</li>
+<li>A command built into the shell itself(e.g. cd)</li>
+<li>A shell function</li>
+<li>An alias(e.g. ls)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3ce5754" class="outline-4">
+<h4 id="org3ce5754"><span class="section-number-4">11.3.2</span> <code>alias</code></h4>
+<div class="outline-text-4" id="text-11-3-2">
+<p>
+Create an alias for a command.
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #3a81c3;">alias</span> <span style="color: #715ab1;">foo</span>=<span style="color: #2d9574;">'cd /usr; ls; cd -'</span>
+<span style="color: #3a81c3;">alias</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">list all aliases</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf498816" class="outline-3">
+<h3 id="orgf498816"><span class="section-number-3">11.4</span> Redirection</h3>
+<div class="outline-text-3" id="text-11-4">
+</div>
+<div id="outline-container-org65283e5" class="outline-4">
+<h4 id="org65283e5"><span class="section-number-4">11.4.1</span> Redirecting stdout and stderr to one file</h4>
+<div class="outline-text-4" id="text-11-4-1">
+<div class="org-src-container">
+<pre class="src src-sh">some-command &gt; output.txt 2&gt;&amp;1 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">old version, the order of the redirections is s</span><span style="color: #6c4173; background-color: #ecf3ec;">ignificant.</span>
+some-command &amp;&gt; output.txt
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgca250fb" class="outline-3">
+<h3 id="orgca250fb"><span class="section-number-3">11.5</span> Expansion</h3>
+<div class="outline-text-3" id="text-11-5">
+</div>
+<div id="outline-container-org4d2815b" class="outline-4">
+<h4 id="org4d2815b"><span class="section-number-4">11.5.1</span> Arithmetic Expansion</h4>
+<div class="outline-text-4" id="text-11-5-1">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #3a81c3;">echo</span> $((2 + 2))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge680348" class="outline-4">
+<h4 id="orge680348"><span class="section-number-4">11.5.2</span> Brace Expansion</h4>
+<div class="outline-text-4" id="text-11-5-2">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #3a81c3;">echo</span> Number_{1..5}
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; Number_1 Number_2 Number_3 Number_4 Number_5</span>
+
+<span style="color: #3a81c3;">echo</span> {Z..A}
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; Z Y X W V U T S R Q P O N M L K J I H G F E D C B A</span>
+
+<span style="color: #3a81c3;">echo</span> a{A{1,2},B{3,4}}b
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; aA1b aA2b aB3b aB4b</span>
+
+mkdir {2009..2011}-0{1..9} {2009..2011}-{10..12}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd5a29ff" class="outline-4">
+<h4 id="orgd5a29ff"><span class="section-number-4">11.5.3</span> Command Substitution</h4>
+<div class="outline-text-4" id="text-11-5-3">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #3a81c3;">echo</span> $(ls)
+ls -l $(<span style="color: #3a81c3;">which</span> cp)
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as</span>
+ls -l <span style="color: #ff00ff;">`which cp`</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">old syntax</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org181783e" class="outline-4">
+<h4 id="org181783e"><span class="section-number-4">11.5.4</span> Quoting</h4>
+<div class="outline-text-4" id="text-11-5-4">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #3a81c3;">echo</span> text ~/*.txt {a,b} $(<span style="color: #3a81c3;">echo</span> foo) $((2+2)) $<span style="color: #715ab1;">USER</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; text /home/me/ls-output.txt a b foo 4 me</span>
+
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"text &#732;/*.txt {a,b} $(echo foo) $((2+2)) $USER"</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; text &#732;/*.txt {a,b} foo 4 me</span>
+
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">'text &#732;/*.txt {a,b} $(echo foo) $((2+2)) $USER'</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">suppress all expansions</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; text &#732;/*.txt {a,b} $(echo foo) $((2+2)) $USER</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48357f5" class="outline-4">
+<h4 id="org48357f5"><span class="section-number-4">11.5.5</span> Escaping Characters</h4>
+<div class="outline-text-4" id="text-11-5-5">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">\a</td>
+<td class="org-left">Beep</td>
+</tr>
+
+<tr>
+<td class="org-left">\b</td>
+<td class="org-left">Backspace</td>
+</tr>
+
+<tr>
+<td class="org-left">\n</td>
+<td class="org-left">Newline</td>
+</tr>
+
+<tr>
+<td class="org-left">\r</td>
+<td class="org-left">Carriage return</td>
+</tr>
+
+<tr>
+<td class="org-left">\t</td>
+<td class="org-left">Tab</td>
+</tr>
+</tbody>
+</table>
+<div class="org-src-container">
+<pre class="src src-sh">sleep 10; <span style="color: #3a81c3;">echo</span> -e  <span style="color: #2d9574;">"Time's up\a"</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">or</span>
+sleep 10; <span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"Time's up"</span> $<span style="color: #2d9574;">'\a'</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga2bbf7a" class="outline-2">
+<h2 id="orga2bbf7a"><span class="section-number-2">12</span> Writing Script</h2>
+<div class="outline-text-2" id="text-12">
+</div>
+<div id="outline-container-orgb58464c" class="outline-3">
+<h3 id="orgb58464c"><span class="section-number-3">12.1</span> set</h3>
+<div class="outline-text-3" id="text-12-1">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #3a81c3;">set</span> -eux
+<span style="color: #3a81c3;">set</span> -o pipefail
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3478c89" class="outline-3">
+<h3 id="org3478c89"><span class="section-number-3">12.2</span> variables</h3>
+<div class="outline-text-3" id="text-12-2">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #715ab1;">etcdir</span>=<span style="color: #2d9574;">'/etc'</span>
+<span style="color: #3a81c3;">echo</span> $<span style="color: #715ab1;">etcdir</span>
+<span style="color: #3a81c3;">echo</span> ${<span style="color: #715ab1;">etcdir</span>}
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"$etcdir"</span>
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"${etcdir}"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org266f91f" class="outline-3">
+<h3 id="org266f91f"><span class="section-number-3">12.3</span> arguments</h3>
+<div class="outline-text-3" id="text-12-3">
+<ul class="org-ul">
+<li><code>$0</code>: command</li>
+<li><code>$1</code>, <code>$2</code>: arguments</li>
+<li><code>$#</code>: argument count</li>
+<li><code>$*</code>: all arguments</li>
+<li><code>$?</code>: return value of last command</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0d46ddd" class="outline-3">
+<h3 id="org0d46ddd"><span class="section-number-3">12.4</span> comparison</h3>
+<div class="outline-text-3" id="text-12-4">
+<ul class="org-ul">
+<li>eq, ne, lt, le, gt, ge, -n, -z</li>
+<li>file: -d, -e, -f, -r, -s, -w, -nt(newer than), -ot(older than)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc43f8db" class="outline-3">
+<h3 id="orgc43f8db"><span class="section-number-3">12.5</span> command currying</h3>
+<div class="outline-text-3" id="text-12-5">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #3a81c3; font-weight: bold;">function</span> <span style="color: #6c3163; font-weight: bold;">ssh</span> {
+    /usr/bin/ssh -p 7988 $<span style="color: #715ab1;">*</span>
+}
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as</span>
+<span style="color: #3a81c3;">alias</span> <span style="color: #715ab1;">ssh</span>=<span style="color: #2d9574;">"/usr/bin/ssh -p 7988"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org11aa8f4" class="outline-3">
+<h3 id="org11aa8f4"><span class="section-number-3">12.6</span> loop</h3>
+<div class="outline-text-3" id="text-12-6">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #3a81c3; font-weight: bold;">for</span> var<span style="color: #3a81c3; font-weight: bold;"> in</span> $<span style="color: #715ab1;">*</span>; <span style="color: #3a81c3; font-weight: bold;">do</span>
+    <span style="color: #3a81c3;">echo</span> $<span style="color: #715ab1;">var</span>
+<span style="color: #3a81c3; font-weight: bold;">done</span>
+
+<span style="color: #3a81c3; font-weight: bold;">for</span> ((<span style="color: #715ab1;">i</span>=0; i &lt; $<span style="color: #715ab1;">CPU_COUNT</span>; i++)); <span style="color: #3a81c3; font-weight: bold;">do</span>
+    <span style="color: #3a81c3;">echo</span> $<span style="color: #715ab1;">i</span>
+<span style="color: #3a81c3; font-weight: bold;">done</span>
+
+<span style="color: #3a81c3; font-weight: bold;">while </span><span style="color: #3a81c3;">read</span> line; <span style="color: #3a81c3; font-weight: bold;">do</span>
+    <span style="color: #3a81c3;">echo</span> $<span style="color: #715ab1;">line</span>
+<span style="color: #3a81c3; font-weight: bold;">done</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c9d336" class="outline-3">
+<h3 id="org5c9d336"><span class="section-number-3">12.7</span> show usage</h3>
+<div class="outline-text-3" id="text-12-7">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">!/bin/</span><span style="color: #3a81c3; font-weight: bold;">bash</span>
+<span style="color: #3a81c3; font-weight: bold;">function</span> <span style="color: #6c3163; font-weight: bold;">show_usage</span> {
+    <span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"Usage: $0 source_dir dest_dir"</span>
+    <span style="color: #3a81c3; font-weight: bold;">exit</span> 1
+}
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Main starts here</span>
+<span style="color: #3a81c3; font-weight: bold;">if</span> [ $<span style="color: #715ab1;">#</span> -ne 2 ]; <span style="color: #3a81c3; font-weight: bold;">then</span>
+    show_usage
+<span style="color: #3a81c3; font-weight: bold;">else</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">There are two arguments</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> [ -d $<span style="color: #715ab1;">1</span>]; <span style="color: #3a81c3; font-weight: bold;">then</span>
+        <span style="color: #715ab1;">source_dir</span>=$<span style="color: #715ab1;">1</span>
+    <span style="color: #3a81c3; font-weight: bold;">else</span>
+        <span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"Invalid source directory"</span>
+        show_usage
+    <span style="color: #3a81c3; font-weight: bold;">fi</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> [ -d $<span style="color: #715ab1;">2</span>]; <span style="color: #3a81c3; font-weight: bold;">then</span>
+        <span style="color: #715ab1;">dest_dir</span>=$<span style="color: #715ab1;">2</span>
+    <span style="color: #3a81c3; font-weight: bold;">else</span>
+        <span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"Invalid dest directory"</span>
+        show_usage
+    <span style="color: #3a81c3; font-weight: bold;">fi</span>
+<span style="color: #3a81c3; font-weight: bold;">fi</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org338138b" class="outline-3">
+<h3 id="org338138b"><span class="section-number-3">12.8</span> quotes</h3>
+<div class="outline-text-3" id="text-12-8">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #715ab1;">mylang</span>=<span style="color: #2d9574;">"Chinese"</span>
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"I speak ${mylang}"</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; I speak Chinese</span>
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">'I speak ${mylang}'</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; I speak ${mylang}</span>
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"There are `wc -l /etc/passwd` lines in the passwd file"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga6dce19" class="outline-3">
+<h3 id="orga6dce19"><span class="section-number-3">12.9</span> an example</h3>
+<div class="outline-text-3" id="text-12-9">
 <div class="org-src-container">
 <pre class="src src-bash">find . -name <span style="color: #2d9574;">'*log '</span>
 find . -type f -name <span style="color: #2d9574;">'*.log '</span>
 find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do-not-touch
 find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do-not-touch | <span style="color: #3a81c3; font-weight: bold;">while </span><span style="color: #3a81c3;">read</span> fname
 <span style="color: #3a81c3; font-weight: bold;">do</span>
-<span style="color: #3a81c3;">echo</span> mv $<span style="color: #715ab1;">fname</span> $<span style="color: #3a81c3;">{</span><span style="color: #715ab1;">fname</span>/.log/.LOG/<span style="color: #3a81c3;">}</span>
+<span style="color: #3a81c3;">echo</span> mv $<span style="color: #715ab1;">fname</span> ${<span style="color: #715ab1;">fname</span>/.log/.LOG/}
 <span style="color: #3a81c3; font-weight: bold;">done</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">finally</span>
 find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do-not-touch | <span style="color: #3a81c3; font-weight: bold;">while </span><span style="color: #3a81c3;">read</span> fname; <span style="color: #3a81c3; font-weight: bold;">do</span>
-    <span style="color: #3a81c3;">echo</span> mv $<span style="color: #715ab1;">fname</span> $<span style="color: #3a81c3;">{</span><span style="color: #715ab1;">fname</span>/.log/.LOG/<span style="color: #3a81c3;">}</span>; <span style="color: #3a81c3; font-weight: bold;">done</span> | bash -x
+    <span style="color: #3a81c3;">echo</span> mv $<span style="color: #715ab1;">fname</span> ${<span style="color: #715ab1;">fname</span>/.log/.LOG/}; <span style="color: #3a81c3; font-weight: bold;">done</span> | bash -x
 </pre>
 </div>
 <p>
@@ -1445,9 +2610,10 @@ find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do
 </p>
 </div>
 </div>
-<div id="outline-container-orgce21678" class="outline-3">
-<h3 id="orgce21678"><span class="section-number-3">6.3</span> args</h3>
-<div class="outline-text-3" id="text-6-3">
+
+<div id="outline-container-orgd4760ac" class="outline-3">
+<h3 id="orgd4760ac"><span class="section-number-3">12.10</span> args</h3>
+<div class="outline-text-3" id="text-12-10">
 <ul class="org-ul">
 <li>$0: name of the script</li>
 <li>$1: first argument</li>
@@ -1458,17 +2624,17 @@ find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do
 </ul>
 </div>
 </div>
-<div id="outline-container-org93fe1fd" class="outline-3">
-<h3 id="org93fe1fd"><span class="section-number-3">6.4</span> Control flow</h3>
-<div class="outline-text-3" id="text-6-4">
+<div id="outline-container-org43a0521" class="outline-3">
+<h3 id="org43a0521"><span class="section-number-3">12.11</span> Control flow</h3>
+<div class="outline-text-3" id="text-12-11">
 </div>
-<div id="outline-container-org12095d2" class="outline-4">
-<h4 id="org12095d2"><span class="section-number-4">6.4.1</span> <b>if</b> clause</h4>
-<div class="outline-text-4" id="text-6-4-1">
+<div id="outline-container-org87aa79d" class="outline-4">
+<h4 id="org87aa79d"><span class="section-number-4">12.11.1</span> <b>if</b> clause</h4>
+<div class="outline-text-4" id="text-12-11-1">
 <div class="org-src-container">
-<pre class="src src-bash"><span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">[</span>condition<span style="color: #3a81c3;">]</span>
+<pre class="src src-bash"><span style="color: #3a81c3; font-weight: bold;">if</span> [condition]
 <span style="color: #3a81c3; font-weight: bold;">then</span> dosomething
-<span style="color: #3a81c3; font-weight: bold;">elif</span> <span style="color: #3a81c3;">[</span>condition<span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3; font-weight: bold;">elif</span> [condition]
 <span style="color: #3a81c3; font-weight: bold;">then</span> dosomething
 <span style="color: #3a81c3; font-weight: bold;">else</span> dosomething
 <span style="color: #3a81c3; font-weight: bold;">fi</span>
@@ -1476,24 +2642,25 @@ find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do
 </div>
 </div>
 </div>
-<div id="outline-container-org90a7c19" class="outline-4">
-<h4 id="org90a7c19"><span class="section-number-4">6.4.2</span> <b>case</b> clause</h4>
-<div class="outline-text-4" id="text-6-4-2">
+<div id="outline-container-org211186a" class="outline-4">
+<h4 id="org211186a"><span class="section-number-4">12.11.2</span> <b>case</b> clause</h4>
+<div class="outline-text-4" id="text-12-11-2">
 <div class="org-src-container">
 <pre class="src src-bash"><span style="color: #3a81c3; font-weight: bold;">case</span> $<span style="color: #715ab1;">message_level</span><span style="color: #3a81c3; font-weight: bold;"> in</span>
-    <span style="color: #4e3163;">0</span>) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Error"</span> ;;
-    <span style="color: #4e3163;">1</span>) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Warning"</span> ;;
-    <span style="color: #4e3163;">2</span>) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Info"</span> ;;
-    <span style="color: #4e3163;">3</span>) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Debug"</span> ;;
+    0) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Error"</span> ;;
+    1) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Warning"</span> ;;
+    2) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Info"</span> ;;
+    3) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Debug"</span> ;;
     *) <span style="color: #715ab1;">message_level_text</span>=<span style="color: #2d9574;">"Other"</span>
 <span style="color: #3a81c3; font-weight: bold;">esac</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orge0c0262" class="outline-4">
-<h4 id="orge0c0262"><span class="section-number-4">6.4.3</span> comparison operators</h4>
-<div class="outline-text-4" id="text-6-4-3">
+
+<div id="outline-container-org1858be5" class="outline-4">
+<h4 id="org1858be5"><span class="section-number-4">12.11.3</span> comparison operators</h4>
+<div class="outline-text-4" id="text-12-11-3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -1552,9 +2719,10 @@ find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do
 </table>
 </div>
 </div>
-<div id="outline-container-orgb3f9c2c" class="outline-4">
-<h4 id="orgb3f9c2c"><span class="section-number-4">6.4.4</span> bash file operators</h4>
-<div class="outline-text-4" id="text-6-4-4">
+
+<div id="outline-container-org6977f73" class="outline-4">
+<h4 id="org6977f73"><span class="section-number-4">12.11.4</span> bash file operators</h4>
+<div class="outline-text-4" id="text-12-11-4">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -1613,9 +2781,9 @@ find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do
 </table>
 </div>
 </div>
-<div id="outline-container-orgcc0935c" class="outline-4">
-<h4 id="orgcc0935c"><span class="section-number-4">6.4.5</span> Loops</h4>
-<div class="outline-text-4" id="text-6-4-5">
+<div id="outline-container-org4c35fa8" class="outline-4">
+<h4 id="org4c35fa8"><span class="section-number-4">12.11.5</span> Loops</h4>
+<div class="outline-text-4" id="text-12-11-5">
 <div class="org-src-container">
 <pre class="src src-bash"><span style="color: #3a81c3; font-weight: bold;">for</span> var<span style="color: #3a81c3; font-weight: bold;"> in</span> stuff; <span style="color: #3a81c3; font-weight: bold;">do</span>
     ...
@@ -1625,29 +2793,29 @@ find . -type f -name <span style="color: #2d9574;">'*.log '</span> | grep -v .do
     ...
 <span style="color: #3a81c3; font-weight: bold;">done</span>
 
-<span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span><span style="color: #715ab1;">i</span>=<span style="color: #4e3163;">0</span>; i &lt; count; i++<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>; <span style="color: #3a81c3; font-weight: bold;">do</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> ((<span style="color: #715ab1;">i</span>=0; i &lt; count; i++)); <span style="color: #3a81c3; font-weight: bold;">do</span>
     ...
 <span style="color: #3a81c3; font-weight: bold;">done</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgf70e15f" class="outline-4">
-<h4 id="orgf70e15f"><span class="section-number-4">6.4.6</span> $(())</h4>
-<div class="outline-text-4" id="text-6-4-6">
+<div id="outline-container-orgb3b12fe" class="outline-4">
+<h4 id="orgb3b12fe"><span class="section-number-4">12.11.6</span> $(())</h4>
+<div class="outline-text-4" id="text-12-11-6">
 <p>
 The $((&#x2026;)) notation forces numeric evaluation,
 </p>
 <div class="org-src-container">
-<pre class="src src-bash">$<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>counter++<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-$<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>$<span style="color: #715ab1;">a</span>+$<span style="color: #715ab1;">b</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<pre class="src src-bash">$((counter++))
+$(($<span style="color: #715ab1;">a</span>+$<span style="color: #715ab1;">b</span>))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgd659a53" class="outline-4">
-<h4 id="orgd659a53"><span class="section-number-4">6.4.7</span> Array</h4>
-<div class="outline-text-4" id="text-6-4-7">
+<div id="outline-container-orgf66e0af" class="outline-4">
+<h4 id="orgf66e0af"><span class="section-number-4">12.11.7</span> Array</h4>
+<div class="outline-text-4" id="text-12-11-7">
 <p>
 Use <b>${array_name[subscript]}</b> to access individual elements.
 The subscripts * and @ refer to the array as a whole, and the special
@@ -1657,8 +2825,92 @@ forms <b>${#array_name[*]}</b> and <b>${#array_name[@]}</b> yield the number of 
 </div>
 </div>
 </div>
-<div id="outline-container-org36e67a2" class="outline-2">
-<h2 id="org36e67a2"><span class="section-number-2">7</span> NFS</h2>
+<div id="outline-container-org10752d2" class="outline-2">
+<h2 id="org10752d2"><span class="section-number-2">13</span> Profiler</h2>
+<div class="outline-text-2" id="text-13">
+</div>
+<div id="outline-container-orgacdb6b1" class="outline-3">
+<h3 id="orgacdb6b1"><span class="section-number-3">13.1</span> Performance Tools</h3>
+<div class="outline-text-3" id="text-13-1">
+
+<div class="figure">
+<p><img src="../resources/os/perftools.png" alt="perftools.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org68486c4" class="outline-3">
+<h3 id="org68486c4"><span class="section-number-3">13.2</span> Hardware Info</h3>
+<div class="outline-text-3" id="text-13-2">
+<ul class="org-ul">
+<li>/proc/cpuinfo</li>
+<li>/proc/meminfo</li>
+<li>/proc/diskstats</li>
+<li><code>dmidecode -t</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4900ad6" class="outline-3">
+<h3 id="org4900ad6"><span class="section-number-3">13.3</span> CPU</h3>
+<div class="outline-text-3" id="text-13-3">
+<ul class="org-ul">
+<li><code>apt install sysstat</code></li>
+<li><code>vmstat 5 5</code>: 5 updates; delay between updates is 5 secs</li>
+<li><code>mpstat -P ALL</code></li>
+<li><code>uptime</code></li>
+<li><code>ps -aux</code></li>
+<li><code>pidstat</code></li>
+<li><b>dstat</b></li>
+<li><b>perf top</b>, <b>perf record</b>, <b>perf report</b></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6d1621c" class="outline-3">
+<h3 id="org6d1621c"><span class="section-number-3">13.4</span> Memory</h3>
+<div class="outline-text-3" id="text-13-4">
+<ul class="org-ul">
+<li>/proc/sys/vm/swappiness</li>
+<li><code>swapon -s</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9c5e132" class="outline-3">
+<h3 id="org9c5e132"><span class="section-number-3">13.5</span> Disk IO</h3>
+<div class="outline-text-3" id="text-13-5">
+<ul class="org-ul">
+<li><code>iostat 5 5</code></li>
+<li><code>xdd</code></li>
+<li><code>sar -[ndA]</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2d34933" class="outline-3">
+<h3 id="org2d34933"><span class="section-number-3">13.6</span> Web Profiler</h3>
+<div class="outline-text-3" id="text-13-6">
+</div>
+<div id="outline-container-org6376a85" class="outline-4">
+<h4 id="org6376a85"><span class="section-number-4">13.6.1</span> ApacheBench</h4>
+<div class="outline-text-4" id="text-13-6-1">
+<div class="org-src-container">
+<pre class="src src-bash">ab -c 10 -n 100 http://192.168.0.10:10000/
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orge7098a9" class="outline-3">
+<h3 id="orge7098a9"><span class="section-number-3">13.7</span> Stress Test</h3>
+<div class="outline-text-3" id="text-13-7">
+<ul class="org-ul">
+<li>stress</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 </body>

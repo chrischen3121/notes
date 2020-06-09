@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2018-12-04 Tue 12:57 -->
+<!-- 2020-06-09 Tue 16:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -188,7 +188,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -259,77 +259,77 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6a94a0b">1. Profiling</a>
+<li><a href="#org5556325">1. Profiling</a>
 <ul>
-<li><a href="#org92e4a30">1.1. CPU</a></li>
-<li><a href="#org429b732">1.2. memory</a></li>
-<li><a href="#org91bfae9">1.3. work with UT</a></li>
+<li><a href="#orgeab325a">1.1. CPU</a></li>
+<li><a href="#orgdeb6599">1.2. memory</a></li>
+<li><a href="#org62c6c18">1.3. work with UT</a></li>
 </ul>
 </li>
-<li><a href="#org6414f4a">2. Lists and tuples</a>
+<li><a href="#org9a2c0aa">2. Lists and tuples</a>
 <ul>
-<li><a href="#org8e8abf2">2.1. Sort algorithm</a></li>
-<li><a href="#org97db522">2.2. list vs. tuple</a></li>
+<li><a href="#org7dc9831">2.1. Sort algorithm</a></li>
+<li><a href="#org43f7545">2.2. list vs. tuple</a></li>
 </ul>
 </li>
-<li><a href="#org342c88c">3. set &amp; dict</a>
+<li><a href="#orge07e3c2">3. set &amp; dict</a>
 <ul>
-<li><a href="#org3595bc3">3.1. hashable key</a></li>
-<li><a href="#org14bf5b2">3.2. resizing</a></li>
-<li><a href="#org8051e23">3.3. extra</a></li>
+<li><a href="#org513d90e">3.1. hashable key</a></li>
+<li><a href="#org4577880">3.2. resizing</a></li>
+<li><a href="#orgb02257e">3.3. extra</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org6a94a0b" class="outline-2">
-<h2 id="org6a94a0b"><span class="section-number-2">1</span> Profiling</h2>
+<div id="outline-container-org5556325" class="outline-2">
+<h2 id="org5556325"><span class="section-number-2">1</span> Profiling</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org92e4a30" class="outline-3">
-<h3 id="org92e4a30"><span class="section-number-3">1.1</span> CPU</h3>
+<div id="outline-container-orgeab325a" class="outline-3">
+<h3 id="orgeab325a"><span class="section-number-3">1.1</span> CPU</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-orga5ac28d" class="outline-4">
-<h4 id="orga5ac28d"><span class="section-number-4">1.1.1</span> simple <i>time</i> module</h4>
+<div id="outline-container-orge912d62" class="outline-4">
+<h4 id="orge912d62"><span class="section-number-4">1.1.1</span> simple <i>time</i> module</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> time
-<span style="color: #715ab1;">start_time</span> = time.time<span style="color: #3a81c3;">()</span>
-fn<span style="color: #3a81c3;">()</span>
-<span style="color: #715ab1;">end_time</span> = time.time<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">start_time</span> = time.time()
+fn()
+<span style="color: #715ab1;">end_time</span> = time.time()
 <span style="color: #3a81c3; font-weight: bold;">print</span> end_time - start_time <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">seconds</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org0d59595" class="outline-4">
-<h4 id="org0d59595"><span class="section-number-4">1.1.2</span> decorator</h4>
+<div id="outline-container-org80343ac" class="outline-4">
+<h4 id="org80343ac"><span class="section-number-4">1.1.2</span> decorator</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> functools <span style="color: #3a81c3; font-weight: bold;">import</span> wraps
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">timefn</span><span style="color: #3a81c3;">(</span>fn<span style="color: #3a81c3;">)</span>:
-    <span style="color: #ba2f59; font-weight: bold;">@wraps</span><span style="color: #3a81c3;">(</span>fn<span style="color: #3a81c3;">)</span>
-    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">measure_time</span><span style="color: #3a81c3;">(</span>*args, **kwargs<span style="color: #3a81c3;">)</span>:
-        <span style="color: #715ab1;">t1</span> = time.time<span style="color: #3a81c3;">()</span>
-        <span style="color: #715ab1;">result</span> = fn<span style="color: #3a81c3;">(</span>*args, **kwargs<span style="color: #3a81c3;">)</span>
-        <span style="color: #715ab1;">t2</span> = time.time<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">timefn</span>(fn):
+    <span style="color: #ba2f59; font-weight: bold;">@wraps</span>(fn)
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">measure_time</span>(*args, **kwargs):
+        <span style="color: #715ab1;">t1</span> = time.time()
+        <span style="color: #715ab1;">result</span> = fn(*args, **kwargs)
+        <span style="color: #715ab1;">t2</span> = time.time()
         <span style="color: #3a81c3; font-weight: bold;">print</span> t2 - t1
         <span style="color: #3a81c3; font-weight: bold;">return</span> result
     <span style="color: #3a81c3; font-weight: bold;">return</span> measure_time
 
 <span style="color: #ba2f59; font-weight: bold;">@timefn</span>
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">measure_fn</span><span style="color: #3a81c3;">(</span>arg1, arg2<span style="color: #3a81c3;">)</span>:
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">measure_fn</span>(arg1, arg2):
     ...
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org55ecd7e" class="outline-4">
-<h4 id="org55ecd7e"><span class="section-number-4">1.1.3</span> %timeit in IPython</h4>
+<div id="outline-container-orgdc2897b" class="outline-4">
+<h4 id="orgdc2897b"><span class="section-number-4">1.1.3</span> %timeit in IPython</h4>
 </div>
-<div id="outline-container-orga452e39" class="outline-4">
-<h4 id="orga452e39"><span class="section-number-4">1.1.4</span> unix <i>time</i> command</h4>
+<div id="outline-container-orgebabc8d" class="outline-4">
+<h4 id="orgebabc8d"><span class="section-number-4">1.1.4</span> unix <i>time</i> command</h4>
 <div class="outline-text-4" id="text-1-1-4">
 <p>
 might be useful if you start lots of fresh processes.
@@ -342,8 +342,8 @@ might be useful if you start lots of fresh processes.
 </div>
 </div>
 
-<div id="outline-container-orgca7ab97" class="outline-4">
-<h4 id="orgca7ab97"><span class="section-number-4">1.1.5</span> cProfile</h4>
+<div id="outline-container-org903d597" class="outline-4">
+<h4 id="org903d597"><span class="section-number-4">1.1.5</span> cProfile</h4>
 <div class="outline-text-4" id="text-1-1-5">
 <div class="org-src-container">
 <pre class="src src-sh">python -m cProfile -s cumulative xxx.py
@@ -362,28 +362,50 @@ might be useful if you start lots of fresh processes.
 </div>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> pstats
-<span style="color: #715ab1;">p</span> = pstats.Stats<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"profile.stats"</span><span style="color: #3a81c3;">)</span>
-p.sort_stats<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"cumulative"</span><span style="color: #3a81c3;">)</span>
-p.print_stats<span style="color: #3a81c3;">()</span>
-p.print_callers<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">locate the most expensive parents</span>
-p.print_callees<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">p</span> = pstats.Stats(<span style="color: #2d9574;">"profile.stats"</span>)
+p.sort_stats(<span style="color: #2d9574;">"cumulative"</span>)
+p.print_stats()
+p.print_callers() <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">locate the most expensive parents</span>
+p.print_callees()
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org70d4aac" class="outline-4">
-<h4 id="org70d4aac"><span class="section-number-4">1.1.6</span> visualize a profile file: runsnake</h4>
+<div id="outline-container-orgb52f809" class="outline-4">
+<h4 id="orgb52f809"><span class="section-number-4">1.1.6</span> visualize a profile file</h4>
+<div class="outline-text-4" id="text-1-1-6">
 </div>
-<div id="outline-container-orge31c870" class="outline-4">
-<h4 id="orge31c870"><span class="section-number-4">1.1.7</span> line_profiler</h4>
+<ul class="org-ul">
+<li><a id="org0cf471b"></a>kcachegrind<br />
+<div class="outline-text-5" id="text-org0cf471b">
+<div class="org-src-container">
+<pre class="src src-sh">pyprof2calltree -i profile.stats -o prof.calltree
+kcachegrind prof.calltree
+</pre>
 </div>
 </div>
-<div id="outline-container-org429b732" class="outline-3">
-<h3 id="org429b732"><span class="section-number-3">1.2</span> memory</h3>
+</li>
+<li><a id="orge896269"></a>snakeviz<br />
+<div class="outline-text-5" id="text-orge896269">
+<div class="org-src-container">
+<pre class="src src-sh">snakeviz profile.stats
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org3f217b9" class="outline-4">
+<h4 id="org3f217b9"><span class="section-number-4">1.1.7</span> line_profiler</h4>
+</div>
+</div>
+<div id="outline-container-orgdeb6599" class="outline-3">
+<h3 id="orgdeb6599"><span class="section-number-3">1.2</span> memory</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-orgbd254ff" class="outline-4">
-<h4 id="orgbd254ff"><span class="section-number-4">1.2.1</span> memory_profiler</h4>
+<div id="outline-container-orgcb3fb21" class="outline-4">
+<h4 id="orgcb3fb21"><span class="section-number-4">1.2.1</span> memory_profiler</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <div class="org-src-container">
 <pre class="src src-sh">python -m memory_profiler xxx.py
@@ -394,44 +416,44 @@ mprof plot
 </div>
 </div>
 </div>
-<div id="outline-container-org9742131" class="outline-4">
-<h4 id="org9742131"><span class="section-number-4">1.2.2</span> heapy</h4>
+<div id="outline-container-org0cbd5da" class="outline-4">
+<h4 id="org0cbd5da"><span class="section-number-4">1.2.2</span> heapy</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 <i>pip install guppy</i> first.
 Add following to your code.
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> guppy <span style="color: #3a81c3; font-weight: bold;">import</span> hpy; <span style="color: #715ab1;">hp</span> = hpy<span style="color: #3a81c3;">()</span>
-hp.setrelheap<span style="color: #3a81c3;">()</span><span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">set checkpoint</span>
-<span style="color: #3a81c3; font-weight: bold;">print</span> hp.heap<span style="color: #3a81c3;">()</span><span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">print heap usage since last checkpoint</span>
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> guppy <span style="color: #3a81c3; font-weight: bold;">import</span> hpy; <span style="color: #715ab1;">hp</span> = hpy()
+hp.setrelheap()<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">set checkpoint</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span> hp.heap()<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">print heap usage since last checkpoint</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgfa9bbf5" class="outline-4">
-<h4 id="orgfa9bbf5"><span class="section-number-4">1.2.3</span> <span class="todo TODO">TODO</span> dowser??</h4>
+<div id="outline-container-org268e09c" class="outline-4">
+<h4 id="org268e09c"><span class="section-number-4">1.2.3</span> <span class="todo TODO">TODO</span> dowser??</h4>
 </div>
 </div>
-<div id="outline-container-org91bfae9" class="outline-3">
-<h3 id="org91bfae9"><span class="section-number-3">1.3</span> work with UT</h3>
+<div id="outline-container-org62c6c18" class="outline-3">
+<h3 id="org62c6c18"><span class="section-number-3">1.3</span> work with UT</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Add following at the top of unittest code.
 </p>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">for line_profiler</span>
-<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">'__builtin__'</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">dir</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3; font-weight: bold;">or</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #3a81c3;">hasattr</span><span style="color: #3a81c3;">(</span>__builtin__, <span style="color: #2d9574;">'profile'</span><span style="color: #3a81c3;">)</span>:
-    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">profile</span><span style="color: #3a81c3;">(</span>func<span style="color: #3a81c3;">)</span>:
-        <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">inner</span><span style="color: #3a81c3;">(</span>*args, **kwargs<span style="color: #3a81c3;">)</span>:
-            <span style="color: #3a81c3; font-weight: bold;">return</span> func<span style="color: #3a81c3;">(</span>*args, **kwargs<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">'__builtin__'</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">dir</span>() <span style="color: #3a81c3; font-weight: bold;">or</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #3a81c3;">hasattr</span>(__builtin__, <span style="color: #2d9574;">'profile'</span>):
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">profile</span>(func):
+        <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">inner</span>(*args, **kwargs):
+            <span style="color: #3a81c3; font-weight: bold;">return</span> func(*args, **kwargs)
         <span style="color: #3a81c3; font-weight: bold;">return</span> inner
 
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">for memory_profiler</span>
-<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">'profile'</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">dir</span><span style="color: #3a81c3;">()</span>:
-    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">profile</span><span style="color: #3a81c3;">(</span>func<span style="color: #3a81c3;">)</span>:
-        <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">inner</span><span style="color: #3a81c3;">(</span>*args, **kwargs<span style="color: #3a81c3;">)</span>:
-            <span style="color: #3a81c3; font-weight: bold;">return</span> func<span style="color: #3a81c3;">(</span>*args, **kwargs<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #2d9574;">'profile'</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">dir</span>():
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">profile</span>(func):
+        <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">inner</span>(*args, **kwargs):
+            <span style="color: #3a81c3; font-weight: bold;">return</span> func(*args, **kwargs)
         <span style="color: #3a81c3; font-weight: bold;">return</span> inner
 </pre>
 </div>
@@ -439,16 +461,16 @@ Add following at the top of unittest code.
 </div>
 </div>
 
-<div id="outline-container-org6414f4a" class="outline-2">
-<h2 id="org6414f4a"><span class="section-number-2">2</span> Lists and tuples</h2>
+<div id="outline-container-org9a2c0aa" class="outline-2">
+<h2 id="org9a2c0aa"><span class="section-number-2">2</span> Lists and tuples</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org8e8abf2" class="outline-3">
-<h3 id="org8e8abf2"><span class="section-number-3">2.1</span> Sort algorithm</h3>
+<div id="outline-container-org7dc9831" class="outline-3">
+<h3 id="org7dc9831"><span class="section-number-3">2.1</span> Sort algorithm</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-org5e6d351" class="outline-4">
-<h4 id="org5e6d351"><span class="section-number-4">2.1.1</span> Tim sort</h4>
+<div id="outline-container-org2aab645" class="outline-4">
+<h4 id="org2aab645"><span class="section-number-4">2.1.1</span> Tim sort</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 built-in sort algorithm
@@ -457,8 +479,8 @@ built-in sort algorithm
 </div>
 </div>
 
-<div id="outline-container-orgcecdda6" class="outline-4">
-<h4 id="orgcecdda6"><span class="section-number-4">2.1.2</span> bisect</h4>
+<div id="outline-container-org8fd63eb" class="outline-4">
+<h4 id="org8fd63eb"><span class="section-number-4">2.1.2</span> bisect</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 <b>bisect</b> provides support for maintaining a list in
@@ -466,11 +488,11 @@ sorted order without having to sort the list after each insertion.
 </p>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> bisect
-<span style="color: #715ab1;">alist</span>=<span style="color: #3a81c3;">[]</span>
-bisect.insort<span style="color: #3a81c3;">(</span>alist, <span style="color: #4e3163;">5</span><span style="color: #3a81c3;">)</span>
-bisect.insort<span style="color: #3a81c3;">(</span>alist, <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span>
-bisect.insort<span style="color: #3a81c3;">(</span>alist, <span style="color: #4e3163;">20</span><span style="color: #3a81c3;">)</span>
-bisect.insort<span style="color: #3a81c3;">(</span>alist, <span style="color: #4e3163;">17</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">alist</span>=[]
+bisect.insort(alist, 5)
+bisect.insort(alist, 3)
+bisect.insort(alist, 20)
+bisect.insort(alist, 17)
 <span style="color: #3a81c3; font-weight: bold;">print</span> alist
 <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; [3, 5, 17, 20]</span>
 </pre>
@@ -479,12 +501,12 @@ bisect.insort<span style="color: #3a81c3;">(</span>alist, <span style="color: #4
 </div>
 </div>
 
-<div id="outline-container-org97db522" class="outline-3">
-<h3 id="org97db522"><span class="section-number-3">2.2</span> list vs. tuple</h3>
+<div id="outline-container-org43f7545" class="outline-3">
+<h3 id="org43f7545"><span class="section-number-3">2.2</span> list vs. tuple</h3>
 <div class="outline-text-3" id="text-2-2">
 </div>
-<div id="outline-container-org70b1ec5" class="outline-4">
-<h4 id="org70b1ec5"><span class="section-number-4">2.2.1</span> list</h4>
+<div id="outline-container-orge32dd81" class="outline-4">
+<h4 id="orge32dd81"><span class="section-number-4">2.2.1</span> list</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <p>
 dynamic arrays, mutable and allow for resizing.
@@ -492,8 +514,8 @@ dynamic arrays, mutable and allow for resizing.
 </div>
 
 <ul class="org-ul">
-<li><a id="org24efb35"></a>resizing<br />
-<div class="outline-text-5" id="text-org24efb35">
+<li><a id="org7ca4308"></a>resizing<br />
+<div class="outline-text-5" id="text-org7ca4308">
 <p>
 The growth pattern is:
 </p>
@@ -550,15 +572,15 @@ The growth pattern is:
 </tbody>
 </table>
 <div class="org-src-container">
-<pre class="src src-c">new_allocated = <span style="color: #3a81c3;">(</span>newsize &gt;&gt; <span style="color: #4e3163;">3</span><span style="color: #3a81c3;">)</span> + <span style="color: #3a81c3;">(</span>newsize &lt; <span style="color: #4e3163;">9</span> ? <span style="color: #4e3163;">3</span> : <span style="color: #4e3163;">6</span><span style="color: #3a81c3;">)</span>;
+<pre class="src src-c">new_allocated = (newsize &gt;&gt; 3) + (newsize &lt; 9 ? 3 : 6);
 new_allocated += newsize;
 </pre>
 </div>
 </div>
 </li>
 
-<li><a id="orgb61a51d"></a>dereference<br />
-<div class="outline-text-5" id="text-orgb61a51d">
+<li><a id="orga15ca88"></a>dereference<br />
+<div class="outline-text-5" id="text-orga15ca88">
 <p>
 List objects (for background, see Chapter 3) have an overhead for each dereference, as
 the objects they reference can occur anywhere in memory.
@@ -568,8 +590,8 @@ the objects they reference can occur anywhere in memory.
 </ul>
 </div>
 
-<div id="outline-container-orgfdeab4a" class="outline-4">
-<h4 id="orgfdeab4a"><span class="section-number-4">2.2.2</span> tuple</h4>
+<div id="outline-container-orga0d2361" class="outline-4">
+<h4 id="orga0d2361"><span class="section-number-4">2.2.2</span> tuple</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <p>
 static arrays, immutable
@@ -583,37 +605,37 @@ static arrays, immutable
 </div>
 </div>
 
-<div id="outline-container-org342c88c" class="outline-2">
-<h2 id="org342c88c"><span class="section-number-2">3</span> set &amp; dict</h2>
+<div id="outline-container-orge07e3c2" class="outline-2">
+<h2 id="orge07e3c2"><span class="section-number-2">3</span> set &amp; dict</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org3595bc3" class="outline-3">
-<h3 id="org3595bc3"><span class="section-number-3">3.1</span> hashable key</h3>
+<div id="outline-container-org513d90e" class="outline-3">
+<h3 id="org513d90e"><span class="section-number-3">3.1</span> hashable key</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 The type should implements both the <span class="underline"><span class="underline">hash</span></span> magic function and either <span class="underline"><span class="underline">eq</span></span> or <span class="underline"><span class="underline">cmp</span></span> .
 </p>
 </div>
-<div id="outline-container-orge8e0c85" class="outline-4">
-<h4 id="orge8e0c85"><span class="section-number-4">3.1.1</span> probing function</h4>
+<div id="outline-container-org53190f0" class="outline-4">
+<h4 id="org53190f0"><span class="section-number-4">3.1.1</span> probing function</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pseudocode</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">mask is always equal to bin(hashtable_size - 1)</span>
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">index_sequence</span><span style="color: #3a81c3;">(</span>key, mask=<span style="color: #4e3163;">0b111</span>, PERTURB_SHIFT=<span style="color: #4e3163;">5</span><span style="color: #3a81c3;">)</span>:
-    <span style="color: #715ab1;">perturb</span> = <span style="color: #3a81c3;">hash</span><span style="color: #3a81c3;">(</span>key<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">index_sequence</span>(key, mask=0b111, PERTURB_SHIFT=5):
+    <span style="color: #715ab1;">perturb</span> = <span style="color: #3a81c3;">hash</span>(key)
     <span style="color: #715ab1;">i</span> = perturb &amp; mask
     <span style="color: #3a81c3; font-weight: bold;">yield</span> i
     <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
-        <span style="color: #715ab1;">i</span> = <span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>i &lt;&lt; <span style="color: #4e3163;">2</span><span style="color: #6c3163;">)</span> + i + perturb + <span style="color: #4e3163;">1</span><span style="color: #3a81c3;">)</span>
+        <span style="color: #715ab1;">i</span> = ((i &lt;&lt; 2) + i + perturb + 1)
         <span style="color: #715ab1;">perturb</span> &gt;&gt;= PERTURB_SHIFT
         <span style="color: #3a81c3; font-weight: bold;">yield</span> i &amp; mask
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org37abb70" class="outline-4">
-<h4 id="org37abb70"><span class="section-number-4">3.1.2</span> User-defined classes</h4>
+<div id="outline-container-orgb0b3a5a" class="outline-4">
+<h4 id="orgb0b3a5a"><span class="section-number-4">3.1.2</span> User-defined classes</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 User-defined classes have default hash and comparison functions.
@@ -625,8 +647,8 @@ placement in memory.
 </div>
 </div>
 
-<div id="outline-container-orgadacbb5" class="outline-4">
-<h4 id="orgadacbb5"><span class="section-number-4">3.1.3</span> entropy</h4>
+<div id="outline-container-org8c7fed5" class="outline-4">
+<h4 id="org8c7fed5"><span class="section-number-4">3.1.3</span> entropy</h4>
 <div class="outline-text-4" id="text-3-1-3">
 <p>
 “how well distributed my hash function is” is called the <b>entropy</b>
@@ -646,13 +668,13 @@ the dictionary will be helps in making a good selection.
 </div>
 </div>
 
-<div id="outline-container-org14bf5b2" class="outline-3">
-<h3 id="org14bf5b2"><span class="section-number-3">3.2</span> resizing</h3>
+<div id="outline-container-org4577880" class="outline-3">
+<h3 id="org4577880"><span class="section-number-3">3.2</span> resizing</h3>
 <div class="outline-text-3" id="text-3-2">
 </div>
 <ul class="org-ul">
-<li><a id="orge890b51"></a>The growth pattern is:<br />
-<div class="outline-text-5" id="text-orge890b51">
+<li><a id="org9df6f34"></a>The growth pattern is:<br />
+<div class="outline-text-5" id="text-org9df6f34">
 <p>
 8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, &#x2026;
 the number of bucket increases by 4x until we reach 50,000
@@ -666,53 +688,53 @@ resizing requires recomputing indices
 </li>
 </ul>
 </div>
-<div id="outline-container-org8051e23" class="outline-3">
-<h3 id="org8051e23"><span class="section-number-3">3.3</span> extra</h3>
+<div id="outline-container-orgb02257e" class="outline-3">
+<h3 id="orgb02257e"><span class="section-number-3">3.3</span> extra</h3>
 <div class="outline-text-3" id="text-3-3">
 </div>
-<div id="outline-container-orgc4a3afe" class="outline-4">
-<h4 id="orgc4a3afe"><span class="section-number-4">3.3.1</span> Namespace lookups</h4>
+<div id="outline-container-org71de7f0" class="outline-4">
+<h4 id="org71de7f0"><span class="section-number-4">3.3.1</span> Namespace lookups</h4>
 <div class="outline-text-4" id="text-3-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> math
 <span style="color: #3a81c3; font-weight: bold;">from</span> math <span style="color: #3a81c3; font-weight: bold;">import</span> sin
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test1</span><span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>:
-    <span style="color: #2d9574;">"""</span>
-<span style="color: #2d9574;">    &gt;&gt;&gt; %timeit test1(123456)</span>
-<span style="color: #2d9574;">    1000000 loops, best of 3: 381 ns per loop</span>
-<span style="color: #2d9574;">    """</span>
-    <span style="color: #3a81c3; font-weight: bold;">return</span> math.sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test1</span>(x):
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit test1(123456)</span>
+<span style="color: #da8b55;">    1000000 loops, best of 3: 381 ns per loop</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> math.sin(x)
 
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test2</span><span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>:
-    <span style="color: #2d9574;">"""</span>
-<span style="color: #2d9574;">    &gt;&gt;&gt; %timeit test2(123456)</span>
-<span style="color: #2d9574;">    1000000 loops, best of 3: 311 ns per loop</span>
-<span style="color: #2d9574;">    """</span>
-    <span style="color: #3a81c3; font-weight: bold;">return</span> sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test2</span>(x):
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit test2(123456)</span>
+<span style="color: #da8b55;">    1000000 loops, best of 3: 311 ns per loop</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> sin(x)
 
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test3</span><span style="color: #3a81c3;">(</span>x, sin=math.sin<span style="color: #3a81c3;">)</span>:
-    <span style="color: #2d9574;">"""</span>
-<span style="color: #2d9574;">    &gt;&gt;&gt; %timeit test3(123456)</span>
-<span style="color: #2d9574;">    1000000 loops, best of 3: 306 ns per loop</span>
-<span style="color: #2d9574;">    """</span>
-    <span style="color: #3a81c3; font-weight: bold;">return</span> sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test3</span>(x, sin=math.sin):
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit test3(123456)</span>
+<span style="color: #da8b55;">    1000000 loops, best of 3: 306 ns per loop</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> sin(x)
 </pre>
 </div>
 <div class="org-src-container">
-<pre class="src src-python">dis.dis<span style="color: #3a81c3;">(</span>test1<span style="color: #3a81c3;">)</span>
+<pre class="src src-python">dis.dis(test1)
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_GLOBAL      0 (math)  # Dictionary lookup</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_ATTR        1 (sin)   # Dictionary lookup</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 LOAD_FAST        0 (x)     # Local lookup</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">9 CALL_FUNCTION    1</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">12 RETURN_VALUE</span>
 
-dis.dis<span style="color: #3a81c3;">(</span>test2<span style="color: #3a81c3;">)</span>
+dis.dis(test2)
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_GLOBAL      0 (sin)   # Dictionary lookup</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_FAST        0 (x)     # Local lookup</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 CALL_FUNCTION    1</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">9 RETURN_VALUE</span>
 
-dis.dis<span style="color: #3a81c3;">(</span>test3<span style="color: #3a81c3;">)</span>
+dis.dis(test3)
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_FAST        1 (sin)   # Local lookup</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_FAST        0 (x)     # Local lookup</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 CALL_FUNCTION    1</span>
