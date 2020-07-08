@@ -1149,6 +1149,150 @@ reindex args: index, method, fill_value, limit, level, copy
       by_year.apply(regress, 'AAPL', ['SPX'])
     #+END_SRC
 
+* Timeseries
+** Special Frequencies
+   - "1h30min"
+   - "WOM-3FRI": the third Friday of each month:
+
+** Offset Objects
+   #+BEGIN_SRC python
+     from pandas.tseries.offsets import Day, MonthEnd
+
+     now = datetime(2011, 11, 17)
+     now + 3 * Day()  # -> Timestamp('2011-11-20 00:00:00')
+     now + MonthEnd()  # -> Timestamp('2011-11-30 00:00:00') "roll forward"
+     # same as
+     offset = MonthEnd()
+     offset.rollforward(now)
+
+     offset.rollback(now)
+   #+END_SRC
+   - rollforward/rollback is useful with groupby(like resample but slower): ~ts.groupby(offset.rollforward).mean()~
+
+** Time Zone Localization
+   - ~ts.tz_localize("UTC")~: same way like ~dt.replace~
+
+** Periods
+   Periods represent timespans, like days, months, quarters, or years.
+   #+BEGIN_SRC python
+     p = pd.Period(2007, freq="A-DEC")  # represents the full timespan from 2017-1-1 to 2017-12-31.
+     p + 5  # Period('2012', 'A-DEC')
+
+     rng = pd.period_range("2000-01-01", "2000-06-30", freq="M")
+     # rng -> PeriodIndex(['2000-01', '2000-02', '2000-03', '2000-04', '2000-05', '2000-06'], dtype='period[M]', freq='M')
+
+     m = p.asfreq("M", how="start")  # converting from low to high frequency
+     m.asfreq("A-DEC")  # converting from high to low frequency depending on where the subperiod “belongs.”
+   #+END_SRC
+*** Frequencies
+   - A-DEC: annual frequency end at DEC
+   - Q-SEP: fiscal quarter Q4 end at SEP
+
+*** Converting from/to Timestamps
+    - ~ts.to_period~
+    - ~ts.to_timestamp(how="end")~
+
+*** From Different Columns
+    ~pd.PeriodIndex(year=data.year, quarter=data.quarter, freq='Q-DEC')~
+
+** Resampling
+*** Downsampling
+    - Label: ~resample(label="right")~. For "T" freq, *9:01* represents *9:00~9:01*
+
+*** Upsampling
+    often need an aggregation function
+    - without any aggregation, but introduce None data: ~asfreq~
+
+** Moving Window
+   Can be useful for *smoothing noisy* or *gappy* data.
+*** ~rolling~
+    - rolling by time offset: ~close_px.rolling('20D').mean()~
+
+*** ~expanding~
+    The expanding mean starts the time window from the beginning of the time series and increases the size of the window
+    until it encompasses the whole series.
+
+*** ~ewm~
+    The idea is to specify a constant decay factor to give more weight to more recent observations.
+    There are a couple of ways to specify the decay factor. A popular one is using a /span/.
+    which makes the result comparable to a simple moving window function with window size equal to the /span/.
+    - with decay factor /span/: ~aapl_px.ewm(span=30).mean()~
+
+** Binary Moving Window
+   Some statistical operators need to operate on two time series, like correlation and covariance
+   #+BEGIN_SRC python
+     aapl_rets.rolling(125, min_periods=100).corr(spx_rets)
+     rets_df.rolling(125, min_periods=100).corr(spx_rets)
+   #+END_SRC
+
+** User-Defined Moving Window Functions
+   The only requirement is that the function produce a single value (a reduction) from each piece of the array.
+   #+BEGIN_SRC python
+     from scipy.stats import percentileofscore
+     score_at_2percent = lambda x: percentileofscore(x, 0.02)
+     result = returns.AAPL.rolling(250).apply(score_at_2percent)
+   #+END_SRC
+
+** Tips
+   - normalized date range: ~pd.date_range('2012-05-02 12:56:31', periods=5, normalize=True)~
+   - shift by freq: ~ts.shift(2, freq="M")~
+   - shortcut for ohlc reampling: ts.resample("5min").ohlc()
+   - rolling with min_periods: ~aapl_px.rolling(125, min_periods=100)~
+
+* Categorical Data
+** Motivation
+   #+BEGIN_SRC python
+     values = pd.Series([0, 1, 0, 0] * 2)
+     dim = pd.Series(['apple', 'orange'])
+     # dim
+     # 0 apple
+     # 1 orange
+     # dtype: object
+     dim.take(values)
+     # 0 apple
+     # 1 orange
+     # 0 apple
+     # 0 apple
+     # ...
+   #+END_SRC
+   - The representation ~values~ as integers is called the categorical or dictionary-encoded representation.
+   - The array ~dim~ of distinct values can be called the categories, dictionary, or levels of the data.
+   - The integer values that reference the categories are called the /category codes/ or /simply codes/.
+
+** Categorical Type
+   - ~pd.Categorical(data: Iterable[str])~
+   - converting string series to categorical: ~s.astype("category")~
+   - converting integer series to categorical: ~pd.Categorical.from_codes(codes: pd.Series[int], categories: Iterable[str])~
+   - numeric data to categorical: ~bins = pd.qcut(data, 4, labels=["Q1", "Q2", "Q3", "Q4"])~. often using ~groupby(bins)~ after
+*** Better Performance
+    - ~categories.memory_usage()~ is less
+    - GroupBy operations can be significantly faster with categoricals
+    - In large datasets, categoricals are often used as a convenient tool for memory savings and better performance
+
+** Categorical Methods
+   ~Series.cat~ is similar to ~Series.str~
+   - categorical is replaced with string categories:  ~cat_s.cat.set_categories(actual_categories)~
+   - methods: ~add_categories~, ~as_ordered~, ~as_unordered~, ~remove_categories~, ~remove_unused_categories~,
+     ~rename_categories~, ~reorder_categories~, ~set_categories~
+
+*** Creating Dummy Variables for Modeling
+    When you're using statistics or machine learning tools, you'll often transform categorical data
+    into dummy variables, also known as one-hot encoding.
+    #+BEGIN_SRC python
+      cat_s = pd.Series(['a', 'b', 'c', 'd'] * 2, dtype='category')
+      pd.get_dummies(cat_s)
+      #    a  b  c  d
+      # 0  1  0  0  0
+      # 1  0  1  0  0
+      # 2  0  0  1  0
+      # 3  0  0  0  1
+      # 4  1  0  0  0
+      # 5  0  1  0  0
+      # 6  0  0  1  0
+      # 7  0  0  0  1
+    #+END_SRC
+
+
 * Other Tools
 ** ipyparallel
    #+BEGIN_SRC sh
