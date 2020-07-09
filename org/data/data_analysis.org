@@ -547,117 +547,6 @@ reindex args: index, method, fill_value, limit, level, copy
         stacked.to_panel()
       #+END_SRC
 
-** TimeSeries
-*** numpy.datetime64
-    nanoseconds resolution.
-    pandas *stores* timestamps as numpy.datetime64
-*** pandas *Timestamp*
-**** timezone-aware
-**** to_period
-*** Indexing
-    #+BEGIN_SRC python
-      ts[(time(10,0))]
-      # same as
-      ts.at_time(time(10,0))
-
-      ts.between_time(time(10, 0), time(10, 30))
-      ts.asof(pd.date_range('2016-05-01 10:00', periods=4, freq='B'))
-    #+END_SRC
-**** asof
-     By passing an array of timestamps to the asof method, you will obtain
-     an array of the last valid(non-NA) values at or before each timestamps.
-*** Frequencies
-    #+CAPTION: Base Time Series Frequencies
-    | Alias               | Offset Type          |
-    |---------------------+----------------------|
-    | D                   | Day                  |
-    | B                   | BusinessDay          |
-    | H                   | Hour                 |
-    | T or min            | Minute               |
-    | S                   | Second               |
-    | L or ms             | Milli                |
-    | U                   | Micro                |
-    | M                   | MonthEnd             |
-    | BM                  | BusinessMonthEnd     |
-    | MS                  | MonthBegin           |
-    | BMS                 | BusinessMonthBegin   |
-    | W-Mon, W-TUE, ...   | Week                 |
-    | WOM-1MON, ...       | WeekOfMonth          |
-    | Q-JAN, Q-FEB, ...   | QuarterEnd           |
-    | BQ-JAN, BQ-FEB, ... | BusinessQuarterEnd   |
-    | QS-JAN, ...         | QuarterBegin         |
-    | BQS-JAN, ...        | BusinessQuarterBegin |
-    | A-JAN, ...          | YearEnd              |
-    | BA-JAN, ...         | BusinessYearEnd      |
-    | AS-JAN, ...         | YearBegin            |
-    | BAS-JAN, ...        | BusinessYearBegin    |
-**** Users can define custom frequency classes
-**** offsets can also be used with *datetime* or *Timestamp* objects
-**** offset.rollforward/rollback
-     #+BEGIN_SRC python
-       ts.groupby(offset.rollforward).mean()
-     #+END_SRC
-     but *resample* is faster
-
-*** Timezone
-    internal library: *pytz*
-**** tz_localize
-**** tz_convert
-*** Period
-**** pandas.Period
-**** pandas.PeriodIndex
-*** Resample
-    Aggregating higher frequency data to lower frequency is called downsampling,
-    while converting lower frequency to higher frequency is called upsampling.
-**** args
-     #+CAPTION: Resample method arguments
-     | Argument         | Description                                                                                                             |
-     |------------------+-------------------------------------------------------------------------------------------------------------------------|
-     | freq             | String or DateOffset indicating desired resampled frequency, e.g. ‘M', ’5min', or Second(15)                          |
-     | how='mean'       | Function name or array function producing aggregated value, for example 'ohlc' , np.max. Default 'mean'                 |
-     | axis=0           | Axis to resample on, default axis=0                                                                                     |
-     | fill_method=None | How to interpolate when upsampling, as in 'ffill' or 'bfill' . By default does no interpolation.                        |
-     | closed='right'   | In downsampling, which end of each interval is closed (inclusive). Default 'right'                                      |
-     | label='right'    | In downsampling, how to label the aggregated result, with the 'right' or 'left bin edge                                 |
-     | loffset=None     | Time adjustment to the bin labels, such as '-1s' / Second(-1) to shift the aggregate labels one second earlier          |
-     | limit=None       | When forward or backward filling, the maximum number of periods to fill                                                 |
-     | kind=None        | Aggregate to periods or timestamps                                                                                      |
-     | convention=None  | When resampling periods, the convention ( 'start' or 'end' ) for converting the low frequency period to high frequency. |
-
-*** useful functions
-**** truncate
-     slices a timeseries between two dates
-**** normalize
-     convert times to midnight
-
-**** compute returns
-     #+BEGIN_SRC python
-       returns = price.pct_change()
-       ret_index = (1 + returns).cumprod()
-       ret_index[0] = 1
-     #+END_SRC
-*** moving window
-     | Function                   | Description                                                                          |
-     |----------------------------+--------------------------------------------------------------------------------------|
-     | rolling_count              | Returns number of non-NA observations in each trailing window.                       |
-     | rolling_sum                | Moving window sum.                                                                   |
-     | rolling_mean               | Moving window mean.                                                                  |
-     | rolling_median             | Moving window median.                                                                |
-     | rolling_var, rolling_std   | Moving window variance and standard deviation, respectively. Uses n - 1 denominator. |
-     | rolling_skew, rolling_kurt | Moving window skewness (3rd moment) and kurtosis (4th moment), respectively.         |
-     | rolling_min, rolling_max   | Moving window minimum and maximum.                                                   |
-     | rolling_quantile           | Moving window score at percentile/sample quantile.                                   |
-     | rolling_corr, rolling_cov  | Moving window correlation and covariance.                                            |
-     | rolling_apply              | Apply generic array function over a moving window.                                   |
-     | ewma                       | Exponentially-weighted moving average.                                               |
-     | ewmvar, ewmstd             | Exponentially-weighted moving variance and standard deviation.                       |
-     | ewmcorr, ewmcov            | Exponentially-weighted moving correlation and covariance.                            |
-**** exponentially-weighted
-     Exponentially-weighted statistic places more weight on more recent observations
-     It "adapts" *faster* to changes compared with the equal-weighted version.
-**** expanding window mean
-     It is just a special case where the window is the length of the time series.
-
 ** config options
    pd.options categories:
    - compute
@@ -665,6 +554,49 @@ reindex args: index, method, fill_value, limit, level, copy
    - io
    - mode
    - plotting
+
+** Functional Method Chaining
+   #+BEGIN_SRC python
+     # Usual non-functional way
+     df2 = df.copy()
+     df2["k"] = v
+
+     # Functional assign way
+     df2 = df.assign(k=v)
+
+     result = df2.assign(col1_demeaned=df2.col1 - df2.col2.mean()).groupby("key").col1_demeaned.std()
+   #+END_SRC
+   - Assigning in-place may execute faster than using assign, but assign enables easier method chaining
+*** *Fancy Method Chaining*
+   #+BEGIN_SRC python
+     df = load_data()
+     df2 = df[df['col2'] < 0]
+     # This can be rewritten as:
+     df = (load_data()
+           [lambda x: x['col2'] < 0])
+
+     # write the entire sequence as a single chained expression
+     result = (load_data()
+               [lambda x: x.col2 < 0]
+               .assign(col1_demeaned=lambda x: x.col1 - x.col1.mean())
+               .groupby('key')
+               .col1_demeaned.std())
+   #+END_SRC
+
+*** ~pipe~ method
+    The statement ~f(df)~ and ~df.pipe(f)~ are equivalent
+**** useful pattern for ~pipe~
+     #+BEGIN_SRC python
+       def group_demean(df, by, cols):
+           result = df.copy()
+           g = df.groupby(by)
+           for c in cols:
+               result[c] = df[c] - g[c].transform("mean")
+           return result
+
+
+       result = df[df.col1 < 0].pipe(group_demean, ["key1", "key2"], ["col1"])
+     #+END_SRC
 
 * Wrangling
 ** Evaluate Data
@@ -1103,6 +1035,19 @@ reindex args: index, method, fill_value, limit, level, copy
        # All        3 7 10
      #+END_SRC
 
+** ~transform~
+   similar to ~apply~ but imposes more constraints:
+   - It can produce a scalar value to be broadcast to the shape of the group
+   - It can produce an object of the *same shape* as the input group
+   - It must not mutate its input
+
+*** /unwrapped/ group operation
+    #+BEGIN_SRC python
+      normalized = (df['value'] - g.transform('mean')) / g.transform('std')
+      # faster than
+      g.apply(lambda x: (x - x.mean()) / x.std())
+    #+END_SRC
+
 ** Examples
 *** Group Weighted Average
     #+BEGIN_SRC python
@@ -1149,8 +1094,55 @@ reindex args: index, method, fill_value, limit, level, copy
       by_year.apply(regress, 'AAPL', ['SPX'])
     #+END_SRC
 
+*** Grouped Time Resampling
+    #+BEGIN_SRC python
+      times = pd.date_range('2017-05-20 00:00', freq='1min', periods=N)
+      df = pd.DataFrame({'time': times.repeat(3),
+                         'key': np.tile(['a', 'b', 'c'], N),
+                         'value': np.arange(N * 3.)})
+      time_key = pd.TimeGrouper('5min')
+      resampled = (df.set_index('time').groupby(['key', time_key]).sum())
+    #+END_SRC
+
 * Timeseries
+** Indexing
+    #+BEGIN_SRC python
+      ts[(time(10,0))]
+      # same as
+      ts.at_time(time(10,0))
+
+      ts.between_time(time(10, 0), time(10, 30))
+      ts.asof(pd.date_range('2016-05-01 10:00', periods=4, freq='B'))
+    #+END_SRC
+*** asof
+     By passing an array of timestamps to the asof method, you will obtain
+     an array of the last valid(non-NA) values at or before each timestamps.
 ** Special Frequencies
+    #+CAPTION: Base Time Series Frequencies
+    | Alias               | Offset Type          |
+    |---------------------+----------------------|
+    | D                   | Day                  |
+    | B                   | BusinessDay          |
+    | H                   | Hour                 |
+    | T or min            | Minute               |
+    | S                   | Second               |
+    | L or ms             | Milli                |
+    | U                   | Micro                |
+    | M                   | MonthEnd             |
+    | BM                  | BusinessMonthEnd     |
+    | MS                  | MonthBegin           |
+    | BMS                 | BusinessMonthBegin   |
+    | W-Mon, W-TUE, ...   | Week                 |
+    | WOM-1MON, ...       | WeekOfMonth          |
+    | Q-JAN, Q-FEB, ...   | QuarterEnd           |
+    | BQ-JAN, BQ-FEB, ... | BusinessQuarterEnd   |
+    | QS-JAN, ...         | QuarterBegin         |
+    | BQS-JAN, ...        | BusinessQuarterBegin |
+    | A-JAN, ...          | YearEnd              |
+    | BA-JAN, ...         | BusinessYearEnd      |
+    | AS-JAN, ...         | YearBegin            |
+    | BAS-JAN, ...        | BusinessYearBegin    |
+*** examples
    - "1h30min"
    - "WOM-3FRI": the third Friday of each month:
 
@@ -1205,6 +1197,21 @@ reindex args: index, method, fill_value, limit, level, copy
 
 ** Moving Window
    Can be useful for *smoothing noisy* or *gappy* data.
+     | Function                   | Description                                                                          |
+     |----------------------------+--------------------------------------------------------------------------------------|
+     | rolling_count              | Returns number of non-NA observations in each trailing window.                       |
+     | rolling_sum                | Moving window sum.                                                                   |
+     | rolling_mean               | Moving window mean.                                                                  |
+     | rolling_median             | Moving window median.                                                                |
+     | rolling_var, rolling_std   | Moving window variance and standard deviation, respectively. Uses n - 1 denominator. |
+     | rolling_skew, rolling_kurt | Moving window skewness (3rd moment) and kurtosis (4th moment), respectively.         |
+     | rolling_min, rolling_max   | Moving window minimum and maximum.                                                   |
+     | rolling_quantile           | Moving window score at percentile/sample quantile.                                   |
+     | rolling_corr, rolling_cov  | Moving window correlation and covariance.                                            |
+     | rolling_apply              | Apply generic array function over a moving window.                                   |
+     | ewma                       | Exponentially-weighted moving average.                                               |
+     | ewmvar, ewmstd             | Exponentially-weighted moving variance and standard deviation.                       |
+     | ewmcorr, ewmcov            | Exponentially-weighted moving correlation and covariance.                            |
 *** ~rolling~
     - rolling by time offset: ~close_px.rolling('20D').mean()~
 
@@ -1291,7 +1298,6 @@ reindex args: index, method, fill_value, limit, level, copy
       # 6  0  0  1  0
       # 7  0  0  0  1
     #+END_SRC
-
 
 * Other Tools
 ** ipyparallel
