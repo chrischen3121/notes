@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2020-06-09 Tue 16:22 -->
+<!-- 2020-07-14 Tue 14:19 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Pytest</title>
@@ -275,7 +275,12 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#org5ebdc4e">5. Mocks</a></li>
-<li><a href="#org13c27ec">6. Asycnio</a></li>
+<li><a href="#org13c27ec">6. Asycnio</a>
+<ul>
+<li><a href="#orgba6d4c4">6.1. <code>pytest-asyncio</code></a></li>
+<li><a href="#org2734ecf">6.2. <code>asynctest</code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -365,7 +370,6 @@ have pytest report if any of the sets failed. <code>@pytest.mark.parametrize</co
 </div>
 </div>
 </div>
-
 
 <div id="outline-container-org7bd5b47" class="outline-2">
 <h2 id="org7bd5b47"><span class="section-number-2">3</span> Fixtures</h2>
@@ -621,6 +625,90 @@ monkeypatch.<span style="color: #3a81c3;">setattr</span>(cheese.os.path, &#8203;
 
 <div id="outline-container-org13c27ec" class="outline-2">
 <h2 id="org13c27ec"><span class="section-number-2">6</span> Asycnio</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgba6d4c4" class="outline-3">
+<h3 id="orgba6d4c4"><span class="section-number-3">6.1</span> <code>pytest-asyncio</code></h3>
+<div class="outline-text-3" id="text-6-1">
+<ul class="org-ul">
+<li><code>@pytest.fixture</code> can decorate coroutines or async generators</li>
+<li>custom event loop</li>
+<li><code>@pytest.mark.asyncio</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2734ecf" class="outline-3">
+<h3 id="org2734ecf"><span class="section-number-3">6.2</span> <code>asynctest</code></h3>
+<div class="outline-text-3" id="text-6-2">
+</div>
+<div id="outline-container-org9787a19" class="outline-4">
+<h4 id="org9787a19"><span class="section-number-4">6.2.1</span> Mock</h4>
+<div class="outline-text-4" id="text-6-2-1">
+<ul class="org-ul">
+<li><code>asynctest.Mock(object)</code></li>
+<li><code>asynctest.create_autospec(class/func)</code>: to create mock objects</li>
+<li><code>side_effect</code> can be a function, an exception object or class or any iterable object.</li>
+<li>Putting it all together</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asynctest
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">TestCacheWithMagicMethods</span>(asynctest.TestCase):
+    <span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">test_one_user_added_to_cache</span>(<span style="color: #3a81c3; font-weight: bold;">self</span>):
+        <span style="color: #715ab1;">user</span> = StubClient.User(1, <span style="color: #2d9574;">"a.dmin"</span>)
+
+        <span style="color: #715ab1;">AsyncClientMock</span> = asynctest.create_autospec(AsyncClient)
+
+        <span style="color: #715ab1;">transaction</span> = asynctest.MagicMock()
+        <span style="color: #715ab1;">transaction.__aenter__.side_effect</span> = AsyncClientMock
+
+        <span style="color: #715ab1;">cursor</span> = asynctest.MagicMock()
+        <span style="color: #715ab1;">cursor.__aiter__.return_value</span> = [user]
+
+        <span style="color: #715ab1;">client</span> = AsyncClientMock()
+        <span style="color: #715ab1;">client.new_transaction.return_value</span> = transaction
+        <span style="color: #715ab1;">client.get_users_cursor.return_value</span> = cursor
+
+        <span style="color: #715ab1;">cache</span> = {}
+
+        <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">The user has been added to the cache</span>
+        <span style="color: #715ab1;">nb_added</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> cache_users_with_cursor(client, cache)
+
+        <span style="color: #3a81c3; font-weight: bold;">self</span>.assertEqual(nb_added, 1)
+        <span style="color: #3a81c3; font-weight: bold;">self</span>.assertEqual(cache[1], user)
+
+        <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">The user was already there</span>
+        <span style="color: #715ab1;">nb_added</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> cache_users_with_cursor(client, cache)
+        <span style="color: #3a81c3; font-weight: bold;">self</span>.assertEqual(nb_added, 0)
+        <span style="color: #3a81c3; font-weight: bold;">self</span>.assertEqual(cache[1], user)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org87c2644" class="outline-4">
+<h4 id="org87c2644"><span class="section-number-4">6.2.2</span> Patching</h4>
+<div class="outline-text-4" id="text-6-2-2">
+<p>
+Patching is especially useful when one need a mock, but can't pass it as a parameter of the function to be tested.
+</p>
+<ul class="org-ul">
+<li>When an object is hard to mock, it sometimes shows a <b>limitation in the design</b>: a coupling that is too tight</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">with</span> asynctest.patch(<span style="color: #2d9574;">"logging.debug"</span>) <span style="color: #3a81c3; font-weight: bold;">as</span> debug_mock:
+    <span style="color: #3a81c3; font-weight: bold;">await</span> cache_users_async(client, cache)
+debug_mock.assert_called()
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">or</span>
+<span style="color: #ba2f59; font-weight: bold;">@asynctest.patch</span>(<span style="color: #2d9574;">"logging.error"</span>)
+<span style="color: #ba2f59; font-weight: bold;">@asynctest.patch</span>(<span style="color: #2d9574;">"logging.debug"</span>)
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">test_with_decorator</span>(<span style="color: #3a81c3; font-weight: bold;">self</span>, debug_mock, error_mock):
+    ...
+</pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </body>

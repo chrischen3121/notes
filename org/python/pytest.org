@@ -51,7 +51,6 @@
      @pytest.mark.parametrize('arg1,arg2', [(1, 'arg2_value1'), (2, 'arg2_value2')])
    #+END_SRC
 
-
 * Fixtures
 ** Tracing Fixture Execution
    - ~--setup-show~
@@ -177,3 +176,59 @@
   - ~mocker.patch.object~
 
 * Asycnio
+** ~pytest-asyncio~
+   - ~@pytest.fixture~ can decorate coroutines or async generators
+   - custom event loop
+   - ~@pytest.mark.asyncio~
+
+** ~asynctest~
+*** Mock
+   - ~asynctest.Mock(object)~
+   - ~asynctest.create_autospec(class/func)~: to create mock objects
+   - ~side_effect~ can be a function, an exception object or class or any iterable object.
+   - Putting it all together
+   #+BEGIN_SRC python
+     import asynctest
+     class TestCacheWithMagicMethods(asynctest.TestCase):
+         async def test_one_user_added_to_cache(self):
+             user = StubClient.User(1, "a.dmin")
+
+             AsyncClientMock = asynctest.create_autospec(AsyncClient)
+
+             transaction = asynctest.MagicMock()
+             transaction.__aenter__.side_effect = AsyncClientMock
+
+             cursor = asynctest.MagicMock()
+             cursor.__aiter__.return_value = [user]
+
+             client = AsyncClientMock()
+             client.new_transaction.return_value = transaction
+             client.get_users_cursor.return_value = cursor
+
+             cache = {}
+
+             # The user has been added to the cache
+             nb_added = await cache_users_with_cursor(client, cache)
+
+             self.assertEqual(nb_added, 1)
+             self.assertEqual(cache[1], user)
+
+             # The user was already there
+             nb_added = await cache_users_with_cursor(client, cache)
+             self.assertEqual(nb_added, 0)
+             self.assertEqual(cache[1], user)
+   #+END_SRC
+*** Patching
+    Patching is especially useful when one need a mock, but can't pass it as a parameter of the function to be tested.
+    - When an object is hard to mock, it sometimes shows a *limitation in the design*: a coupling that is too tight
+    #+BEGIN_SRC python
+      with asynctest.patch("logging.debug") as debug_mock:
+          await cache_users_async(client, cache)
+      debug_mock.assert_called()
+
+      # or
+      @asynctest.patch("logging.error")
+      @asynctest.patch("logging.debug")
+      async def test_with_decorator(self, debug_mock, error_mock):
+          ...
+    #+END_SRC
