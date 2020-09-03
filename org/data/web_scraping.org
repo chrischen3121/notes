@@ -20,11 +20,13 @@
 
       det http://example.webscraping.com
     #+END_SRC
+
 *** wappalyzer
     #+BEGIN_SRC shell
       docker pull wappalyzer/cli
       docker run wappalyzer/cli http://example.webscraping.com
     #+END_SRC
+
 *** whois
     #+BEGIN_SRC shell
       pip install python-whois
@@ -56,12 +58,9 @@
 ** robots.txt parser
     #+BEGIN_SRC python
       from urllib import robotparser
-      rp = robotparser.RobotFileParser()
-      rp.set_url(robots_url)
-
-      # apis
-      # read()
-      # can_fetch()
+      rp = robotparser.RobotFileParser(robots_url)
+      rp.read()
+      rp.can_fetch(useragent, url)
     #+END_SRC
     - useful function
       #+BEGIN_SRC python
@@ -81,6 +80,7 @@
       urllib.request.install_opener(opener)
       # now requests via urllib.request will be handled via proxy
     #+END_SRC
+
 ** Avoiding spider traps
    use *depth*. when a maximum depth is reached, the crawler does
    not add links from that web page to the queue.
@@ -117,32 +117,11 @@
      print(s.text)
    #+END_SRC
 
-** Documentation
-   [[http://python-requests.org/][Requests Documentation
-]]
-* BeautifulSoup
-** objects
-*** BeautifulSoup /objects/
-*** Tag /objects/
-    Retrieved in lists or individually by calling find and findAll on a BeautifulSoup object.
 
-*** NavigableString /objects/
-    Used to represent text within tags, rather than the tags themselves (some functions
-    operate on, and produce, NavigableStrings , rather than tag objects).
-
-*** The Comment /object/
-    Used to find HTML comments in comment tags
-
-** find&findAll
-   #+BEGIN_SRC python
-     findAll(name=None, attrs={}, recursive=True, text=None, limit=None, **kwargs)
-     find(name=None, attrs={}, recursive=True, text=None, **kwargs)
-     findAll(fn) # => fn(tag) : return bool
-   #+END_SRC
-
-** alternatives
-   - lxml: fast
-   - HTML Parser: built-in
+* Parsing Tools
+  - BeautifulSoup
+  - lxml: fast
+  - HTML Parser: built-in
 
 * Scrapy
   docs: https://docs.scrapy.org/en/latest/index.html
@@ -300,6 +279,7 @@
          print(driver.find_element_by_id("content").text)
          driver.close()
    #+END_SRC
+
 ** Selectors
    The following locator selection strategies can used with the By object:
    - ID: Used in the example; finds elements by their HTML id attribute.
@@ -326,8 +306,8 @@
 ** Handling Redirects
    We can detect that redirect in a clever way by “watching” an element in the DOM
    when the page initially loads, then repeatedly calling that element until Selenium
-   throws a StaleElementReferenceException ; that is, the element is no longer
-   attached to the page’s DOM and the site has redirected:
+   throws a StaleElementReferenceException; that is, the element is no longer
+   attached to the page's DOM and the site has redirected:
    #+BEGIN_SRC python
      from selenium import webdriver
      import time
@@ -351,7 +331,23 @@
      waitForLoad(driver)
      print(driver.page_source)
    #+END_SRC
+
+* Avoiding Scraping Traps
+** Adjust Youer Headers
+   #+begin_example
+     User-Agent:Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X)
+     AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257
+     Safari/9537.53
+   #+end_example
+
+** Handling Cookies
+** Timing is Everything
+** Hidden Input Field Values(or hidden by CSS)
+
+
 * Scaping Rule Checklist
+  If you keep getting blocked by websites and you don’t know why, here’s a checklist you can use to remedy the problem
+
   - First, if the page you are receiving from the web server is blank, missing information, or is otherwise not what you expect (or have seen in your own browser), it is likely caused by JavaScript being executed on the site to create the page.
   - If you are submitting a form or making a POST request to a website, check the page to make sure that everything the website is expecting you to submit is being submitted and in the correct format. Use a tool such as Chrome’s Network inspector to view an actual POST command sent to the site to make sure you’ve got everything.
   - If you are trying to log into a site and can’t make the login “stick,” or the website is experiencing other strange “state” behavior, check your cookies. Make sure that cookies are being persisted correctly between each page load and that your cookies are sent to the site for every request.
@@ -360,6 +356,7 @@
     - The obvious one: change your headers! Some sites will block anything that advertises itself as a scraper. Copy your own browser’s headers if you’re unsure about what some reasonable header values are.
     - Make sure you’re not clicking on or accessing anything that a human normally would not be able to
     - If you find yourself jumping through a lot of difficult hoops to gain access, consider contacting the website administrator to let them know what you’re doing. Try emailing webmaster@<domain name> or admin@<domain name> for permission to use your scrapers. Admins are people, too!
+
 * Tor
   #+BEGIN_SRC shell
     sudo apt-get install tor tor-geoipdb
