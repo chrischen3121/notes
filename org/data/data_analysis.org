@@ -1041,6 +1041,28 @@ reindex args: index, method, fill_value, limit, level, copy
    - It can produce an object of the *same shape* as the input group
    - It must not mutate its input
 
+*** examples
+    #+BEGIN_SRC python
+      df = pd.DataFrame({'key': ['a', 'b', 'c'] * 2, 'value': np.arange(6.)})
+      # =>
+      #   key  value
+      # 0   a    0.0
+      # 1   b    1.0
+      # 2   c    2.0
+      # 3   a    3.0
+      # 4   b    4.0
+      # 5   c    5.0
+      df.groupby("key").transform(lambda x: x.mean()) # or df.groupby("key").transform("mean")
+      # => same shape
+      #    value
+      # 0    1.5
+      # 1    2.5
+      # 2    3.5
+      # 3    1.5
+      # 4    2.5
+      # 5    3.5
+    #+END_SRC
+
 *** /unwrapped/ group operation
     #+BEGIN_SRC python
       normalized = (df['value'] - g.transform('mean')) / g.transform('std')
