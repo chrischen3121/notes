@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-01-06 Wed 12:06 -->
+<!-- 2021-01-06 Wed 18:24 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>elisp</title>
@@ -255,29 +255,40 @@ for the JavaScript code in this tag.
 <li><a href="#orga00d9be">6.1. examples</a></li>
 </ul>
 </li>
-<li><a href="#org2585efd">7. Association List(alist)</a></li>
-<li><a href="#orgba0f536">8. Quasiquoting[`]</a></li>
-<li><a href="#orga97cd01">9. Function Operator[#']</a></li>
-<li><a href="#orgbde3ead">10. Useful Functions &amp; Marcos</a>
+<li><a href="#orga97cd01">7. Function Operator[#']</a></li>
+<li><a href="#org4b8b417">8. Print &amp; Read</a>
 <ul>
-<li><a href="#org867153d">10.1. conditionals</a></li>
-<li><a href="#org0b0a1bd">10.2. <code>push/assoc</code> idiom</a></li>
+<li><a href="#org3c40a87">8.1. Print</a></li>
+<li><a href="#org6068ee5">8.2. Read</a></li>
 </ul>
 </li>
-<li><a href="#org4b8b417">11. Print &amp; Read</a>
+<li><a href="#orgc753179">9. Code &amp; Data</a></li>
+<li><a href="#orgbc742dd">10. List</a>
 <ul>
-<li><a href="#org3c40a87">11.1. Print</a></li>
-<li><a href="#org6068ee5">11.2. Read</a></li>
+<li><a href="#orge8a1a32">10.1. List Functions</a></li>
+<li><a href="#orgda668ab">10.2. Dotted List</a></li>
+<li><a href="#org8831de1">10.3. Circular Lists</a></li>
+<li><a href="#org2585efd">10.4. Association List(alist)</a></li>
 </ul>
 </li>
-<li><a href="#orgc753179">12. Code &amp; Data</a></li>
-<li><a href="#orge8a1a32">13. List Functions</a>
+<li><a href="#orgb7a0dcf">11. Data Structures</a>
 <ul>
-<li><a href="#org6d1d973">13.1. <code>cons</code></a></li>
-<li><a href="#orgb421634">13.2. <code>car</code> and <code>cdr</code></a></li>
+<li><a href="#orgcb2cdf7">11.1. Arrays</a></li>
+<li><a href="#org0c78a55">11.2. Hash Tables</a></li>
 </ul>
 </li>
-<li><a href="#orge6ef4f6">14. Loop</a></li>
+<li><a href="#orgb996e3f">12. Meta Programming</a>
+<ul>
+<li><a href="#orgba0f536">12.1. Quasiquoting[`]</a></li>
+</ul>
+</li>
+<li><a href="#orge6ef4f6">13. Loop</a></li>
+<li><a href="#orgbde3ead">14. Useful Functions &amp; Marcos</a>
+<ul>
+<li><a href="#org867153d">14.1. conditionals</a></li>
+<li><a href="#org0b0a1bd">14.2. <code>push/assoc</code> idiom</a></li>
+</ul>
+</li>
 <li><a href="#org6d2c358">15. Loading Process</a>
 <ul>
 <li><a href="#org4cf6d33">15.1. autoload</a></li>
@@ -421,23 +432,207 @@ Special forms are something like built-in macros, examples: <code>if</code>, <co
 </div>
 </div>
 
-<div id="outline-container-org2585efd" class="outline-2">
-<h2 id="org2585efd"><span class="section-number-2">7</span> Association List(alist)</h2>
-<div class="outline-text-2" id="text-7">
-<div class="org-src-container">
-<pre class="src src-elisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defvar</span> <span style="color: #715ab1;">*dict*</span> '<span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>key1 value1<span style="color: #2d9574;">)</span>
-                 <span style="color: #2d9574;">(</span>key2 value2<span style="color: #2d9574;">)</span>
-                 <span style="color: #2d9574;">(</span>key3 value3<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
 
-<span style="color: #3a81c3;">(</span>assoc 'key1 *dict*<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (key1 value1)</span>
+<div id="outline-container-orga97cd01" class="outline-2">
+<h2 id="orga97cd01"><span class="section-number-2">7</span> Function Operator[#']</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+<code>#'sqrt</code> will be converted to <code>(function sqrt)</code> by Lisp reader
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4b8b417" class="outline-2">
+<h2 id="org4b8b417"><span class="section-number-2">8</span> Print &amp; Read</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org3c40a87" class="outline-3">
+<h3 id="org3c40a87"><span class="section-number-3">8.1</span> Print</h3>
+<div class="outline-text-3" id="text-8-1">
+<ul class="org-ul">
+<li><code>print</code>: computer-friendly print</li>
+<li><code>prin1</code>: like <code>print</code> but not print <code>#/newline</code></li>
+<li><code>princ</code>: human-friendly print</li>
+<li><code>prin1-to-string</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6068ee5" class="outline-3">
+<h3 id="org6068ee5"><span class="section-number-3">8.2</span> Read</h3>
+<div class="outline-text-3" id="text-8-2">
+<ul class="org-ul">
+<li><code>read</code>: computer-friendly read</li>
+<li><code>read-line</code>: human-friendly read(common lisp)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc753179" class="outline-2">
+<h2 id="orgc753179"><span class="section-number-2">9</span> Code &amp; Data</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+<pre class="src src-elisp">'<span style="color: #3a81c3;">(</span>+ 1 2<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">;</span><span style="color: #2aa1ae; background-color: #ecf3ec;">data mode</span>
+<span style="color: #3a81c3;">(</span>+ 1 2<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">;</span><span style="color: #2aa1ae; background-color: #ecf3ec;">code mode</span>
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defvar</span> <span style="color: #715ab1;">*foo*</span> '<span style="color: #6c3163;">(</span>+ 1 2<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">(</span>eval *foo*<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbc742dd" class="outline-2">
+<h2 id="orgbc742dd"><span class="section-number-2">10</span> List</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-orge8a1a32" class="outline-3">
+<h3 id="orge8a1a32"><span class="section-number-3">10.1</span> List Functions</h3>
+<div class="outline-text-3" id="text-10-1">
+</div>
+<div id="outline-container-org6d1d973" class="outline-4">
+<h4 id="org6d1d973"><code>cons</code></h4>
+<div class="outline-text-4" id="text-org6d1d973">
+<p>
+When you call <code>cons</code>, the Lisp compiler typically allocates a small chunk of memory, the <code>cons cell</code>,
+that can hold two references to the objects being linked.
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>cons 'chicken 'cat<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN . CAT) The dot in the middle makes this a con</span><span style="color: #6c4173; background-color: #ecf3ec;">s cell</span>
+<span style="color: #3a81c3;">(</span>cons 'chicken 'nil<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN) nil is a special symbol that is used to term</span><span style="color: #6c4173; background-color: #ecf3ec;">inate a list in Lisp</span>
+<span style="color: #3a81c3;">(</span>cons 'chicken <span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>   <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN)</span>
+<span style="color: #3a81c3;">(</span>cons 'pork '<span style="color: #6c3163;">(</span>beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>                 <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (PORK BEEF CHICKEN)</span>
+<span style="color: #3a81c3;">(</span>cons 'pork <span style="color: #6c3163;">(</span>cons 'beef <span style="color: #2d9574;">(</span>cons 'chicken <span style="color: #67b11d;">()</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; what is really happening under</span><span style="color: #6c4173; background-color: #ecf3ec;">neath</span>
+
+</pre>
+</div>
+<p>
+<b>In Lisp, a chain of cons cells and a list are exactly the same thing.</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb421634" class="outline-4">
+<h4 id="orgb421634"><code>car</code> and <code>cdr</code></h4>
+<div class="outline-text-4" id="text-orgb421634">
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>car '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>              <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; PORK</span>
+<span style="color: #3a81c3;">(</span>cdr '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>              <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (BEEF CHICKEN)</span>
+<span style="color: #3a81c3;">(</span>car <span style="color: #6c3163;">(</span>cdr '<span style="color: #2d9574;">(</span>pork beef chicken<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; BEEF</span>
+<span style="color: #3a81c3;">(</span>cadr '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>             <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; BEEF shortcut</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgba0f536" class="outline-2">
-<h2 id="orgba0f536"><span class="section-number-2">8</span> Quasiquoting[`]</h2>
-<div class="outline-text-2" id="text-8">
+<div id="outline-container-org45b8fe5" class="outline-4">
+<h4 id="org45b8fe5">others</h4>
+<div class="outline-text-4" id="text-org45b8fe5">
+<p>
+For convenience, Common Lisp has many functions built on top of the basic three,
+<code>cons</code>, <code>car</code>, and <code>cdr</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>list 'pork 'beef 'chicken<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">does the dirty work of creating all the cons cells</span>
+'<span style="color: #3a81c3;">(</span>pork beef chiken<span style="color: #3a81c3;">)</span>         <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">the same</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgda668ab" class="outline-3">
+<h3 id="orgda668ab"><span class="section-number-3">10.2</span> Dotted List</h3>
+<div class="outline-text-3" id="text-10-2">
+</div>
+<div id="outline-container-org9b81801" class="outline-4">
+<h4 id="org9b81801">a list without nil</h4>
+<div class="outline-text-4" id="text-org9b81801">
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>cons 1 <span style="color: #6c3163;">(</span>cons 2 3<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (1 2 . 3)</span>
+</pre>
+</div>
+<p>
+This dot is basically Lisp’s way of saying, “I tried to print this structure you entered
+using list notation, but the last item in the list didn’t contain the usual nil I expected;
+instead, it contained 3.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org52d33ee" class="outline-4">
+<h4 id="org52d33ee">alternative syntax for <code>cons</code></h4>
+<div class="outline-text-4" id="text-org52d33ee">
+<p>
+Another way of thinking about this dot notation is to consider it as simply an
+alternate syntax for the cons command
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">'<span style="color: #3a81c3;">(</span>1 . <span style="color: #6c3163;">(</span>2 . <span style="color: #2d9574;">(</span>3 . nil<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (1 2 3)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga76ba7a" class="outline-4">
+<h4 id="orga76ba7a">elegant represent pairs</h4>
+<div class="outline-text-4" id="text-orga76ba7a">
+<p>
+<code>(cons 2 3)</code> -&gt; <code>(2 . 3)</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8831de1" class="outline-3">
+<h3 id="org8831de1"><span class="section-number-3">10.3</span> Circular Lists</h3>
+<div class="outline-text-3" id="text-10-3">
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>defparameter foo '<span style="color: #6c3163;">(</span>1 2 3<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">setf</span> <span style="color: #6c3163;">(</span>cdddr foo<span style="color: #6c3163;">)</span> foo<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org2585efd" class="outline-3">
+<h3 id="org2585efd"><span class="section-number-3">10.4</span> Association List(alist)</h3>
+<div class="outline-text-3" id="text-10-4">
+<p>
+They are not a very efficient way to store and retrieve data.
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defvar</span> <span style="color: #715ab1;">*dict*</span> '<span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>key1 value1<span style="color: #2d9574;">)</span>
+                 <span style="color: #2d9574;">(</span>key2 value2<span style="color: #2d9574;">)</span>
+                 <span style="color: #2d9574;">(</span>key3 value3<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">push</span> '<span style="color: #6c3163;">(</span>key1 . value4<span style="color: #6c3163;">)</span> *dict*<span style="color: #3a81c3;">)</span>          <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">add new item to the front</span>
+<span style="color: #3a81c3;">(</span>assoc 'key1 *dict*<span style="color: #3a81c3;">)</span>                    <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">to look up from the front and returns </span><span style="color: #6c4173; background-color: #ecf3ec;">the first one</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb7a0dcf" class="outline-2">
+<h2 id="orgb7a0dcf"><span class="section-number-2">11</span> Data Structures</h2>
+<div class="outline-text-2" id="text-11">
+</div>
+<div id="outline-container-orgcb2cdf7" class="outline-3">
+<h3 id="orgcb2cdf7"><span class="section-number-3">11.1</span> Arrays</h3>
+</div>
+<div id="outline-container-org0c78a55" class="outline-3">
+<h3 id="org0c78a55"><span class="section-number-3">11.2</span> Hash Tables</h3>
+</div>
+</div>
+<div id="outline-container-orgb996e3f" class="outline-2">
+<h2 id="orgb996e3f"><span class="section-number-2">12</span> Meta Programming</h2>
+<div class="outline-text-2" id="text-12">
+</div>
+<div id="outline-container-orgba0f536" class="outline-3">
+<h3 id="orgba0f536"><span class="section-number-3">12.1</span> Quasiquoting[`]</h3>
+<div class="outline-text-3" id="text-12-1">
+<p>
+Quasiquoting is a technique that allows you to insert small bits of computer
+code into larger pieces of data.
+</p>
 <div class="org-src-container">
 <pre class="src src-elisp">`<span style="color: #3a81c3;">(</span>there are ,<span style="color: #6c3163;">(</span>+ 1 4<span style="color: #6c3163;">)</span> apples<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; there are 5 apples</span>
 `<span style="color: #3a81c3;">(</span>there are <span style="color: #6c3163;">(</span>+ 1 4<span style="color: #6c3163;">)</span> apples<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; there are (+ 1 4) apples</span>
@@ -445,19 +640,19 @@ Special forms are something like built-in macros, examples: <code>if</code>, <co
 </div>
 </div>
 </div>
-
-<div id="outline-container-orga97cd01" class="outline-2">
-<h2 id="orga97cd01"><span class="section-number-2">9</span> Function Operator[#']</h2>
-<div class="outline-text-2" id="text-9">
-<p>
-<code>#'sqrt</code> will be converted to <code>(function sqrt)</code> by Lisp reader
-</p>
-</div>
 </div>
 
+<div id="outline-container-orge6ef4f6" class="outline-2">
+<h2 id="orge6ef4f6"><span class="section-number-2">13</span> Loop</h2>
+<div class="outline-text-2" id="text-13">
+<ul class="org-ul">
+<li><code>loop</code>: loop forever</li>
+</ul>
+</div>
+</div>
 <div id="outline-container-orgbde3ead" class="outline-2">
-<h2 id="orgbde3ead"><span class="section-number-2">10</span> Useful Functions &amp; Marcos</h2>
-<div class="outline-text-2" id="text-10">
+<h2 id="orgbde3ead"><span class="section-number-2">14</span> Useful Functions &amp; Marcos</h2>
+<div class="outline-text-2" id="text-14">
 <ul class="org-ul">
 <li><code>ash</code>: shift</li>
 <li><code>car</code>, <code>cdr</code>, <code>cons</code>, <code>cadr</code>, <code>cadadr</code>, &#x2026;</li>
@@ -465,12 +660,14 @@ Special forms are something like built-in macros, examples: <code>if</code>, <co
 <li><code>cl-flet</code>: defining local function, <code>cl-labels</code></li>
 <li><code>()</code>, <code>'()</code>, <code>'nil</code>, <code>nil</code> are all false</li>
 <li><code>mapcar</code>, <code>apply</code></li>
+<li><code>substitute-if</code></li>
+<li>set ops: <code>set-difference</code>, <code>intersection</code>, <code>remove-duplicates</code></li>
 </ul>
 </div>
 
 <div id="outline-container-org867153d" class="outline-3">
-<h3 id="org867153d"><span class="section-number-3">10.1</span> conditionals</h3>
-<div class="outline-text-3" id="text-10-1">
+<h3 id="org867153d"><span class="section-number-3">14.1</span> conditionals</h3>
+<div class="outline-text-3" id="text-14-1">
 <p>
 <code>if</code>, <code>when</code>, <code>unless</code>, <code>cond</code>, <code>or</code>, <code>case</code>, <code>and</code>
 </p>
@@ -506,11 +703,38 @@ branch will be evaluated.</li>
 </ul>
 </div>
 </div>
+
+<div id="outline-container-org3d3f2c3" class="outline-4">
+<h4 id="org3d3f2c3"><code>eq</code>, <code>equal</code>, etc.</h4>
+<div class="outline-text-4" id="text-org3d3f2c3">
+<ul class="org-ul">
+<li><code>eq</code>: reference comparison</li>
+<li><code>equal</code>: content comparison (look the same)</li>
+<li><code>eql</code>: like <code>eq</code>, but handles comparisons of numbers and characters (compare these types by value)</li>
+<li><code>equalp</code>:like <code>equal</code>, and it can compare strings with different capitalizations and</li>
+</ul>
+<p>
+can compare integers against floating-point numbers
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>equal 'apple 'apple<span style="color: #3a81c3;">)</span>                   <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; T</span>
+<span style="color: #3a81c3;">(</span>equal <span style="color: #6c3163;">(</span>list 1 2 3<span style="color: #6c3163;">)</span>
+       <span style="color: #6c3163;">(</span>list 1 2 3<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>                    <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; T</span>
+<span style="color: #3a81c3;">(</span>eq <span style="color: #6c3163;">(</span>list 1 2 3<span style="color: #6c3163;">)</span>
+    <span style="color: #6c3163;">(</span>list 1 2 3<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>                       <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; NIL</span>
+<span style="color: #3a81c3;">(</span>eq 3.4 3.4<span style="color: #3a81c3;">)</span>                            <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; NIL</span>
+<span style="color: #3a81c3;">(</span>eql 3.4 3.4<span style="color: #3a81c3;">)</span>                           <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; T</span>
+<span style="color: #3a81c3;">(</span>equalp <span style="color: #2d9574;">"Bob Smith"</span> <span style="color: #2d9574;">"bob smith"</span><span style="color: #3a81c3;">)</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; T strange!</span>
+<span style="color: #3a81c3;">(</span>equalp 0 0.0<span style="color: #3a81c3;">)</span>                          <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; T</span>
+</pre>
+</div>
+</div>
+</div>
 </div>
 
 <div id="outline-container-org0b0a1bd" class="outline-3">
-<h3 id="org0b0a1bd"><span class="section-number-3">10.2</span> <code>push/assoc</code> idiom</h3>
-<div class="outline-text-3" id="text-10-2">
+<h3 id="org0b0a1bd"><span class="section-number-3">14.2</span> <code>push/assoc</code> idiom</h3>
+<div class="outline-text-3" id="text-14-2">
 <p>
 The <code>assoc</code> command always returns the first item it finds in a list. Using
 the <code>push</code> and <code>assoc</code> commands together allows us to pretend that values in
@@ -520,91 +744,7 @@ old values).
 </div>
 </div>
 </div>
-<div id="outline-container-org4b8b417" class="outline-2">
-<h2 id="org4b8b417"><span class="section-number-2">11</span> Print &amp; Read</h2>
-<div class="outline-text-2" id="text-11">
-</div>
-<div id="outline-container-org3c40a87" class="outline-3">
-<h3 id="org3c40a87"><span class="section-number-3">11.1</span> Print</h3>
-<div class="outline-text-3" id="text-11-1">
-<ul class="org-ul">
-<li><code>print</code>: computer-friendly print</li>
-<li><code>prin1</code>: like <code>print</code> but not print <code>#/newline</code></li>
-<li><code>princ</code>: human-friendly print</li>
-</ul>
-</div>
-</div>
 
-<div id="outline-container-org6068ee5" class="outline-3">
-<h3 id="org6068ee5"><span class="section-number-3">11.2</span> Read</h3>
-<div class="outline-text-3" id="text-11-2">
-<ul class="org-ul">
-<li><code>read</code>: computer-friendly read</li>
-<li><code>read-line</code>: human-friendly read(common lisp)</li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgc753179" class="outline-2">
-<h2 id="orgc753179"><span class="section-number-2">12</span> Code &amp; Data</h2>
-<div class="outline-text-2" id="text-12">
-<div class="org-src-container">
-<pre class="src src-elisp">'<span style="color: #3a81c3;">(</span>+ 1 2<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">;</span><span style="color: #2aa1ae; background-color: #ecf3ec;">data mode</span>
-<span style="color: #3a81c3;">(</span>+ 1 2<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">;</span><span style="color: #2aa1ae; background-color: #ecf3ec;">code mode</span>
-<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defvar</span> <span style="color: #715ab1;">*foo*</span> '<span style="color: #6c3163;">(</span>+ 1 2<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3;">(</span>eval *foo*<span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orge8a1a32" class="outline-2">
-<h2 id="orge8a1a32"><span class="section-number-2">13</span> List Functions</h2>
-<div class="outline-text-2" id="text-13">
-</div>
-<div id="outline-container-org6d1d973" class="outline-3">
-<h3 id="org6d1d973"><span class="section-number-3">13.1</span> <code>cons</code></h3>
-<div class="outline-text-3" id="text-13-1">
-<p>
-When you call <code>cons</code>, the Lisp compiler typically allocates a small chunk of memory, the <code>cons cell</code>,
-that can hold two references to the objects being linked.
-</p>
-<div class="org-src-container">
-<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>cons 'chicken 'cat<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN . CAT) The dot in the middle makes this a con</span><span style="color: #6c4173; background-color: #ecf3ec;">s cell</span>
-<span style="color: #3a81c3;">(</span>cons 'chicken 'nil<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN) nil is a special symbol that is used to term</span><span style="color: #6c4173; background-color: #ecf3ec;">inate a list in Lisp</span>
-<span style="color: #3a81c3;">(</span>cons 'chicken <span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>   <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN)</span>
-<span style="color: #3a81c3;">(</span>cons 'pork '<span style="color: #6c3163;">(</span>beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>                 <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (PORK BEEF CHICKEN)</span>
-<span style="color: #3a81c3;">(</span>cons 'pork <span style="color: #6c3163;">(</span>cons 'beef <span style="color: #2d9574;">(</span>cons 'chicken <span style="color: #67b11d;">()</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">;</span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; what is really happening undern</span><span style="color: #6c4173; background-color: #ecf3ec;">eath</span>
-</pre>
-</div>
-<p>
-<b>In Lisp, a chain of cons cells and a list are exactly the same thing.</b>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgb421634" class="outline-3">
-<h3 id="orgb421634"><span class="section-number-3">13.2</span> <code>car</code> and <code>cdr</code></h3>
-<div class="outline-text-3" id="text-13-2">
-<div class="org-src-container">
-<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>car '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>              <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; PORK</span>
-<span style="color: #3a81c3;">(</span>cdr '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>              <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (BEEF CHICKEN)</span>
-<span style="color: #3a81c3;">(</span>car <span style="color: #6c3163;">(</span>cdr '<span style="color: #2d9574;">(</span>pork beef chicken<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; BEEF</span>
-<span style="color: #3a81c3;">(</span>cadr '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>             <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; BEEF shortcut</span>
-</pre>
-</div>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orge6ef4f6" class="outline-2">
-<h2 id="orge6ef4f6"><span class="section-number-2">14</span> Loop</h2>
-<div class="outline-text-2" id="text-14">
-<ul class="org-ul">
-<li><code>loop</code>: loop forever</li>
-</ul>
-</div>
-</div>
 <div id="outline-container-org6d2c358" class="outline-2">
 <h2 id="org6d2c358"><span class="section-number-2">15</span> Loading Process</h2>
 <div class="outline-text-2" id="text-15">

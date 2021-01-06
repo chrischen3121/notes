@@ -84,24 +84,107 @@
        (g (f 5)))
    #+END_SRC
 
-* Association List(alist)
+
+* Function Operator[#']
+  ~#'sqrt~ will be converted to ~(function sqrt)~ by Lisp reader
+
+* Print & Read
+** Print
+   - ~print~: computer-friendly print
+   - ~prin1~: like ~print~ but not print ~#/newline~
+   - ~princ~: human-friendly print
+   - ~prin1-to-string~
+
+** Read
+   - ~read~: computer-friendly read
+   - ~read-line~: human-friendly read(common lisp)
+
+* Code & Data
+  #+BEGIN_SRC elisp
+    '(+ 1 2) ;data mode
+    (+ 1 2) ;code mode
+    (defvar *foo* '(+ 1 2))
+    (eval *foo*)
+  #+END_SRC
+* List
+** List Functions
+*** ~cons~
+   When you call ~cons~, the Lisp compiler typically allocates a small chunk of memory, the =cons cell=,
+   that can hold two references to the objects being linked.
+   #+BEGIN_SRC elisp
+     (cons 'chicken 'cat) ; -> (CHICKEN . CAT) The dot in the middle makes this a cons cell
+     (cons 'chicken 'nil) ; -> (CHICKEN) nil is a special symbol that is used to terminate a list in Lisp
+     (cons 'chicken ())   ; -> (CHICKEN)
+     (cons 'pork '(beef chicken))                 ; -> (PORK BEEF CHICKEN)
+     (cons 'pork (cons 'beef (cons 'chicken ()))) ; -> what is really happening underneath
+
+   #+END_SRC
+   *In Lisp, a chain of cons cells and a list are exactly the same thing.*
+
+*** ~car~ and ~cdr~
+   #+BEGIN_SRC elisp
+     (car '(pork beef chicken))              ; -> PORK
+     (cdr '(pork beef chicken))              ; -> (BEEF CHICKEN)
+     (car (cdr '(pork beef chicken)))        ; -> BEEF
+     (cadr '(pork beef chicken))             ; -> BEEF shortcut
+   #+END_SRC
+
+*** others
+   For convenience, Common Lisp has many functions built on top of the basic three,
+   ~cons~, ~car~, and ~cdr~
+   #+BEGIN_SRC elisp
+     (list 'pork 'beef 'chicken) ; does the dirty work of creating all the cons cells
+     '(pork beef chiken)         ; the same
+   #+END_SRC
+
+** Dotted List
+*** a list without nil
+   #+BEGIN_SRC elisp
+     (cons 1 (cons 2 3)) ; -> (1 2 . 3)
+   #+END_SRC
+   This dot is basically Lisp’s way of saying, “I tried to print this structure you entered
+   using list notation, but the last item in the list didn’t contain the usual nil I expected;
+   instead, it contained 3.
+
+*** alternative syntax for ~cons~
+   Another way of thinking about this dot notation is to consider it as simply an
+   alternate syntax for the cons command
+   #+BEGIN_SRC elisp
+     '(1 . (2 . (3 . nil))) ; -> (1 2 3)
+   #+END_SRC
+
+*** elegant represent pairs
+    ~(cons 2 3)~ -> ~(2 . 3)~
+
+** Circular Lists
+   #+BEGIN_SRC elisp
+     (defparameter foo '(1 2 3))
+     (setf (cdddr foo) foo)
+   #+END_SRC
+** Association List(alist)
+   They are not a very efficient way to store and retrieve data.
   #+BEGIN_SRC elisp
     (defvar *dict* '((key1 value1)
                      (key2 value2)
                      (key3 value3)))
 
-    (assoc 'key1 *dict*) ; -> (key1 value1)
+    (push '(key1 . value4) *dict*)          ; add new item to the front
+    (assoc 'key1 *dict*)                    ; to look up from the front and returns the first one
   #+END_SRC
-
-* Quasiquoting[`]
+* Data Structures
+** Arrays
+** Hash Tables
+* Meta Programming
+** Quasiquoting[`]
+   Quasiquoting is a technique that allows you to insert small bits of computer
+   code into larger pieces of data.
   #+BEGIN_SRC elisp
     `(there are ,(+ 1 4) apples) ; -> there are 5 apples
     `(there are (+ 1 4) apples) ; -> there are (+ 1 4) apples
   #+END_SRC
 
-* Function Operator[#']
-  ~#'sqrt~ will be converted to ~(function sqrt)~ by Lisp reader
-
+* Loop
+  - ~loop~: loop forever
 * Useful Functions & Marcos
   - ~ash~: shift
   - ~car~, ~cdr~, ~cons~, ~cadr~, ~cadadr~, ...
@@ -109,6 +192,8 @@
   - ~cl-flet~: defining local function, ~cl-labels~
   - ~()~, ~'()~, ~'nil~, ~nil~ are all false
   - ~mapcar~, ~apply~
+  - ~substitute-if~
+  - set ops: ~set-difference~, ~intersection~, ~remove-duplicates~
 
 ** conditionals
    ~if~, ~when~, ~unless~, ~cond~, ~or~, ~case~, ~and~
@@ -124,51 +209,30 @@
 *** ~case~
     - ~otherwise~ like ~default~ in other language
 
+*** ~eq~, ~equal~, etc.
+    - ~eq~: reference comparison
+    - ~equal~: content comparison (look the same)
+    - ~eql~: like ~eq~, but handles comparisons of numbers and characters (compare these types by value)
+    - ~equalp~:like ~equal~, and it can compare strings with different capitalizations and
+    can compare integers against floating-point numbers
+    #+BEGIN_SRC elisp
+      (equal 'apple 'apple)                   ; -> T
+      (equal (list 1 2 3)
+             (list 1 2 3))                    ; -> T
+      (eq (list 1 2 3)
+          (list 1 2 3))                       ; -> NIL
+      (eq 3.4 3.4)                            ; -> NIL
+      (eql 3.4 3.4)                           ; -> T
+      (equalp "Bob Smith" "bob smith")        ; -> T strange!
+      (equalp 0 0.0)                          ; -> T
+    #+END_SRC
+
 ** ~push/assoc~ idiom
    The ~assoc~ command always returns the first item it finds in a list. Using
    the ~push~ and ~assoc~ commands together allows us to pretend that values in
    an alist are changing, while still preserving old values(keep history of all
    old values).
-* Print & Read
-** Print
-   - ~print~: computer-friendly print
-   - ~prin1~: like ~print~ but not print ~#/newline~
-   - ~princ~: human-friendly print
 
-** Read
-   - ~read~: computer-friendly read
-   - ~read-line~: human-friendly read(common lisp)
-
-* Code & Data
-  #+BEGIN_SRC elisp
-    '(+ 1 2) ;data mode
-    (+ 1 2) ;code mode
-    (defvar *foo* '(+ 1 2))
-    (eval *foo*)
-  #+END_SRC
-* List Functions
-** ~cons~
-   When you call ~cons~, the Lisp compiler typically allocates a small chunk of memory, the =cons cell=,
-   that can hold two references to the objects being linked.
-   #+BEGIN_SRC elisp
-     (cons 'chicken 'cat) ; -> (CHICKEN . CAT) The dot in the middle makes this a cons cell
-     (cons 'chicken 'nil) ; -> (CHICKEN) nil is a special symbol that is used to terminate a list in Lisp
-     (cons 'chicken ())   ; -> (CHICKEN)
-     (cons 'pork '(beef chicken))                 ; -> (PORK BEEF CHICKEN)
-     (cons 'pork (cons 'beef (cons 'chicken ()))) ;-> what is really happening underneath
-   #+END_SRC
-   *In Lisp, a chain of cons cells and a list are exactly the same thing.*
-
-** ~car~ and ~cdr~
-   #+BEGIN_SRC elisp
-     (car '(pork beef chicken))              ; -> PORK
-     (cdr '(pork beef chicken))              ; -> (BEEF CHICKEN)
-     (car (cdr '(pork beef chicken)))        ; -> BEEF
-     (cadr '(pork beef chicken))             ; -> BEEF shortcut
-   #+END_SRC
-
-* Loop
-  - ~loop~: loop forever
 * Loading Process
 - add to ~load-path~
 - ~load-file~
