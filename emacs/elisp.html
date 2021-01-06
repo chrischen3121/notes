@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2020-06-09 Tue 16:20 -->
+<!-- 2021-01-06 Wed 12:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>elisp</title>
@@ -236,49 +236,60 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4da185b">1. Char Representation</a></li>
-<li><a href="#orga8855ba">2. Symbol</a>
+<li><a href="#org88ae0ce">1. Char Representation</a></li>
+<li><a href="#org3e22c42">2. Symbol</a>
 <ul>
-<li><a href="#org1a35110">2.1. Creating Symbols</a></li>
+<li><a href="#org4d88518">2.1. Creating Symbols</a></li>
 </ul>
 </li>
-<li><a href="#org8803ad0">3. Sequence</a>
+<li><a href="#org6577ceb">3. Sequence</a>
 <ul>
-<li><a href="#org88fa718">3.1. lists</a></li>
-<li><a href="#org34e03e4">3.2. arrays(fixed-length)</a></li>
+<li><a href="#orgd63187b">3.1. lists</a></li>
+<li><a href="#orgeb4177c">3.2. arrays(fixed-length)</a></li>
 </ul>
 </li>
-<li><a href="#org3f86a8a">4. Special Symbols</a></li>
-<li><a href="#org462a435">5. Special Forms</a></li>
-<li><a href="#org5d0f3d3">6. Association List(alist)</a></li>
-<li><a href="#orgb57afb8">7. Quasiquoting[`]</a></li>
-<li><a href="#org3d71890">8. Function Operator[#']</a></li>
-<li><a href="#orgc1faa38">9. Useful Functions &amp; Marcos</a>
+<li><a href="#org4ee3a28">4. Special Symbols</a></li>
+<li><a href="#org0fff84f">5. Special Forms</a></li>
+<li><a href="#orgac26cf6">6. defs</a>
 <ul>
-<li><a href="#org659ac62">9.1. conditionals</a></li>
-<li><a href="#org997fa71">9.2. <code>push/assoc</code> idiom</a></li>
+<li><a href="#orga00d9be">6.1. examples</a></li>
 </ul>
 </li>
-<li><a href="#orgd82f43f">10. Print &amp; Read</a>
+<li><a href="#org2585efd">7. Association List(alist)</a></li>
+<li><a href="#orgba0f536">8. Quasiquoting[`]</a></li>
+<li><a href="#orga97cd01">9. Function Operator[#']</a></li>
+<li><a href="#orgbde3ead">10. Useful Functions &amp; Marcos</a>
 <ul>
-<li><a href="#orgcbb007f">10.1. Print</a></li>
-<li><a href="#orgf35e17c">10.2. Read</a></li>
+<li><a href="#org867153d">10.1. conditionals</a></li>
+<li><a href="#org0b0a1bd">10.2. <code>push/assoc</code> idiom</a></li>
 </ul>
 </li>
-<li><a href="#orgff27c3c">11. Code &amp; Data</a></li>
-<li><a href="#orgbcd5e3d">12. Loop</a></li>
-<li><a href="#org3858474">13. Loading Process</a>
+<li><a href="#org4b8b417">11. Print &amp; Read</a>
 <ul>
-<li><a href="#orgcb92dd5">13.1. autoload</a></li>
-<li><a href="#orgd27403c">13.2. Eval after load</a></li>
-<li><a href="#org56c07db">13.3. use-package</a></li>
+<li><a href="#org3c40a87">11.1. Print</a></li>
+<li><a href="#org6068ee5">11.2. Read</a></li>
+</ul>
+</li>
+<li><a href="#orgc753179">12. Code &amp; Data</a></li>
+<li><a href="#orge8a1a32">13. List Functions</a>
+<ul>
+<li><a href="#org6d1d973">13.1. <code>cons</code></a></li>
+<li><a href="#orgb421634">13.2. <code>car</code> and <code>cdr</code></a></li>
+</ul>
+</li>
+<li><a href="#orge6ef4f6">14. Loop</a></li>
+<li><a href="#org6d2c358">15. Loading Process</a>
+<ul>
+<li><a href="#org4cf6d33">15.1. autoload</a></li>
+<li><a href="#org9958d7c">15.2. Eval after load</a></li>
+<li><a href="#org94e08f5">15.3. use-package</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org4da185b" class="outline-2">
-<h2 id="org4da185b"><span class="section-number-2">1</span> Char Representation</h2>
+<div id="outline-container-org88ae0ce" class="outline-2">
+<h2 id="org88ae0ce"><span class="section-number-2">1</span> Char Representation</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><code>?\U, ?\u, ?\x, ?\101</code></li>
@@ -287,12 +298,16 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orga8855ba" class="outline-2">
-<h2 id="orga8855ba"><span class="section-number-2">2</span> Symbol</h2>
+<div id="outline-container-org3e22c42" class="outline-2">
+<h2 id="org3e22c42"><span class="section-number-2">2</span> Symbol</h2>
 <div class="outline-text-2" id="text-2">
+<p>
+Symbols are a fundamental type of data in Lisp and are used extensively. A
+symbol in Lisp is a stand-alone word.
+</p>
 </div>
-<div id="outline-container-org1a35110" class="outline-3">
-<h3 id="org1a35110"><span class="section-number-3">2.1</span> Creating Symbols</h3>
+<div id="outline-container-org4d88518" class="outline-3">
+<h3 id="org4d88518"><span class="section-number-3">2.1</span> Creating Symbols</h3>
 <div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 <pre class="src src-elisp"><span style="color: #3a81c3;">(</span>symbol-name 'foo<span style="color: #3a81c3;">)</span>
@@ -317,15 +332,15 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org8803ad0" class="outline-2">
-<h2 id="org8803ad0"><span class="section-number-2">3</span> Sequence</h2>
+<div id="outline-container-org6577ceb" class="outline-2">
+<h2 id="org6577ceb"><span class="section-number-2">3</span> Sequence</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 an ordered set of elements
 </p>
 </div>
-<div id="outline-container-org88fa718" class="outline-3">
-<h3 id="org88fa718"><span class="section-number-3">3.1</span> lists</h3>
+<div id="outline-container-orgd63187b" class="outline-3">
+<h3 id="orgd63187b"><span class="section-number-3">3.1</span> lists</h3>
 <div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
 <pre class="src src-elisp"><span style="color: #3a81c3;">(</span>eq <span style="color: #6c3163;">()</span> nil<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; t</span>
@@ -341,12 +356,12 @@ to hold 'nil'.
 </div>
 </div>
 
-<div id="outline-container-org34e03e4" class="outline-3">
-<h3 id="org34e03e4"><span class="section-number-3">3.2</span> arrays(fixed-length)</h3>
+<div id="outline-container-orgeb4177c" class="outline-3">
+<h3 id="orgeb4177c"><span class="section-number-3">3.2</span> arrays(fixed-length)</h3>
 </div>
 </div>
-<div id="outline-container-org3f86a8a" class="outline-2">
-<h2 id="org3f86a8a"><span class="section-number-2">4</span> Special Symbols</h2>
+<div id="outline-container-org4ee3a28" class="outline-2">
+<h2 id="org4ee3a28"><span class="section-number-2">4</span> Special Symbols</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 <code>'nil</code>, <code>'t</code>
@@ -354,8 +369,8 @@ to hold 'nil'.
 </div>
 </div>
 
-<div id="outline-container-org462a435" class="outline-2">
-<h2 id="org462a435"><span class="section-number-2">5</span> Special Forms</h2>
+<div id="outline-container-org0fff84f" class="outline-2">
+<h2 id="org0fff84f"><span class="section-number-2">5</span> Special Forms</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Special forms are something like built-in macros, examples: <code>if</code>, <code>progn</code>
@@ -363,9 +378,52 @@ Special forms are something like built-in macros, examples: <code>if</code>, <co
 </div>
 </div>
 
-<div id="outline-container-org5d0f3d3" class="outline-2">
-<h2 id="org5d0f3d3"><span class="section-number-2">6</span> Association List(alist)</h2>
+<div id="outline-container-orgac26cf6" class="outline-2">
+<h2 id="orgac26cf6"><span class="section-number-2">6</span> defs</h2>
 <div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><code>defconst</code>: <code>defconst symbol value [doc-string]</code>, should not be changed by the user or by other programs.</li>
+<li><code>defvar</code>: <code>defvar symbol [value [doc-string]]</code>, define global variables</li>
+<li><code>defun</code>: define global functions</li>
+<li><code>let</code>: define local variables</li>
+<li><code>flet</code>: define local functions</li>
+</ul>
+</div>
+
+<div id="outline-container-orga00d9be" class="outline-3">
+<h3 id="orga00d9be"><span class="section-number-3">6.1</span> examples</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defvar</span> <span style="color: #715ab1;">bar</span> 23
+  <span style="color: #da8b55;">"The normal weight of a bar."</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defconst</span> <span style="color: #715ab1;">float-pi</span> 3.141592653589793
+  <span style="color: #da8b55;">"The value of Pi."</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">;; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">(let ((variable value)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">;;       </span><span style="color: #2aa1ae; background-color: #ecf3ec;">(variable value)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">;;       </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#8230;)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">;;   </span><span style="color: #2aa1ae; background-color: #ecf3ec;">body&#8230;)</span>
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">let</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>a 5<span style="color: #2d9574;">)</span>
+      <span style="color: #2d9574;">(</span>b 6<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>
+  <span style="color: #6c3163;">(</span>+ a b<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">;; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">(flet ((function_name (arguments)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">;;                       </span><span style="color: #2aa1ae; background-color: #ecf3ec;">...function body...))</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">;;   </span><span style="color: #2aa1ae; background-color: #ecf3ec;">...body...)</span>
+<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">flet</span> <span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>f <span style="color: #67b11d;">(</span>n<span style="color: #67b11d;">)</span>
+          <span style="color: #67b11d;">(</span>+ n 10<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
+       <span style="color: #2d9574;">(</span>g <span style="color: #67b11d;">(</span>n<span style="color: #67b11d;">)</span>
+          <span style="color: #67b11d;">(</span>- n 3<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>
+  <span style="color: #6c3163;">(</span>g <span style="color: #2d9574;">(</span>f 5<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2585efd" class="outline-2">
+<h2 id="org2585efd"><span class="section-number-2">7</span> Association List(alist)</h2>
+<div class="outline-text-2" id="text-7">
 <div class="org-src-container">
 <pre class="src src-elisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">defvar</span> <span style="color: #715ab1;">*dict*</span> '<span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>key1 value1<span style="color: #2d9574;">)</span>
                  <span style="color: #2d9574;">(</span>key2 value2<span style="color: #2d9574;">)</span>
@@ -376,28 +434,30 @@ Special forms are something like built-in macros, examples: <code>if</code>, <co
 </div>
 </div>
 </div>
-<div id="outline-container-orgb57afb8" class="outline-2">
-<h2 id="orgb57afb8"><span class="section-number-2">7</span> Quasiquoting[`]</h2>
-<div class="outline-text-2" id="text-7">
+
+<div id="outline-container-orgba0f536" class="outline-2">
+<h2 id="orgba0f536"><span class="section-number-2">8</span> Quasiquoting[`]</h2>
+<div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-elisp">`<span style="color: #3a81c3;">(</span>there are ,<span style="color: #6c3163;">(</span>+ 1 4<span style="color: #6c3163;">)</span> apples<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; there are 5 apples</span>
+`<span style="color: #3a81c3;">(</span>there are <span style="color: #6c3163;">(</span>+ 1 4<span style="color: #6c3163;">)</span> apples<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; there are (+ 1 4) apples</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org3d71890" class="outline-2">
-<h2 id="org3d71890"><span class="section-number-2">8</span> Function Operator[#']</h2>
-<div class="outline-text-2" id="text-8">
+<div id="outline-container-orga97cd01" class="outline-2">
+<h2 id="orga97cd01"><span class="section-number-2">9</span> Function Operator[#']</h2>
+<div class="outline-text-2" id="text-9">
 <p>
 <code>#'sqrt</code> will be converted to <code>(function sqrt)</code> by Lisp reader
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc1faa38" class="outline-2">
-<h2 id="orgc1faa38"><span class="section-number-2">9</span> Useful Functions &amp; Marcos</h2>
-<div class="outline-text-2" id="text-9">
+<div id="outline-container-orgbde3ead" class="outline-2">
+<h2 id="orgbde3ead"><span class="section-number-2">10</span> Useful Functions &amp; Marcos</h2>
+<div class="outline-text-2" id="text-10">
 <ul class="org-ul">
 <li><code>ash</code>: shift</li>
 <li><code>car</code>, <code>cdr</code>, <code>cons</code>, <code>cadr</code>, <code>cadadr</code>, &#x2026;</li>
@@ -407,24 +467,25 @@ Special forms are something like built-in macros, examples: <code>if</code>, <co
 <li><code>mapcar</code>, <code>apply</code></li>
 </ul>
 </div>
-<div id="outline-container-org659ac62" class="outline-3">
-<h3 id="org659ac62"><span class="section-number-3">9.1</span> conditionals</h3>
-<div class="outline-text-3" id="text-9-1">
+
+<div id="outline-container-org867153d" class="outline-3">
+<h3 id="org867153d"><span class="section-number-3">10.1</span> conditionals</h3>
+<div class="outline-text-3" id="text-10-1">
 <p>
 <code>if</code>, <code>when</code>, <code>unless</code>, <code>cond</code>, <code>or</code>, <code>case</code>, <code>and</code>
 </p>
 </div>
-<div id="outline-container-org6e8fdb2" class="outline-4">
-<h4 id="org6e8fdb2"><code>when</code>, <code>unless</code></h4>
-<div class="outline-text-4" id="text-org6e8fdb2">
+<div id="outline-container-orga635aef" class="outline-4">
+<h4 id="orga635aef"><code>when</code>, <code>unless</code></h4>
+<div class="outline-text-4" id="text-orga635aef">
 <p>
 Eliminates the pain of <code>progn</code>
 </p>
 </div>
 </div>
-<div id="outline-container-org164e738" class="outline-4">
-<h4 id="org164e738"><code>cond</code></h4>
-<div class="outline-text-4" id="text-org164e738">
+<div id="outline-container-orgf15ac37" class="outline-4">
+<h4 id="orgf15ac37"><code>cond</code></h4>
+<div class="outline-text-4" id="text-orgf15ac37">
 <p>
 The <code>cond</code> form is the classic way to do branching in
 Lisp. Through the liberal use of parentheses, it allows for an
@@ -437,9 +498,9 @@ branch will be evaluated.</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgef9aec7" class="outline-4">
-<h4 id="orgef9aec7"><code>case</code></h4>
-<div class="outline-text-4" id="text-orgef9aec7">
+<div id="outline-container-orgffb57d3" class="outline-4">
+<h4 id="orgffb57d3"><code>case</code></h4>
+<div class="outline-text-4" id="text-orgffb57d3">
 <ul class="org-ul">
 <li><code>otherwise</code> like <code>default</code> in other language</li>
 </ul>
@@ -447,9 +508,9 @@ branch will be evaluated.</li>
 </div>
 </div>
 
-<div id="outline-container-org997fa71" class="outline-3">
-<h3 id="org997fa71"><span class="section-number-3">9.2</span> <code>push/assoc</code> idiom</h3>
-<div class="outline-text-3" id="text-9-2">
+<div id="outline-container-org0b0a1bd" class="outline-3">
+<h3 id="org0b0a1bd"><span class="section-number-3">10.2</span> <code>push/assoc</code> idiom</h3>
+<div class="outline-text-3" id="text-10-2">
 <p>
 The <code>assoc</code> command always returns the first item it finds in a list. Using
 the <code>push</code> and <code>assoc</code> commands together allows us to pretend that values in
@@ -459,13 +520,13 @@ old values).
 </div>
 </div>
 </div>
-<div id="outline-container-orgd82f43f" class="outline-2">
-<h2 id="orgd82f43f"><span class="section-number-2">10</span> Print &amp; Read</h2>
-<div class="outline-text-2" id="text-10">
+<div id="outline-container-org4b8b417" class="outline-2">
+<h2 id="org4b8b417"><span class="section-number-2">11</span> Print &amp; Read</h2>
+<div class="outline-text-2" id="text-11">
 </div>
-<div id="outline-container-orgcbb007f" class="outline-3">
-<h3 id="orgcbb007f"><span class="section-number-3">10.1</span> Print</h3>
-<div class="outline-text-3" id="text-10-1">
+<div id="outline-container-org3c40a87" class="outline-3">
+<h3 id="org3c40a87"><span class="section-number-3">11.1</span> Print</h3>
+<div class="outline-text-3" id="text-11-1">
 <ul class="org-ul">
 <li><code>print</code>: computer-friendly print</li>
 <li><code>prin1</code>: like <code>print</code> but not print <code>#/newline</code></li>
@@ -474,9 +535,9 @@ old values).
 </div>
 </div>
 
-<div id="outline-container-orgf35e17c" class="outline-3">
-<h3 id="orgf35e17c"><span class="section-number-3">10.2</span> Read</h3>
-<div class="outline-text-3" id="text-10-2">
+<div id="outline-container-org6068ee5" class="outline-3">
+<h3 id="org6068ee5"><span class="section-number-3">11.2</span> Read</h3>
+<div class="outline-text-3" id="text-11-2">
 <ul class="org-ul">
 <li><code>read</code>: computer-friendly read</li>
 <li><code>read-line</code>: human-friendly read(common lisp)</li>
@@ -485,9 +546,9 @@ old values).
 </div>
 </div>
 
-<div id="outline-container-orgff27c3c" class="outline-2">
-<h2 id="orgff27c3c"><span class="section-number-2">11</span> Code &amp; Data</h2>
-<div class="outline-text-2" id="text-11">
+<div id="outline-container-orgc753179" class="outline-2">
+<h2 id="orgc753179"><span class="section-number-2">12</span> Code &amp; Data</h2>
+<div class="outline-text-2" id="text-12">
 <div class="org-src-container">
 <pre class="src src-elisp">'<span style="color: #3a81c3;">(</span>+ 1 2<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">;</span><span style="color: #2aa1ae; background-color: #ecf3ec;">data mode</span>
 <span style="color: #3a81c3;">(</span>+ 1 2<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">;</span><span style="color: #2aa1ae; background-color: #ecf3ec;">code mode</span>
@@ -497,26 +558,65 @@ old values).
 </div>
 </div>
 </div>
-<div id="outline-container-orgbcd5e3d" class="outline-2">
-<h2 id="orgbcd5e3d"><span class="section-number-2">12</span> Loop</h2>
-<div class="outline-text-2" id="text-12">
+<div id="outline-container-orge8a1a32" class="outline-2">
+<h2 id="orge8a1a32"><span class="section-number-2">13</span> List Functions</h2>
+<div class="outline-text-2" id="text-13">
+</div>
+<div id="outline-container-org6d1d973" class="outline-3">
+<h3 id="org6d1d973"><span class="section-number-3">13.1</span> <code>cons</code></h3>
+<div class="outline-text-3" id="text-13-1">
+<p>
+When you call <code>cons</code>, the Lisp compiler typically allocates a small chunk of memory, the <code>cons cell</code>,
+that can hold two references to the objects being linked.
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>cons 'chicken 'cat<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN . CAT) The dot in the middle makes this a con</span><span style="color: #6c4173; background-color: #ecf3ec;">s cell</span>
+<span style="color: #3a81c3;">(</span>cons 'chicken 'nil<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN) nil is a special symbol that is used to term</span><span style="color: #6c4173; background-color: #ecf3ec;">inate a list in Lisp</span>
+<span style="color: #3a81c3;">(</span>cons 'chicken <span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>   <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (CHICKEN)</span>
+<span style="color: #3a81c3;">(</span>cons 'pork '<span style="color: #6c3163;">(</span>beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>                 <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (PORK BEEF CHICKEN)</span>
+<span style="color: #3a81c3;">(</span>cons 'pork <span style="color: #6c3163;">(</span>cons 'beef <span style="color: #2d9574;">(</span>cons 'chicken <span style="color: #67b11d;">()</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">;</span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; what is really happening undern</span><span style="color: #6c4173; background-color: #ecf3ec;">eath</span>
+</pre>
+</div>
+<p>
+<b>In Lisp, a chain of cons cells and a list are exactly the same thing.</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb421634" class="outline-3">
+<h3 id="orgb421634"><span class="section-number-3">13.2</span> <code>car</code> and <code>cdr</code></h3>
+<div class="outline-text-3" id="text-13-2">
+<div class="org-src-container">
+<pre class="src src-elisp"><span style="color: #3a81c3;">(</span>car '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>              <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; PORK</span>
+<span style="color: #3a81c3;">(</span>cdr '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>              <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; (BEEF CHICKEN)</span>
+<span style="color: #3a81c3;">(</span>car <span style="color: #6c3163;">(</span>cdr '<span style="color: #2d9574;">(</span>pork beef chicken<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>        <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; BEEF</span>
+<span style="color: #3a81c3;">(</span>cadr '<span style="color: #6c3163;">(</span>pork beef chicken<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>             <span style="color: #2aa1ae; background-color: #ecf3ec;">; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; BEEF shortcut</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge6ef4f6" class="outline-2">
+<h2 id="orge6ef4f6"><span class="section-number-2">14</span> Loop</h2>
+<div class="outline-text-2" id="text-14">
 <ul class="org-ul">
 <li><code>loop</code>: loop forever</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org3858474" class="outline-2">
-<h2 id="org3858474"><span class="section-number-2">13</span> Loading Process</h2>
-<div class="outline-text-2" id="text-13">
+<div id="outline-container-org6d2c358" class="outline-2">
+<h2 id="org6d2c358"><span class="section-number-2">15</span> Loading Process</h2>
+<div class="outline-text-2" id="text-15">
 <ul class="org-ul">
 <li>add to <code>load-path</code></li>
 <li><code>load-file</code></li>
 <li><code>provide</code>, <code>require</code></li>
 </ul>
 </div>
-<div id="outline-container-orgcb92dd5" class="outline-3">
-<h3 id="orgcb92dd5"><span class="section-number-3">13.1</span> autoload</h3>
-<div class="outline-text-3" id="text-13-1">
+<div id="outline-container-org4cf6d33" class="outline-3">
+<h3 id="org4cf6d33"><span class="section-number-3">15.1</span> autoload</h3>
+<div class="outline-text-3" id="text-15-1">
 <p>
 Things that can be auto-loaded generally involve anything "definable",
 such as functions, macros, major or minor modes, groups, classes, and
@@ -537,9 +637,9 @@ so on.
 </div>
 </div>
 
-<div id="outline-container-orgd27403c" class="outline-3">
-<h3 id="orgd27403c"><span class="section-number-3">13.2</span> Eval after load</h3>
-<div class="outline-text-3" id="text-13-2">
+<div id="outline-container-org9958d7c" class="outline-3">
+<h3 id="org9958d7c"><span class="section-number-3">15.2</span> Eval after load</h3>
+<div class="outline-text-3" id="text-15-2">
 <div class="org-src-container">
 <pre class="src src-elisp"><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">with-eval-after-load</span> 'helm
   <span style="color: #2aa1ae; background-color: #ecf3ec;">;; </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Code</span>
@@ -549,8 +649,8 @@ so on.
 </div>
 </div>
 
-<div id="outline-container-org56c07db" class="outline-3">
-<h3 id="org56c07db"><span class="section-number-3">13.3</span> use-package</h3>
+<div id="outline-container-org94e08f5" class="outline-3">
+<h3 id="org94e08f5"><span class="section-number-3">15.3</span> use-package</h3>
 </div>
 </div>
 </div>
