@@ -84,7 +84,6 @@
        (g (f 5)))
    #+END_SRC
 
-
 * Function Operator[#']
   ~#'sqrt~ will be converted to ~(function sqrt)~ by Lisp reader
 
@@ -173,7 +172,34 @@
   #+END_SRC
 * Data Structures
 ** Arrays
+   #+BEGIN_SRC elisp
+     (setf primes [2 3 5 7 11 13])
+     (arrayp primes) ; -> T
+     (aref primes 1) ; -> 3
+     (setf (aref primes 1) 5) ; primes -> [2 5 5 7 11 13]
+   #+END_SRC
+
 ** Hash Tables
+   #+BEGIN_SRC elisp
+     (setf x (make-hash-table))
+     (gethash 'nope x) ; -> nil
+     (setf (gethash 'nope x) 5)
+   #+END_SRC
+
+** Return Multiple Values
+   #+BEGIN_SRC elisp
+     (defun foo ()
+       (values 3 7))
+     (multiple-value-bind (a b) (foo) (* a b))
+   #+END_SRC
+** Structure(OOP)
+   #+BEGIN_SRC elisp
+     (defstruct person name age gender)
+     (setf john (make-person :name "john"
+                             :age 37
+                             :gender "male"))
+     (person-age john)
+   #+END_SRC
 * Meta Programming
 ** Quasiquoting[`]
    Quasiquoting is a technique that allows you to insert small bits of computer
