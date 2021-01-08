@@ -96,7 +96,7 @@
 ** Read
    - ~read~: computer-friendly read
    - ~read-line~: human-friendly read(common lisp)
-
+** ~terpri~ newline
 * Code & Data
   #+BEGIN_SRC elisp
     '(+ 1 2) ;data mode
@@ -219,8 +219,6 @@
     `(there are (+ 1 4) apples) ; -> there are (+ 1 4) apples
   #+END_SRC
 
-* Loop
-  - ~loop~: loop forever
 * Useful Functions & Marcos
   - ~ash~: shift
   - ~car~, ~cdr~, ~cons~, ~cadr~, ~cadadr~, ...
@@ -284,6 +282,34 @@
    an alist are changing, while still preserving old values(keep history of all
    old values).
 
+** ~loop~ Macro
+   #+BEGIN_SRC elisp
+     (loop for i from 2 below 5 sum i)
+     (loop for i in '(100 20 3) sum i)
+     (loop for i below 5 do (print i) sum i) ; do other things
+     (loop for i below 10 when (oddp i) sum i) ; do when ...
+     (loop for i from 0
+           do (print i)
+           when (= i 5)
+           return 'finished) ; break loop
+     (loop for i in '(2 3 4 5 6) collect (* i i)) ; return a list
+     (loop for x below 10 for y below 10 collect(+ x y)) ; -> (0, 2, 4, 6, ...)
+     (loop for x below 10
+           collect (loop for y below 10
+                         collect (+ x y))) ; Cartesian product
+     (loop for i
+           from 0
+           for day
+           in '(monday tuesday wednesday thursday friday saturday sunday)
+           collect (cons i day)) ; -> ((0 . monday) (1 . tuesday) ...)
+   #+END_SRC
+** ~format~ function
+   #+BEGIN_SRC elisp
+     (format "Add onion rings for only %.2f dollars more!" 1.5)
+   #+END_SRC
+
+* Profiling
+  see benchmark.el
 * Loading Process
 - add to ~load-path~
 - ~load-file~
