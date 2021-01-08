@@ -57,7 +57,7 @@
   - ~let~: define local variables
   - ~flet~: define local functions
   - ~defstruct~
-  - ~defgeneric~: replacement for ~defmethod~, define generic functions
+  - ~cl-defgeneric~: replacement for ~defmethod~, define generic functions
 ** examples
    #+BEGIN_SRC elisp
      (defvar bar 23
@@ -199,6 +199,16 @@
                              :gender "male"))
      (person-age john)
      (setf (person-age john) 38)
+   #+END_SRC
+* Generic Functions
+** Creating Generic Functions
+   #+BEGIN_SRC elisp
+     (cl-defgeneric add ((a number) (b number))
+       (+ a b))
+     (cl-defgeneric add ((a list) (b list))
+       (append a b))
+     (add 3 4)
+     (add '(a b) '(c d))
    #+END_SRC
 * Meta Programming
 ** Quasiquoting[`]
