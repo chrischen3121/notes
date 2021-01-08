@@ -6,14 +6,15 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+SETUPFILE: ../../org-templates/level-1.org
-* Char Representation
+* Basic
+** Char Representation
   - ~?\U, ?\u, ?\x, ?\101~
   - ~?^I, ?\C-I, ?\M-I ?\S-I~
 
-* Symbol
+** Symbol
   Symbols are a fundamental type of data in Lisp and are used extensively. A
   symbol in Lisp is a stand-alone word.
-** Creating Symbols
+*** Creating Symbols
    #+BEGIN_SRC elisp
      (symbol-name 'foo)
 
@@ -33,9 +34,11 @@
      (unintern symbol obarray)
    #+END_SRC
 
-* Sequence
+*** Special Symbols
+  ~'nil~, ~'t~
+** Sequence
   an ordered set of elements
-** lists
+*** lists
    #+BEGIN_SRC elisp
      (eq () nil) ; -> t
      (A 2 "A") ; A list of three elements.
@@ -44,21 +47,17 @@
    the element, and its CDR slot refers to the next cons cell of the list, which
    holds the next element in the list. The CDR slot of the last cons cell is set
    to hold 'nil'.
-
-** arrays(fixed-length)
-* Special Symbols
-  ~'nil~, ~'t~
-
-* Special Forms
+** Special Forms
   Special forms are something like built-in macros, examples: ~if~, ~progn~
 
-* defs
+** defs
   - ~defconst~: ~defconst symbol value [doc-string]~, should not be changed by the user or by other programs.
   - ~defvar~: ~defvar symbol [value [doc-string]]~, define global variables
   - ~defun~: define global functions
   - ~let~: define local variables
   - ~flet~: define local functions
-
+  - ~defstruct~
+  - ~defgeneric~: replacement for ~defmethod~, define generic functions
 ** examples
    #+BEGIN_SRC elisp
      (defvar bar 23
@@ -84,7 +83,7 @@
        (g (f 5)))
    #+END_SRC
 
-* Function Operator[#']
+** Function Pointer[#']
   ~#'sqrt~ will be converted to ~(function sqrt)~ by Lisp reader
 
 * Print & Read
@@ -199,6 +198,7 @@
                              :age 37
                              :gender "male"))
      (person-age john)
+     (setf (person-age john) 38)
    #+END_SRC
 * Meta Programming
 ** Quasiquoting[`]
@@ -220,6 +220,21 @@
   - ~mapcar~, ~apply~
   - ~substitute-if~
   - set ops: ~set-difference~, ~intersection~, ~remove-duplicates~
+** Generic Functions
+   ~length~, ~find-if~, ~count~, ~position~, ~some~, ~every~, ~reduce~, ~map/mapcar~
+   ~subseq~, ~sort~
+   #+BEGIN_SRC elisp
+     (length '(a b c))
+     (length "blub")
+     (find-if #'numberp '(a b 5 d))
+     (count 4 [1 4 4 5])
+     (some #'numberp '(a b 5 d))
+     (every #'numberp '(a b 5 d))
+     (map 'list (lambda (x) (* 2 x)) '(3 4 6 5 2))
+     (reduce #'+ '(3 4 6 5 2))
+     (subseq "america" 2 6)
+     (sort '(5 8 2 4 9 3 6) #'<)
+   #+END_SRC
 
 ** conditionals
    ~if~, ~when~, ~unless~, ~cond~, ~or~, ~case~, ~and~
