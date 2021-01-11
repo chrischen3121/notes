@@ -210,6 +210,46 @@
      (add 3 4)
      (add '(a b) '(c d))
    #+END_SRC
+* Functional Programming
+** Pros
+   - Reduces Bugs(no side effect)
+   - More Compact
+   - More Elegant(try to keep 80% function "clean")
+
+** Cons
+   Performance has always been a huge concern with functional programs.
+   Functional programmers have developed optimization techniques that
+   can solve the vast majority of performance problems. These include
+   memoization, tail call optimization, lazy evaluation, and higher-order
+   programming
+
+*** Memoization
+    Memoization makes use of closures. *Lexical variables* are used for memoization.
+
+*** Tail Call Optimization
+    #+BEGIN_SRC elisp
+      (defun my-length (lst)
+        (if lst (1+ (my-length (cdr lst))) 0)) ; inefficient
+
+      (my-length '(a b c d))
+
+      (defun my-length (lst)
+        (labels ((f (lst acc)
+                    (if lst (f (cdr lst)
+                               (1+ acc)) acc)))
+          (f lst 0)))                         ; tail call optimization
+
+    #+END_SRC
+    When a function in Lisp calls itself as its very last action, we call this action a *tail call*.
+    A smart Lisp compiler, when seeing a tail call, can then say to itself, “Hey, since I don’t need
+    to do anything more after calling f again, I can just go straight to f, without needing to put
+    the current program context on the stack.” This is actually similar to performing a a *longjmp* in C++.
+
+** Summary
+  - Programs written in the functional style always give the same result when they are given the same values in their arguments.
+  - Functional programs do not contain side effects.
+  - A good strategy for writing Lisp programs is to break them into a clean, functional part and a dirty, imperative part.
+
 * Meta Programming
 ** Quasiquoting[`]
    Quasiquoting is a technique that allows you to insert small bits of computer
