@@ -238,7 +238,6 @@
                     (if lst (f (cdr lst)
                                (1+ acc)) acc)))
           (f lst 0)))                         ; tail call optimization
-
     #+END_SRC
     When a function in Lisp calls itself as its very last action, we call this action a *tail call*.
     A smart Lisp compiler, when seeing a tail call, can then say to itself, “Hey, since I don’t need
@@ -258,6 +257,24 @@
     `(there are ,(+ 1 4) apples) ; -> there are 5 apples
     `(there are (+ 1 4) apples) ; -> there are (+ 1 4) apples
   #+END_SRC
+
+** Macro programming
+*** A Simple Macro
+    #+BEGIN_SRC elisp
+      (let ((foo (+ 2 3)))
+        (* foo foo))
+
+      (defmacro let1 (var val &rest body)
+        `(let ((,var ,val))
+           ,@body)) ; get rid of the superfluous parentheses
+
+      (let1 foo (+ 2 3)
+            (princ "Lisp is awesome!")
+            (* foo foo))
+
+      (macroexpand '(let1 foo (+ 2 3)
+                          (* foo foo))) ; for debug
+    #+END_SRC
 
 * Useful Functions & Marcos
   - ~ash~: shift
