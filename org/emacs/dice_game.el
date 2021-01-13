@@ -11,4 +11,16 @@
                      collect (list (random *num-players*)
                                    (1+ (random *max-dice*))))))
 
-(gen-board)
+(defun player-letter (n)
+  (decode-char 'ascii (+ 97 n)))
+
+(defun draw-board (board)
+  (loop for y below *board-size*
+        do (progn (loop repeat (- *board-size* y)
+                        do (princ " "))
+                  (loop for x below *board-size*
+                        for hex = (aref board (+ x (* *board-size* y)))
+                        do (format "%c-%c " (player-letter (first hex))
+                                   (second hex))))))
+
+(draw-board (gen-board))
