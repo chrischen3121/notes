@@ -1,0 +1,46 @@
+#+TITLE: 网络协议
+#+KEYWORDS: linux, operating, networking
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+LANGUAGE: zh-CN
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SETUPFILE: ../../org-templates/level-1.org
+* Linux命令
+** ~ip~
+   in iproute2
+*** 配置IP地址
+    #+BEGIN_SRC bash
+      sudo ip addr add 10.0.0.1/24 dev eth1
+      sudo ip link set up eth1
+    #+END_SRC
+***  ~ip addr~
+    - scope: global说明这张网卡是对外的，host则只能本机相互通信
+    - lo 全称是 loopback，又称环回接口，往往会被分配到 127.0.0.1 这个地址。这个地址用于本机通信，经过内核处理后直接返回，不会在任何网络中出现。
+    - =link/ether 9f:3c:8a:a4:b1:c0 brd ff:ff:ff:ff:ff:ff=: MAC地址
+    - =<BROADCAST,MULTICAST,UP,LOWER_UP>=: net_device flags，网络设备的状态标识
+
+      - UP 表示网卡处于启动的状态
+      - BROADCAST 表示这个网卡有广播地址
+      - MULTICAST 表示网卡可以发送多播包
+      - LOWER_UP 表示 L1 是启动的，网线插着
+
+    - qdisc(queueing discipline): 排队规则，如pfifo，数据包采用先入先出的方式通过队列。
+      pfifo_fast分为三个波段的队列，band 0优先级最高，IP包头里的TOS可指定优先级。
+
+** ~ifconfig~
+   in net-tools
+*** 配置IP地址
+    #+BEGIN_SRC bash
+      sudo ifconfig eth1 10.0.0.1/24
+      sudo ifconfig eth1 up
+    #+END_SRC
+
+** 其他
+
+* IP层
+** IP地址CIDR表示法
+   =10.100.122.2/24=: 前24位是网络号，后8位是主机号，等同于子网掩码 =255.255.255.0= 。
+   =10.100.122= 网络的广播地址: =10.100.122.255=
+
+* 数据链接层
+  - MTU: 单次传输最大字节数，以太网默认1500个字节(包含MAC头)，多了分片传
