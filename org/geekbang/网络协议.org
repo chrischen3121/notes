@@ -50,7 +50,17 @@
    [[file:../resources/geekbang/networking/dhcp_packet.png]]
    1. DHCP Discover: 使用0.0.0.0发送了一个广播包，目的 IP 地址为255.255.255.255，类型Boot Request
    2. DHCP Offer: 里面包含子网掩码、网关、IP租用时长、甚至DNS、NTP Server等信息
-   3. REQ/ACK after offer: 由于还没有得到 DHCP Server 的最后确认，客户端仍然使用 0.0.0.0 为源 IP 地址发送请求等待DHCP服务器确认
+   3. REQ/ACK after offer: 由于还没有得到DHCP Server的最后确认，客户端仍然使用0.0.0.0为源 IP 地址发送请求等待DHCP服务器确认
+   4. 续租：客户端会在租期过去 50% 的时候，直接向DHCP Server发送 DHCP Request要求续租，ACK包中会提供的新的租期以及其他已经更新的TCP/IP参数
+
+** PEX
+   PEX： 预启动执行环境（Pre-boot Execution Environment），自动安装操作系统。
+   PXE 协议分为客户端和服务器端，当计算机启动时，BIOS 把PXE客户端调入内存里面。
+   1. BIOS启动之后，启动MBR之前(因无操作系统)
+   2. PEX Client发起DHCP请求获取IP地址
+   3. 如何找到PEX Server？ DHCP options需配置next-server指向PXE服务器的地址，另外要配置初始启动文件填入filename字段
+   4. PEX Client使用TFTP协议(PEX服务器上还需要部署TFTP服务器)下载启动文件
+   5. 启动文件指示内核TFTP地址、initramfs地址等等，客户端根据指示请求这些文件。之后启动内核
 
 * 其他小知识点
 ** 广播地址
