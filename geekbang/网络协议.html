@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2021-01-17 Sun 14:27 -->
+<!-- 2021-01-18 Mon 10:19 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>网络协议</title>
@@ -240,6 +240,24 @@ for the JavaScript code in this tag.
 <li><a href="#org25c8578">1. Linux命令</a>
 <ul>
 <li><a href="#org0c75c27">1.1. <code>ip</code></a></li>
+<li><a href="#orgb07efac">1.2. <code>ifconfig</code></a></li>
+<li><a href="#org1620ed3">1.3. 其他</a></li>
+</ul>
+</li>
+<li><a href="#org7ddf743">2. IP层</a>
+<ul>
+<li><a href="#orgebd3d7b">2.1. IP地址CIDR表示法</a></li>
+</ul>
+</li>
+<li><a href="#orgbb8885b">3. 数据链接层</a></li>
+<li><a href="#orga8cfb4a">4. 应用层</a>
+<ul>
+<li><a href="#org4a60c66">4.1. DHCP</a></li>
+</ul>
+</li>
+<li><a href="#org20383c2">5. 其他小知识点</a>
+<ul>
+<li><a href="#orgd8f0e06">5.1. 广播地址</a></li>
 </ul>
 </li>
 </ul>
@@ -251,6 +269,128 @@ for the JavaScript code in this tag.
 </div>
 <div id="outline-container-org0c75c27" class="outline-3">
 <h3 id="org0c75c27"><span class="section-number-3">1.1</span> <code>ip</code></h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+in iproute2
+</p>
+</div>
+<div id="outline-container-org2facc99" class="outline-4">
+<h4 id="org2facc99"><span class="section-number-4">1.1.1</span> 配置IP地址</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<div class="org-src-container">
+<pre class="src src-bash">sudo ip addr add 10.0.0.1/24 dev eth1
+sudo ip link set up eth1
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org35ca383" class="outline-4">
+<h4 id="org35ca383"><span class="section-number-4">1.1.2</span> <code>ip addr</code></h4>
+<div class="outline-text-4" id="text-1-1-2">
+<ul class="org-ul">
+<li>scope: global说明这张网卡是对外的，host则只能本机相互通信</li>
+<li>lo 全称是 loopback，又称环回接口，往往会被分配到 127.0.0.1 这个地址。这个地址用于本机通信，经过内核处理后直接返回，不会在任何网络中出现。</li>
+<li><code>link/ether 9f:3c:8a:a4:b1:c0 brd ff:ff:ff:ff:ff:ff</code>: MAC地址</li>
+<li><code>&lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;</code>: net_device flags，网络设备的状态标识
+
+<ul class="org-ul">
+<li>UP 表示网卡处于启动的状态</li>
+<li>BROADCAST 表示这个网卡有广播地址</li>
+<li>MULTICAST 表示网卡可以发送多播包</li>
+<li>LOWER_UP 表示 L1 是启动的，网线插着</li>
+</ul></li>
+
+<li>qdisc(queueing discipline): 排队规则，如pfifo，数据包采用先入先出的方式通过队列。
+pfifo_fast分为三个波段的队列，band 0优先级最高，IP包头里的TOS可指定优先级。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb07efac" class="outline-3">
+<h3 id="orgb07efac"><span class="section-number-3">1.2</span> <code>ifconfig</code></h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+in net-tools
+</p>
+</div>
+<div id="outline-container-org31bda9f" class="outline-4">
+<h4 id="org31bda9f"><span class="section-number-4">1.2.1</span> 配置IP地址</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<div class="org-src-container">
+<pre class="src src-bash">sudo ifconfig eth1 10.0.0.1/24
+sudo ifconfig eth1 up
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1620ed3" class="outline-3">
+<h3 id="org1620ed3"><span class="section-number-3">1.3</span> 其他</h3>
+</div>
+</div>
+
+<div id="outline-container-org7ddf743" class="outline-2">
+<h2 id="org7ddf743"><span class="section-number-2">2</span> IP层</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgebd3d7b" class="outline-3">
+<h3 id="orgebd3d7b"><span class="section-number-3">2.1</span> IP地址CIDR表示法</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+<code>10.100.122.2/24</code>: 前24位是网络号，后8位是主机号，等同于子网掩码 <code>255.255.255.0</code> 。
+<code>10.100.122</code> 网络的广播地址: <code>10.100.122.255</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbb8885b" class="outline-2">
+<h2 id="orgbb8885b"><span class="section-number-2">3</span> 数据链接层</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>MTU: 单次传输最大字节数，以太网默认1500个字节(包含MAC头)，多了分片传</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga8cfb4a" class="outline-2">
+<h2 id="orga8cfb4a"><span class="section-number-2">4</span> 应用层</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org4a60c66" class="outline-3">
+<h3 id="org4a60c66"><span class="section-number-3">4.1</span> DHCP</h3>
+<div class="outline-text-3" id="text-4-1">
+
+<div class="figure">
+<p><img src="../resources/geekbang/networking/dhcp_packet.png" alt="dhcp_packet.png" />
+</p>
+</div>
+<ol class="org-ol">
+<li>DHCP Discover: 使用0.0.0.0发送了一个广播包，目的 IP 地址为255.255.255.255，类型Boot Request</li>
+<li>DHCP Offer: 里面包含子网掩码、网关、IP租用时长、甚至DNS、NTP Server等信息</li>
+<li>REQ/ACK after offer: 由于还没有得到 DHCP Server 的最后确认，客户端仍然使用 0.0.0.0 为源 IP 地址发送请求等待DHCP服务器确认</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org20383c2" class="outline-2">
+<h2 id="org20383c2"><span class="section-number-2">5</span> 其他小知识点</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgd8f0e06" class="outline-3">
+<h3 id="orgd8f0e06"><span class="section-number-3">5.1</span> 广播地址</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+分两种：直接广播地址、受限广播地址
+</p>
+<ul class="org-ul">
+<li>受限广播地址： 全1 <code>255.255.255.255</code></li>
+<li>直接广播地址： 网络号+全1主机号</li>
+<li>在任何情况下，路由器都不转发目的地址为受限的广播地址的数据报，这样的数据报仅出现在本地网络中</li>
+</ul>
+</div>
 </div>
 </div>
 </div>

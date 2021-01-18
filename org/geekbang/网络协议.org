@@ -44,3 +44,17 @@
 
 * 数据链接层
   - MTU: 单次传输最大字节数，以太网默认1500个字节(包含MAC头)，多了分片传
+* 应用层
+** DHCP
+   #+ATTR_HTML: align="center"
+   [[file:../resources/geekbang/networking/dhcp_packet.png]]
+   1. DHCP Discover: 使用0.0.0.0发送了一个广播包，目的 IP 地址为255.255.255.255，类型Boot Request
+   2. DHCP Offer: 里面包含子网掩码、网关、IP租用时长、甚至DNS、NTP Server等信息
+   3. REQ/ACK after offer: 由于还没有得到 DHCP Server 的最后确认，客户端仍然使用 0.0.0.0 为源 IP 地址发送请求等待DHCP服务器确认
+
+* 其他小知识点
+** 广播地址
+   分两种：直接广播地址、受限广播地址
+   - 受限广播地址： 全1 =255.255.255.255=
+   - 直接广播地址： 网络号+全1主机号
+   - 在任何情况下，路由器都不转发目的地址为受限的广播地址的数据报，这样的数据报仅出现在本地网络中
