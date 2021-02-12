@@ -64,26 +64,26 @@
 ** Command
 *** CREATE & DROP & ALTER
     #+BEGIN_SRC sql
-      CREATE DATABASE dbname;
-      USE DATABASE dbname;
-      CREATE TABLE table_name (column_name TYPE Constrains, ... );
-      DESC table_name;
-      DROP TABLE;
+    CREATE DATABASE dbname;
+    USE DATABASE dbname;
+    CREATE TABLE table_name (column_name TYPE Constrains, ... );
+    DESC table_name;
+    DROP TABLE;
 
-      ALTER TABLE table_name
-      ADD COLUMN columnName ...
-      ADD PRIMARY KEY (columnName)
-      RENAME TO tableNewName
-      CHANGE COLUMN columnOldName columnNewName TYPE ...
-      MODIFY COLUMN columnName TYPE...
-      DROP COLUMN columnName
+    ALTER TABLE table_name
+    ADD COLUMN columnName ...
+    ADD PRIMARY KEY (columnName)
+    RENAME TO tableNewName
+    CHANGE COLUMN columnOldName columnNewName TYPE ...
+    MODIFY COLUMN columnName TYPE...
+    DROP COLUMN columnName
     #+END_SRC
 
 *** INSERT & UPDATE & DELETE
     #+BEGIN_SRC sql
-      INSERT INTO tableName [(columnName1, columnName2, ...)] VALUES ('value1', 'value2', ...);
-      UPDATE tableName SET columnName1 = 'value1', columnName2 = 'value2' WHERE expr;
-      DELETE FROM tableName WHERE expr;
+    INSERT INTO tableName [(columnName1, columnName2, ...)] VALUES ('value1', 'value2', ...);
+    UPDATE tableName SET columnName1 = 'value1', columnName2 = 'value2' WHERE expr;
+    DELETE FROM tableName WHERE expr;
     #+END_SRC
 
 *** NOT
@@ -92,22 +92,22 @@
 
 *** SHOW
     #+BEGIN_SRC sql
-      SHOW CREATE TABLE tableName;
-      SHOW COLUMNS FROM tableName;
-      SHOW INDEX FROM tableName;
-      SHOW WARNINGS;
+    SHOW CREATE TABLE tableName;
+    SHOW COLUMNS FROM tableName;
+    SHOW INDEX FROM tableName;
+    SHOW WARNINGS;
     #+END_SRC
     #+BEGIN_SRC sql
-      UPDATE tableName SET columnName =
-      CASE
-        WHEN column_1 = somevalue1
-          THEN newValue;
-      #+END_SRC
+    UPDATE tableName SET columnName =
+    CASE
+      WHEN column_1 = somevalue1
+        THEN newValue;
+    #+END_SRC
 
 *** GROUP BY
     remove the duplicates
     #+BEGIN_SRC sql
-      SELECT columnName1, columnName2 FROM tableName GROUP BY columnName2
+    SELECT columnName1, columnName2 FROM tableName GROUP BY columnName2
     #+END_SRC
 
 **** SUM, AVG, MAX, MIN, COUNT
@@ -122,27 +122,27 @@
 *** WITH
     Define temporary view
     #+BEGIN_SRC sql
-      WITH temp_view_name(columnName...) as
-           select statement
-      SELECT ...
-      FROM temp_view_name
-      WHERE ...
+    WITH temp_view_name(columnName...) as
+         select statement
+    SELECT ...
+    FROM temp_view_name
+    WHERE ...
     #+END_SRC
 
 *** RECURSIVE
     - CREAT RECURSIVE VIEW
     - WITH RECURSIVE
     #+BEGIN_SRC sql
-      WITH RECURSIVE empl(employee_name, manager_name) as (
-      SELECT employee_name, manager_name
-      FROM manager
-      UNION
-      SELECT manager.employee_name,empl.manager_name
-      FROM manager, empl
-      WHERE manager.manager_name = empl.employee_name
-      )
-      SELECT *
-      FROM empl
+    WITH RECURSIVE empl(employee_name, manager_name) as (
+    SELECT employee_name, manager_name
+    FROM manager
+    UNION
+    SELECT manager.employee_name,empl.manager_name
+    FROM manager, empl
+    WHERE manager.manager_name = empl.employee_name
+    )
+    SELECT *
+    FROM empl
     #+END_SRC
 
 *** GRANT & REVOKE

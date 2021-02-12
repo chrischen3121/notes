@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2020-06-09 Tue 16:23 -->
+<!-- 2021-02-13 Sat 00:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -181,8 +181,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="../styles/demo/css/demo.css"/>
-<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -250,7 +249,7 @@ for the JavaScript code in this tag.
 });
 </script>
 <script type="text/javascript"
-        src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+        src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -259,39 +258,39 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5556325">1. Profiling</a>
+<li><a href="#org25b8ecd">1. Profiling</a>
 <ul>
-<li><a href="#orgeab325a">1.1. CPU</a></li>
-<li><a href="#orgdeb6599">1.2. memory</a></li>
-<li><a href="#org62c6c18">1.3. work with UT</a></li>
+<li><a href="#org9de2ad0">1.1. CPU</a></li>
+<li><a href="#orgdefb9f0">1.2. memory</a></li>
+<li><a href="#orgbb8c585">1.3. work with UT</a></li>
 </ul>
 </li>
-<li><a href="#org9a2c0aa">2. Lists and tuples</a>
+<li><a href="#org7b05b0c">2. Lists and tuples</a>
 <ul>
-<li><a href="#org7dc9831">2.1. Sort algorithm</a></li>
-<li><a href="#org43f7545">2.2. list vs. tuple</a></li>
+<li><a href="#orgfd9c481">2.1. Sort algorithm</a></li>
+<li><a href="#org8fd31df">2.2. list vs. tuple</a></li>
 </ul>
 </li>
-<li><a href="#orge07e3c2">3. set &amp; dict</a>
+<li><a href="#orgf796d0f">3. set &amp; dict</a>
 <ul>
-<li><a href="#org513d90e">3.1. hashable key</a></li>
-<li><a href="#org4577880">3.2. resizing</a></li>
-<li><a href="#orgb02257e">3.3. extra</a></li>
+<li><a href="#org1877177">3.1. hashable key</a></li>
+<li><a href="#orgc5b2a06">3.2. resizing</a></li>
+<li><a href="#orgdf9a055">3.3. extra</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org5556325" class="outline-2">
-<h2 id="org5556325"><span class="section-number-2">1</span> Profiling</h2>
+<div id="outline-container-org25b8ecd" class="outline-2">
+<h2 id="org25b8ecd"><span class="section-number-2">1</span> Profiling</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgeab325a" class="outline-3">
-<h3 id="orgeab325a"><span class="section-number-3">1.1</span> CPU</h3>
+<div id="outline-container-org9de2ad0" class="outline-3">
+<h3 id="org9de2ad0"><span class="section-number-3">1.1</span> CPU</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-orge912d62" class="outline-4">
-<h4 id="orge912d62"><span class="section-number-4">1.1.1</span> simple <i>time</i> module</h4>
+<div id="outline-container-org65bfa2b" class="outline-4">
+<h4 id="org65bfa2b"><span class="section-number-4">1.1.1</span> simple <i>time</i> module</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> time
@@ -303,8 +302,8 @@ fn()
 </div>
 </div>
 </div>
-<div id="outline-container-org80343ac" class="outline-4">
-<h4 id="org80343ac"><span class="section-number-4">1.1.2</span> decorator</h4>
+<div id="outline-container-org1bbdfa9" class="outline-4">
+<h4 id="org1bbdfa9"><span class="section-number-4">1.1.2</span> decorator</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> functools <span style="color: #3a81c3; font-weight: bold;">import</span> wraps
@@ -325,11 +324,11 @@ fn()
 </div>
 </div>
 </div>
-<div id="outline-container-orgdc2897b" class="outline-4">
-<h4 id="orgdc2897b"><span class="section-number-4">1.1.3</span> %timeit in IPython</h4>
+<div id="outline-container-org5009cab" class="outline-4">
+<h4 id="org5009cab"><span class="section-number-4">1.1.3</span> %timeit in IPython</h4>
 </div>
-<div id="outline-container-orgebabc8d" class="outline-4">
-<h4 id="orgebabc8d"><span class="section-number-4">1.1.4</span> unix <i>time</i> command</h4>
+<div id="outline-container-orgdab1fc7" class="outline-4">
+<h4 id="orgdab1fc7"><span class="section-number-4">1.1.4</span> unix <i>time</i> command</h4>
 <div class="outline-text-4" id="text-1-1-4">
 <p>
 might be useful if you start lots of fresh processes.
@@ -342,8 +341,8 @@ might be useful if you start lots of fresh processes.
 </div>
 </div>
 
-<div id="outline-container-org903d597" class="outline-4">
-<h4 id="org903d597"><span class="section-number-4">1.1.5</span> cProfile</h4>
+<div id="outline-container-org614e2de" class="outline-4">
+<h4 id="org614e2de"><span class="section-number-4">1.1.5</span> cProfile</h4>
 <div class="outline-text-4" id="text-1-1-5">
 <div class="org-src-container">
 <pre class="src src-sh">python -m cProfile -s cumulative xxx.py
@@ -371,13 +370,13 @@ p.print_callees()
 </div>
 </div>
 </div>
-<div id="outline-container-orgb52f809" class="outline-4">
-<h4 id="orgb52f809"><span class="section-number-4">1.1.6</span> visualize a profile file</h4>
+<div id="outline-container-org44d46f2" class="outline-4">
+<h4 id="org44d46f2"><span class="section-number-4">1.1.6</span> visualize a profile file</h4>
 <div class="outline-text-4" id="text-1-1-6">
 </div>
 <ul class="org-ul">
-<li><a id="org0cf471b"></a>kcachegrind<br />
-<div class="outline-text-5" id="text-org0cf471b">
+<li><a id="org169b586"></a>kcachegrind<br />
+<div class="outline-text-5" id="text-org169b586">
 <div class="org-src-container">
 <pre class="src src-sh">pyprof2calltree -i profile.stats -o prof.calltree
 kcachegrind prof.calltree
@@ -385,8 +384,8 @@ kcachegrind prof.calltree
 </div>
 </div>
 </li>
-<li><a id="orge896269"></a>snakeviz<br />
-<div class="outline-text-5" id="text-orge896269">
+<li><a id="org9efdf0f"></a>snakeviz<br />
+<div class="outline-text-5" id="text-org9efdf0f">
 <div class="org-src-container">
 <pre class="src src-sh">snakeviz profile.stats
 </pre>
@@ -396,16 +395,16 @@ kcachegrind prof.calltree
 </ul>
 </div>
 
-<div id="outline-container-org3f217b9" class="outline-4">
-<h4 id="org3f217b9"><span class="section-number-4">1.1.7</span> line_profiler</h4>
+<div id="outline-container-org31ecfe0" class="outline-4">
+<h4 id="org31ecfe0"><span class="section-number-4">1.1.7</span> line_profiler</h4>
 </div>
 </div>
-<div id="outline-container-orgdeb6599" class="outline-3">
-<h3 id="orgdeb6599"><span class="section-number-3">1.2</span> memory</h3>
+<div id="outline-container-orgdefb9f0" class="outline-3">
+<h3 id="orgdefb9f0"><span class="section-number-3">1.2</span> memory</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-orgcb3fb21" class="outline-4">
-<h4 id="orgcb3fb21"><span class="section-number-4">1.2.1</span> memory_profiler</h4>
+<div id="outline-container-org16cf6e5" class="outline-4">
+<h4 id="org16cf6e5"><span class="section-number-4">1.2.1</span> memory_profiler</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <div class="org-src-container">
 <pre class="src src-sh">python -m memory_profiler xxx.py
@@ -416,8 +415,8 @@ mprof plot
 </div>
 </div>
 </div>
-<div id="outline-container-org0cbd5da" class="outline-4">
-<h4 id="org0cbd5da"><span class="section-number-4">1.2.2</span> heapy</h4>
+<div id="outline-container-org6d9c329" class="outline-4">
+<h4 id="org6d9c329"><span class="section-number-4">1.2.2</span> heapy</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 <i>pip install guppy</i> first.
@@ -431,12 +430,12 @@ hp.setrelheap()<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span>
 </div>
 </div>
 </div>
-<div id="outline-container-org268e09c" class="outline-4">
-<h4 id="org268e09c"><span class="section-number-4">1.2.3</span> <span class="todo TODO">TODO</span> dowser??</h4>
+<div id="outline-container-org5002d79" class="outline-4">
+<h4 id="org5002d79"><span class="section-number-4">1.2.3</span> <span class="todo TODO">TODO</span> dowser??</h4>
 </div>
 </div>
-<div id="outline-container-org62c6c18" class="outline-3">
-<h3 id="org62c6c18"><span class="section-number-3">1.3</span> work with UT</h3>
+<div id="outline-container-orgbb8c585" class="outline-3">
+<h3 id="orgbb8c585"><span class="section-number-3">1.3</span> work with UT</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Add following at the top of unittest code.
@@ -461,16 +460,16 @@ Add following at the top of unittest code.
 </div>
 </div>
 
-<div id="outline-container-org9a2c0aa" class="outline-2">
-<h2 id="org9a2c0aa"><span class="section-number-2">2</span> Lists and tuples</h2>
+<div id="outline-container-org7b05b0c" class="outline-2">
+<h2 id="org7b05b0c"><span class="section-number-2">2</span> Lists and tuples</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org7dc9831" class="outline-3">
-<h3 id="org7dc9831"><span class="section-number-3">2.1</span> Sort algorithm</h3>
+<div id="outline-container-orgfd9c481" class="outline-3">
+<h3 id="orgfd9c481"><span class="section-number-3">2.1</span> Sort algorithm</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-org2aab645" class="outline-4">
-<h4 id="org2aab645"><span class="section-number-4">2.1.1</span> Tim sort</h4>
+<div id="outline-container-org6434d60" class="outline-4">
+<h4 id="org6434d60"><span class="section-number-4">2.1.1</span> Tim sort</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 built-in sort algorithm
@@ -479,8 +478,8 @@ built-in sort algorithm
 </div>
 </div>
 
-<div id="outline-container-org8fd63eb" class="outline-4">
-<h4 id="org8fd63eb"><span class="section-number-4">2.1.2</span> bisect</h4>
+<div id="outline-container-org14a8df9" class="outline-4">
+<h4 id="org14a8df9"><span class="section-number-4">2.1.2</span> bisect</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 <b>bisect</b> provides support for maintaining a list in
@@ -501,12 +500,12 @@ bisect.insort(alist, 17)
 </div>
 </div>
 
-<div id="outline-container-org43f7545" class="outline-3">
-<h3 id="org43f7545"><span class="section-number-3">2.2</span> list vs. tuple</h3>
+<div id="outline-container-org8fd31df" class="outline-3">
+<h3 id="org8fd31df"><span class="section-number-3">2.2</span> list vs. tuple</h3>
 <div class="outline-text-3" id="text-2-2">
 </div>
-<div id="outline-container-orge32dd81" class="outline-4">
-<h4 id="orge32dd81"><span class="section-number-4">2.2.1</span> list</h4>
+<div id="outline-container-org510783d" class="outline-4">
+<h4 id="org510783d"><span class="section-number-4">2.2.1</span> list</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <p>
 dynamic arrays, mutable and allow for resizing.
@@ -514,8 +513,8 @@ dynamic arrays, mutable and allow for resizing.
 </div>
 
 <ul class="org-ul">
-<li><a id="org7ca4308"></a>resizing<br />
-<div class="outline-text-5" id="text-org7ca4308">
+<li><a id="org2ceae4e"></a>resizing<br />
+<div class="outline-text-5" id="text-org2ceae4e">
 <p>
 The growth pattern is:
 </p>
@@ -579,8 +578,8 @@ new_allocated += newsize;
 </div>
 </li>
 
-<li><a id="orga15ca88"></a>dereference<br />
-<div class="outline-text-5" id="text-orga15ca88">
+<li><a id="org9d5db7c"></a>dereference<br />
+<div class="outline-text-5" id="text-org9d5db7c">
 <p>
 List objects (for background, see Chapter 3) have an overhead for each dereference, as
 the objects they reference can occur anywhere in memory.
@@ -590,8 +589,8 @@ the objects they reference can occur anywhere in memory.
 </ul>
 </div>
 
-<div id="outline-container-orga0d2361" class="outline-4">
-<h4 id="orga0d2361"><span class="section-number-4">2.2.2</span> tuple</h4>
+<div id="outline-container-org38cef10" class="outline-4">
+<h4 id="org38cef10"><span class="section-number-4">2.2.2</span> tuple</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <p>
 static arrays, immutable
@@ -605,19 +604,19 @@ static arrays, immutable
 </div>
 </div>
 
-<div id="outline-container-orge07e3c2" class="outline-2">
-<h2 id="orge07e3c2"><span class="section-number-2">3</span> set &amp; dict</h2>
+<div id="outline-container-orgf796d0f" class="outline-2">
+<h2 id="orgf796d0f"><span class="section-number-2">3</span> set &amp; dict</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org513d90e" class="outline-3">
-<h3 id="org513d90e"><span class="section-number-3">3.1</span> hashable key</h3>
+<div id="outline-container-org1877177" class="outline-3">
+<h3 id="org1877177"><span class="section-number-3">3.1</span> hashable key</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 The type should implements both the <span class="underline"><span class="underline">hash</span></span> magic function and either <span class="underline"><span class="underline">eq</span></span> or <span class="underline"><span class="underline">cmp</span></span> .
 </p>
 </div>
-<div id="outline-container-org53190f0" class="outline-4">
-<h4 id="org53190f0"><span class="section-number-4">3.1.1</span> probing function</h4>
+<div id="outline-container-org315545e" class="outline-4">
+<h4 id="org315545e"><span class="section-number-4">3.1.1</span> probing function</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pseudocode</span>
@@ -634,8 +633,8 @@ The type should implements both the <span class="underline"><span class="underli
 </div>
 </div>
 </div>
-<div id="outline-container-orgb0b3a5a" class="outline-4">
-<h4 id="orgb0b3a5a"><span class="section-number-4">3.1.2</span> User-defined classes</h4>
+<div id="outline-container-orgb9ce177" class="outline-4">
+<h4 id="orgb9ce177"><span class="section-number-4">3.1.2</span> User-defined classes</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 User-defined classes have default hash and comparison functions.
@@ -647,8 +646,8 @@ placement in memory.
 </div>
 </div>
 
-<div id="outline-container-org8c7fed5" class="outline-4">
-<h4 id="org8c7fed5"><span class="section-number-4">3.1.3</span> entropy</h4>
+<div id="outline-container-org18376ad" class="outline-4">
+<h4 id="org18376ad"><span class="section-number-4">3.1.3</span> entropy</h4>
 <div class="outline-text-4" id="text-3-1-3">
 <p>
 “how well distributed my hash function is” is called the <b>entropy</b>
@@ -668,13 +667,13 @@ the dictionary will be helps in making a good selection.
 </div>
 </div>
 
-<div id="outline-container-org4577880" class="outline-3">
-<h3 id="org4577880"><span class="section-number-3">3.2</span> resizing</h3>
+<div id="outline-container-orgc5b2a06" class="outline-3">
+<h3 id="orgc5b2a06"><span class="section-number-3">3.2</span> resizing</h3>
 <div class="outline-text-3" id="text-3-2">
 </div>
 <ul class="org-ul">
-<li><a id="org9df6f34"></a>The growth pattern is:<br />
-<div class="outline-text-5" id="text-org9df6f34">
+<li><a id="org6384aab"></a>The growth pattern is:<br />
+<div class="outline-text-5" id="text-org6384aab">
 <p>
 8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, &#x2026;
 the number of bucket increases by 4x until we reach 50,000
@@ -688,12 +687,12 @@ resizing requires recomputing indices
 </li>
 </ul>
 </div>
-<div id="outline-container-orgb02257e" class="outline-3">
-<h3 id="orgb02257e"><span class="section-number-3">3.3</span> extra</h3>
+<div id="outline-container-orgdf9a055" class="outline-3">
+<h3 id="orgdf9a055"><span class="section-number-3">3.3</span> extra</h3>
 <div class="outline-text-3" id="text-3-3">
 </div>
-<div id="outline-container-org71de7f0" class="outline-4">
-<h4 id="org71de7f0"><span class="section-number-4">3.3.1</span> Namespace lookups</h4>
+<div id="outline-container-orgbd59ac0" class="outline-4">
+<h4 id="orgbd59ac0"><span class="section-number-4">3.3.1</span> Namespace lookups</h4>
 <div class="outline-text-4" id="text-3-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> math

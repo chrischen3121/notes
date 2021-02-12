@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2020-06-09 Tue 16:22 -->
+<!-- 2021-02-13 Sat 00:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>boost cookbook</title>
@@ -181,8 +181,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="../styles/demo/css/demo.css"/>
-<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -237,40 +236,40 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc5294ab">1. Data Structure</a>
+<li><a href="#orge73e80b">1. Data Structure</a>
 <ul>
-<li><a href="#org2942051">1.1. any</a></li>
-<li><a href="#org1bf0ec8">1.2. variant</a></li>
-<li><a href="#org57f42fd">1.3. optional</a></li>
-<li><a href="#org5ef6de7">1.4. tuple</a></li>
-<li><a href="#org71d624c">1.5. others</a></li>
+<li><a href="#orgccecccf">1.1. any</a></li>
+<li><a href="#org85c26c3">1.2. variant</a></li>
+<li><a href="#orgc370cde">1.3. optional</a></li>
+<li><a href="#org058586e">1.4. tuple</a></li>
+<li><a href="#orgbf617ad">1.5. others</a></li>
 </ul>
 </li>
-<li><a href="#org4d45d7e">2. Functional</a>
+<li><a href="#orgc16d1ad">2. Functional</a>
 <ul>
-<li><a href="#org6273984">2.1. bind</a></li>
+<li><a href="#orgca8eb87">2.1. bind</a></li>
 </ul>
 </li>
-<li><a href="#org7424ded">3. Managing Resources</a></li>
-<li><a href="#org3bc8923">4. Utilities</a>
+<li><a href="#org668305c">3. Managing Resources</a></li>
+<li><a href="#org4f2bc44">4. Utilities</a>
 <ul>
-<li><a href="#org3ac9069">4.1. boost::algorithm</a></li>
-<li><a href="#orga5a894e">4.2. swap</a></li>
+<li><a href="#orgc4c6819">4.1. boost::algorithm</a></li>
+<li><a href="#org78fb3ef">4.2. swap</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc5294ab" class="outline-2">
-<h2 id="orgc5294ab"><span class="section-number-2">1</span> Data Structure</h2>
+<div id="outline-container-orge73e80b" class="outline-2">
+<h2 id="orge73e80b"><span class="section-number-2">1</span> Data Structure</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org2942051" class="outline-3">
-<h3 id="org2942051"><span class="section-number-3">1.1</span> any</h3>
+<div id="outline-container-orgccecccf" class="outline-3">
+<h3 id="orgccecccf"><span class="section-number-3">1.1</span> any</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-org4a7b185" class="outline-4">
-<h4 id="org4a7b185"><span class="section-number-4">1.1.1</span> how it works</h4>
+<div id="outline-container-orgefab4c6" class="outline-4">
+<h4 id="orgefab4c6"><span class="section-number-4">1.1.1</span> how it works</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 On the assignment of some variable of type T, Boost.Any instantiates a holder&lt;T&gt; type that may store
@@ -298,24 +297,24 @@ a value of the specified type T and is derived from some base-type placeholder.
 </div>
 </div>
 
-<div id="outline-container-org1bf0ec8" class="outline-3">
-<h3 id="org1bf0ec8"><span class="section-number-3">1.2</span> variant</h3>
+<div id="outline-container-org85c26c3" class="outline-3">
+<h3 id="org85c26c3"><span class="section-number-3">1.2</span> variant</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Boost variant emulates a union but it does not use a union in its implementation. Instead it uses aligned storage and placement new.
 You have to manage the construction and destruction of non POD types by yourself when you use C++11 unions.
 </p>
 </div>
-<div id="outline-container-org3ffa251" class="outline-4">
-<h4 id="org3ffa251"><span class="section-number-4">1.2.1</span> hints</h4>
+<div id="outline-container-org0d54e97" class="outline-4">
+<h4 id="org0d54e97"><span class="section-number-4">1.2.1</span> hints</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <ul class="org-ul">
 <li>To achieve maximum performance, make sure that there is a simple type in the list of supported types at the first position, such as boost::blank</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc6cfe69" class="outline-4">
-<h4 id="orgc6cfe69"><span class="section-number-4">1.2.2</span> <code>boost::apply_visitor</code></h4>
+<div id="outline-container-orgd6bc63a" class="outline-4">
+<h4 id="orgd6bc63a"><span class="section-number-4">1.2.2</span> <code>boost::apply_visitor</code></h4>
 <div class="outline-text-4" id="text-1-2-2">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #3a81c3; font-weight: bold;">typedef</span> <span style="color: #4e3163;">boost</span>::<span style="color: #ba2f59; font-weight: bold;">variant</span>&lt;<span style="color: #ba2f59; font-weight: bold;">int</span>, <span style="color: #ba2f59; font-weight: bold;">float</span>, <span style="color: #4e3163;">std</span>::string&gt; <span style="color: #ba2f59; font-weight: bold;">cell_t</span>;
@@ -332,8 +331,8 @@ You have to manage the construction and destruction of non POD types by yourself
 </div>
 </div>
 
-<div id="outline-container-org57f42fd" class="outline-3">
-<h3 id="org57f42fd"><span class="section-number-3">1.3</span> optional</h3>
+<div id="outline-container-orgc370cde" class="outline-3">
+<h3 id="orgc370cde"><span class="section-number-3">1.3</span> optional</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 use <code>boost::none</code> to set empty value
@@ -341,12 +340,12 @@ use <code>boost::none</code> to set empty value
 </div>
 </div>
 
-<div id="outline-container-org5ef6de7" class="outline-3">
-<h3 id="org5ef6de7"><span class="section-number-3">1.4</span> tuple</h3>
+<div id="outline-container-org058586e" class="outline-3">
+<h3 id="org058586e"><span class="section-number-3">1.4</span> tuple</h3>
 <div class="outline-text-3" id="text-1-4">
 </div>
-<div id="outline-container-org0cafffa" class="outline-4">
-<h4 id="org0cafffa"><span class="section-number-4">1.4.1</span> std::tie</h4>
+<div id="outline-container-orgdaba39a" class="outline-4">
+<h4 id="orgdaba39a"><span class="section-number-4">1.4.1</span> std::tie</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #4e3163;">std</span>::tie(i, f, d) = some_tuple;
@@ -356,8 +355,8 @@ use <code>boost::none</code> to set empty value
 </div>
 </div>
 
-<div id="outline-container-org71d624c" class="outline-3">
-<h3 id="org71d624c"><span class="section-number-3">1.5</span> others</h3>
+<div id="outline-container-orgbf617ad" class="outline-3">
+<h3 id="orgbf617ad"><span class="section-number-3">1.5</span> others</h3>
 <div class="outline-text-3" id="text-1-5">
 <ul class="org-ul">
 <li>boost::container::small_vector</li>
@@ -369,19 +368,19 @@ use <code>boost::none</code> to set empty value
 </div>
 </div>
 
-<div id="outline-container-org4d45d7e" class="outline-2">
-<h2 id="org4d45d7e"><span class="section-number-2">2</span> Functional</h2>
+<div id="outline-container-orgc16d1ad" class="outline-2">
+<h2 id="orgc16d1ad"><span class="section-number-2">2</span> Functional</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org6273984" class="outline-3">
-<h3 id="org6273984"><span class="section-number-3">2.1</span> bind</h3>
+<div id="outline-container-orgca8eb87" class="outline-3">
+<h3 id="orgca8eb87"><span class="section-number-3">2.1</span> bind</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 <code>bind</code>: <b>copy</b> a value into a functional object
 </p>
 </div>
-<div id="outline-container-org73eb4d3" class="outline-4">
-<h4 id="org73eb4d3"><span class="section-number-4">2.1.1</span> <code>ref()</code> &amp; <code>cref()</code></h4>
+<div id="outline-container-org8c4f2ed" class="outline-4">
+<h4 id="org8c4f2ed"><span class="section-number-4">2.1.1</span> <code>ref()</code> &amp; <code>cref()</code></h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 The <code>ref()</code> and <code>cref()</code> functions just construct an object of type <code>reference_wrapper&lt;T&gt;</code> or <code>reference_wrapper&lt;const T&gt;</code>,
@@ -389,8 +388,8 @@ which is implicitly convertible to a reference type.
 </p>
 </div>
 </div>
-<div id="outline-container-orgeaa855f" class="outline-4">
-<h4 id="orgeaa855f"><span class="section-number-4">2.1.2</span> hints</h4>
+<div id="outline-container-org71b141c" class="outline-4">
+<h4 id="org71b141c"><span class="section-number-4">2.1.2</span> hints</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 If you are using the C++14 compiler, then use generic lambdas instead of <code>std::bind</code> and <code>boost::bind</code>, as they are less obscure and simpler to understand.
@@ -401,16 +400,16 @@ C++17 lambdas are usable with <code>constexpr</code>, unlike <code>std::bind</co
 </div>
 </div>
 
-<div id="outline-container-org7424ded" class="outline-2">
-<h2 id="org7424ded"><span class="section-number-2">3</span> Managing Resources</h2>
+<div id="outline-container-org668305c" class="outline-2">
+<h2 id="org668305c"><span class="section-number-2">3</span> Managing Resources</h2>
 </div>
 
-<div id="outline-container-org3bc8923" class="outline-2">
-<h2 id="org3bc8923"><span class="section-number-2">4</span> Utilities</h2>
+<div id="outline-container-org4f2bc44" class="outline-2">
+<h2 id="org4f2bc44"><span class="section-number-2">4</span> Utilities</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org3ac9069" class="outline-3">
-<h3 id="org3ac9069"><span class="section-number-3">4.1</span> <a href="http://boost.org/libs/algorithm">boost::algorithm</a></h3>
+<div id="outline-container-orgc4c6819" class="outline-3">
+<h3 id="orgc4c6819"><span class="section-number-3">4.1</span> <a href="http://boost.org/libs/algorithm">boost::algorithm</a></h3>
 <div class="outline-text-3" id="text-4-1">
 <ul class="org-ul">
 <li>boost::algorithm::hex</li>
@@ -418,8 +417,8 @@ C++17 lambdas are usable with <code>constexpr</code>, unlike <code>std::bind</co
 </div>
 </div>
 
-<div id="outline-container-orga5a894e" class="outline-3">
-<h3 id="orga5a894e"><span class="section-number-3">4.2</span> swap</h3>
+<div id="outline-container-org78fb3ef" class="outline-3">
+<h3 id="org78fb3ef"><span class="section-number-3">4.2</span> swap</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 <code>boost::swap</code> first searches for a swap function in the namespace of a variable, and if there is
