@@ -6,7 +6,7 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * 对象初始化
   - 总是使用花括号进行初始化{}，原因：当隐式转换精度变小时编译器将会报错。
   #+BEGIN_SRC cpp
@@ -246,42 +246,42 @@
     #+END_SRC
     - case 1: neither reference nor pointer
       #+BEGIN_SRC cpp
-        template<typename T>
-        void f(T param);
+	template<typename T>
+	void f(T param);
 
-        f(x); // T -> int
-        f(cx); // T -> int
-        f(rx); // T -> int
+	f(x); // T -> int
+	f(cx); // T -> int
+	f(rx); // T -> int
       #+END_SRC
     - case 2: reference or pointer
       #+BEGIN_SRC cpp
-        template<typename T>
-        void f(T &param);
+	template<typename T>
+	void f(T &param);
 
-        f(x); // T -> int
-        f(cx); // T -> const int
-        f(rx); // T -> const int, 引用已经是函数参数的一部分
-        f(5); // wrong 不接受右值
+	f(x); // T -> int
+	f(cx); // T -> const int
+	f(rx); // T -> const int, 引用已经是函数参数的一部分
+	f(5); // wrong 不接受右值
       #+END_SRC
 
     - case 3: const reference
       #+BEGIN_SRC cpp
-        template<typename T>
-        void f(const T &param);
+	template<typename T>
+	void f(const T &param);
 
-        f(x); // T -> int
-        f(cx); // T -> int, const 已经是函数参数的一部分
-        f(rx); // T -> int, 同上
+	f(x); // T -> int
+	f(cx); // T -> int, const 已经是函数参数的一部分
+	f(rx); // T -> int, 同上
       #+END_SRC
     - case 4: universal reference
       #+BEGIN_SRC cpp
-        template <typename T>
-        void f(T &&param);
+	template <typename T>
+	void f(T &&param);
 
-        f(x);  // x is lvalue, T -> int &
-        f(cx); // T -> const int &
-        f(rx); // T -> const int &
-        f(42); // x is rvalue, T -> int, &&已经是函数参数的一部分
+	f(x);  // x is lvalue, T -> int &
+	f(cx); // T -> const int &
+	f(rx); // T -> const int &
+	f(42); // x is rvalue, T -> int, &&已经是函数参数的一部分
       #+END_SRC
     - case 5: array or function
 
@@ -317,38 +317,38 @@
     - 对容器中的下标操作 *operator[]* 使用 *decltype* 则返回 *T&*
     - *decltype* 常用于模板函数，通过函数的参数推断函数的返回值类型，并置于函数签名结尾
       #+BEGIN_SRC cpp
-        template<typename Container, typename Index>
-        auto Access(Container &c, Index i)
-            -> decltype(c[i]) {
-          return c[i];
-        }
+	template<typename Container, typename Index>
+	auto Access(Container &c, Index i)
+	    -> decltype(c[i]) {
+	  return c[i];
+	}
       #+END_SRC
       这里的 *auto* 没有任何推断作用，只是用于标识尾部的 *decltype* 。C++14 语法允许去掉尾部的 *decltype* 。
       #+BEGIN_SRC cpp
-        std::vector<int> vec{1, 2, 3};
-        Access(vec, 1) = 10; // Wrong，实际返回值为 int，且是一个 rvalue
+	std::vector<int> vec{1, 2, 3};
+	Access(vec, 1) = 10; // Wrong，实际返回值为 int，且是一个 rvalue
       #+END_SRC
 
 *** decltype(auto)
     *auto* 说明类型需要被推断， *decltype* 说明推断的时候应使用 *decltype* 的规则；C++14 only.
       #+BEGIN_SRC cpp
-        int i = 42;
-        const int &ci = i;
-        auto a1 = ci; // a1 -> int
-        decltype(auto) a2 = ci; // a2 -> const int &
-        decltype((i)) a3 = i; // a3 -> int & 因为(i)为表达式且求值结果为左值，decltype 返回引用
-        int *pi = 42;
-        decltype(*pi) a4 = i; // a4 -> int & 同 a3，*pi 为表达式
+	int i = 42;
+	const int &ci = i;
+	auto a1 = ci; // a1 -> int
+	decltype(auto) a2 = ci; // a2 -> const int &
+	decltype((i)) a3 = i; // a3 -> int & 因为(i)为表达式且求值结果为左值，decltype 返回引用
+	int *pi = 42;
+	decltype(*pi) a4 = i; // a4 -> int & 同 a3，*pi 为表达式
       #+END_SRC
 
 *** perfect forwarding
     #+BEGIN_SRC cpp
       template <typename T> decltype(auto) f(T &&param) {
-        return std::forward<T>(param);
+	return std::forward<T>(param);
       } // for C++14
 
       template <typename T> auto f(T &&param) -> decltype(std::forward<T>(param)) {
-        return std::forward<T>(param);
+	return std::forward<T>(param);
       } // for C++11
     #+END_SRC
 
@@ -405,8 +405,8 @@
      #+BEGIN_SRC cpp
        int array[2][3] = {2,5,7,5,3,1};
        for (auto &row: array)
-         for (auto col: row)
-             std::cout << col << std::endl;
+	 for (auto col: row)
+	     std::cout << col << std::endl;
      #+END_SRC
      - 2 行 3 列数组，使用 for range 时，外层循环要用引用，为了避免数组被自动转成指针
 
@@ -416,8 +416,8 @@
      #+BEGIN_SRC cpp
        int test[] = {1,5,6,8,3,4};
        for (auto it = std::begin(test);
-            it != std::end(test); it++) {
-         std::cout << *it << std::endl;
+	    it != std::end(test); it++) {
+	 std::cout << *it << std::endl;
        }
      #+END_SRC
    - 迭代器循环体内不能执行改变迭代器容量的操作，如执行会使迭代器失效。
@@ -459,9 +459,9 @@
      std::cout << ivec.capacity() << "\n";
      for (auto it = ivec.begin(); it != ivec.end();) {
        if (*it == 6) {
-         it = ivec.erase(it);
+	 it = ivec.erase(it);
        } else {
-         ++it;
+	 ++it;
        }
      }
    #+END_SRC
@@ -505,7 +505,7 @@
        std::istream_iterator<int> ist(cin), eof; //默认构造创建一个 eof 值
        vector<int> vec;
        std::transform(ist, eof, std::back_inserter(vec),
-                      [](auto a) { return a * 2; });
+		      [](auto a) { return a * 2; });
      #+END_SRC
 **** ostream_iterator
      #+BEGIN_SRC cpp
@@ -524,14 +524,14 @@
 *** unique_ptr
     #+BEGIN_SRC cpp
       {
-        std::unique_ptr<int[]> array(new int[10]);
+	std::unique_ptr<int[]> array(new int[10]);
       } // 超出作用域自动调用 delete []释放
     #+END_SRC
 *** shared_ptr
     默认不支持 delete[]释放，需自定义删除器
     #+BEGIN_SRC cpp
       {
-        std::shared_ptr<int[]> array(new int[10], [](int *p) { delete[] p; });
+	std::shared_ptr<int[]> array(new int[10], [](int *p) { delete[] p; });
       }
     #+END_SRC
 ** allocator 类
@@ -555,7 +555,7 @@
 
        template<typename T>
        void forward_test(T &&param) {
-         process(std::forward<T>(param));//因 param 本身是一个左值，可以通过 std::forward 进行转换
+	 process(std::forward<T>(param));//因 param 本身是一个左值，可以通过 std::forward 进行转换
        }
 
        int a = 0;
@@ -590,7 +590,7 @@
       public:
        Func(int i) : i_(i) {}
        int operator()() {
-         return ++i_;
+	 return ++i_;
        }
 
       private:
@@ -644,36 +644,36 @@
 
       扩展的意思是将一个包分解为构成的元素
       #+BEGIN_SRC cpp
-        template<typename T, typename... Args>
-        void f(const T& t, const Args&... args) {
-          while (sizeof...(args)) { //扩展生成函数参数列表
-            std::cout << t << "\n";
-            f(args...); //扩展生成实参列表
-          }
-        }
+	template<typename T, typename... Args>
+	void f(const T& t, const Args&... args) {
+	  while (sizeof...(args)) { //扩展生成函数参数列表
+	    std::cout << t << "\n";
+	    f(args...); //扩展生成实参列表
+	  }
+	}
 
-        template<typename T>
-        void print(const T &t) {
-          std::cout << t << "\n";
-        }
+	template<typename T>
+	void print(const T &t) {
+	  std::cout << t << "\n";
+	}
 
-        template<typename... Args>
-        void f2(const Args&... args) {
-          print(args)...; //对每一个 args 调用 print
-        }
+	template<typename... Args>
+	void f2(const Args&... args) {
+	  print(args)...; //对每一个 args 调用 print
+	}
       #+END_SRC
 
 *** 编写可变参数函数例子
     #+BEGIN_SRC cpp
       template<typename T>
       ostream &print(ostream &os, const T &t) {
-        return os << t;
+	return os << t;
       }// 该函数用于对 rest 的最后一次调用终止递归
 
       template<typename T, typename... Args>
       ostream &print(ostream &os, const T &t, const Args&... rest) {
-        os << t << ", ";
-        return print(os, rest...) //递归，每次调用自己打印剩余 rest 中的第一个
+	os << t << ", ";
+	return print(os, rest...) //递归，每次调用自己打印剩余 rest 中的第一个
       }
     #+END_SRC
 
@@ -682,8 +682,8 @@
     #+BEGIN_SRC cpp
       template<typename... Args>
       void SomeVector::emplace_back(Args &&... args) {
-        chk_n_alloc(); //如果需要重新分配 SomeVector 的内存空间
-        alloc.construct(first_free++, std::forward<Args>(args)...);
+	chk_n_alloc(); //如果需要重新分配 SomeVector 的内存空间
+	alloc.construct(first_free++, std::forward<Args>(args)...);
       }
     #+END_SRC
 
@@ -701,12 +701,12 @@
       template <typename T> struct remove_reference { typedef T type; };
 
       template <typename T> struct remove_reference<T &> {
-        typedef T type;
+	typedef T type;
       }
 
       template <typename T>
       struct remove_reference<T &&> {
-        typedef T type;
+	typedef T type;
       }
     #+END_SRC
 

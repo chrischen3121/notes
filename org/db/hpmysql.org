@@ -6,7 +6,7 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Special SQL
 ** AUTOCOMMIT
    #+BEGIN_SRC sql
@@ -79,18 +79,18 @@
      RUNFILE=/home/benchmark/running
      mysql -e 'SHOW GLOBAL VARIABLES' >> mysql-variables
      while test -e $RUNFILE; do
-         file=$(date +%F_%I)
-         sleep=$(date +%s.%N | awk "{print $INTERVAL - (\$1 % $INTERVAL)}")
-         sleep $sleep
-         ts="$(date +"TS %s.%N %F %T")"
-         loadavg="$(uptime)"
-         echo "$ts $loadavg" >> $PREFIX-${file}-status
-         mysql -e 'SHOW GLOBAL STATUS' >> $PREFIX-${file}-status &
-         echo "$ts $loadavg" >> $PREFIX-${file}-innodbstatus
-         mysql -e 'SHOW ENGINE INNODB STATUS\G' >> $PREFIX-${file}-innodbstatus &
-         echo "$ts $loadavg" >> $PREFIX-${file}-processlist
-         mysql -e 'SHOW FULL PROCESSLIST\G' >> $PREFIX-${file}-processlist &
-         echo $ts
+	 file=$(date +%F_%I)
+	 sleep=$(date +%s.%N | awk "{print $INTERVAL - (\$1 % $INTERVAL)}")
+	 sleep $sleep
+	 ts="$(date +"TS %s.%N %F %T")"
+	 loadavg="$(uptime)"
+	 echo "$ts $loadavg" >> $PREFIX-${file}-status
+	 mysql -e 'SHOW GLOBAL STATUS' >> $PREFIX-${file}-status &
+	 echo "$ts $loadavg" >> $PREFIX-${file}-innodbstatus
+	 mysql -e 'SHOW ENGINE INNODB STATUS\G' >> $PREFIX-${file}-innodbstatus &
+	 echo "$ts $loadavg" >> $PREFIX-${file}-processlist
+	 mysql -e 'SHOW FULL PROCESSLIST\G' >> $PREFIX-${file}-processlist &
+	 echo $ts
      done
      echo Exiting because $RUNFILE does not exist.
    #+END_SRC
@@ -143,16 +143,16 @@
      #+BEGIN_SRC sh
        sysbench fileio --file-total-size=21G prepare
        sysbench fileio --file-total-size=21G --file-test-mode=rndrw \
-                --time=300 --max-requests=0 --threads=4 run
+		--time=300 --max-requests=0 --threads=4 run
      #+END_SRC
 
 **** oltp
      #+BEGIN_SRC sh
        sysbench --db-driver=mysql --mysql-host=127.0.0.1 --mysql-user=sbtest --mysql-password=test1234 \
-                --mysql-db=test --table-size=100000 /usr/local/share/sysbench/oltp_common.lua prepare
+		--mysql-db=test --table-size=100000 /usr/local/share/sysbench/oltp_common.lua prepare
        sysbench --db-driver=mysql --mysql-host=127.0.0.1 --mysql-user=sbtest --mysql-password=test1234 \
-                --mysql-db=test --table-size=100000 /usr/local/share/sysbench/oltp_read_write.lua \
-                --threads=4 run
+		--mysql-db=test --table-size=100000 /usr/local/share/sysbench/oltp_read_write.lua \
+		--threads=4 run
      #+END_SRC
 
 *** TPC-C
@@ -218,9 +218,9 @@
     Run =SHOW GLOBAL STATUS= periodically, gather Threads_running, Threads_connected, Questions, and Queries.
     #+BEGIN_SRC sh
       mysqladmin ext -i1 -p | awk '
-          /Queries/{q=$4-qp;qp=$4}
-          /Threads_connected/{tc=$4}
-          /Threads_running/{printf "%5d %5d %5d\n", q, tc, $4}'
+	  /Queries/{q=$4-qp;qp=$4}
+	  /Threads_connected/{tc=$4}
+	  /Threads_running/{printf "%5d %5d %5d\n", q, tc, $4}'
     #+END_SRC
 *** SHOW PROCESSLIST
     #+BEGIN_SRC sh
@@ -268,7 +268,7 @@
     stores bits. useful for ACL(Access Control List)
     #+BEGIN_SRC sql
       CREATE TABLE acl (
-             perms SET('CAN_READ', 'CAN_WRITE', 'CAN_DELETE') NOT NULL
+	     perms SET('CAN_READ', 'CAN_WRITE', 'CAN_DELETE') NOT NULL
       );
       INSERT INTO acl (perms) VALUES ('CAN_READ,CAN_WRITE');
       SELECT perms FROM acl WHERE FIND_IN_SET('CAN_READ', perms);
@@ -332,7 +332,7 @@
      3. ~select~ by hash value
      #+BEGIN_SRC sql
        SELECT id FROM url WHERE url_crc=CRC32("http://www.mysql.com")
-              AND url="http://www.mysql.com"; -- Search in collision
+	      AND url="http://www.mysql.com"; -- Search in collision
      #+END_SRC
      - hash functions: CRC32, FNV64, SHA1, MD5
 
@@ -360,7 +360,7 @@
      #+BEGIN_SRC sql
        SELECT COUNT(DISTINCT city)/COUNT(*) FROM sakila.city_demo;
        SELECT COUNT(DISTINCT LEFT(city, 3))/COUNT(*) AS sel3,
-              COUNT(DISTINCT LEFT(city, 4))/COUNT(*) AS sel4,
+	      COUNT(DISTINCT LEFT(city, 4))/COUNT(*) AS sel4,
        FROM sakila.city_demo;
      #+END_SRC
 
@@ -369,11 +369,11 @@
 *** Multicolumn Indexes
     - Individual indexes on lots of columns won’t help MySQL improve performance for most queries
       #+BEGIN_SRC sql
-        SELECT col1, col2 FROM tbl WHERE index1=1 or index2=1;
-        -- will translate to
-        SELECT col1, col2 FROM tbl WHERE index1=1
-        UNION ALL
-        SELECT col1, col2 FROM tbl WHERE index2=1 AND index1 <> 1;
+	SELECT col1, col2 FROM tbl WHERE index1=1 or index2=1;
+	-- will translate to
+	SELECT col1, col2 FROM tbl WHERE index1=1
+	UNION ALL
+	SELECT col1, col2 FROM tbl WHERE index2=1 AND index1 <> 1;
       #+END_SRC
       Use ~EXPLAIN~ to check
 

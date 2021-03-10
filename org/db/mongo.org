@@ -7,7 +7,7 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Basic
 ** CRUD
 
@@ -54,7 +54,7 @@ create, read, update, and delete
     - common example in ~.mongorc.js~: remove some of the more "dangerous" shell helpers
     #+BEGIN_SRC js
       var no = function() {
-          print("Not on my watch.");
+	  print("Not on my watch.");
       };
 
       // Prevent dropping databases
@@ -75,19 +75,19 @@ create, read, update, and delete
     Just set the ~prompt~ variable
     #+BEGIN_SRC js
       prompt = function() {
-          if (typeof db == 'undefined') {
-              return '(nodb)> ';
-          }
+	  if (typeof db == 'undefined') {
+	      return '(nodb)> ';
+	  }
 
-          // Check the last db operation
-          try {
-              db.runCommand({getLastError:1});
-          }
-          catch (e) {
-              print(e);
-          }
+	  // Check the last db operation
+	  try {
+	      db.runCommand({getLastError:1});
+	  }
+	  catch (e) {
+	      print(e);
+	  }
 
-          return db+"> ";
+	  return db+"> ";
       };
     #+END_SRC
 
@@ -166,12 +166,12 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
      - ~$sort~ If you only want the array to grow to a certain length, you can use the ~$slice~ modifier effectively making a “top N” list of items.
      #+BEGIN_SRC js
        db.movies.updateOne(
-           {"genre" : "horror"},
-           {"$push" : {"top10" : {"$each" : [{"name" : "Nightmare on Elm Street",
-                                              "rating" : 6.6},
-                                             {"name" : "Saw", "rating" : 4.3}],
-                                  "$slice" : -10,
-                                  "$sort" : {"rating" : -1}}}}
+	   {"genre" : "horror"},
+	   {"$push" : {"top10" : {"$each" : [{"name" : "Nightmare on Elm Street",
+					      "rating" : 6.6},
+					     {"name" : "Saw", "rating" : 4.3}],
+				  "$slice" : -10,
+				  "$sort" : {"rating" : -1}}}}
        )
      #+END_SRC
      - ~$addToSet~: used to prevent duplicates
@@ -181,11 +181,11 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
      - ~$arrayFilters~
      #+BEGIN_SRC js
        db.blog.updateOne(
-           {"post" : post_id },
-           { $set: { "comments.$[elem].hidden" : true } },
-           {
-               arrayFilters: [ { "elem.votes": { $lte: -5 } } ]
-           }
+	   {"post" : post_id },
+	   { $set: { "comments.$[elem].hidden" : true } },
+	   {
+	       arrayFilters: [ { "elem.votes": { $lte: -5 } } ]
+	   }
        )
        // This command defines elem as the identifier for each matching element in the "comments" array.
        // If the votes value for the comment
@@ -203,14 +203,14 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 ** Test Dataset
    #+BEGIN_SRC js
      for (i=0; i<1000000; i++) {
-         db.users.insertOne(
-             {
-                 "i" : i,
-                 "username" : "user"+i,
-                 "age" : Math.floor(Math.random()*120),
-                 "created" : new Date()
-             }
-         );
+	 db.users.insertOne(
+	     {
+		 "i" : i,
+		 "username" : "user"+i,
+		 "age" : Math.floor(Math.random()*120),
+		 "created" : new Date()
+	     }
+	 );
      }
    #+END_SRC
 
@@ -257,7 +257,7 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
      Partial indexes in MongoDB are only created on a subset of the data(the key existed)
      #+BEGIN_SRC js
        db.users.ensureIndex({"email" : 1},
-                            {"partialFilterExpression": {email: {$exists: true}}})
+			    {"partialFilterExpression": {email: {$exists: true}}})
      #+END_SRC
      It is unlike sparse indexes on relational databases, which create fewer index entries pointing to a block of data.
 **** Sparse
@@ -269,11 +269,11 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 **** Create Text Indexes
     #+BEGIN_SRC js
       db.articles.createIndex({"title": "text",
-                               "body" : "text"},
-                              {"weights" : {
-                                  "title" : 3,
-                                  "body" : 2}},
-                              {"default_language" : "chinese"})
+			       "body" : "text"},
+			      {"weights" : {
+				  "title" : 3,
+				  "body" : 2}},
+			      {"default_language" : "chinese"})
 
       // create not only indexes all top-level string fields,
       // but also searches embedded documents and arrays for string fields
@@ -282,8 +282,8 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 **** Text Search
      #+BEGIN_SRC js
        db.articles.find({"$text": {"$search": "impact crater lunar"}},
-                        {title: 1}
-                       ).limit(10)
+			{title: 1}
+		       ).limit(10)
      #+END_SRC
      - ~$text~: will tokenize the search string using whitespace and most punctuation as delimiters.
 
@@ -295,8 +295,8 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 
       // change the expireAfterSeconds
       db.runCommand({"collMod" : "someapp.cache",
-                     "index" : {"keyPattern" : {"lastUpdated" : 1},
-                                "expireAfterSeconds" : 3600 }});
+		     "index" : {"keyPattern" : {"lastUpdated" : 1},
+				"expireAfterSeconds" : 3600 }});
     #+END_SRC
     - MongoDB sweeps the TTL index once per minute
 
@@ -306,9 +306,9 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     - TTL indexes are recommended over capped collections because they perform better with the WiredTiger storage engine
     #+BEGIN_SRC js
       db.createCollection("my_collection",
-                          {"capped" : true,
-                           "size" : 100000, // collection has a fixed size of 100,000 bytes
-                           "max": 100}); // max number of documents
+			  {"capped" : true,
+			   "size" : 100000, // collection has a fixed size of 100,000 bytes
+			   "max": 100}); // max number of documents
 
       // convert the test collection to a capped collection of 10,000 bytes
       db.runCommand({"convertToCapped" : "test", "size" : 10000});
@@ -339,10 +339,10 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     #+BEGIN_SRC js
       // chunk in fs.chunks
       {
-          "_id" : ObjectId("..."),
-          "n" : 0,
-          "data" : BinData("..."),
-          "files_id" : ObjectId("...")
+	  "_id" : ObjectId("..."),
+	  "n" : 0,
+	  "data" : BinData("..."),
+	  "files_id" : ObjectId("...")
       }
     #+END_SRC
     - "files_id": The "_id" of the file document that contains the metadata for the file this chunk is from
@@ -363,13 +363,13 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
    - Match: $match, $exists
      #+BEGIN_SRC js
        db.companies.aggregate([
-         {$match: {founded_year: 2004}},
-         {$limit: 5},
-         {$project: {
-           _id: 0,
-           name: 1,
-           founded_year: 1
-         }}
+	 {$match: {founded_year: 2004}},
+	 {$limit: 5},
+	 {$project: {
+	   _id: 0,
+	   name: 1,
+	   founded_year: 1
+	 }}
        ])
      #+END_SRC
 
@@ -378,13 +378,13 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
      #+BEGIN_SRC js
        // bars is a list of 1440 records
        db.getCollection("minbar").aggregate([{$match: {"symbol": "btc.usdt/okex"}},
-                                             {$limit: 50},
-                                             {$project: {"_id": 0, "symbol": 1, "date": 1, "bars": 1,
-                                                         "open": {"$arrayElemAt": ["$bars.open", 0]},
-                                                         "high": {"$max": "$bars.high"},
-                                                         "low": {"$min": "$bars.low"},
-                                                         "close": {"$arrayElemAt": ["$bars.close", -1]},
-                                                         "volume": {"$sum": "$bars.volume"}}}])
+					     {$limit: 50},
+					     {$project: {"_id": 0, "symbol": 1, "date": 1, "bars": 1,
+							 "open": {"$arrayElemAt": ["$bars.open", 0]},
+							 "high": {"$max": "$bars.high"},
+							 "low": {"$min": "$bars.low"},
+							 "close": {"$arrayElemAt": ["$bars.close", -1]},
+							 "volume": {"$sum": "$bars.volume"}}}])
      #+END_SRC
 
 ** Accumulators
@@ -392,12 +392,12 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 *** Project Stage
     #+BEGIN_SRC js
       db.companies.aggregate([
-          { $match: { "funding_rounds": { $exists: true, $ne: [ ]} } },
-          { $project: {
-              _id: 0,
-              name: 1,
-              largest_round: { $max: "$funding_rounds.raised_amount" }
-          } }
+	  { $match: { "funding_rounds": { $exists: true, $ne: [ ]} } },
+	  { $project: {
+	      _id: 0,
+	      name: 1,
+	      largest_round: { $max: "$funding_rounds.raised_amount" }
+	  } }
       ])
     #+END_SRC
 
@@ -406,57 +406,57 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
     This is the value of the $group operator itself, using a very strict interpretation.
     #+BEGIN_SRC js
       db.companies.aggregate([
-          { $group: {
-              _id: { founded_year: "$founded_year" },
-              average_number_of_employees: { $avg: "$number_of_employees" }
-          } },
-          { $sort: { average_number_of_employees: -1 } }
+	  { $group: {
+	      _id: { founded_year: "$founded_year" },
+	      average_number_of_employees: { $avg: "$number_of_employees" }
+	  } },
+	  { $sort: { average_number_of_employees: -1 } }
 
       ])
 
       db.companies.aggregate( [
-          { $match: { "relationships.person": { $ne: null } } },
-          { $project: { relationships: 1, _id: 0 } },
-          { $unwind: "$relationships" },
-          { $group: {
-              _id: "$relationships.person",
-              count: { $sum: 1 }
-          } },
-          { $sort: { count: -1 } }
+	  { $match: { "relationships.person": { $ne: null } } },
+	  { $project: { relationships: 1, _id: 0 } },
+	  { $unwind: "$relationships" },
+	  { $group: {
+	      _id: "$relationships.person",
+	      count: { $sum: 1 }
+	  } },
+	  { $sort: { count: -1 } }
       ]).pretty()
     #+END_SRC
 *** Complex Example
     #+BEGIN_SRC js
       db.companies.aggregate([
-          { $match: { funding_rounds: { $exists: true, $ne: [ ] } } },
-          { $unwind: "$funding_rounds" },
-          { $sort: { "funding_rounds.funded_year": 1,
-                     "funding_rounds.funded_month": 1,
-                     "funding_rounds.funded_day": 1 } },
-          { $group: {
-              _id: { company: "$name" },
-              first_round: { $first: "$funding_rounds" },
-              last_round: { $last: "$funding_rounds" },
-              num_rounds: { $sum: 1 },
-              total_raised: { $sum: "$funding_rounds.raised_amount" }
-          } },
-          { $project: {
-              _id: 0,
-              company: "$_id.company",
-              first_round: {
-                  amount: "$first_round.raised_amount",
-                  article: "$first_round.source_url",
-                  year: "$first_round.funded_year"
-              },
-              last_round: {
-                  amount: "$last_round.raised_amount",
-                  article: "$last_round.source_url",
-                  year: "$last_round.funded_year"
-              },
-              num_rounds: 1,
-              total_raised: 1,
-          } },
-          { $sort: { total_raised: -1 } }
+	  { $match: { funding_rounds: { $exists: true, $ne: [ ] } } },
+	  { $unwind: "$funding_rounds" },
+	  { $sort: { "funding_rounds.funded_year": 1,
+		     "funding_rounds.funded_month": 1,
+		     "funding_rounds.funded_day": 1 } },
+	  { $group: {
+	      _id: { company: "$name" },
+	      first_round: { $first: "$funding_rounds" },
+	      last_round: { $last: "$funding_rounds" },
+	      num_rounds: { $sum: 1 },
+	      total_raised: { $sum: "$funding_rounds.raised_amount" }
+	  } },
+	  { $project: {
+	      _id: 0,
+	      company: "$_id.company",
+	      first_round: {
+		  amount: "$first_round.raised_amount",
+		  article: "$first_round.source_url",
+		  year: "$first_round.funded_year"
+	      },
+	      last_round: {
+		  amount: "$last_round.raised_amount",
+		  article: "$last_round.source_url",
+		  year: "$last_round.funded_year"
+	      },
+	      num_rounds: 1,
+	      total_raised: 1,
+	  } },
+	  { $sort: { total_raised: -1 } }
       ] ).pretty()
     #+END_SRC
 
@@ -480,64 +480,64 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 
 
      client.get_database( "webshop",
-                          write_concern=my_wc_majority).orders.insert_one({"sku":
-                          "abc123", "qty":0})
+			  write_concern=my_wc_majority).orders.insert_one({"sku":
+			  "abc123", "qty":0})
      client.get_database( "webshop",
-                          write_concern=my_wc_majority).inventory.insert_one(
-                          {"sku": "abc123", "qty": 1000})
+			  write_concern=my_wc_majority).inventory.insert_one(
+			  {"sku": "abc123", "qty": 1000})
 
      def update_orders_and_inventory(my_session):
-         orders = session.client.webshop.orders
-         inventory = session.client.webshop.inventory
+	 orders = session.client.webshop.orders
+	 inventory = session.client.webshop.inventory
 
 
-         with session.start_transaction(
-                 read_concern=ReadConcern("snapshot"),
-                 write_concern=WriteConcern(w="majority"),
-                 read_preference=ReadPreference.PRIMARY):
+	 with session.start_transaction(
+		 read_concern=ReadConcern("snapshot"),
+		 write_concern=WriteConcern(w="majority"),
+		 read_preference=ReadPreference.PRIMARY):
 
-             orders.insert_one({"sku": "abc123", "qty": 100}, session=my_session)
-             inventory.update_one({"sku": "abc123", "qty": {"$gte": 100}},
-                                  {"$inc": {"qty": -100}}, session=my_session)
-             commit_with_retry(my_session)
+	     orders.insert_one({"sku": "abc123", "qty": 100}, session=my_session)
+	     inventory.update_one({"sku": "abc123", "qty": {"$gte": 100}},
+				  {"$inc": {"qty": -100}}, session=my_session)
+	     commit_with_retry(my_session)
 
      def commit_with_retry(session):
-         while True:
-             try:
-                 # Commit uses write concern set at transaction start.
-                 session.commit_transaction()
-                 print("Transaction committed.")
-                 break
-             except (ConnectionFailure, OperationFailure) as exc:
-                 # Can retry commit
-                 if exc.has_error_label("UnknownTransactionCommitResult"):
-                     print("UnknownTransactionCommitResult, retrying "
-                           "commit operation ...")
-                     continue
-                 else:
-                     print("Error during commit ...")
-                     raise
+	 while True:
+	     try:
+		 # Commit uses write concern set at transaction start.
+		 session.commit_transaction()
+		 print("Transaction committed.")
+		 break
+	     except (ConnectionFailure, OperationFailure) as exc:
+		 # Can retry commit
+		 if exc.has_error_label("UnknownTransactionCommitResult"):
+		     print("UnknownTransactionCommitResult, retrying "
+			   "commit operation ...")
+		     continue
+		 else:
+		     print("Error during commit ...")
+		     raise
 
      def run_transaction_with_retry(txn_func, session):
-         while True:
-             try:
-                 txn_func(session)  # performs transaction
-                 break
-             except (ConnectionFailure, OperationFailure) as exc:
-                 # If transient error, retry the whole transaction
-                 if exc.has_error_label("TransientTransactionError"):
-                     print("TransientTransactionError, retrying transaction ...")
-                     continue
-                 else:
-                     raise
+	 while True:
+	     try:
+		 txn_func(session)  # performs transaction
+		 break
+	     except (ConnectionFailure, OperationFailure) as exc:
+		 # If transient error, retry the whole transaction
+		 if exc.has_error_label("TransientTransactionError"):
+		     print("TransientTransactionError, retrying transaction ...")
+		     continue
+		 else:
+		     raise
 
      with client.start_session() as my_session:
-         try:
-             run_transaction_with_retry(update_orders_and_inventory, my_session)
-         except Exception as exc:
-             # Do something with error. The error handling code is not
-             # implemented for you with the Core API.
-             raise
+	 try:
+	     run_transaction_with_retry(update_orders_and_inventory, my_session)
+	 except Exception as exc:
+	     # Do something with error. The error handling code is not
+	     # implemented for you with the Core API.
+	     raise
    #+END_SRC
 
 ** Callback API Example
@@ -545,21 +545,21 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
      uriString = 'mongodb+srv://server.example.com/'
      client = MongoClient(uriString)
      def callback(my_session):
-         orders = my_session.client.webshop.orders
-         inventory = my_session.client.webshop.inventory
+	 orders = my_session.client.webshop.orders
+	 inventory = my_session.client.webshop.inventory
 
-         # Important:: You must pass the session variable 'my_session' to
-         # the operations.
+	 # Important:: You must pass the session variable 'my_session' to
+	 # the operations.
 
-         orders.insert_one({"sku": "abc123", "qty": 100}, session=my_session)
-         inventory.update_one({"sku": "abc123", "qty": {"$gte": 100}},
-                              {"$inc": {"qty": -100}}, session=my_session)
+	 orders.insert_one({"sku": "abc123", "qty": 100}, session=my_session)
+	 inventory.update_one({"sku": "abc123", "qty": {"$gte": 100}},
+			      {"$inc": {"qty": -100}}, session=my_session)
 
      with client.start_session() as session:
-         session.with_transaction(callback,
-                                  read_concern=ReadConcern('local'),
-                                  write_concern=my_write_concern_majority,
-                                  read_preference=ReadPreference.PRIMARY)
+	 session.with_transaction(callback,
+				  read_concern=ReadConcern('local'),
+				  write_concern=my_write_concern_majority,
+				  read_preference=ReadPreference.PRIMARY)
    #+END_SRC
 
 * Design Patterns
@@ -579,12 +579,12 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
    ~rs~ is a global variable that contains replication helper functions
    #+BEGIN_SRC js
      rsconf = {
-         _id: "replSetName",
-         members: [
-             {_id: 0, host: "localhost:27017"},
-             {_id: 1, host: "localhost:27018"},
-             {_id: 2, host: "localhost:27019"}
-         ]
+	 _id: "replSetName",
+	 members: [
+	     {_id: 0, host: "localhost:27017"},
+	     {_id: 1, host: "localhost:27018"},
+	     {_id: 2, host: "localhost:27019"}
+	 ]
      }
      rs.initiate(rsconf)
      rs.status()

@@ -7,7 +7,7 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Background Research
   - robots.txt
   - sitemap
@@ -64,12 +64,12 @@
     #+END_SRC
     - useful function
       #+BEGIN_SRC python
-        def get_robots_parser(robots_url):
-            " Return the robots parser object using the robots_url "
-            rp = robotparser.RobotFileParser()
-            rp.set_url(robots_url)
-            rp.read()
-            return rp
+	def get_robots_parser(robots_url):
+	    " Return the robots parser object using the robots_url "
+	    rp = robotparser.RobotFileParser()
+	    rp.set_url(robots_url)
+	    rp.read()
+	    return rp
       #+END_SRC
 
 ** Supporting proxies
@@ -126,17 +126,17 @@
 * Scrapy
   docs: https://docs.scrapy.org/en/latest/index.html
   #+BEGIN_EXAMPLE
-        ├── scrapy.cfg # deploy configuration file
-        └── myproject # import your code from here
-            ├── __init__.py
-            ├── items.py: # each scrapy item object represents a single page on the website
-            ├── middlewares.py
-            ├── pipelines.py
-            ├── settings.py
-            └── spiders
-                ├── spider1.py
-                ├── spider2.py
-                └── __init__.py
+	├── scrapy.cfg # deploy configuration file
+	└── myproject # import your code from here
+	    ├── __init__.py
+	    ├── items.py: # each scrapy item object represents a single page on the website
+	    ├── middlewares.py
+	    ├── pipelines.py
+	    ├── settings.py
+	    └── spiders
+		├── spider1.py
+		├── spider2.py
+		└── __init__.py
   #+END_EXAMPLE
 ** Commands
    see: https://docs.scrapy.org/en/latest/topics/commands.html
@@ -147,27 +147,27 @@
 
 
      class QuotesSpider(scrapy.Spider):
-         name = "quotes"
-         # start_urls = [
-         # 'http://quotes.toscrape.com/page/1/',
-         # 'http://quotes.toscrape.com/page/2/',
-         # ]
-         # start_urls attribute is a shortcut to the start_requests method
+	 name = "quotes"
+	 # start_urls = [
+	 # 'http://quotes.toscrape.com/page/1/',
+	 # 'http://quotes.toscrape.com/page/2/',
+	 # ]
+	 # start_urls attribute is a shortcut to the start_requests method
 
-         def start_requests(self):
-             urls = [
-                 'http://quotes.toscrape.com/page/1/',
-                 'http://quotes.toscrape.com/page/2/',
-             ]
-             for url in urls:
-                 yield scrapy.Request(url=url, callback=self.parse)
+	 def start_requests(self):
+	     urls = [
+		 'http://quotes.toscrape.com/page/1/',
+		 'http://quotes.toscrape.com/page/2/',
+	     ]
+	     for url in urls:
+		 yield scrapy.Request(url=url, callback=self.parse)
 
-         def parse(self, response): # response is a TextResponse object
-             page = response.url.split("/")[-2]
-             filename = 'quotes-%s.html' % page
-             with open(filename, 'wb') as f:
-                 f.write(response.body)
-             self.log('Saved file %s' % filename)
+	 def parse(self, response): # response is a TextResponse object
+	     page = response.url.split("/")[-2]
+	     filename = 'quotes-%s.html' % page
+	     with open(filename, 'wb') as f:
+		 f.write(response.body)
+	     self.log('Saved file %s' % filename)
    #+END_SRC
 *** Interactive Shell
      #+BEGIN_SRC shell
@@ -176,8 +176,8 @@
 **** inspection with spider
      #+BEGIN_SRC python
        def parse(self, response):
-           from scrapy.shell import inspect_response
-           inspect_response(response, self)
+	   from scrapy.shell import inspect_response
+	   inspect_response(response, self)
      #+END_SRC
 
 *** CSS selector
@@ -198,24 +198,24 @@
     #+BEGIN_SRC python
       next_page = response.css('li.next a::attr(href)').extract_first()
       if next_page is not None:
-          next_page = response.urljoin(next_page)
-          yield scrapy.Request(next_page, callback=self.parse)
+	  next_page = response.urljoin(next_page)
+	  yield scrapy.Request(next_page, callback=self.parse)
     #+END_SRC
     shortcut:
     #+BEGIN_SRC python
       next_page = response.css('li.next a::attr(href)').extract_first()
       if next_page is not None:
-          yield response.follow(next_page, callback=self.parse) # supports relative URLs directly
+	  yield response.follow(next_page, callback=self.parse) # supports relative URLs directly
     #+END_SRC
     simpler version:
     #+BEGIN_SRC python
       for href in response.css('li.next a::attr(href)'):
-          yield response.follow(href, callback=self.parse)
+	  yield response.follow(href, callback=self.parse)
     #+END_SRC
     simplest version:
     #+BEGIN_SRC python
       for a in response.css('li.next a'): # for a elements, css method uses their href attribute automatically
-          yield response.follow(a, callback=self.parse)
+	  yield response.follow(a, callback=self.parse)
     #+END_SRC
 
 ** Feed Export
@@ -232,11 +232,11 @@
 **** Settings per-spider
      #+BEGIN_SRC python
        class MySpider(scrapy.Spider):
-           name = 'myspider'
+	   name = 'myspider'
 
-           custom_settings = {
-               'SOME_SETTING': 'some value',
-           }
+	   custom_settings = {
+	       'SOME_SETTING': 'some value',
+	   }
      #+END_SRC
 **** Project settings module
      settings.py in project root
@@ -273,11 +273,11 @@
      driver = webdriver.PhantomJS(executable_path='')
      driver.get("http://pythonscraping.com/pages/javascript/ajaxDemo.html")
      try:
-         element = WebDriverWait(driver, 10).until(
-             EC.presence_of_element_located((By.ID, "loadedButton")))
+	 element = WebDriverWait(driver, 10).until(
+	     EC.presence_of_element_located((By.ID, "loadedButton")))
      finally:
-         print(driver.find_element_by_id("content").text)
-         driver.close()
+	 print(driver.find_element_by_id("content").text)
+	 driver.close()
    #+END_SRC
 
 ** Selectors
@@ -314,18 +314,18 @@
      from selenium.webdriver.remote.webelement import WebElement
      from selenium.common.exceptions import StaleElementReferenceException
      def waitForLoad(driver):
-         elem = driver.find_element_by_tag_name("html")
-         count = 0
-         while True:
-             count += 1
-             if count > 20:
-                 print("Timing out after 10 seconds and returning")
-                 return
-         time.sleep(.5)
-         try:
-             elem == driver.find_element_by_tag_name("html")
-         except StaleElementReferenceException:
-             return
+	 elem = driver.find_element_by_tag_name("html")
+	 count = 0
+	 while True:
+	     count += 1
+	     if count > 20:
+		 print("Timing out after 10 seconds and returning")
+		 return
+	 time.sleep(.5)
+	 try:
+	     elem == driver.find_element_by_tag_name("html")
+	 except StaleElementReferenceException:
+	     return
      driver = webdriver.PhantomJS(executable_path='<Path to Phantom JS>')
      driver.get("http://pythonscraping.com/pages/javascript/redirectDemo1.html")
      waitForLoad(driver)

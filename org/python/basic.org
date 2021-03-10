@@ -4,7 +4,7 @@
 #+LANGUAGE: zh-CN
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * 入门知识
 * 数据结构
 ** 序列
@@ -545,14 +545,14 @@ Double-ended queue 双端队列
 ** for 语句
      #+begin_src python
      for number in range(1, 100):
-         print number
+	 print number
      #+end_src
      range 包含下限 1，不包含上限 100[fn:2]
 
      #+begin_src python
      #循环遍历字典
      for key in d:
-         print key, d[key]
+	 print key, d[key]
      #+end_src
 
 ** 拓展
@@ -590,7 +590,7 @@ Double-ended queue 双端队列
       enumerate 函数可以在提供索引功能的序列中，迭代返回键值对。
       #+begin_src python
       for index, string in enumerate(strings):
-          if 'xxx' in string:
+	  if 'xxx' in string:
 	  strings[index] = '[censored]'
       #+end_src
 *** 翻转和排序迭代(reversed, sorted)
@@ -607,12 +607,12 @@ Double-ended queue 双端队列
 *** for...else 语句
       #+begin_src python
       for n in range(99, 81, -1):
-          root = sqrt(n)
-          if root == int(root):
-              print n
-              break
+	  root = sqrt(n)
+	  if root == int(root):
+	      print n
+	      break
       else:
-          print "Didn't find it!"
+	  print "Didn't find it!"
       #+end_src
       break 直接进入 else 语句块
 * 函数
@@ -622,7 +622,7 @@ Double-ended queue 双端队列
        'generate fib sequence'
        result = [0, 1]
        for i in range(num-2):
-           result.append(result[-2] + result[-1])
+	   result.append(result[-2] + result[-1])
        return result
    #+end_src
 ** 参数
@@ -689,7 +689,7 @@ Double-ended queue 双端队列
 
       #字典用法
       def hello3(greeting='Hello', name='world'):
-          print '%s, %s!' % (greeting, name)
+	  print '%s, %s!' % (greeting, name)
       params = {'name': 'Sir Robin', 'greeting': 'Well met'}
       hello3(**params)#加上**
       #=>Well met, Sir Robin!
@@ -714,7 +714,7 @@ Double-ended queue 双端队列
     在函数作用域内调用同名全局变量，需使用 globals()['globalName']
     #+begin_src python
     def combine(param):
-        print param + globals()['param']
+	print param + globals()['param']
     param = 'berry'
     combine('Shrub')
     #=>Shrubberry
@@ -724,8 +724,8 @@ Double-ended queue 双端队列
     #+begin_src python
     x=1
     def change_global():
-        global x
-        x = x + 1
+	global x
+	x = x + 1
     change_global()
     x
     #=>2
@@ -734,9 +734,9 @@ Double-ended queue 双端队列
 *** 递归
     #+begin_src python
     def power(x, n):
-        if n == 0:
+	if n == 0:
 	return 1
-        else:
+	else:
 	return x * power(x, n-1)
     #+end_src
 
@@ -752,8 +752,8 @@ fibs.__doc__ 可访问函数说明、help(fibs) 更好用
       m=3
       n=5
       def bar():
-          a=4
-          return m+n+a
+	  a=4
+	  return m+n+a
       return bar
 
   >>>bar =  foo()
@@ -789,14 +789,14 @@ code object 还有很多的特性可以访问。详细请看官方文档。
 
   >>> dis.dis(code_obj)
     1           0 LOAD_NAME                0 (sum)
-                3 LOAD_CONST               0 (1)
-                6 LOAD_CONST               1 (2)
-                9 LOAD_CONST               2 (3)
-               12 BUILD_LIST                   3
-               15 CALL_FUNCTION          1
-               18 PRINT_EXPR
-               19 LOAD_CONST               3 (None)
-               22 RETURN_VALUE
+		3 LOAD_CONST               0 (1)
+		6 LOAD_CONST               1 (2)
+		9 LOAD_CONST               2 (3)
+	       12 BUILD_LIST                   3
+	       15 CALL_FUNCTION          1
+	       18 PRINT_EXPR
+	       19 LOAD_CONST               3 (None)
+	       22 RETURN_VALUE
 #+end_src
 #+BEGIN_VERSE
 那么，这跟我们的例子有什么关系？
@@ -836,20 +836,20 @@ bar 的局部变量，同时 foo 代码块中的 m 也会被认为是函数 foo 
 - 使用 dis[fn:3]模块分析 foo 的 bytecode。
 #+begin_example
   2          0 LOAD_CONST              1 (3)
-              3 STORE_DEREF               0 (m)
+	      3 STORE_DEREF               0 (m)
 
   3          6 LOAD_CONST              2 (5)
-              9 STORE_DEREF               1 (n)
+	      9 STORE_DEREF               1 (n)
 
   4          12 LOAD_CLOSURE         0 (m)
-              15 LOAD_CLOSURE         1 (n)
-              18 BUILD_TUPLE              2
-              21 LOAD_CONST             3 (<code object bar at 018D9848, file "<pyshell#1>", line 4>)
-              24 MAKE_CLOSURE         0
-              27 STORE_FAST               0 (bar)
+	      15 LOAD_CLOSURE         1 (n)
+	      18 BUILD_TUPLE              2
+	      21 LOAD_CONST             3 (<code object bar at 018D9848, file "<pyshell#1>", line 4>)
+	      24 MAKE_CLOSURE         0
+	      27 STORE_FAST               0 (bar)
 
   7          30 LOAD_FAST                 0 (bar)
-              33 RETURN_VALUE
+	      33 RETURN_VALUE
 #+end_example
 #+BEGIN_VERSE
 进行逐行分析：
@@ -910,14 +910,14 @@ func_code.co_varnames 的内容为('bar',)
 - 再分析 bar 函数就简单了
 #+begin_example
   5           0 LOAD_CONST            1 (4)
-               3 STORE_FAST               0 (a)
+	       3 STORE_FAST               0 (a)
 
   6           6 LOAD_DEREF               0 (m)
-               9 LOAD_DEREF               1 (n)
-               12 BINARY_ADD
-               13 LOAD_FAST               0 (a)
-               16 BINARY_ADD
-               17 RETURN_VALUE
+	       9 LOAD_DEREF               1 (n)
+	       12 BINARY_ADD
+	       13 LOAD_FAST               0 (a)
+	       16 BINARY_ADD
+	       17 RETURN_VALUE
 #+end_example
 #+BEGIN_VERSE
 重点是 LOAD_DEREF，该方法主要是将 cell 对象中的 object 内容 push 进栈。大致过程如下：
@@ -966,7 +966,7 @@ hex2dec('67') #=>103
 #+begin_src python
   def foo(a):
       def bar(b):
-          return a+b
+	  return a+b
       return bar
 #+end_src
 你可以像这样调用：foo(1)(4)或(foo(1))(4)，都能得到正确的结果 5。
@@ -979,7 +979,7 @@ hex2dec('67') #=>103
     #+begin_src python
     fibs = [0, 1]
     for i in range(8):
-        fibs.append(fibs[-2] + fibs[-1])
+	fibs.append(fibs[-2] + fibs[-1])
     fibs
     #=> [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
     #抽象成
@@ -1015,20 +1015,20 @@ func 需返回布尔值
 ** 定义类
    #+begin_src python
      class Person:
-         def setName(self, name):
-             self.name = name
+	 def setName(self, name):
+	     self.name = name
 
-         def getName(self):
-             return self.name
+	 def getName(self):
+	     return self.name
 
-         def greet(self):
-             print "Hello, world! I'm %s" % self.name
+	 def greet(self):
+	     print "Hello, world! I'm %s" % self.name
    #+end_src
 *** self 参数
 #+begin_src python
   class A:
       def a(self):
-          print 'Hello'
+	  print 'Hello'
 
   i = A()
   i.a
@@ -1043,7 +1043,7 @@ func 需返回布尔值
 #+begin_src python
   class A:
       def a(self):
-          print 'Hello'
+	  print 'Hello'
   def b():
       print 'World'
 
@@ -1073,10 +1073,10 @@ python 不直接支持私有成员。
 #+begin_src python
   class Secretive:
       def __inaccessible(self):
-          print "You can't find me"
+	  print "You can't find me"
       def accessible(self):
-          print "You can find me"
-          self.__inaccessible()
+	  print "You can find me"
+	  self.__inaccessible()
   i=Secretive()
   i.__inaccessible()
   #=>Error
@@ -1112,7 +1112,7 @@ python 不直接支持私有成员。
   class A:
       count = 0#定义了一个类成员 number 并初始化为 0，有点类似于其他语言的静态成员
       def init(self):
-          A.count += 1
+	  A.count += 1
 
   m1=A()
   m1.init()
@@ -1143,13 +1143,13 @@ python 不直接支持私有成员。
 #+begin_src python
   class StaticMethodTest:
       def staticMeth():
-          print 'calling static method'
+	  print 'calling static method'
       staticMeth=staticmethod(staticMeth)
       def classMeth(cls):
-          print 'calling class method'
+	  print 'calling class method'
       classMeth=classmethod(classMeth)
       def instanceMeth(self):
-          print 'calling instance method'
+	  print 'calling instance method'
 
   s = StaticMethodTest()
   s.staticMeth()
@@ -1170,9 +1170,9 @@ python 不直接支持私有成员。
   #decorators 新语法
   __metaclass__=type
     class StaticMethodTest:
-        @staticmethod
-        def staticMeth():
-            print 'calling static method'
+	@staticmethod
+	def staticMeth():
+	    print 'calling static method'
 #+end_src
 ** 属性
 *** 适用新式类
@@ -1180,12 +1180,12 @@ python 不直接支持私有成员。
   __metaclass__=type
   class Retangle:
       def __init__(self):
-          self.width=0
-          self.height=0
+	  self.width=0
+	  self.height=0
       def setSize(self, size):
-          self.width, self.height=size
+	  self.width, self.height=size
       def getSize(self):
-          return self.width, self.height
+	  return self.width, self.height
       size = property(getSize, setSize)
 
   r = Retangle()
@@ -1204,15 +1204,15 @@ python 不直接支持私有成员。
 #+begin_src python
   class Retangle:
       def __setattr__(self, name, value):
-          if name =='size':
-              self.width, self.height = value
-          else:
-              self.__dict__[name] = value
+	  if name =='size':
+	      self.width, self.height = value
+	  else:
+	      self.__dict__[name] = value
       def __getattr__(self,name):
-          if name == 'size':
-              return self.width, self.height
-          else:
-              raise AttributeError
+	  if name == 'size':
+	      return self.width, self.height
+	  else:
+	      raise AttributeError
 #+end_src
 #+BEGIN_VERSE
 注：只有特性不存在时，才会调用__getattr__。
@@ -1224,11 +1224,11 @@ python 不直接支持私有成员。
 #+begin_src python
   class Parent:
       def init(self):
-          print "Init Parent done"
+	  print "Init Parent done"
 
   class ChildA(Parent):
       def init(self):#重写父类的 init 方法
-          print "Init Child done"
+	  print "Init Child done"
 
   class ChildB(Parent):
       pass
@@ -1319,8 +1319,8 @@ Python 变量 a，无所谓它是什么类型。调用 a.func 时，
 - hasattr 检查特性是否存在
 #+begin_src python
     class A:
-        def printNote(self):
-            print "A"
+	def printNote(self):
+	    print "A"
   a = A()
   hasattr(a, 'printNote')
   #=>True
@@ -1431,8 +1431,8 @@ __init__和一般的方法一样，子类会重写父类的构造。
 #+begin_src python
   class Drived(Base):
       def __init__(self):
-          Base.__init__(self)#调用基类构造
-          self.var1=5#自身特性赋值
+	  Base.__init__(self)#调用基类构造
+	  self.var1=5#自身特性赋值
 #+end_src
 - 使用 super 函数
 #+BEGIN_VERSE
@@ -1441,7 +1441,7 @@ __init__和一般的方法一样，子类会重写父类的构造。
 #+begin_src python
   class Drived(Base):
       def __init__(self):
-          super(Drived, self).__init__()
+	  super(Drived, self).__init__()
 #+end_src
 ** 集合相关__len__、__getitem__等
 需要自行实现的隐藏方法有：
@@ -1461,11 +1461,11 @@ __init__和一般的方法一样，子类会重写父类的构造。
 #+begin_src python
   class CounterList(list):
       def __init__(self, *args):
-          super(CounterList, self).__init__(*args)
-          self.counter = 0
+	  super(CounterList, self).__init__(*args)
+	  self.counter = 0
       def __getitem__(self, index):
-          self.counter += 1
-          return super(CounterList, self).__getitem__(index)
+	  self.counter += 1
+	  return super(CounterList, self).__getitem__(index)
 #+end_src
 
 ** 迭代器__iter__
@@ -1476,18 +1476,18 @@ __init__和一般的方法一样，子类会重写父类的构造。
 #+begin_src python
   class Fibs:
       def __init__(self):
-          self.a = 0
-          self.b = 1
+	  self.a = 0
+	  self.b = 1
       def next(self):
-          self.a, self.b = self.b, self.a+self.b
-          return self.a
+	  self.a, self.b = self.b, self.a+self.b
+	  return self.a
       def __iter__(self):
-          return self
+	  return self
   fibs = Fibs()
   for f in fibs:#in 关键字后面应跟有可迭代对象
       if f >100:
-          print f
-          break
+	  print f
+	  break
   #=>144
   it=iter(fibs)#iter 方法返回迭代器
   it.next()
@@ -1499,13 +1499,13 @@ __init__和一般的方法一样，子类会重写父类的构造。
 #+begin_src python
   class TestIterator:
       def __init__(self):
-          self.value=0
+	  self.value=0
       def next(self):
-          self.value += 1
-          if self.value > 10: raise StopIteration #没有这行，list 会无限循环下去
-          return self.value
+	  self.value += 1
+	  if self.value > 10: raise StopIteration #没有这行，list 会无限循环下去
+	  return self.value
       def __iter__(self):
-          return self
+	  return self
   ti = TestIterator()
   list(ti)
   #=> [1,2,3,4,5,6,7,8,9,10]
@@ -1562,8 +1562,8 @@ list(simpleGen())
 #+begin_src python
   def repeater(value):
       while True:
-          new = (yield value)
-          if new is not None: value = new
+	  new = (yield value)
+	  if new is not None: value = new
 
   r = repeater(42)
   r.next()
@@ -1583,11 +1583,11 @@ close 用于关闭生成器，关闭之后执行 next 会接收到 StopIteration
   def flatten(nested):
       result=[]
       try:
-          for sublist in nested:
-              for element in flatten(sublist):
-                  result.append(element)#对应 yield element
+	  for sublist in nested:
+	      for element in flatten(sublist):
+		  result.append(element)#对应 yield element
       except TypeError:
-          result.append(nested)
+	  result.append(nested)
       return result
 #+end_src
 *** 借助生成器解决八皇后问题
@@ -1598,20 +1598,20 @@ close 用于关闭生成器，关闭之后执行 next 会接收到 StopIteration
       'state 是已放置好的皇后的位置信息，nextX 为新增皇后的行位置(对于空 state 也能正常运作)'
       nextY = len(state)
       for i in range(0, nextY):
-          if abs(nextX-state[i]) in (0, nextY-i):
-              return True
+	  if abs(nextX-state[i]) in (0, nextY-i):
+	      return True
       return False
 #+end_src
 递归从第一行开始逐行放入皇后，并判断是否与之前摆放完成的皇后们产生冲突
 #+begin_src python
   def queens(n, state=()):
       for pos in range(n):
-          if not conflict(state, pos):
-              if len(state) == n-1:#表示仅最后一个位置未放置皇后，递归的最终层
-                  yield (pos,)
-              else:
-                  for result in queens(n, state + (pos,)):#当最后一层 yield 出内容后，此处 result 才会有结果。
-                      yield (pos,) + result
+	  if not conflict(state, pos):
+	      if len(state) == n-1:#表示仅最后一个位置未放置皇后，递归的最终层
+		  yield (pos,)
+	      else:
+		  for result in queens(n, state + (pos,)):#当最后一层 yield 出内容后，此处 result 才会有结果。
+		      yield (pos,) + result
 
   list(queens(4, (1,)))
   #=>[(3,0,2)]
@@ -1622,9 +1622,9 @@ close 用于关闭生成器，关闭之后执行 next 会接收到 StopIteration
 #+begin_src python
   def prettyprint(state):
       def line(x, length):
-          return '. '*x + 'X ' + '. '*(length-x-1)
+	  return '. '*x + 'X ' + '. '*(length-x-1)
       for x in state:
-          print line(x, len(state))
+	  print line(x, len(state))
 
   import random
   prettyprint(random.choice(list(queens(4))))
@@ -1869,10 +1869,10 @@ r'www\.(.+)\.com$'
   def replacement(match):
       code=match.group(1)
       try:
-          return str(eval(code, scope))
+	  return str(eval(code, scope))
       except SyntaxError:
-          exec code in scope
-          return ''
+	  exec code in scope
+	  return ''
 
   lines = []
   for line in fileinput.input():
@@ -2208,8 +2208,8 @@ urllib 的其他一些功能：
   def test():
       a = 5
       if __DEBUG:
-          import pdb
-          pdb.set_trace()
+	  import pdb
+	  pdb.set_trace()
       b = 4
       print a + b
 #+end_src
@@ -2284,18 +2284,18 @@ python mytest.py -v 可以获得更多输出。
   import unittest, my_math
   class ProductTestCase(unittest.TestCase):
       def testIntegers(self):
-          for x in xrange(-10, 10):
-              for y in xrange(-10, 10):
-                  p=my_math.product(x, y)
-                  self.failUnless(p == x*y, 'Integer multiplication failed')
+	  for x in xrange(-10, 10):
+	      for y in xrange(-10, 10):
+		  p=my_math.product(x, y)
+		  self.failUnless(p == x*y, 'Integer multiplication failed')
 
       def testFloats(self):
-          for x in xrange(-10, 10):
-              for y in xrange(-10, 10):
-                  x = x/10.0
-                  y = y/10.0
-                  p = my_math.product(x, y)
-                  self.failUnless(p == x*y, 'Float multiplication failed')
+	  for x in xrange(-10, 10):
+	      for y in xrange(-10, 10):
+		  x = x/10.0
+		  y = y/10.0
+		  p = my_math.product(x, y)
+		  self.failUnless(p == x*y, 'Float multiplication failed')
 
       if __name__ == '__main__': unittest.main()
 #+end_src
@@ -2344,11 +2344,11 @@ PyLint 的更多功能
      Ordered by: standard name
 
      ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-          1    0.024    0.024    0.024    0.024 :0(setprofile)
-          1    0.000    0.000    0.000    0.000 <string>:1(<module>)
-          1    0.000    0.000    0.000    0.000 my_math.py:1(product)
-          1    0.000    0.000    0.024    0.024 profile:0(product(1, 2))
-          0    0.000             0.000          profile:0(profiler)
+	  1    0.024    0.024    0.024    0.024 :0(setprofile)
+	  1    0.000    0.000    0.000    0.000 <string>:1(<module>)
+	  1    0.000    0.000    0.000    0.000 my_math.py:1(product)
+	  1    0.000    0.000    0.024    0.024 profile:0(product(1, 2))
+	  0    0.000             0.000          profile:0(profiler)
 #+end_example
 - 还可以以编程的方式分析结果
 #+begin_src python
@@ -2366,10 +2366,10 @@ py.test, nose, trace.py(覆盖率), PyUnit(GUI 单元测试)
 #+begin_src python
   from distutils.core import setup
   setup(name='my_math',
-        version='1.0',
-        description='A simple example',
-        author='ChrisChen',
-        py_modules=['my_math'])
+	version='1.0',
+	description='A simple example',
+	author='ChrisChen',
+	py_modules=['my_math'])
 #+end_src
 #+begin_example
   python setup.py install
@@ -2432,7 +2432,7 @@ py2exe 直接将 python 运行环境打包，用户不必单独安装 python 解
       #+END_VERSE
       #+begin_src python
       if x==0:
-          pass
+	  pass
       #+end_src
 ** del
       #+begin_src python

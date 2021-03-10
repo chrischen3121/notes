@@ -6,7 +6,7 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Data Structure
 ** any
 *** how it works
@@ -14,13 +14,13 @@
     a value of the specified type T and is derived from some base-type placeholder.
     #+BEGIN_SRC cpp
       struct placeholder {
-        virtual ~placeholder() {}
-        virtual const std::type_info &type() const = 0;
+	virtual ~placeholder() {}
+	virtual const std::type_info &type() const = 0;
       };
 
       template <typename ValueType> struct holder : public placeholder {
-        virtual const std::type_info &type() const { return typeid(ValueType); }
-        ValueType held;
+	virtual const std::type_info &type() const { return typeid(ValueType); }
+	ValueType held;
       };
     #+END_SRC
     ~boost::any~ stores a pointer ~ptr~ to placeholder.
@@ -35,9 +35,9 @@
     #+BEGIN_SRC cpp
       typedef boost::variant<int, float, std::string> cell_t;
       struct db_sum_visitor : public boost::static_visitor<double> {
-        double operator()(int value) const { return value; }
-        double operator()(float value) const { return value; }
-        double operator()(const std::string & /*value*/) const { return 0.0; }
+	double operator()(int value) const { return value; }
+	double operator()(float value) const { return value; }
+	double operator()(const std::string & /*value*/) const { return 0.0; }
       };
 
       auto result = boost::apply_visitor(db_sum_visitor(), variant);

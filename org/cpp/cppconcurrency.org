@@ -6,7 +6,7 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Overview
 ** Purpose
 *** Separation of concerns
@@ -32,8 +32,8 @@
      class ScopedThread {
      public:
        explicit ScopedThread(std::thread t) : t_(std::move(t)) {
-         if (!t_.joinable())
-           throw std::logic_error("No thread");
+	 if (!t_.joinable())
+	   throw std::logic_error("No thread");
        }
        ~ScopedThread() { t_.join(); }
        ScopedThread(const ScopedThread &) = delete;
@@ -65,21 +65,21 @@
        std::shared_ptr<some_resource> resource_ptr;
 
        void init_resource() {
-         resource_ptr.reset(new some_resource);
+	 resource_ptr.reset(new some_resource);
        }
 
        void foo() {
-         static std::once_flag resource_flag;
-         std::call_once(resource_flag, init_resource());
-         resource_ptr->do_something();
+	 static std::once_flag resource_flag;
+	 std::call_once(resource_flag, init_resource());
+	 resource_ptr->do_something();
        }
      #+END_SRC
 
 *** static(C++11)
     #+BEGIN_SRC cpp
       SomeClass &get_instance() {
-        static SomeClass instance;
-        return instance;
+	static SomeClass instance;
+	return instance;
       }
     #+END_SRC
 
@@ -107,33 +107,33 @@
    #+BEGIN_SRC cpp
       template <typename T> class threadsafe_queue {
       public:
-        threadsafe_queue() {}
-        threadsafe_queue(const threadsafe_queue &other) {
-          std::lock_guard<std::mutex> lk(other.mu_);
-          data_queue_ = other.data_queue_;
-        }
+	threadsafe_queue() {}
+	threadsafe_queue(const threadsafe_queue &other) {
+	  std::lock_guard<std::mutex> lk(other.mu_);
+	  data_queue_ = other.data_queue_;
+	}
 
-        bool empty() const {
-          std::lock_guard<std::mutex> lk(mu_);
-          return data_queue_.empty();
-        }
+	bool empty() const {
+	  std::lock_guard<std::mutex> lk(mu_);
+	  return data_queue_.empty();
+	}
 
-        void push(T new_value) {
-          std::lock_guard<std::mutex> lk(mu_);
-          data_queue_.push(new_value);
-          data_cond_.notify_one(); // notify_all
-        }
-        void wait_and_pop(T &value) {
-          std::unique_lock<std::mutex> lk(mu_);
-          data_cond_.wait(lk, [this] { !data_queue_.empty(); }); // unlock->wait->lock
-          value = data_queue.front();
-          data_queue.pop();
-        }
+	void push(T new_value) {
+	  std::lock_guard<std::mutex> lk(mu_);
+	  data_queue_.push(new_value);
+	  data_cond_.notify_one(); // notify_all
+	}
+	void wait_and_pop(T &value) {
+	  std::unique_lock<std::mutex> lk(mu_);
+	  data_cond_.wait(lk, [this] { !data_queue_.empty(); }); // unlock->wait->lock
+	  value = data_queue.front();
+	  data_queue.pop();
+	}
 
       private:
-        mutable std::mutex mu_; // const member func like empty can lock mu_
-        std::queue<T> data_queue_;
-        std::condition_variable data_cond_;
+	mutable std::mutex mu_; // const member func like empty can lock mu_
+	std::queue<T> data_queue_;
+	std::condition_variable data_cond_;
       };
    #+END_SRC
 ** std::future<> & std::async
@@ -211,10 +211,10 @@
 *** set_exception()
     #+BEGIN_SRC cpp
       try {
-        some_promise.set_value(calculate_value());
+	some_promise.set_value(calculate_value());
       } catch (...) {
-        some_promise.set_exception(std::copy_exception(std::logic_error("foo")));
-        //alternative some_promise.set_exception(std::current_exception());
+	some_promise.set_exception(std::copy_exception(std::logic_error("foo")));
+	//alternative some_promise.set_exception(std::current_exception());
       }
     #+END_SRC
     - std::current_exception()
@@ -262,17 +262,17 @@
 **** simple spinlock_mutex
      #+BEGIN_SRC cpp
        class spinlock_mutex {
-         std::atomic_flag flag;
+	 std::atomic_flag flag;
 
        public:
-         spinlock_mutex : flag(ATOMIC_FLAG_INIT) {}
+	 spinlock_mutex : flag(ATOMIC_FLAG_INIT) {}
 
-         void lock() {
-           while (flag.test_and_set(std::memory_order_acquire))
-             ;
-         }
+	 void lock() {
+	   while (flag.test_and_set(std::memory_order_acquire))
+	     ;
+	 }
 
-         void unlock() { flag.clear(std::memory_order_release); }
+	 void unlock() { flag.clear(std::memory_order_release); }
        };
      #+END_SRC
 
@@ -300,7 +300,7 @@
        bool expected{false};
        extern atomic<bool> b; // set somewhere else
        while (!b.compare_exchange_weak(expected, true) && !expected)
-         ;
+	 ;
      #+END_SRC
      - Why is ~!expected in~ the example
        #+BEGIN_QUOTE

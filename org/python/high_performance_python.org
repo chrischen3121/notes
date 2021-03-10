@@ -6,7 +6,7 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Profiling
 ** CPU
 *** simple /time/ module
@@ -21,18 +21,18 @@
   #+BEGIN_SRC python
     from functools import wraps
     def timefn(fn):
-        @wraps(fn)
-        def measure_time(*args, **kwargs):
-            t1 = time.time()
-            result = fn(*args, **kwargs)
-            t2 = time.time()
-            print t2 - t1
-            return result
-        return measure_time
+	@wraps(fn)
+	def measure_time(*args, **kwargs):
+	    t1 = time.time()
+	    result = fn(*args, **kwargs)
+	    t2 = time.time()
+	    print t2 - t1
+	    return result
+	return measure_time
 
     @timefn
     def measure_fn(arg1, arg2):
-        ...
+	...
   #+END_SRC
 *** %timeit in IPython
 *** unix /time/ command
@@ -96,16 +96,16 @@ Add following at the top of unittest code.
   # for line_profiler
   if '__builtin__' not in dir() or not hasattr(__builtin__, 'profile'):
       def profile(func):
-          def inner(*args, **kwargs):
-              return func(*args, **kwargs)
-          return inner
+	  def inner(*args, **kwargs):
+	      return func(*args, **kwargs)
+	  return inner
 
   # for memory_profiler
   if 'profile' not in dir():
       def profile(func):
-          def inner(*args, **kwargs):
-              return func(*args, **kwargs)
-          return inner
+	  def inner(*args, **kwargs):
+	      return func(*args, **kwargs)
+	  return inner
 #+END_SRC
 
 * Lists and tuples
@@ -158,13 +158,13 @@ dynamic arrays, mutable and allow for resizing.
       # pseudocode
       # mask is always equal to bin(hashtable_size - 1)
       def index_sequence(key, mask=0b111, PERTURB_SHIFT=5):
-          perturb = hash(key)
-          i = perturb & mask
-          yield i
-          while True:
-              i = ((i << 2) + i + perturb + 1)
-              perturb >>= PERTURB_SHIFT
-              yield i & mask
+	  perturb = hash(key)
+	  i = perturb & mask
+	  yield i
+	  while True:
+	      i = ((i << 2) + i + perturb + 1)
+	      perturb >>= PERTURB_SHIFT
+	      yield i & mask
     #+END_SRC
 *** User-defined classes
     User-defined classes have default hash and comparison functions.
@@ -198,25 +198,25 @@ dynamic arrays, mutable and allow for resizing.
     import math
     from math import sin
     def test1(x):
-        """
-        >>> %timeit test1(123456)
-        1000000 loops, best of 3: 381 ns per loop
-        """
-        return math.sin(x)
+	"""
+	>>> %timeit test1(123456)
+	1000000 loops, best of 3: 381 ns per loop
+	"""
+	return math.sin(x)
 
     def test2(x):
-        """
-        >>> %timeit test2(123456)
-        1000000 loops, best of 3: 311 ns per loop
-        """
-        return sin(x)
+	"""
+	>>> %timeit test2(123456)
+	1000000 loops, best of 3: 311 ns per loop
+	"""
+	return sin(x)
 
     def test3(x, sin=math.sin):
-        """
-        >>> %timeit test3(123456)
-        1000000 loops, best of 3: 306 ns per loop
-        """
-        return sin(x)
+	"""
+	>>> %timeit test3(123456)
+	1000000 loops, best of 3: 306 ns per loop
+	"""
+	return sin(x)
   #+END_SRC
   #+BEGIN_SRC python
     dis.dis(test1)

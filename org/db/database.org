@@ -7,7 +7,7 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Rational Algebra
 ** Basic
    - select $\sigma_{P}(r)$
@@ -101,7 +101,7 @@
     UPDATE tableName SET columnName =
     CASE
       WHEN column_1 = somevalue1
-        THEN newValue;
+	THEN newValue;
     #+END_SRC
 
 *** GROUP BY
@@ -123,7 +123,7 @@
     Define temporary view
     #+BEGIN_SRC sql
     WITH temp_view_name(columnName...) as
-         select statement
+	 select statement
     SELECT ...
     FROM temp_view_name
     WHERE ...
@@ -390,7 +390,7 @@
      #+BEGIN_SRC sql
        Create ...
        {
-           columnName type CHECK (columnName IN ('value1', 'value2'));
+	   columnName type CHECK (columnName IN ('value1', 'value2'));
        }
 
        ADD CONSTRAINT CHECK columnName > 1;
@@ -408,11 +408,11 @@
     #+BEGIN_SRC sql
       CREATE TABLE tableName
       (
-          ...
-          columnName TYPE NOT NULL,
-          [CONSTRAINT constraint_name,]
-          FOREIGN KEY (foreign_key_name)
-          REFERENCES parent_tableName (parent_columnName)
+	  ...
+	  columnName TYPE NOT NULL,
+	  [CONSTRAINT constraint_name,]
+	  FOREIGN KEY (foreign_key_name)
+	  REFERENCES parent_tableName (parent_columnName)
       )
     #+END_SRC
     You can name constraint_name and foreign_key_name whatever you like.
@@ -444,11 +444,11 @@
      Determines whether the trigger is row-level or statement-level
      - referencing-variables
        #+BEGIN_SRC sql
-         DEPENDS ON [For Each Row]
-         OLD row AS var
-         NEW row AS var
-         OLD table AS var
-         NEW table AS var
+	 DEPENDS ON [For Each Row]
+	 OLD row AS var
+	 NEW row AS var
+	 OLD table AS var
+	 NEW table AS var
        #+END_SRC
 
      - condition
@@ -599,14 +599,14 @@
      arguments that represent any additional SQL constructs and constraints
      #+BEGIN_SRC python
        users = Table('users', metadata,
-                     Column('user_id', Integer(), primary_key=True),
-                     Column('username', String(15), nullable=False, unique=True),
-                     Column('email_address', String(255), nullable=False),
-                     Column('phone', String(20), nullable=False),
-                     Column('password', String(25), nullable=False),
-                     Column('created_on', DateTime(), default=datetime.now),
-                     Column('updated_on', DateTime(), default=datetime.now,
-                            onupdate=datetime.now))
+		     Column('user_id', Integer(), primary_key=True),
+		     Column('username', String(15), nullable=False, unique=True),
+		     Column('email_address', String(255), nullable=False),
+		     Column('phone', String(20), nullable=False),
+		     Column('password', String(25), nullable=False),
+		     Column('created_on', DateTime(), default=datetime.now),
+		     Column('updated_on', DateTime(), default=datetime.now,
+			    onupdate=datetime.now))
      #+END_SRC
      - useful arg: primary_key, nullable, unique, default, onupdate
 
@@ -633,17 +633,17 @@
 **** Insert
      - single insert
        #+BEGIN_SRC python
-         ins = cookies.insert().values(
-         # ins = insert(cookies).values( <= the same
-             cookie_name="chocolate chip",
-             cookie_recipe_url="http://some.aweso.me/cookie/recipe.html",
-             cookie_sku="CC01",
-             quantity="12",
-             unit_cost="0.50")
-         print(str(ins)) # print sql statement
-         ins.compile().params # show arguments in sql statement
-         result = connection.execute(ins) # executing the insert statement
-         result.inserted_primary_key
+	 ins = cookies.insert().values(
+	 # ins = insert(cookies).values( <= the same
+	     cookie_name="chocolate chip",
+	     cookie_recipe_url="http://some.aweso.me/cookie/recipe.html",
+	     cookie_sku="CC01",
+	     quantity="12",
+	     unit_cost="0.50")
+	 print(str(ins)) # print sql statement
+	 ins.compile().params # show arguments in sql statement
+	 result = connection.execute(ins) # executing the insert statement
+	 result.inserted_primary_key
        #+END_SRC
      - multiple inserts
        #+BEGIN_SRC python
@@ -663,51 +663,51 @@
       ResultProxy makes handling query results easier by allowing access
       using an index, name, or Column object.
       #+BEGIN_SRC python
-        first_row = results[0] # get first row
-        first_row[1] # access column by index
-        first_row.cookie_name # access column by name
-        first_row[cookies.c.cookie_name] # access column by Column object
+	first_row = results[0] # get first row
+	first_row[1] # access column by index
+	first_row.cookie_name # access column by name
+	first_row[cookies.c.cookie_name] # access column by Column object
       #+END_SRC
       - iterating over a ResultProxy
-        #+BEGIN_SRC python
-          rp = connection.execute(s)
-          for record in rp:
-              print(record.cookie_name)
-        #+END_SRC
+	#+BEGIN_SRC python
+	  rp = connection.execute(s)
+	  for record in rp:
+	      print(record.cookie_name)
+	#+END_SRC
       - other methods: /first/, /fetchone/, /scalar/, /keys/
 
 ***** Order By
       #+BEGIN_SRC python
-        from sqlalchemy import desc
-        s = select([cookies.c.cookie_name,
-                    cookies.c.quantity]).order_by(desc(cookies.c.quantity)).limit(2)
+	from sqlalchemy import desc
+	s = select([cookies.c.cookie_name,
+		    cookies.c.quantity]).order_by(desc(cookies.c.quantity)).limit(2)
       #+END_SRC
 
 ***** Built-In SQL Functions
       #+BEGIN_SRC python
-        s = select([func.sum(cookies.c.quantity)])
+	s = select([func.sum(cookies.c.quantity)])
       #+END_SRC
       - count
-        #+BEGIN_SRC python
-          s1 = select([func.count(cookies.c.cookie_name)])
-          s2 = select([func.count(cookies.c.cookie_name).label('inventory_count')])# rename
-          record1 = connection.execute(s).first()
-          record2 = connection.execute(s).first()
+	#+BEGIN_SRC python
+	  s1 = select([func.count(cookies.c.cookie_name)])
+	  s2 = select([func.count(cookies.c.cookie_name).label('inventory_count')])# rename
+	  record1 = connection.execute(s).first()
+	  record2 = connection.execute(s).first()
 
-          print(record1.count_1) # default: <func_name>_<position>
-          print(record2.inventory_count)
-        #+END_SRC
+	  print(record1.count_1) # default: <func_name>_<position>
+	  print(record2.inventory_count)
+	#+END_SRC
 
 ***** Filtering
       #+BEGIN_SRC python
-        select([cookies]).where(cookies.c.cookie_name == 'chocolate chip')
+	select([cookies]).where(cookies.c.cookie_name == 'chocolate chip')
       #+END_SRC
       - ClauseElements
 
-        between(cleft, cright), concat(col_two), distinct(),
-        in_([list]), notin_([list]), is_(None), isnot(None),
-        contains(string), endswith(string), like(string),
-        startswith(string), ilike(string)
+	between(cleft, cright), concat(col_two), distinct(),
+	in_([list]), notin_([list]), is_(None), isnot(None),
+	contains(string), endswith(string), like(string),
+	startswith(string), ilike(string)
 
       - use and_, or_, not_ inside *where* clauses
 
@@ -732,17 +732,17 @@
 **** Join
      #+BEGIN_SRC python
        columns = [
-           orders.c.order_id,
-           users.c.username,
-           users.c.phone,
-           cookies.c.cookie_name,
-           line_items.c.quantity,
-           line_items.c.extended_cost,
+	   orders.c.order_id,
+	   users.c.username,
+	   users.c.phone,
+	   cookies.c.cookie_name,
+	   line_items.c.quantity,
+	   line_items.c.extended_cost,
        ]
        cookiemon_orders = select(columns)
        cookiemon_orders = cookiemon_orders.select_from(
-           orders.join(users).join(line_items).join(cookies)).where(
-               users.c.username == 'cookiemon')
+	   orders.join(users).join(line_items).join(cookies)).where(
+	       users.c.username == 'cookiemon')
      #+END_SRC
 
 **** Alias
@@ -776,10 +776,10 @@
       transaction = connection.begin()
       connection.execute(...)
       try:
-          transaction.commit()
+	  transaction.commit()
       except IntegrityError as error:
-          transaction.rollback()
-          print(error)
+	  transaction.rollback()
+	  print(error)
     #+END_SRC
 *** Reflection
     #+BEGIN_SRC python
@@ -802,10 +802,10 @@
     #+BEGIN_SRC python
       Base = declarative_base()
       class Cookie(Base):
-          __tablename__ = 'cookies'
+	  __tablename__ = 'cookies'
 
-          cookie_id = Column(Integer(), primay_key=True)
-          ...
+	  cookie_id = Column(Integer(), primay_key=True)
+	  ...
       Cookie.__table__ # same as the table object using Table(...)
     #+END_SRC
 
@@ -813,10 +813,10 @@
      use =__table_args__= to specify constraints like *Table constructor* in core section.
      #+BEGIN_SRC python
        class SomeDataClass(Base):
-           __tablename__ = 'somedatatable'
-           __table_args__ = (ForeignKeyConstraint(['id'], ['other_table.id']),
-                             CheckConstraint(unit_cost >= 0.00,
-                                             name='unit_cost_positive'))
+	   __tablename__ = 'somedatatable'
+	   __table_args__ = (ForeignKeyConstraint(['id'], ['other_table.id']),
+			     CheckConstraint(unit_cost >= 0.00,
+					     name='unit_cost_positive'))
      #+END_SRC
 
 **** FK
@@ -824,11 +824,11 @@
        from sqlalchemy import ForeignKey, Boolean
        from sqlalchemy.orm import relationship, backref
        class Order(Base):
-           __tablename__ = 'orders'
-           order_id = Column(Integer(), primary_key=True)
-           user_id = Column(Integer(), ForeignKey('users.user_id'))
-           shipped = Column(Boolean(), default=False)
-           user = relationship("User", backref=backref('orders', order_by=order_id)) # one(user) to many(orders) relationship
+	   __tablename__ = 'orders'
+	   order_id = Column(Integer(), primary_key=True)
+	   user_id = Column(Integer(), ForeignKey('users.user_id'))
+	   shipped = Column(Boolean(), default=False)
+	   user = relationship("User", backref=backref('orders', order_by=order_id)) # one(user) to many(orders) relationship
      #+END_SRC
      This relationship also establishes an orders property on
      the User class via the backref keyword argument, which is ordered by /order_id/.
@@ -844,12 +844,12 @@
 **** one-to-one
      #+BEGIN_SRC python
        class Key(Model):
-           #...
-           lock_id = Column(Integer, ForeignKey('Locks.id'))
+	   #...
+	   lock_id = Column(Integer, ForeignKey('Locks.id'))
 
        class Lock(Model):
-           #...
-           key = db.relationship('Key', backref='lock', uselist=False) # backref add a lock obj to key
+	   #...
+	   key = db.relationship('Key', backref='lock', uselist=False) # backref add a lock obj to key
      #+END_SRC
 
 **** one-to-many
@@ -879,18 +879,18 @@
        session = Session() # establish the connection
        # or
        with engine.connect() as conn:
-           session = Session(bind=conn)
+	   session = Session(bind=conn)
      #+END_SRC
 
 *** SQL
 **** Insert
 ***** add->commit
       #+BEGIN_SRC python
-        cc_cookie = Cookie(...)
-        session.add(cc_cookie)
-        print(cc_cookie.cookie_id) # None
-        session.commit()
-        print(cc_cookie.cookie_id) # auto generated no
+	cc_cookie = Cookie(...)
+	session.add(cc_cookie)
+	print(cc_cookie.cookie_id) # None
+	session.commit()
+	print(cc_cookie.cookie_id) # auto generated no
       #+END_SRC
 
 ***** add->flush
@@ -899,12 +899,12 @@
       A *flush* is like a *commit*; however, it doesn’t perform a database commit and end the transaction.
       The data objects are still associated with the session.
       #+BEGIN_SRC python
-        cookie1 = Cookie(...)
-        cookie2 = Cookie(...)
-        session.add(cookie1)
-        session.add(cookie2)
-        session.flush()
-        print(cookie1.cookie_id) # some number
+	cookie1 = Cookie(...)
+	cookie2 = Cookie(...)
+	session.add(cookie1)
+	session.add(cookie2)
+	session.flush()
+	print(cookie1.cookie_id) # some number
       #+END_SRC
       after *flush*, the records in session are changed.
 
@@ -915,16 +915,16 @@
       - Fetching primary keys is not done by default.
       - No events will be triggered.
       #+BEGIN_SRC python
-        session.bulk_save_objects([cookie1,cookie2])
-        session.commit()
+	session.bulk_save_objects([cookie1,cookie2])
+	session.commit()
       #+END_SRC
       - after *bulk_save_objects*, the state is *Transient*. use =inspect= to see the object state
       #+BEGIN_SRC python
-        from sqlalchemy import inspect
-        inspect(cookie1)
-        inspect(cookie2)
-        for state in ['transient', 'pending', 'persistent', 'detached']:
-            print('{:>10}: {}'.format(state, getattr(insp, state)))
+	from sqlalchemy import inspect
+	inspect(cookie1)
+	inspect(cookie2)
+	for state in ['transient', 'pending', 'persistent', 'detached']:
+	    print('{:>10}: {}'.format(state, getattr(insp, state)))
       #+END_SRC
 
 **** Query
@@ -934,49 +934,49 @@
      fetch method: all, first, one, scalar
      #+BEGIN_SRC python
        for cookie in session.query(Cookie):
-           print(cookie)
+	   print(cookie)
      #+END_SRC
      The iterable version is more memory efficient.
 
 ***** Choose columns
       #+BEGIN_SRC python
-        print(session.query(Cookie.cookie_name, Cookie.quantity).first())
+	print(session.query(Cookie.cookie_name, Cookie.quantity).first())
       #+END_SRC
 ***** Ordering
       #+BEGIN_SRC python
-        for cookie in session.query(Cookie).order_by(desc(Cookie.quantity)):
-            print('{:3} - {}'.format(cookie.quantity, cookie.cookie_name))
+	for cookie in session.query(Cookie).order_by(desc(Cookie.quantity)):
+	    print('{:3} - {}'.format(cookie.quantity, cookie.cookie_name))
       #+END_SRC
 ***** Limiting
       #+BEGIN_SRC python
-        query = session.query(Cookie).order_by(
-            Cookie.quantity)[:2]  # slices the return list. ineffecient.
-        query = session.query(Cookie).order_by(Cookie.quantity).limit(2)
-        print([result.cookie_name for result in query])
+	query = session.query(Cookie).order_by(
+	    Cookie.quantity)[:2]  # slices the return list. ineffecient.
+	query = session.query(Cookie).order_by(Cookie.quantity).limit(2)
+	print([result.cookie_name for result in query])
       #+END_SRC
       This runs the query and slices the returned list. This can
       be very ineffecient with a large result set.
 ***** Built-in functions
       #+BEGIN_SRC python
-        from sqlalchemy import func
-        inv_count = session.query(func.sum(Cookie.quantity)).scalar()
-        rec_count = session.query(
-            func.count(Cookie.cookie_name).label('inventory_count')).first()  # rename
+	from sqlalchemy import func
+	inv_count = session.query(func.sum(Cookie.quantity)).scalar()
+	rec_count = session.query(
+	    func.count(Cookie.cookie_name).label('inventory_count')).first()  # rename
       #+END_SRC
 ***** Filtering
       #+BEGIN_SRC python
-        record = session.query(Cookie).filter(
-            Cookie.cookie_name == 'chocolate chip').first()
-        record = session.query(Cookie).filter_by(cookie_name='chocolate chip').first()
-        query = session.query(Cookie).filter(Cookie.cookie_name.like('%chocolate%'))
+	record = session.query(Cookie).filter(
+	    Cookie.cookie_name == 'chocolate chip').first()
+	record = session.query(Cookie).filter_by(cookie_name='chocolate chip').first()
+	query = session.query(Cookie).filter(Cookie.cookie_name.like('%chocolate%'))
       #+END_SRC
 ***** Conjunctions
       #+BEGIN_SRC python
-        query = session.query(Cookie).filter(
-            Cookie.quantity > 23, Cookie.unit_cost < 0.40)  # default and conjunctions
-        from sqlalchemy import and_, or_, not_
-        query = session.query(Cookie).filter(
-            or_(Cookie.quantity.between(10, 50), Cookie.cookie_name.contains('chip')))
+	query = session.query(Cookie).filter(
+	    Cookie.quantity > 23, Cookie.unit_cost < 0.40)  # default and conjunctions
+	from sqlalchemy import and_, or_, not_
+	query = session.query(Cookie).filter(
+	    or_(Cookie.quantity.between(10, 50), Cookie.cookie_name.contains('chip')))
       #+END_SRC
 **** Update
      #+BEGIN_SRC python
@@ -993,17 +993,17 @@
 **** Delete
 ***** session.delete
       #+BEGIN_SRC python
-        query = session.query(Cookie)
-        query = query.filter(Cookie.cookie_name == "dark chocolate chip")
-        dcc_cookie = query.one()
-        session.delete(dcc_cookie)
-        session.commit()
+	query = session.query(Cookie)
+	query = query.filter(Cookie.cookie_name == "dark chocolate chip")
+	dcc_cookie = query.one()
+	session.delete(dcc_cookie)
+	session.commit()
       #+END_SRC
 ***** query.delete
       #+BEGIN_SRC python
-        query = session.query(Cookie)
-        query = query.filter(Cookie.cookie_name == "molasses")
-        query.delete()
+	query = session.query(Cookie)
+	query = query.filter(Cookie.cookie_name == "molasses")
+	query.delete()
       #+END_SRC
 **** Join
      #+BEGIN_SRC python
@@ -1054,8 +1054,8 @@
     - set sqlalchemy.url in alembic.ini
     - modify *env.py* to point metadata which is an attribute of the =Base= instance
       #+BEGIN_SRC python
-        from app.db import Base
-        target_metadata = Base.metadata
+	from app.db import Base
+	target_metadata = Base.metadata
       #+END_SRC
 
 *** Building Migrations Manually

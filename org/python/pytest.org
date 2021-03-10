@@ -4,7 +4,7 @@
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 #+STARTUP: inlineimages
 * Intro
 ** Test Discovery
@@ -33,7 +33,7 @@
 
     @pytest.mark.somemark
     def test_func():
-        pass
+	pass
   #+END_SRC
   #+BEGIN_SRC bash
     pytest -v -m 'some mark'
@@ -41,7 +41,7 @@
 ** Skip Test on Some Versions
    #+BEGIN_SRC python
      @pytest.mark.skipif(tasks.__version__ < ​'0.2.0'​,
-                         reason=​'not supported until version 0.2.0'​)
+			 reason=​'not supported until version 0.2.0'​)
    #+END_SRC
 
 ** Parametrized
@@ -59,16 +59,16 @@
    #+BEGIN_SRC python
      @pytest.fixture(name='show_on_result', scope='session')
      def a_tuple():
-         return (1, 2, 3)
+	 return (1, 2, 3)
    #+END_SRC
 
 ** Fixtures for Resource
    #+BEGIN_SRC python
      @pytest.fixture()
      def resource():
-         # Setup
-         yield
-         # Teardown
+	 # Setup
+	 yield
+	 # Teardown
    #+END_SRC
 
 ** Specifying Fixtures with ~usefixtures~
@@ -82,13 +82,13 @@
      # class scope
      @pytest.fixture(scope=​'class'​)
      ​def​ class_scope():
-         """A class scope fixture."""
+	 """A class scope fixture."""
 
      @pytest.mark.usefixtures(​'class_scope'​)
      class TestClass:
-         def test_method(self):
-             # use class_scope fixture
-             pass
+	 def test_method(self):
+	     # use class_scope fixture
+	     pass
    #+END_SRC
 
 ** Autouse Fixture
@@ -121,17 +121,17 @@
    - Adding command-line options via pytest_addoption should be done via plugins or in the =conftest.py= file at the top of your project directory structure.
      #+BEGIN_SRC python
        ​def​ pytest_addoption(parser):
-           parser.addoption(​"--myopt"​, action=​"store_true"​,
-                            help=​"some boolean option"​)
-           parser.addoption(​"--foo"​, action=​"store"​, default=​"bar"​,
-                            help=​"foo: bar or baz"​)
+	   parser.addoption(​"--myopt"​, action=​"store_true"​,
+			    help=​"some boolean option"​)
+	   parser.addoption(​"--foo"​, action=​"store"​, default=​"bar"​,
+			    help=​"foo: bar or baz"​)
      #+END_SRC
 
   - Using options
     #+BEGIN_SRC python
       def​ test_option(pytestconfig):
-          print​(​'"foo" set to:'​, pytestconfig.getoption(​'foo'​))
-          print​(​'"myopt" set to:'​, pytestconfig.getoption(​'myopt'​))
+	  print​(​'"foo" set to:'​, pytestconfig.getoption(​'foo'​))
+	  print​(​'"myopt" set to:'​, pytestconfig.getoption(​'myopt'​))
     #+END_SRC
 
 ** cache
@@ -155,15 +155,15 @@
    - examples:
    #+BEGIN_SRC python
      def​ test_def_prefs_change_home(tmpdir, monkeypatch):
-         monkeypatch.setenv(​'HOME'​, tmpdir.mkdir(​'home'​))
-         cheese.write_default_cheese_preferences()
-         expected = cheese._default_prefs
-         actual = cheese.read_cheese_preferences()
-         assert​ expected == actual
+	 monkeypatch.setenv(​'HOME'​, tmpdir.mkdir(​'home'​))
+	 cheese.write_default_cheese_preferences()
+	 expected = cheese._default_prefs
+	 actual = cheese.read_cheese_preferences()
+	 assert​ expected == actual
 
      fake_home_dir = tmpdir.mkdir(​'home'​)
      monkeypatch.setattr(cheese.os.path, ​'expanduser'​,
-                         (​lambda​ x: x.replace(​'~'​, str(fake_home_dir))))
+			 (​lambda​ x: x.replace(​'~'​, str(fake_home_dir))))
    #+END_SRC
   - ~monkeypatch~ fixture functions can be in conjunction with ~unittest.mock~ to temporarily replace attributes with mock objects
 
@@ -190,45 +190,45 @@
    #+BEGIN_SRC python
      import asynctest
      class TestCacheWithMagicMethods(asynctest.TestCase):
-         async def test_one_user_added_to_cache(self):
-             user = StubClient.User(1, "a.dmin")
+	 async def test_one_user_added_to_cache(self):
+	     user = StubClient.User(1, "a.dmin")
 
-             AsyncClientMock = asynctest.create_autospec(AsyncClient)
+	     AsyncClientMock = asynctest.create_autospec(AsyncClient)
 
-             transaction = asynctest.MagicMock()
-             transaction.__aenter__.side_effect = AsyncClientMock
+	     transaction = asynctest.MagicMock()
+	     transaction.__aenter__.side_effect = AsyncClientMock
 
-             cursor = asynctest.MagicMock()
-             cursor.__aiter__.return_value = [user]
+	     cursor = asynctest.MagicMock()
+	     cursor.__aiter__.return_value = [user]
 
-             client = AsyncClientMock()
-             client.new_transaction.return_value = transaction
-             client.get_users_cursor.return_value = cursor
+	     client = AsyncClientMock()
+	     client.new_transaction.return_value = transaction
+	     client.get_users_cursor.return_value = cursor
 
-             cache = {}
+	     cache = {}
 
-             # The user has been added to the cache
-             nb_added = await cache_users_with_cursor(client, cache)
+	     # The user has been added to the cache
+	     nb_added = await cache_users_with_cursor(client, cache)
 
-             self.assertEqual(nb_added, 1)
-             self.assertEqual(cache[1], user)
+	     self.assertEqual(nb_added, 1)
+	     self.assertEqual(cache[1], user)
 
-             # The user was already there
-             nb_added = await cache_users_with_cursor(client, cache)
-             self.assertEqual(nb_added, 0)
-             self.assertEqual(cache[1], user)
+	     # The user was already there
+	     nb_added = await cache_users_with_cursor(client, cache)
+	     self.assertEqual(nb_added, 0)
+	     self.assertEqual(cache[1], user)
    #+END_SRC
 *** Patching
     Patching is especially useful when one need a mock, but can't pass it as a parameter of the function to be tested.
     - When an object is hard to mock, it sometimes shows a *limitation in the design*: a coupling that is too tight
     #+BEGIN_SRC python
       with asynctest.patch("logging.debug") as debug_mock:
-          await cache_users_async(client, cache)
+	  await cache_users_async(client, cache)
       debug_mock.assert_called()
 
       # or
       @asynctest.patch("logging.error")
       @asynctest.patch("logging.debug")
       async def test_with_decorator(self, debug_mock, error_mock):
-          ...
+	  ...
     #+END_SRC

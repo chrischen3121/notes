@@ -4,7 +4,7 @@
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 #+STARTUP: inlineimages
 * Philosophy
 - EAFP(python way)
@@ -146,12 +146,12 @@ after the test, but before the lookup. This issue can be solved with locks or by
 ** Others
     - ~count(start=0, step=1)~: indefinitely
       #+BEGIN_SRC python
-        def aritprog_gen(begin, step, end=None):
-            first = type(begin + step)(begin)
-            ap_gen = itertools.count(first, step)
-            if end is not None:
-                ap_gen = itertools.takewhile(lambda n: n < end, ap_gen)
-            return ap_gen
+	def aritprog_gen(begin, step, end=None):
+	    first = type(begin + step)(begin)
+	    ap_gen = itertools.count(first, step)
+	    if end is not None:
+		ap_gen = itertools.takewhile(lambda n: n < end, ap_gen)
+	    return ap_gen
       #+END_SRC
     - ~cycle(it)~: indefinitely
     - ~repeat(item, [times])~: Yield the given item repeadedly, indefinetly unless a number of times is given
@@ -163,13 +163,13 @@ after the test, but before the lookup. This issue can be solved with locks or by
    ~iter(callable, sentinel)~
    #+BEGIN_SRC python
      def d6():
-         return randint(1, 6)
+	 return randint(1, 6)
      d6_iter = iter(d6, 1)  # the second argument is a sentinel
 
      # another useful example
      with open('mydata.txt') as fp:
-         for line in iter(fp.readline, ''):
-             process_line(line)
+	 for line in iter(fp.readline, ''):
+	     process_line(line)
    #+END_SRC
    - when a sentinel returned by the callable, causes the iterator to *raise StopIteration* instead of *yielding the sentinel*.
 
@@ -177,20 +177,20 @@ after the test, but before the lookup. This issue can be solved with locks or by
 ** with ~for/while~
    #+BEGIN_SRC python
      for item in my_list:
-         if item.flavor == 'banana':
-             break
+	 if item.flavor == 'banana':
+	     break
      else:
-         raise ValueError('No banana flavor found!')
+	 raise ValueError('No banana flavor found!')
    #+END_SRC
 
 ** with ~try~
    #+BEGIN_SRC python
      try:
-         dangerous_call()
+	 dangerous_call()
      except OSError:
-         log('OSError...')
+	 log('OSError...')
      else:
-         after_call()
+	 after_call()
    #+END_SRC
 
 * Context Manager
@@ -236,12 +236,12 @@ after the test, but before the lookup. This issue can be solved with locks or by
        import csv
 
        with inplace(csvfilename, 'r', newline='') as (infh, outfh):
-           reader = csv.reader(infh)
-           writer = csv.writer(outfh)
+	   reader = csv.reader(infh)
+	   writer = csv.writer(outfh)
 
-           for row in reader:
-               row += ['new', 'columns']
-               writer.writerow(row)
+	   for row in reader:
+	       row += ['new', 'columns']
+	       writer.writerow(row)
      #+END_SRC
 
 
@@ -252,8 +252,8 @@ after the test, but before the lookup. This issue can be solved with locks or by
       from urllib.request import urlopen
 
       with closing(urlopen('http://www.python.org')) as page:
-          for line in page:
-              print(line)
+	  for line in page:
+	      print(line)
     #+END_SRC
 
 *** suppress
@@ -262,7 +262,7 @@ after the test, but before the lookup. This issue can be solved with locks or by
       from contextlib import suppress
 
       with suppress(FileNotFoundError):
-          os.remove('somefile.tmp')
+	  os.remove('somefile.tmp')
     #+END_SRC
 
 *** ContextDecorator
@@ -270,27 +270,27 @@ after the test, but before the lookup. This issue can be solved with locks or by
     #+BEGIN_SRC python
       from contextlib import ContextDecorator
       class mycontext(ContextDecorator):
-          def __enter__(self):
-              print('Starting')
-              return self
+	  def __enter__(self):
+	      print('Starting')
+	      return self
 
-          def __exit__(self, *exc):
-              print('Finishing')
-              return False
+	  def __exit__(self, *exc):
+	      print('Finishing')
+	      return False
 
       @mycontext()
       def function():
-          print('The bit in the middle')
+	  print('The bit in the middle')
     #+END_SRC
 
 *** ExitStack & AsyncExitStack
     A context manager that lets you enter a variable number of context managers. When the with block ends, ExitStack calls the stacked context managers' ~__exit__~ methods in LIFO order
     #+BEGIN_SRC python
       with ExitStack() as stack:
-          files = [stack.enter_context(open(fname)) for fname in filenames]
-          # All opened files will automatically be closed at the end of
-          # the with statement, even if attempts to open files later
-          # in the list raise an exception
+	  files = [stack.enter_context(open(fname)) for fname in filenames]
+	  # All opened files will automatically be closed at the end of
+	  # the with statement, even if attempts to open files later
+	  # in the list raise an exception
     #+END_SRC
 
 *** others
@@ -305,9 +305,9 @@ after the test, but before the lookup. This issue can be solved with locks or by
 
   #+BEGIN_SRC python
     def simple_coroutine():
-        print('-> coroutine started')
-        x = yield # received by send(x)
-        print('-> coroutine received:', x)
+	print('-> coroutine started')
+	x = yield # received by send(x)
+	print('-> coroutine received:', x)
 
     coro = simple_coroutine() # GEN_CREATED
     next(coro) # equivalent to coro.send(None). GEN_CREATED->GEN_RUNNING->GEN_SUSPENDED
@@ -359,17 +359,17 @@ after the test, but before the lookup. This issue can be solved with locks or by
     #+BEGIN_SRC python
       _i = iter(EXPR)
       try:
-          _y = next(_i)
+	  _y = next(_i)
       except StopIteration as _e:
-          _r = _e.value # the RESULT in the simplest case
+	  _r = _e.value # the RESULT in the simplest case
       else: # channel between the caller and the subgenerator
-          while 1:
-              _s = yield _y
-              try:
-                  _y = _i.send(_s)
-              except StopIteration as _e:
-                  _r = _e.value
-                  break
+	  while 1:
+	      _s = yield _y
+	      try:
+		  _y = _i.send(_s)
+	      except StopIteration as _e:
+		  _r = _e.value
+		  break
       RESULT = _r
     #+END_SRC
     - _i(iterator): The subgenerator
@@ -382,42 +382,42 @@ after the test, but before the lookup. This issue can be solved with locks or by
      #+BEGIN_SRC python
        _i = iter(EXPR)
        try:
-           _y = next(_i)
+	   _y = next(_i)
        except StopIteration as _e:
-           _r = _e.value
+	   _r = _e.value
        else:
-           while 1:
-               try:
-                   _s = yield _y
-               except GeneratorExit as _e:
-                   try:
-                       _m = _i.close
-                   except AttributeError:
-                       pass
-                   else:
-                       _m()
-                   raise _e
-               except BaseException as _e:
-                   _x = sys.exc_info()
-                   try:
-                       _m = _i.throw
-                   except AttributeError:
-                       raise _e
-                   else:
-                       try:
-                           _y = _m(*_x)
-                       except StopIteration as _e:
-                           _r = _e.value
-                           break
-               else:
-                   try:
-                       if _s is None:
-                           _y = next(_i)
-                       else:
-                           _y = _i.send(_s)
-                   except StopIteration as _e:
-                       _r = _e.value
-                       break
+	   while 1:
+	       try:
+		   _s = yield _y
+	       except GeneratorExit as _e:
+		   try:
+		       _m = _i.close
+		   except AttributeError:
+		       pass
+		   else:
+		       _m()
+		   raise _e
+	       except BaseException as _e:
+		   _x = sys.exc_info()
+		   try:
+		       _m = _i.throw
+		   except AttributeError:
+		       raise _e
+		   else:
+		       try:
+			   _y = _m(*_x)
+		       except StopIteration as _e:
+			   _r = _e.value
+			   break
+	       else:
+		   try:
+		       if _s is None:
+			   _y = next(_i)
+		       else:
+			   _y = _i.send(_s)
+		   except StopIteration as _e:
+		       _r = _e.value
+		       break
 
        RESULT = _r
      #+END_SRC
@@ -431,16 +431,16 @@ after the test, but before the lookup. This issue can be solved with locks or by
     #+BEGIN_SRC python
       from concurrent import futures
       with futures.ThreadPoolExecutor(4) as executor:
-          results = executor.map(process_one, sorted(args))
-          # map: 1. create and schedule futures 2. retrive the future.result() one by one
-          print(results)
+	  results = executor.map(process_one, sorted(args))
+	  # map: 1. create and schedule futures 2. retrive the future.result() one by one
+	  print(results)
 
       # equivalent to
       with futures.ThreadPoolExecutor(4) as executor:
-          fs = [executor.submit(process_one, arg) for arg in args]
-          for completed_future in futures.as_completed(fs):
-              print(completed_future.result())
-          return len(list(results))
+	  fs = [executor.submit(process_one, arg) for arg in args]
+	  for completed_future in futures.as_completed(fs):
+	      print(completed_future.result())
+	  return len(list(results))
     #+END_SRC
     - The combination of ~executor.submit~ and ~futures.as_completed~ is more flexible than ~executor.map~
     because you can submit different callables and arguments, while ~executor.map~ is designed to run the
@@ -455,30 +455,30 @@ after the test, but before the lookup. This issue can be solved with locks or by
 *** Spin Example
     #+BEGIN_SRC python
       class Signal:
-          go = True
+	  go = True
 
       def spin(msg, signal):
-          write, flush = sys.stdout.write, sys.stdout.flush
-          for char in itertools.cycle('|/-\\'):
-              status = char + ' ' + msg
-              write(status)
-              flush()
-              write('\x08' * len(status))
-              time.sleep(.1)
-              if not signal.go:
-                  break
-          write(' ' * len(status) + '\x08' * len(status))
+	  write, flush = sys.stdout.write, sys.stdout.flush
+	  for char in itertools.cycle('|/-\\'):
+	      status = char + ' ' + msg
+	      write(status)
+	      flush()
+	      write('\x08' * len(status))
+	      time.sleep(.1)
+	      if not signal.go:
+		  break
+	  write(' ' * len(status) + '\x08' * len(status))
 
       def supervisor():
-          signal = Signal()
-          spinner = threading.Thread(target=spin,
-                                     args=('thinking!', signal))
-          print('spinner object:', spinner)
-          spinner.start()
-          result = slow_function()
-          signal.go = False
-          spinner.join()
-          return result
+	  signal = Signal()
+	  spinner = threading.Thread(target=spin,
+				     args=('thinking!', signal))
+	  print('spinner object:', spinner)
+	  spinner.start()
+	  result = slow_function()
+	  signal.go = False
+	  spinner.join()
+	  return result
     #+END_SRC
 
 ** Future
@@ -492,25 +492,25 @@ after the test, but before the lookup. This issue can be solved with locks or by
 
 
     def blocking_task():
-        time.sleep(2)
-        return 42
+	time.sleep(2)
+	return 42
 
 
     async def run_tasks(executor):
-        loop = asyncio.get_event_loop()
-        blocking_tasks = []
-        for _ in range(40):
-            task = loop.run_in_executor(executor, blocking_task)
-            blocking_tasks.append(task)
-        completed, pending = await asyncio.wait(blocking_tasks)
-        for t in completed:
-            print(t.result())
+	loop = asyncio.get_event_loop()
+	blocking_tasks = []
+	for _ in range(40):
+	    task = loop.run_in_executor(executor, blocking_task)
+	    blocking_tasks.append(task)
+	completed, pending = await asyncio.wait(blocking_tasks)
+	for t in completed:
+	    print(t.result())
 
 
     if __name__ == '__main__':
-        event_loop = asyncio.get_event_loop()
-        executor = Executor(20)
-        event_loop.run_until_complete(run_tasks(executor))
+	event_loop = asyncio.get_event_loop()
+	executor = Executor(20)
+	event_loop.run_until_complete(run_tasks(executor))
   #+END_SRC
 
 ** asyncio + aioXXX
@@ -519,14 +519,14 @@ after the test, but before the lookup. This issue can be solved with locks or by
 
 
      async def aiotask():
-         await asyncio.sleep(2)
-         return 42
+	 await asyncio.sleep(2)
+	 return 42
 
      event_loop = asyncio.get_event_loop()
      tasks = [aiotask() for _ in range(1000)]
      results = event_loop.run_until_complete(asyncio.gather(*tasks))
      for result in results:
-         print(result)
+	 print(result)
    #+END_SRC
 
 * asyncio

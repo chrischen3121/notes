@@ -4,7 +4,7 @@
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Represeting Infomation
 ** Integer
 *** Integer Limits
@@ -408,40 +408,40 @@ Condition: $x\neq 0$
 **** if
      - General in C
        #+BEGIN_SRC text
-         if (test-expr)
-            then-statement
-         else
-            else-statement
+	 if (test-expr)
+	    then-statement
+	 else
+	    else-statement
        #+END_SRC
      - normal form with goto statement
        #+BEGIN_SRC text
-             t = test-expr;
-             if (t)
-                goto true;
-             else-statement
-             goto done;
-         true:
-             then-statement
-         done:
+	     t = test-expr;
+	     if (t)
+		goto true;
+	     else-statement
+	     goto done;
+	 true:
+	     then-statement
+	 done:
        #+END_SRC
      - assembly form
        #+BEGIN_SRC text
-             t = test-expr;
-             if (!t)
-                goto false-label;
-             then-statement
-             goto done;
-         false-label:
-             else-statement
-         done:
+	     t = test-expr;
+	     if (!t)
+		goto false-label;
+	     then-statement
+	     goto done;
+	 false-label:
+	     else-statement
+	 done:
        #+END_SRC
      - when there is no else-statement.
        #+BEGIN_SRC text
-             t = test-expr;
-             if (!t)
-                goto done;
-             then-statement
-         done:
+	     t = test-expr;
+	     if (!t)
+		goto done;
+	     then-statement
+	 done:
        #+END_SRC
 
 **** ? condtion
@@ -450,131 +450,131 @@ Condition: $x\neq 0$
      #+END_SRC
      - standard form
       #+BEGIN_SRC text
-            if (!test-expr)
-                goto false;
-            v = then-expr;
-            goto done;
-        false:
-            v = else-expr;
-        done:
+	    if (!test-expr)
+		goto false;
+	    v = then-expr;
+	    goto done;
+	false:
+	    v = else-expr;
+	done:
       #+END_SRC
     - more abstract form
       #+BEGIN_SRC text
-        vt = then-expr;
-        v = else-expr;
-        t = test-expr;
-        if (t) v = vt;
+	vt = then-expr;
+	v = else-expr;
+	t = test-expr;
+	if (t) v = vt;
       #+END_SRC
 
 **** do...while
      #+BEGIN_SRC text
        do
-           body-statement
+	   body-statement
        while (test-expr)
      #+END_SRC
      - goto version
       #+BEGIN_SRC text
-        loop:
-            body-statement
-            t = test-expr;
-            if (t)
-               goto loop;
-        done:
+	loop:
+	    body-statement
+	    t = test-expr;
+	    if (t)
+	       goto loop;
+	done:
       #+END_SRC
 
 **** while
      #+BEGIN_SRC text
        while (test-expr)
-           body-statement
+	   body-statement
      #+END_SRC
      - goto version
       #+BEGIN_SRC text
-        t = test-expr
-        if (!t)
-           goto done;
-        loop:
-           body-statement
-           if (t)
-              goto loop;
-        done:
+	t = test-expr
+	if (!t)
+	   goto done;
+	loop:
+	   body-statement
+	   if (t)
+	      goto loop;
+	done:
       #+END_SRC
 
 **** for
      #+BEGIN_SRC text
        for (init-expr; test-expr; update-expr)
-           body-statement
+	   body-statement
      #+END_SRC
      - Equivalent to while loop
       #+BEGIN_SRC text
-        init-expr;
-        while (test-expr)
-            body-statement
-            update-expr;
+	init-expr;
+	while (test-expr)
+	    body-statement
+	    update-expr;
       #+END_SRC
      - goto vesion:
       #+BEGIN_SRC text
-        init-expr;
-        t = test-expr;
-        if (!t)
-           goto done;
+	init-expr;
+	t = test-expr;
+	if (!t)
+	   goto done;
 
-        loop:
-           body-statement
-           update-expr;
-           if (t)
-              goto loop;
-        done:
+	loop:
+	   body-statement
+	   update-expr;
+	   if (t)
+	      goto loop;
+	done:
       #+END_SRC
 **** switch
      Compilers uses the *jump table* to achieve conditional jumping. Think of jump table as an array of function pointers.
      #+BEGIN_SRC c
        switch (n) {
-         case 100:
-           ...;
-           break;
-         case 102:
-           ...;
-           break;
-         case 103:
-           ...;
-           break;
-         case 105:
-           ...;
-           break;
-         default:
-           break;
+	 case 100:
+	   ...;
+	   break;
+	 case 102:
+	   ...;
+	   break;
+	 case 103:
+	   ...;
+	   break;
+	 case 105:
+	   ...;
+	   break;
+	 default:
+	   break;
        }
      #+END_SRC
 
      - impl
        #+BEGIN_SRC c
-         loc_A:
-           ...
-         loc_B:
-           ...
-         ...
+	 loc_A:
+	   ...
+	 loc_B:
+	   ...
+	 ...
 
-         static void *jt[5] = {
-           &&loc_A, &&Loc_B, &&loc_C, &&loc_def, &&loc_D
-         };
-         unsigned long index = n-100;
-         if (index > 4)
-           goto loc_def;
-         goto *it[index];
+	 static void *jt[5] = {
+	   &&loc_A, &&Loc_B, &&loc_C, &&loc_def, &&loc_D
+	 };
+	 unsigned long index = n-100;
+	 if (index > 4)
+	   goto loc_def;
+	 goto *it[index];
 
        #+END_SRC
 
      - jump table in asm
        #+BEGIN_SRC asm
-           .section .rodata
-           .align 8 // Align address to multiple of 8
-         .L4:
-           .quad .L3 // case 100: loc_A
-           .quad .L8 // case 101: default
-           .quad .L5 // case 102: loc_B
-           .quda .L6 // case 103: loc_C
-           .quda .L7 // case 105: loc_D
-           .quda .L8 // default
+	   .section .rodata
+	   .align 8 // Align address to multiple of 8
+	 .L4:
+	   .quad .L3 // case 100: loc_A
+	   .quad .L8 // case 101: default
+	   .quad .L5 // case 102: loc_B
+	   .quda .L6 // case 103: loc_C
+	   .quda .L7 // case 105: loc_D
+	   .quda .L8 // default
        #+END_SRC
 
 ** Procedure
@@ -601,14 +601,14 @@ Condition: $x\neq 0$
     Example:
     #+BEGIN_SRC text
       400540 <multstore>:
-        400540: 53        push %rbx
-        400541: 48 89 d3  mov  %rdx,%rbx
-        ...
-        40054d: c3        retq
+	400540: 53        push %rbx
+	400541: 48 89 d3  mov  %rdx,%rbx
+	...
+	40054d: c3        retq
 
       .caller:
-        400563: e8 d8 ff ff ff      callq   400540 <multstore>
-        400568: 48 8b 54 24 08      mov     0x8(%rsp),%rdx
+	400563: e8 d8 ff ff ff      callq   400540 <multstore>
+	400568: 48 8b 54 24 08      mov     0x8(%rsp),%rdx
     #+END_SRC
 
 **** call
@@ -641,16 +641,16 @@ Condition: $x\neq 0$
 *** variable-size array
     #+BEGIN_SRC c
       int var_ele(long n, int A[n][n], long i, long j) {
-        return A[i][j];
+	return A[i][j];
       }
     #+END_SRC
     #+BEGIN_SRC asm
       //n in %rdi, A in %rsi, i in %rdx, j in %rcx
       var_ele:
-        imulq	%rdx, %rdi  // Compute n*i -> %rdi
-        leaq	(%rsi,%rdi,4), %rax // Compute &A[0]+4(n*i) -> %rax
-        movl	(%rax,%rcx,4), %eax // Read from M[&A[0]+4(n*i)+4j] -> %eax
-        ret
+	imulq	%rdx, %rdi  // Compute n*i -> %rdi
+	leaq	(%rsi,%rdi,4), %rax // Compute &A[0]+4(n*i) -> %rax
+	movl	(%rax,%rcx,4), %eax // Read from M[&A[0]+4(n*i)+4j] -> %eax
+	ret
     #+END_SRC
 
 ** Float Operations
@@ -675,8 +675,8 @@ Condition: $x\neq 0$
 *** memory aliasing
     #+BEGIN_SRC c
       void twiddle1(int *xp, int *yp) {
-        ,*xp += *yp;
-        ,*xp += *yp;
+	,*xp += *yp;
+	,*xp += *yp;
       }
       void twiddle2(int *xp, int *yp) { *xp += 2 * *yp; }
     #+END_SRC
@@ -704,7 +704,7 @@ Condition: $x\neq 0$
       int i;
       int *result = 0;
       for (i = 0; i < MAXIMUM; ++i) {
-        ,*result = *result + i; //just use int instead of int*
+	,*result = *result + i; //just use int instead of int*
       }
     #+END_SRC
 
@@ -768,16 +768,16 @@ Condition: $x\neq 0$
     for a loop by increasing the number of elements computed on each iteration.
     #+BEGIN_SRC c
       for (i = 0; i < n; i++) {
-        acc = acc * data[i];
+	acc = acc * data[i];
       }
 
       // --> 2 * 1 loop unrolling
       for (i = 0; i < n-1; i+=2) {
-        // reassociation transformation: better than (acc * data[i]) * data[i+1]
-        acc = acc * (data[i] * data[i+1]);
+	// reassociation transformation: better than (acc * data[i]) * data[i+1]
+	acc = acc * (data[i] * data[i+1]);
       }
       for (; i < n; i++) { // finish any remaining elements
-        acc = acc * data[i];
+	acc = acc * data[i];
       }
     #+END_SRC
     - GCC -O3 will perform loop unrolling and reassociations of int operations.
@@ -785,11 +785,11 @@ Condition: $x\neq 0$
 *** Parallelism
     #+BEGIN_SRC c
       for (i = 0; i < n-1; i+=2) {
-        acc0 = acc0 * data[i];
-        acc1 = acc1 * data[i+1];
+	acc0 = acc0 * data[i];
+	acc1 = acc1 * data[i+1];
       }
       for (; i < n ; ++) {
-        acc0 = acc0 * data[i];
+	acc0 = acc0 * data[i];
       }
       result = acc0 * acc1
     #+END_SRC
@@ -803,14 +803,14 @@ Condition: $x\neq 0$
      - Do not be overly concerned about predictable branches
      - Write code *suitable* for implementation with *conditional moves* (depends on compiler, write and check *asm*)
        #+BEGIN_SRC c
-         for (i = 0; i < N; ++i) {
-           if (a < b)
-             min = b; // not predictable, cost of misprediction penalties is high
-         }
+	 for (i = 0; i < N; ++i) {
+	   if (a < b)
+	     min = b; // not predictable, cost of misprediction penalties is high
+	 }
 
-         for (i = 0; i < N; ++i) {
-           min = a < b ? a : b; // CPE is steady
-         }
+	 for (i = 0; i < N; ++i) {
+	   min = a < b ? a : b; // CPE is steady
+	 }
        #+END_SRC
 
 *** CPU caches
@@ -967,8 +967,8 @@ Condition: $x\neq 0$
       // a[M][N]
       int sum = 0;
       for (i = 0; i < N; i++)
-        for (j = 0; j < M; j++)
-          sum += a[j][i] // bad, stride-N
+	for (j = 0; j < M; j++)
+	  sum += a[j][i] // bad, stride-N
     #+END_SRC
 
 *** Locality of Instruction Fetches
@@ -1249,10 +1249,10 @@ Condition: $x\neq 0$
 *** Relocation Entries
     #+BEGIN_SRC c
       typedef struct {
-        long offset;     // Offset of the reference to relocate
-        long type : 32,  // Relocation type
-             symbol : 32;// Symbol table index
-        long addend;     // Constant part of relocation expression
+	long offset;     // Offset of the reference to relocate
+	long type : 32,  // Relocation type
+	     symbol : 32;// Symbol table index
+	long addend;     // Constant part of relocation expression
       } Elf64_Rela;
     #+END_SRC
     #+BEGIN_SRC sh
@@ -1266,20 +1266,20 @@ Condition: $x\neq 0$
 *** Relocation Algorithm(Linker)
     #+BEGIN_SRC c
       foreach section s {
-        foreach relocation entry r {
-          refptr = s + r.offset; // ptr to reference to be relocated (need to fill in)
+	foreach relocation entry r {
+	  refptr = s + r.offset; // ptr to reference to be relocated (need to fill in)
 
-          // PC-relative relocation
-          if (r.type == R_X86_64_PC32) {
-            refaddr = ADDR(s) + r.offset; // ref's run-time address
-            ,*refptr = (unsigned) (ADDR(r.symbol) - refaddr + r.addend); // runtime symbol addr - current PC->addr
-          }
+	  // PC-relative relocation
+	  if (r.type == R_X86_64_PC32) {
+	    refaddr = ADDR(s) + r.offset; // ref's run-time address
+	    ,*refptr = (unsigned) (ADDR(r.symbol) - refaddr + r.addend); // runtime symbol addr - current PC->addr
+	  }
 
-          // absolute addr relocation
-          if (r.type == R_X86_64_32) {
-            ,*refptr = (unsigned) (ADDR(r.symbol) + r.addend);
-          }
-        }
+	  // absolute addr relocation
+	  if (r.type == R_X86_64_32) {
+	    ,*refptr = (unsigned) (ADDR(r.symbol) + r.addend);
+	  }
+	}
       }
     #+END_SRC
     - r.addend: constant number should be added to find the correct address
@@ -1368,7 +1368,7 @@ Condition: $x\neq 0$
       pid_t fork();    // create subprocess
       unsigned int sleep(unsigned int secs);
       int pause(void); // puts the calling function to sleep until a signal is
-                       // received by the process.
+		       // received by the process.
       int execve(const char *filename, const char *argv[], const char *envp[]);
 
       #include <stdlib.h>
@@ -1379,7 +1379,7 @@ Condition: $x\neq 0$
 
       #include <sys/wait.h>
       pid_t waitpid(pid_t pid, int *statusp,
-                    int options); // waits for its children to terminate
+		    int options); // waits for its children to terminate
       pid_t wait(int *statusp);   // same as waitpid(-1, &status, 0)
     #+END_SRC
 **** fork
@@ -1425,13 +1425,13 @@ Condition: $x\neq 0$
      #include <unistd.h>
      pid_t getpgrp(void); // returns the process group ID of the current process.
      int setpgid(pid_t pid,
-                 pid_t pgid); // changes the process group of process pid to pgid.
+		 pid_t pgid); // changes the process group of process pid to pgid.
 
      #include <signal.h>
      int kill(pid_t pid, int sig);          // sends signal to process pid
      unsigned int alarm(unsigned int secs); // arranges for the kernel to send a
-                                            // SIGALRM signal to the calling process
-                                            // in secs seconds
+					    // SIGALRM signal to the calling process
+					    // in secs seconds
    #+END_SRC
 *** Receiving Signals
     #+BEGIN_SRC c
@@ -1615,11 +1615,11 @@ Condition: $x\neq 0$
       #include <sys/socket.h>
       #include <sys/types.h>
       int getaddrinfo(const char *host, const char *service,
-                      const struct addrinfo *hints, struct addrinfo **result);
+		      const struct addrinfo *hints, struct addrinfo **result);
       void freeaddrinfo(struct addrinfo *result);
       int getnameinfo(const struct sockaddr *sa, socklen_t salen, char *host,
-                      size_t hostlen, char *service, size_t servlen,
-                      int flags); // reverse fn of getaddrinfo
+		      size_t hostlen, char *service, size_t servlen,
+		      int flags); // reverse fn of getaddrinfo
 
       const char *gai_strerror(int errcode);
     #+END_SRC
@@ -1649,25 +1649,25 @@ Condition: $x\neq 0$
     #+END_SRC
     - Example:
       #+BEGIN_SRC c
-        #include <sys/select.h>
+	#include <sys/select.h>
 
-        int main(int argc, char **argv) {
-          fd_set read_set, ready_set;
-          FD_ZERO(&read_set);
-          FD_SET(fd1, &read_set);
-          FD_SET(fd2, &read_set);
+	int main(int argc, char **argv) {
+	  fd_set read_set, ready_set;
+	  FD_ZERO(&read_set);
+	  FD_SET(fd1, &read_set);
+	  FD_SET(fd2, &read_set);
 
-          while (True) {
-            ready_set = read_set;
-            select(fd2 + 1, &ready_set, NULL, NULL, NULL);
-            if (FD_ISSET(fd1, &ready_set)) {
-              // ...
-            }
-            if (FD_ISSET(fd2, &ready_set)) {
-              //...
-            }
-          }
-        }
+	  while (True) {
+	    ready_set = read_set;
+	    select(fd2 + 1, &ready_set, NULL, NULL, NULL);
+	    if (FD_ISSET(fd1, &ready_set)) {
+	      // ...
+	    }
+	    if (FD_ISSET(fd2, &ready_set)) {
+	      //...
+	    }
+	  }
+	}
       #+END_SRC
 
 ** Thread
@@ -1688,7 +1688,7 @@ Condition: $x\neq 0$
 
       pthread_once_t once_control = PTHREAD_ONCE_INIT;
       int pthread_once(pthread_once_t *once_control,
-                       void (*init_routine)(void));
+		       void (*init_routine)(void));
 
       void pthread_exit(void *thread_return);
       int pthread_cancel(pthread_t tid);
@@ -1783,49 +1783,49 @@ Condition: $x\neq 0$
       constexpr int EXPECTED_SUM = THREAD_COUNT * 49995000;
       std::deque<int> buf(0, MAX_SLOTS);
       void produce() {
-        for (auto i = 0; i < PRODUCER_LOOPS; ++i) {
-          sem_wait(&slots);
-          sem_wait(&mutex);
-          buf.emplace_back(i);
-          sem_post(&mutex);
-          sem_post(&items);
-        }
+	for (auto i = 0; i < PRODUCER_LOOPS; ++i) {
+	  sem_wait(&slots);
+	  sem_wait(&mutex);
+	  buf.emplace_back(i);
+	  sem_post(&mutex);
+	  sem_post(&items);
+	}
       }
 
       void consume() {
-        static std::atomic<int> sum{0};
-        while (true) {
-          sem_wait(&items);
-          sem_wait(&mutex);
-          for (auto i = 0; i < buf.size(); ++i) {
-            sum += buf.front();
-            buf.pop_front();
-            sem_post(&slots);
-          }
-          sem_post(&mutex);
-          if (sum == EXPECTED_SUM) {
-            std::cout << sum << "\n";
-            exit(EXIT_SUCCESS);
-          }
-        }
+	static std::atomic<int> sum{0};
+	while (true) {
+	  sem_wait(&items);
+	  sem_wait(&mutex);
+	  for (auto i = 0; i < buf.size(); ++i) {
+	    sum += buf.front();
+	    buf.pop_front();
+	    sem_post(&slots);
+	  }
+	  sem_post(&mutex);
+	  if (sum == EXPECTED_SUM) {
+	    std::cout << sum << "\n";
+	    exit(EXIT_SUCCESS);
+	  }
+	}
       }
 
       int main(int, char *[]) {
-        sem_init(&mutex, 0, 1);
-        sem_init(&items, 0, 0);
-        sem_init(&slots, 0, MAX_SLOTS);
+	sem_init(&mutex, 0, 1);
+	sem_init(&items, 0, 0);
+	sem_init(&slots, 0, MAX_SLOTS);
 
-        std::vector<std::thread> producers;
-        std::vector<std::thread> consumers;
-        for (auto i = 0; i < THREAD_COUNT; ++i) {
-          producers.emplace_back(produce);
-          consumers.emplace_back(consume);
-        }
-        for (auto &th : producers)
-          th.join();
-        for (auto &th : consumers)
-          th.join();
-        return 0;
+	std::vector<std::thread> producers;
+	std::vector<std::thread> consumers;
+	for (auto i = 0; i < THREAD_COUNT; ++i) {
+	  producers.emplace_back(produce);
+	  consumers.emplace_back(consume);
+	}
+	for (auto &th : producers)
+	  th.join();
+	for (auto &th : consumers)
+	  th.join();
+	return 0;
       }
     #+END_SRC
 *** Readers-Writers Problem
@@ -1847,49 +1847,49 @@ Condition: $x\neq 0$
       constexpr int WRITE_COUNT = 1000;
 
       void read() {
-        int out = 0;
-        while (true) {
-          sem_wait(&readcnt_mu);
-          readcnt++;
-          if (readcnt == 1) { // first reader in
-            sem_wait(&mutex);
-          }
-          sem_post(&readcnt_mu);
-          out = resource; // read operation
-          sem_wait(&readcnt_mu);
-          readcnt--;
-          if (readcnt == 0) {
-            sem_post(&mutex);
-          }
-          sem_post(&readcnt_mu);
-          std::this_thread::sleep_for(500ms);
-        }
+	int out = 0;
+	while (true) {
+	  sem_wait(&readcnt_mu);
+	  readcnt++;
+	  if (readcnt == 1) { // first reader in
+	    sem_wait(&mutex);
+	  }
+	  sem_post(&readcnt_mu);
+	  out = resource; // read operation
+	  sem_wait(&readcnt_mu);
+	  readcnt--;
+	  if (readcnt == 0) {
+	    sem_post(&mutex);
+	  }
+	  sem_post(&readcnt_mu);
+	  std::this_thread::sleep_for(500ms);
+	}
       }
 
       void write() {
-        for (auto i = 0; i < WRITE_COUNT; ++i) {
-          sem_wait(&mutex);
-          resource = i; // write operation
-          sem_post(&mutex);
-          std::this_thread::sleep_for(1s);
-        }
+	for (auto i = 0; i < WRITE_COUNT; ++i) {
+	  sem_wait(&mutex);
+	  resource = i; // write operation
+	  sem_post(&mutex);
+	  std::this_thread::sleep_for(1s);
+	}
       }
 
       int main(int, char *[]) {
-        sem_init(&mutex, 0, 1);
-        sem_init(&readcnt_mu, 0, 1);
+	sem_init(&mutex, 0, 1);
+	sem_init(&readcnt_mu, 0, 1);
 
-        std::vector<std::thread> readers;
-        std::vector<std::thread> writers;
-        for (auto i = 0; i < THREAD_COUNT; ++i) {
-          readers.emplace_back(read);
-          writers.emplace_back(write);
-        }
-        for (auto &th : readers)
-          th.join();
-        for (auto &th : writers)
-          th.join();
-        return 0;
+	std::vector<std::thread> readers;
+	std::vector<std::thread> writers;
+	for (auto i = 0; i < THREAD_COUNT; ++i) {
+	  readers.emplace_back(read);
+	  writers.emplace_back(write);
+	}
+	for (auto &th : readers)
+	  th.join();
+	for (auto &th : writers)
+	  th.join();
+	return 0;
       }
 
     #+END_SRC

@@ -4,7 +4,7 @@
 #+LANGUAGE: en-US
 #+AUTHOR: chrischen
 #+EMAIL: chrischen3121@gmail.com
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 #+STARTUP: inlineimages
 * Data Structures and Algorithms
 ** Unpacking from Iterables
@@ -43,16 +43,16 @@
      import heapq
 
      class PriorityQueue:
-         def __init__(self):
-             self._queue = []
-             self._index = 0 # use index to properly order items with the same priority level
+	 def __init__(self):
+	     self._queue = []
+	     self._index = 0 # use index to properly order items with the same priority level
 
-         def push(self, item, priority):
-             heapq.heappush(self._queue, (-priority, self._index, item))
-             self._index += 1
+	 def push(self, item, priority):
+	     heapq.heappush(self._queue, (-priority, self._index, item))
+	     self._index += 1
 
-         def pop(self):
-             return heapq.heappop(self._queue)[-1]
+	 def pop(self):
+	     return heapq.heappop(self._queue)[-1]
    #+END_SRC
 
 ** defaultdict
@@ -82,11 +82,11 @@
 ** Calculating with Dictionaries
    #+BEGIN_SRC python
      prices = {
-         'ACME': 45.23,
-         'AAPL': 612.78,
-         'IBM': 205.55,
-         'HPQ': 37.20,
-         'FB': 10.75
+	 'ACME': 45.23,
+	 'AAPL': 612.78,
+	 'IBM': 205.55,
+	 'HPQ': 37.20,
+	 'FB': 10.75
      }
      min_price = min(zip(prices.values(), prices.keys())) # zip to ((value, key)) generator
 
@@ -143,11 +143,11 @@ def list_transaction(orig_list):
      from itertools import groupby
      rows.sort(key=itemgetter('date'))
      for date, items in groupby(rows, key=itemgetter('date')):
-         pass
+	 pass
      # alternative if memory is no concern, and faster than sort+groupby
      rows_by_date = defaultdict(list)
      for row in rows:
-         rows_by_date[row['date']].append(row)
+	 rows_by_date[row['date']].append(row)
    #+END_SRC
 ** itertools.compress
    Like boolean index in pandas. Takes an iterable and an accompanying Boolean selector sequence as input.
@@ -162,7 +162,7 @@ def list_transaction(orig_list):
      stock_prototype = Stock('', 0, 0.0, None, None)
 
      def dict_to_stock(s):
-         return stock_prototype._replace(**s)
+	 return stock_prototype._replace(**s)
    #+END_SRC
 *** useful method
     - ~_make~: Make a new Stock object from a sequence or iterable
@@ -234,14 +234,14 @@ def list_transaction(orig_list):
 
 
       def generate_tokens(pat, text):
-          scanner = pat.scanner(text)
-          for m in iter(scanner.match, None):
-              yield Token(m.lastgroup, m.group())
+	  scanner = pat.scanner(text)
+	  for m in iter(scanner.match, None):
+	      yield Token(m.lastgroup, m.group())
 
 
       # Example use
       for tok in generate_tokens(master_pat, 'foo = 42'):
-          print(tok)
+	  print(tok)
 
       # Produces output
       # Token(type='NAME', value='foo')
@@ -270,8 +270,8 @@ def list_transaction(orig_list):
 *** safesub
     #+BEGIN_SRC python
       class safesub(dict):
-          def __missing__(self, key):
-              return '{' + key + '}'
+	  def __missing__(self, key):
+	      return '{' + key + '}'
 
       name = 'ABC'
       n = 5
@@ -282,7 +282,7 @@ def list_transaction(orig_list):
 **** frame hack
      #+BEGIN_SRC python
        def sub(text):
-           return text.format_map(safesub(sys._getframe(1).f_locals))
+	   return text.format_map(safesub(sys._getframe(1).f_locals))
      #+END_SRC
 
 *** textwrap
@@ -299,19 +299,19 @@ def list_transaction(orig_list):
 ** Combining I/O Write Operation
    #+BEGIN_SRC python
      def combine(source, maxsize):
-         parts = []
-         size = 0
-         for part in source:
-             parts.append(part)
-             size += len(part)
-             if size > maxsize:
-                 yield ''.join(parts)
-                 parts = []
-                 size = 0
-         yield ''.join(parts)
+	 parts = []
+	 size = 0
+	 for part in source:
+	     parts.append(part)
+	     size += len(part)
+	     if size > maxsize:
+		 yield ''.join(parts)
+		 parts = []
+		 size = 0
+	 yield ''.join(parts)
 
      for part in combine(sample(), 32768):
-         f.write(part)
+	 f.write(part)
    #+END_SRC
    - Example: write to socket send buffer
 
@@ -337,17 +337,17 @@ def list_transaction(orig_list):
 
 
      def generate_tokens(pat, text):
-         # scanner method creates a scanner object in which repeated calls to match()
-         # step through the supplied text one match at a time
-         scanner = pat.scanner(text)
-         for m in iter(scanner.match, None):
-             yield Token(m.lastgroup, m.group())
+	 # scanner method creates a scanner object in which repeated calls to match()
+	 # step through the supplied text one match at a time
+	 scanner = pat.scanner(text)
+	 for m in iter(scanner.match, None):
+	     yield Token(m.lastgroup, m.group())
 
 
      tokens = (tok for tok in generate_tokens(master_pat, 'foo = 42')
-               if tok.type != 'WS')
+	       if tok.type != 'WS')
      for tok in tokens:
-         print(tok)
+	 print(tok)
 
      # Produces output
      # Token(type='NAME', value='foo')
@@ -373,8 +373,8 @@ def list_transaction(orig_list):
      b = Decimal('2.41')
 
      with localcontext() as ctx:
-         ctx.prec = 5
-         print(a/b) # 2.6224
+	 ctx.prec = 5
+	 print(a/b) # 2.6224
    #+END_SRC
 
 ** Formatting
@@ -503,18 +503,18 @@ def list_transaction(orig_list):
    #+BEGIN_SRC python
      iterable = iter(range(5))  # Invokes range.__iter__()
      try:
-         while True:
-             line = next(iterable)  # Invokes iterable.__next__()
-             print(line, end='')
+	 while True:
+	     line = next(iterable)  # Invokes iterable.__next__()
+	     print(line, end='')
      except StopIteration:
-         pass
+	 pass
 
      # non exception version
      while True:
-         line = next(iterable, None)
-         if line is None:
-             break
-         print(line, end='')
+	 line = next(iterable, None)
+	 if line is None:
+	     break
+	 print(line, end='')
    #+END_SRC
    - Python’s iterator protocol requires ~__iter__()~ to return a special iterator object that implements a ~__next__()~ method to carry out the actual iteration.
 ** Iterating Over Multi Sequences
@@ -523,12 +523,12 @@ def list_transaction(orig_list):
      b = ['w', 'x', 'y', 'z']
 
      for i in zip(a, b):
-         print(i)
+	 print(i)
      #=> (1, 'w') (2, 'x') (3, 'y')
 
      from itertools import zip_longest
      for i in zip_longest(a, b):
-         print(i)
+	 print(i)
      #=> (1, 'w') (2, 'x') (3, 'y') (None, 'z')
    #+END_SRC
 
@@ -547,15 +547,15 @@ def list_transaction(orig_list):
 
 
      def flatten(items, ignore_types=(str, bytes)):
-         for x in items:
-             if isinstance(x, Iterable) and not isinstance(x, ignore_types):
-                 yield from flatten(x)
-             else:
-                 yield x
+	 for x in items:
+	     if isinstance(x, Iterable) and not isinstance(x, ignore_types):
+		 yield from flatten(x)
+	     else:
+		 yield x
 
      items = ['Dave', 'Paula', ['Thomas', 'Lewis']]
      for x in flatten(items):
-         print(x)
+	 print(x)
    #+END_SRC
 ** Merge Two Sorted Iterables
    #+BEGIN_SRC python
@@ -563,20 +563,20 @@ def list_transaction(orig_list):
      a = [1, 4, 7, 10]
      b = [2, 5, 6, 11]
      for c in heapq.merge(a, b):
-         print(c)
+	 print(c)
    #+END_SRC
 ** ~iter()~
    <<iter>>
    ~iter()~ optionally accepts a zero-argument *callable* and *sentinel* (terminating) value as inputs.
    #+BEGIN_SRC python
      for chunk in iter(lambda: fs.read(10), ''):
-         print(chunk)
+	 print(chunk)
    #+END_SRC
 * I/O
 ** Encoding
    #+BEGIN_SRC python
      with open('somefile.txt', 'rt', encoding='latin-1') as f:
-         ...
+	 ...
    #+END_SRC
    *latin-1* encoding is notable in that it will never produce a decoding error when reading text of a possibly unknown encoding.
    #+BEGIN_SRC python
@@ -591,7 +591,7 @@ def list_transaction(orig_list):
      import array
      a = array.array('i', [0, 0, 0, 0, 0, 0, 0, 0])
      with open('data.bin', 'rb') as f:
-         f.readinto(a)
+	 f.readinto(a)
    #+END_SRC
    ~readinto()~ fills the contents of an existing buffer
    - One caution with using ~f.readinto()~~ is that you must always make sure to check its return code, which is the number of bytes actually read.
@@ -604,9 +604,9 @@ def list_transaction(orig_list):
      RECORD_SIZE = 32
 
      with open('somefile.data', 'rb') as f:
-         records = iter(partial(f.read, RECORD_SIZE), b'')
-         for r in records:
-             ...
+	 records = iter(partial(f.read, RECORD_SIZE), b'')
+	 for r in records:
+	     ...
    #+END_SRC
    - [[iter]]
 
@@ -643,8 +643,8 @@ def list_transaction(orig_list):
      import io
      # decode a binary file
      with open('some_binary_file.bin', 'rb') as open_file:
-         fs = io.TextIOWrapper(open_file, encoding='utf8')
-         text = fs.read()
+	 fs = io.TextIOWrapper(open_file, encoding='utf8')
+	 text = fs.read()
 
      # change encoding
      import sys
@@ -674,33 +674,33 @@ def list_transaction(orig_list):
      f = open(fd, 'wt', closefd=False)
 
      def echo_client(client_sock, addr):
-         print('Got connection from', addr)
+	 print('Got connection from', addr)
 
-         # Make text-mode file wrappers for socket reading/writing, only works on Unix-based systems
-         # Use the makefile() method of sockets instead to be cross platform
-         client_in = open(client_sock.fileno(), 'rt', encoding='latin-1',
-                              closefd=False)
-         client_out = open(client_sock.fileno(), 'wt', encoding='latin-1',
-                               closefd=False)
+	 # Make text-mode file wrappers for socket reading/writing, only works on Unix-based systems
+	 # Use the makefile() method of sockets instead to be cross platform
+	 client_in = open(client_sock.fileno(), 'rt', encoding='latin-1',
+			      closefd=False)
+	 client_out = open(client_sock.fileno(), 'wt', encoding='latin-1',
+			       closefd=False)
 
-         # Echo lines back to the client using file I/O
-         for line in client_in:
-             client_out.write(line)
-             client_out.flush()
-         client_sock.close()
+	 # Echo lines back to the client using file I/O
+	 for line in client_in:
+	     client_out.write(line)
+	     client_out.flush()
+	 client_sock.close()
    #+END_SRC
 ** Temporary Files
    #+BEGIN_SRC python
      from tempfile import TemporaryFile, NamedTemporaryFile, TemporaryDirectory
      with TemporaryFile('w+t', encoding='utf-8', errors='ignore') as f:
-         f.write('Hello World\n')
+	 f.write('Hello World\n')
 
      with NamedTemporaryFile(
-             'w+t', delete=False, prefix='mytemp', suffix='.txt', dir='/tmp') as f:
-         print('filename is:', f.name)  #=> /tmp/mytemp2tmz4nl5.txt
+	     'w+t', delete=False, prefix='mytemp', suffix='.txt', dir='/tmp') as f:
+	 print('filename is:', f.name)  #=> /tmp/mytemp2tmz4nl5.txt
 
      with TemporaryDirectory() as dirname:
-         print('dirname is:', dirname)
+	 print('dirname is:', dirname)
    #+END_SRC
 
 ** Serializing Python Objects
@@ -709,12 +709,12 @@ def list_transaction(orig_list):
     #+BEGIN_SRC python
       import pickle
       with open('somedata', 'wb') as fs:
-          pickle.dump([1, 2, 3, 4], fs)
-          pickle.dump('hello', fs)
+	  pickle.dump([1, 2, 3, 4], fs)
+	  pickle.dump('hello', fs)
 
       with open('somedata', 'rb') as fs:
-          pickle.load(fs) # => [1, 2, 3, 4]
-          pickle.load(fs) # => hello
+	  pickle.load(fs) # => [1, 2, 3, 4]
+	  pickle.load(fs) # => hello
     #+END_SRC
 
 *** Safety
@@ -734,22 +734,22 @@ def list_transaction(orig_list):
       import re
       import csv
       with open('stock.csv') as f:
-          f_csv = csv.reader(f)
-          headings = next(f_csv)
-          Row = namedtuple('Row', headings)
-          for r in f_csv:
-              row = Row(*r)
-              # Process row
+	  f_csv = csv.reader(f)
+	  headings = next(f_csv)
+	  Row = namedtuple('Row', headings)
+	  for r in f_csv:
+	      row = Row(*r)
+	      # Process row
     #+END_SRC
 
 *** ~DictReader~
    #+BEGIN_SRC python
      import csv
      with open('stocks.csv') as f:
-         f_csv = csv.DictReader(f)
-         for row in f_csv:
-             # process row
-             ...
+	 f_csv = csv.DictReader(f)
+	 for row in f_csv:
+	     # process row
+	     ...
    #+END_SRC
 
 *** ~writer~
@@ -767,11 +767,11 @@ def list_transaction(orig_list):
      # data => OrderedDict([('name', 'ACME'), ('shares', 50), ('price', 490.1)])
 
      class JSONObject:
-         def __init__(self, d):
-             self.__dict__ = d
+	 def __init__(self, d):
+	     self.__dict__ = d
 
-         def __str__(self):
-             return str(self.__dict__)
+	 def __str__(self):
+	     return str(self.__dict__)
 
 
      obj = json.loads(s, object_hook=JSONObject)
@@ -817,14 +817,14 @@ def list_transaction(orig_list):
      from struct import Struct
 
      def write_records(records: tuple, format, f):
-         record_struct = Struct(format)
-         for r in records:
-             f.write(record_struct.pack(*r))
+	 record_struct = Struct(format)
+	 for r in records:
+	     f.write(record_struct.pack(*r))
 
      def read_records(format, f) -> tuple:
-         record_struct = Struct(format)
-         chunks = iter(lambda: f.read(record_struct.size), b'') # star!
-         return (record_struct.unpack(chunk) for chunk in chunks) # star!
+	 record_struct = Struct(format)
+	 chunks = iter(lambda: f.read(record_struct.size), b'') # star!
+	 return (record_struct.unpack(chunk) for chunk in chunks) # star!
 
    #+END_SRC
    - more to explore =Recipe 6.12=
@@ -833,7 +833,7 @@ def list_transaction(orig_list):
 ** Keyword-only Arguments
    #+BEGIN_SRC python
      def recv(maxsize, *, block):
-         pass
+	 pass
 
      recv(1024, True)# TypeError
      recv(1024, block=True) # OK
@@ -863,10 +863,10 @@ def list_transaction(orig_list):
 ** ~__format__~
    #+BEGIN_SRC python
      _formats = {
-         'ymd' : '{d.year}-{d.month}-{d.day}',
-         'mdy' : '{d.month}/{d.day}/{d.year}',
-         'dmy' : '{d.day}/{d.month}/{d.year}'
-         }
+	 'ymd' : '{d.year}-{d.month}-{d.day}',
+	 'mdy' : '{d.month}/{d.day}/{d.year}',
+	 'dmy' : '{d.day}/{d.month}/{d.year}'
+	 }
      from datetime import date
      d = date.today()
      format(d, 'mdy')
@@ -876,13 +876,13 @@ def list_transaction(orig_list):
 ** Context Management
    #+BEGIN_SRC python
      class Connection:
-         def __enter__(self):
-             self.fs = open('somefile.txt', 'rt')
-             return self.fs
+	 def __enter__(self):
+	     self.fs = open('somefile.txt', 'rt')
+	     return self.fs
 
-         def __exit__(self, exc_ty, exc_val, tb):
-             self.fs.close()
-             self.fs = None
+	 def __exit__(self, exc_ty, exc_val, tb):
+	     self.fs.close()
+	     self.fs = None
    #+END_SRC
 
 ** Saving Memory ~__slots__~
@@ -890,55 +890,55 @@ def list_transaction(orig_list):
    - A side effect of using slots is that it is no longer possible to add new attributes to instances.
    #+BEGIN_SRC python
      class Date:
-         __slots__ = ['year', 'month', 'day']
-         def __init__(self, year, month, day):
-             self.year = year
-             self.month = month
-             self.day = day
+	 __slots__ = ['year', 'month', 'day']
+	 def __init__(self, year, month, day):
+	     self.year = year
+	     self.month = month
+	     self.day = day
    #+END_SRC
 
 ** Properties
    #+BEGIN_SRC python
      class Object:
-         @property
-         def attr(self):
-             return self.__attr
+	 @property
+	 def attr(self):
+	     return self.__attr
 
-         @attr.setter
-         def attr(self, value):
-             self.__attr = value
+	 @attr.setter
+	 def attr(self, value):
+	     self.__attr = value
 
-         @attr.deleter
-         def attr(self):
-             self.__attr = None
-         # del obj.attr
+	 @attr.deleter
+	 def attr(self):
+	     self.__attr = None
+	 # del obj.attr
    #+END_SRC
 *** Extending a Property
     #+BEGIN_SRC python
       class SubPerson(Person):
-          @property
-          def name(self):
-              print('Getting name')
-              return super().name
+	  @property
+	  def name(self):
+	      print('Getting name')
+	      return super().name
 
-          @name.setter
-          def name(self, value):
-              print('Setting name to', value)
-              # the only way to get to setter method is to access it as a class variable
-              super(SubPerson, SubPerson).name.__set__(self, value)
+	  @name.setter
+	  def name(self, value):
+	      print('Setting name to', value)
+	      # the only way to get to setter method is to access it as a class variable
+	      super(SubPerson, SubPerson).name.__set__(self, value)
 
-          @name.deleter
-          def name(self):
-              print('Deleting name')
-              super(SubPerson, SubPerson).name.__delete__(self)
+	  @name.deleter
+	  def name(self):
+	      print('Deleting name')
+	      super(SubPerson, SubPerson).name.__delete__(self)
     #+END_SRC
     - Extending only ~getter~ method
       #+BEGIN_SRC python
-        class SubPerson(Person):
-            @Person.name.getter
-            def name(self):
-                print('Getting name')
-                return super().name
+	class SubPerson(Person):
+	    @Person.name.getter
+	    def name(self):
+		print('Getting name')
+		return super().name
       #+END_SRC
 
 ** ~super()~
@@ -956,29 +956,29 @@ def list_transaction(orig_list):
 *** Multiple Inheritance with Different Arguments to Constructors
    #+BEGIN_SRC python
      class A:
-         def __init__(self, a, **kw):
-             super().__init__(**kw)
-             print('A a', a)
+	 def __init__(self, a, **kw):
+	     super().__init__(**kw)
+	     print('A a', a)
 
 
      class B:
-         def __init__(self, b, c=0, **kw):
-             super().__init__(**kw)
-             print('B b', b)
-             print('B c', c)
+	 def __init__(self, b, c=0, **kw):
+	     super().__init__(**kw)
+	     print('B b', b)
+	     print('B c', c)
 
 
      class C(A, B):
-         def __init__(self, a, b, c, d):
-             super().__init__(a=a, b=b, c=c)
-             print('C d', d)
+	 def __init__(self, a, b, c, d):
+	     super().__init__(a=a, b=b, c=c)
+	     print('C d', d)
    #+END_SRC
    or
    #+BEGIN_SRC python
      class C(A, B):
-         def __init__(self, a, b, c):
-             A.__init__(self, a)
-             B.__init__(self, b, c)
+	 def __init__(self, a, b, c):
+	     A.__init__(self, a)
+	     B.__init__(self, b, c)
     # should be careful with double-invocation
    #+END_SRC
 
@@ -990,237 +990,237 @@ def list_transaction(orig_list):
    - ~__delete__(self, instance)~
    #+BEGIN_SRC python
      class String:
-         def __init__(self, name):
-             self.name = name
+	 def __init__(self, name):
+	     self.name = name
 
-         def __get__(self, instance, cls):
-             if instance is None:  # called as class variable
-                 return self
-             return instance.__dict__[self.name]
+	 def __get__(self, instance, cls):
+	     if instance is None:  # called as class variable
+		 return self
+	     return instance.__dict__[self.name]
 
-         def __set__(self, instance, value):
-             if not isinstance(value, str):
-                 raise TypeError('Expected a string')
-             instance.__dict__[self.name] = value
+	 def __set__(self, instance, value):
+	     if not isinstance(value, str):
+		 raise TypeError('Expected a string')
+	     instance.__dict__[self.name] = value
 
-         def __delete__(self, instance):
-             del instance.__dict__[self.name]
+	 def __delete__(self, instance):
+	     del instance.__dict__[self.name]
 
 
      class Person:
-         name = String('name')
+	 name = String('name')
 
-         def __init__(self, name):
-             self.name = name
+	 def __init__(self, name):
+	     self.name = name
    #+END_SRC
 *** Advanced Usage
     #+BEGIN_SRC python
       # Descriptor for a type-checked attribute
       class Typed:
-          def __init__(self, name, expected_type):
-              self.name = name
-              self.expected_type = expected_type
+	  def __init__(self, name, expected_type):
+	      self.name = name
+	      self.expected_type = expected_type
 
-          def __get__(self, instance, cls):
-              if instance is None:
-                  return self
-              else:
-                  return instance.__dict__[self.name]
+	  def __get__(self, instance, cls):
+	      if instance is None:
+		  return self
+	      else:
+		  return instance.__dict__[self.name]
 
-          def __set__(self, instance, value):
-              if not isinstance(value, self.expected_type):
-                  raise TypeError('Expected ' + str(self.expected_type))
-              instance.__dict__[self.name] = value
+	  def __set__(self, instance, value):
+	      if not isinstance(value, self.expected_type):
+		  raise TypeError('Expected ' + str(self.expected_type))
+	      instance.__dict__[self.name] = value
 
-          def __delete__(self, instance):
-              del instance.__dict__[self.name]
+	  def __delete__(self, instance):
+	      del instance.__dict__[self.name]
 
 
       # Class decorator that applies it to selected attributes
       def typeassert(**kwargs):
-          def decorate(cls):
-              for name, expected_type in kwargs.items():
-                  # Attach a Typed descriptor to the class
-                  setattr(cls, name, Typed(name, expected_type))
-                  return cls
+	  def decorate(cls):
+	      for name, expected_type in kwargs.items():
+		  # Attach a Typed descriptor to the class
+		  setattr(cls, name, Typed(name, expected_type))
+		  return cls
 
-          return decorate
+	  return decorate
 
 
       # Example use
       @typeassert(name=str, shares=int, price=float)
       class Stock:
-          def __init__(self, name, shares, price):
-              self.name = name
-              self.shares = shares
-              self.price = price
+	  def __init__(self, name, shares, price):
+	      self.name = name
+	      self.shares = shares
+	      self.price = price
     #+END_SRC
 
 *** Lazy Properties
     Define a read-only attribute as a property that only gets computed on access.
     #+BEGIN_SRC python
       class lazyproperty:
-          def __init__(self, func):
-              self.func = func
+	  def __init__(self, func):
+	      self.func = func
 
-          def __get__(self, instance, cls):
-              if instance is None:
-                  return self
-              else:
-                  value = self.func(instance)
-                  setattr(instance, self.func.__name__, value)
-                  return value
+	  def __get__(self, instance, cls):
+	      if instance is None:
+		  return self
+	      else:
+		  value = self.func(instance)
+		  setattr(instance, self.func.__name__, value)
+		  return value
 
 
       class Circle:
-          def __init__(self, radius):
-              self.radius = radius
+	  def __init__(self, radius):
+	      self.radius = radius
 
-          @lazyproperty
-          def area(self):
-              print('Computing area')
-              return math.pi * self.radius**2
+	  @lazyproperty
+	  def area(self):
+	      print('Computing area')
+	      return math.pi * self.radius**2
     #+END_SRC
 
 *** Data Model
     #+BEGIN_SRC python
       # Base class. Uses a descriptor to set a value
       class Descriptor:
-          def __init__(self, name=None, **opts):
-              self.name = name
-              for key, value in opts.items():
-                  setattr(self, key, value)
+	  def __init__(self, name=None, **opts):
+	      self.name = name
+	      for key, value in opts.items():
+		  setattr(self, key, value)
 
-          def __set__(self, instance, value):
-              instance.__dict__[self.name] = value
+	  def __set__(self, instance, value):
+	      instance.__dict__[self.name] = value
 
 
       # Descriptor for enforcing types
       class Typed(Descriptor):
-          expected_type = type(None)
+	  expected_type = type(None)
 
-          def __set__(self, instance, value):
-              if not isinstance(value, self.expected_type):
-                  raise TypeError('expected ' + str(self.expected_type))
-              super().__set__(instance, value)
+	  def __set__(self, instance, value):
+	      if not isinstance(value, self.expected_type):
+		  raise TypeError('expected ' + str(self.expected_type))
+	      super().__set__(instance, value)
 
 
       # Descriptor for enforcing values
       class Unsigned(Descriptor):
-          def __set__(self, instance, value):
-              if value < 0:
-                  raise ValueError('Expected >= 0')
-              super().__set__(instance, value)
+	  def __set__(self, instance, value):
+	      if value < 0:
+		  raise ValueError('Expected >= 0')
+	      super().__set__(instance, value)
 
 
       class Integer(Typed):
-          expected_type = int
+	  expected_type = int
 
 
       class UnsignedInteger(Integer, Unsigned):
-          pass
+	  pass
     #+END_SRC
 
 **** Simplify the Specification by Class Decorator
      #+BEGIN_SRC python
        # Class decorator to apply constraints
        def check_attributes(**kwargs):
-           def decorate(cls):
-               for key, value in kwargs.items():
-                   if isinstance(value, Descriptor):
-                       value.name = key
-                       setattr(cls, key, value)
-                   else:
-                       setattr(cls, key, value(key))
-               return cls
-           return decorate
+	   def decorate(cls):
+	       for key, value in kwargs.items():
+		   if isinstance(value, Descriptor):
+		       value.name = key
+		       setattr(cls, key, value)
+		   else:
+		       setattr(cls, key, value(key))
+	       return cls
+	   return decorate
 
        # Example
        @check_attributes(name=SizedString(size=8),
-                         shares=UnsignedInteger,
-                         price=UnsignedFloat)
+			 shares=UnsignedInteger,
+			 price=UnsignedFloat)
        class Stock:
-           def __init__(self, name, shares, price):
-               self.name = name
-               self.shares = shares
-               self.price = price
+	   def __init__(self, name, shares, price):
+	       self.name = name
+	       self.shares = shares
+	       self.price = price
      #+END_SRC
 
 **** Simplify the Specification by Metaclass
      #+BEGIN_SRC python
        # A metaclass that applies checking
        class checkedmeta(type):
-           def __new__(cls, clsname, bases, methods):
-               # Attach attribute names to the descriptors
-               for key, value in methods.items():
-                   if isinstance(value, Descriptor):
-                       value.name = key
-                   return type.__new__(cls, clsname, bases, methods)
+	   def __new__(cls, clsname, bases, methods):
+	       # Attach attribute names to the descriptors
+	       for key, value in methods.items():
+		   if isinstance(value, Descriptor):
+		       value.name = key
+		   return type.__new__(cls, clsname, bases, methods)
 
 
        # Example
        class Stock(metaclass=checkedmeta):
-           name = SizedString(size=8)
-           shares = UnsignedInteger() # no need to give a name
-           price = UnsignedFloat()
+	   name = SizedString(size=8)
+	   shares = UnsignedInteger() # no need to give a name
+	   price = UnsignedFloat()
 
-           def __init__(self, name, shares, price):
-               self.name = name
-               self.shares = shares
-               self.price = price
+	   def __init__(self, name, shares, price):
+	       self.name = name
+	       self.shares = shares
+	       self.price = price
      #+END_SRC
 
 **** Decorator Version(Preferred Approach)
      #+BEGIN_SRC python
        # Base class. Uses a descriptor to set a value
        class Descriptor:
-           def __init__(self, name=None, **opts):
-               self.name = name
-               for key, value in opts.items():
-                   setattr(self, key, value)
+	   def __init__(self, name=None, **opts):
+	       self.name = name
+	       for key, value in opts.items():
+		   setattr(self, key, value)
 
-           def __set__(self, instance, value):
-               instance.__dict__[self.name] = value
+	   def __set__(self, instance, value):
+	       instance.__dict__[self.name] = value
 
 
        # Decorator for applying type checking
        def Typed(expected_type, cls=None):
-           if cls is None:
-               return lambda cls: Typed(expected_type, cls)
+	   if cls is None:
+	       return lambda cls: Typed(expected_type, cls)
 
-           super_set = cls.__set__
+	   super_set = cls.__set__
 
-           def __set__(self, instance, value):
-               if not isinstance(value, expected_type):
-                   raise TypeError('expected ' + str(expected_type))
-               super_set(self, instance, value)
+	   def __set__(self, instance, value):
+	       if not isinstance(value, expected_type):
+		   raise TypeError('expected ' + str(expected_type))
+	       super_set(self, instance, value)
 
-           cls.__set__ = __set__
-           return cls
+	   cls.__set__ = __set__
+	   return cls
 
 
        @Typed(int)
        class Integer(Descriptor):
-           pass
+	   pass
      #+END_SRC
 
 ** Simplifying Initialization
    #+BEGIN_SRC python
      class Structure:
-         # Class variable that specifies expected fields
-         _fields = []
+	 # Class variable that specifies expected fields
+	 _fields = []
 
-         def __init__(self, *args):
-             if len(args) != len(self._fields):
-                 raise TypeError('Expected {} arguments'.format(len(self._fields)))
+	 def __init__(self, *args):
+	     if len(args) != len(self._fields):
+		 raise TypeError('Expected {} arguments'.format(len(self._fields)))
 
-             # Set the arguments
-             for name, value in zip(self._fields, args):
-                 setattr(self, name, value)
+	     # Set the arguments
+	     for name, value in zip(self._fields, args):
+		 setattr(self, name, value)
 
 
      class Stock(Structure):
-         _fields = ['name', 'shares', 'price']
+	 _fields = ['name', 'shares', 'price']
    #+END_SRC
    - Downside: documentation and help features of IDEs. It can be solved by attaching or enforcing a type signature
 
@@ -1269,38 +1269,38 @@ def list_transaction(orig_list):
 
 
       class Node:
-          pass
+	  pass
 
 
       class NodeVisitor:
-          def visit(self, node):
-              stack = [node]
-              last_result = None
-              while stack:
-                  try:
-                      last = stack[-1]
-                      if isinstance(last, types.GeneratorType):
-                          stack.append(last.send(last_result))
-                          last_result = None
-                      elif isinstance(last, Node):
-                          stack.append(self._visit(stack.pop()))
-                      else:
-                          last_result = stack.pop()
-                  except StopIteration:
-                      stack.pop()
-              return last_result
+	  def visit(self, node):
+	      stack = [node]
+	      last_result = None
+	      while stack:
+		  try:
+		      last = stack[-1]
+		      if isinstance(last, types.GeneratorType):
+			  stack.append(last.send(last_result))
+			  last_result = None
+		      elif isinstance(last, Node):
+			  stack.append(self._visit(stack.pop()))
+		      else:
+			  last_result = stack.pop()
+		  except StopIteration:
+		      stack.pop()
+	      return last_result
 
 
       def _visit(self, node):
-          methname = 'visit_' + type(node).__name__
-          meth = getattr(self, methname, None)
-          if meth is None:
-              meth = self.generic_visit
-          return meth(node)
+	  methname = 'visit_' + type(node).__name__
+	  meth = getattr(self, methname, None)
+	  if meth is None:
+	      meth = self.generic_visit
+	  return meth(node)
 
 
       def generic_visit(self, node):
-          raise RuntimeError('No {} method'.format('visit_' + type(node).__name__))
+	  raise RuntimeError('No {} method'.format('visit_' + type(node).__name__))
     #+END_SRC
 
 ** Comparison
@@ -1321,10 +1321,10 @@ def list_transaction(orig_list):
 ** Decorator with get/set
    #+BEGIN_SRC python
      def attach_wrapper(obj, func=None):
-         if func is None:
-             return partial(attach_wrapper, obj)
-         setattr(obj, func.__name__, func)
-         return func
+	 if func is None:
+	     return partial(attach_wrapper, obj)
+	 setattr(obj, func.__name__, func)
+	 return func
    #+END_SRC
 
 ** Decorator with Optional Arguments
@@ -1335,18 +1335,18 @@ def list_transaction(orig_list):
 
 
      def logged(func=None, *, level=logging.DEBUG, name=None, message=None):
-         if func is None:
-             return partial(logged, level=level, name=name, message=message)
-         logname = name if name else func.__module__
-         log = logging.getLogger(logname)
-         logmsg = message if message else func.__name__
+	 if func is None:
+	     return partial(logged, level=level, name=name, message=message)
+	 logname = name if name else func.__module__
+	 log = logging.getLogger(logname)
+	 logmsg = message if message else func.__name__
 
-         @wraps(func)
-         def wrapper(*args, **kwargs):
-             log.log(level, logmsg)
-             return func(*args, **kwargs)
+	 @wraps(func)
+	 def wrapper(*args, **kwargs):
+	     log.log(level, logmsg)
+	     return func(*args, **kwargs)
 
-         return wrapper
+	 return wrapper
    #+END_SRC
 
 ** Type Checking Decorator
@@ -1356,31 +1356,31 @@ def list_transaction(orig_list):
 
 
      def typeassert(*ty_args, **ty_kwargs):
-         def decorate(func):
-             # If in optimized mode, disable type checking
-             if not __debug__:
-                 return func
-             # Map function argument names to supplied types
-             sig = signature(func)
-             bound_types = sig.bind_partial(*ty_args, **ty_kwargs).arguments
+	 def decorate(func):
+	     # If in optimized mode, disable type checking
+	     if not __debug__:
+		 return func
+	     # Map function argument names to supplied types
+	     sig = signature(func)
+	     bound_types = sig.bind_partial(*ty_args, **ty_kwargs).arguments
 
-             @wraps(func)
-             def wrapper(*args, **kwargs):
-                 bound_values = sig.bind(*args, **kwargs)
-                 # Enforce type assertions across supplied arguments
-                 for name, value in bound_values.arguments.items():
-                     if name in bound_types:
-                         if not isinstance(value, bound_types[name]):
-                             raise TypeError('Argument {} must be {}'.format(
-                                 name, bound_types[name]))
-                 return func(*args, **kwargs)
-             return wrapper
-         return decorate
+	     @wraps(func)
+	     def wrapper(*args, **kwargs):
+		 bound_values = sig.bind(*args, **kwargs)
+		 # Enforce type assertions across supplied arguments
+		 for name, value in bound_values.arguments.items():
+		     if name in bound_types:
+			 if not isinstance(value, bound_types[name]):
+			     raise TypeError('Argument {} must be {}'.format(
+				 name, bound_types[name]))
+		 return func(*args, **kwargs)
+	     return wrapper
+	 return decorate
 
 
      @typeassert(int, z=int)
      def add(x, y, z=42):
-         return x + y + z
+	 return x + y + z
    #+END_SRC
 
 ** Decorator as Functional Class
@@ -1390,24 +1390,24 @@ def list_transaction(orig_list):
 
 
      class Profiled:
-         def __init__(self, func):
-             wraps(func)(self)
-             self.ncalls = 0
+	 def __init__(self, func):
+	     wraps(func)(self)
+	     self.ncalls = 0
 
-         def __call__(self, *args, **kwargs):
-             self.ncalls += 1
-             return self.__wrapped__(*args, **kwargs)
+	 def __call__(self, *args, **kwargs):
+	     self.ncalls += 1
+	     return self.__wrapped__(*args, **kwargs)
 
-         def __get__(self, instance, cls):
-             if instance is None:
-                 return self
-             else:
-                 return types.MethodType(self, instance)
+	 def __get__(self, instance, cls):
+	     if instance is None:
+		 return self
+	     else:
+		 return types.MethodType(self, instance)
 
 
      @Profiled
      def add(x, y):
-         return x + y
+	 return x + y
 
 
      add(4, 5)
@@ -1421,12 +1421,12 @@ def list_transaction(orig_list):
 ** Using Decorators to Patch Class Definitions
    #+BEGIN_SRC python
      def patch(cls):
-         orig_method = cls.method
+	 orig_method = cls.method
 
-         def new_method(self):
-             return orig_method(self)
+	 def new_method(self):
+	     return orig_method(self)
 
-         cls.method = new_method
+	 cls.method = new_method
    #+END_SRC
 ** Enforcing an Argument Signature on *args and **kwargs
 *** Creating a Function Signature
@@ -1436,36 +1436,36 @@ def list_transaction(orig_list):
       # Make a signature for a func(x, y=42, *, z=None)
 
       parms = [
-          Parameter('x', Parameter.POSITIONAL_OR_KEYWORD),
-          Parameter('y', Parameter.POSITIONAL_OR_KEYWORD, default=42),
-          Parameter('z', Parameter.KEYWORD_ONLY, default=None)
+	  Parameter('x', Parameter.POSITIONAL_OR_KEYWORD),
+	  Parameter('y', Parameter.POSITIONAL_OR_KEYWORD, default=42),
+	  Parameter('z', Parameter.KEYWORD_ONLY, default=None)
       ]
       sig = Signature(parms)
       print(sig)
 
       def func(*args, **kwargs):
-          bound_values = sig.bind(*args, **kwargs)
+	  bound_values = sig.bind(*args, **kwargs)
     #+END_SRC
 
 *** *Enforcing Function Signatures*
     #+BEGIN_SRC python
       from inspect import Signature, Parameter
       def make_sig(*names):
-          parms = [Parameter(name, Parameter.POSITIONAL_OR_KEYWORD)
-                   for name in names]
-          return Signature(parms)
+	  parms = [Parameter(name, Parameter.POSITIONAL_OR_KEYWORD)
+		   for name in names]
+	  return Signature(parms)
 
       class Structure:
-          __signature__ = make_sig() # inspect.signature will lookup __signature__
-          def __init__(self, *args, **kwargs):
-              bound_values = self.__signature__.bind(*args, **kwargs)
-              for name, value in bound_values.arguments.items():
-                  setattr(self, name, value)
+	  __signature__ = make_sig() # inspect.signature will lookup __signature__
+	  def __init__(self, *args, **kwargs):
+	      bound_values = self.__signature__.bind(*args, **kwargs)
+	      for name, value in bound_values.arguments.items():
+		  setattr(self, name, value)
 
       class Stock(Structure):
-          __signature__ = make_sig('name', 'shares', 'price')
-          def __init__(self, *args, **kwargs):
-              super().__init__(*args, **kwargs)
+	  __signature__ = make_sig('name', 'shares', 'price')
+	  def __init__(self, *args, **kwargs):
+	      super().__init__(*args, **kwargs)
     #+END_SRC
 
 *** Metaclass Approach
@@ -1474,25 +1474,25 @@ def list_transaction(orig_list):
 
 
       def make_sig(*names):
-          parms = [
-              Parameter(name, Parameter.POSITIONAL_OR_KEYWORD) for name in names
-          ]
-          return Signature(parms)
+	  parms = [
+	      Parameter(name, Parameter.POSITIONAL_OR_KEYWORD) for name in names
+	  ]
+	  return Signature(parms)
 
 
       class StructureMeta(type):
-          def __new__(cls, clsname, bases, clsdict):
-              clsdict['__signature__'] = make_sig(*clsdict.get('_fields', []))
-              return super().__new__(cls, clsname, bases, clsdict)
+	  def __new__(cls, clsname, bases, clsdict):
+	      clsdict['__signature__'] = make_sig(*clsdict.get('_fields', []))
+	      return super().__new__(cls, clsname, bases, clsdict)
 
 
       class Structure(metaclass=StructureMeta):
-          fields = []
+	  fields = []
 
-          def __init__(self, *args, **kwargs):
-              bound_values = self.__signature__.bind(*args, **kwargs)
-              for name, value in bound_values.arguments.items():
-                  setattr(self, name, value)
+	  def __init__(self, *args, **kwargs):
+	      bound_values = self.__signature__.bind(*args, **kwargs)
+	      for name, value in bound_values.arguments.items():
+		  setattr(self, name, value)
     #+END_SRC
 ** Parsing and Analyzing Python Source
    - ~eval('2 + 3*4 + x')~
@@ -1500,16 +1500,16 @@ def list_transaction(orig_list):
    - ~exec('for i in range(10): print(i)')~
    #+BEGIN_SRC python
      def test1():
-         x = 0
-         exec('x += 1')
-         print(x) # => 0
+	 x = 0
+	 exec('x += 1')
+	 print(x) # => 0
 
      def test2():
-         x = 0
-         loc = locals()
-         exec('x += 1')
-         x = loc['x']
-         print(x) # => 1
+	 x = 0
+	 loc = locals()
+	 exec('x += 1')
+	 x = loc['x']
+	 print(x) # => 1
    #+END_SRC
 
 *** ~ast~
@@ -1533,22 +1533,22 @@ def list_transaction(orig_list):
      import operator
 
      class StructTupleMeta(type):
-         def __init__(cls, *args, **kwargs):
-             super().__init__(*args, **kwargs)
-             for n, name in enumerate(cls._fields):
-                 setattr(cls, name, property(operator.itemgetter(n)))
-                 # After f = itemgetter(2), the call f(r) returns r[2]
+	 def __init__(cls, *args, **kwargs):
+	     super().__init__(*args, **kwargs)
+	     for n, name in enumerate(cls._fields):
+		 setattr(cls, name, property(operator.itemgetter(n)))
+		 # After f = itemgetter(2), the call f(r) returns r[2]
 
      class StructTuple(tuple, metaclass=StructTupleMeta):
-         _fields = []
+	 _fields = []
 
-         def __new__(cls, *args):
-             if len(args) != len(cls._fields):
-                 raise ValueError('{} arguments required'.format(len(cls._fields)))
-             return super().__new__(cls, args)
+	 def __new__(cls, *args):
+	     if len(args) != len(cls._fields):
+		 raise ValueError('{} arguments required'.format(len(cls._fields)))
+	     return super().__new__(cls, args)
 
      class Stock(StructTuple):
-         _fields = ['name', 'shares', 'price']
+	 _fields = ['name', 'shares', 'price']
 
      s = Stock('ACME', 50, 91.1)
    #+END_SRC
@@ -1556,18 +1556,18 @@ def list_transaction(orig_list):
 ** Avoiding Repetitive Property
    #+BEGIN_SRC python
      def typed_property(name, expected_type):
-         storage_name = '_' + name
+	 storage_name = '_' + name
 
-         @property
-         def prop(self):
-             return getattr(self, storage_name)
+	 @property
+	 def prop(self):
+	     return getattr(self, storage_name)
 
-         @prop.setter
-         def prop(self, value):
-             if not isinstance(value, expected_type):
-                 raise TypeError('{} must be a {}'.format(name, expected_type))
-             setattr(self, storage_name, value)
-         return prop
+	 @prop.setter
+	 def prop(self, value):
+	     if not isinstance(value, expected_type):
+		 raise TypeError('{} must be a {}'.format(name, expected_type))
+	     setattr(self, storage_name, value)
+	 return prop
 
      from functools import partial
      String = partial(typed_property, expected_type=str)
@@ -1575,12 +1575,12 @@ def list_transaction(orig_list):
 
      # Example use
      class Person:
-         name = String('name')
-         age = Integer('age')
+	 name = String('name')
+	 age = Integer('age')
 
-         def __init__(self, name, age):
-             self.name = name
-             self.age = age
+	 def __init__(self, name, age):
+	     self.name = name
+	     self.age = age
    #+END_SRC
 
 ** Defining Context Manager the Easy Way
@@ -1590,18 +1590,18 @@ def list_transaction(orig_list):
 
      @contextmanager
      def timethis(label):
-         start = time.time()
-         try:
-             yield
-         finally:
-             end = time.time()
-             print('{}: {}'.format(label, end - start))
+	 start = time.time()
+	 try:
+	     yield
+	 finally:
+	     end = time.time()
+	     print('{}: {}'.format(label, end - start))
 
      # Example use
      with timethis('counting'):
-         n = 10000000
-         while n > 0:
-             n -= 1
+	 n = 10000000
+	 while n > 0:
+	     n -= 1
    #+END_SRC
    - all of the code prior to the yield executes as the ~__enter__()~ method of a context manager. All of the code after the ~yield~ executes as the ~__exit__()~ method
    - If there was an exception, it is *raised* at the ~yield~ statement.
@@ -1611,18 +1611,18 @@ def list_transaction(orig_list):
    When writing metaclasses, it is somewhat common to only define a ~__new__()~ or ~__init__()~ method, *but not both*.
    #+BEGIN_SRC python
      class MyMeta(type):
-         def __new__(self, clsname, bases, clsdict):
-             # self is a class object
-             # clsname is name of class being defined
-             # bases is tuple of base classes
-             # clsdict is class dictionary
-             return super().__new__(self, clsname, bases, clsdict)
+	 def __new__(self, clsname, bases, clsdict):
+	     # self is a class object
+	     # clsname is name of class being defined
+	     # bases is tuple of base classes
+	     # clsdict is class dictionary
+	     return super().__new__(self, clsname, bases, clsdict)
    #+END_SRC
    or
    #+BEGIN_SRC python
      class MyMeta(type):
-         def __init__(cls, clsname, bases, clsdict):
-             super().__init__(clsname, bases, clsdict)
+	 def __init__(cls, clsname, bases, clsdict):
+	     super().__init__(clsname, bases, clsdict)
    #+END_SRC
    - ~__prepare__~ :: is called first and used to *create the class namespace* prior to the body of any class definition being processed. Normally, this method simply returns a dictionary or other mapping object
    - ~__new__~  :: is invoked prior to class creation and is typically used when a metaclass wants to alter the class definition in some way
@@ -1631,29 +1631,29 @@ def list_transaction(orig_list):
 ** NoInstances
    #+BEGIN_SRC python
      class NoInstances(type):
-         def __call__(self, *args, **kwargs):
-             raise TypeError("Can't instantiate directly")
+	 def __call__(self, *args, **kwargs):
+	     raise TypeError("Can't instantiate directly")
 
      # Example
      class Spam(metaclass=NoInstances):
-         @staticmethod
-         def grok(x):
-             print('Spam.grok')
+	 @staticmethod
+	 def grok(x):
+	     print('Spam.grok')
    #+END_SRC
 
 ** Singleton
    #+BEGIN_SRC python
      class Singleton(type):
-         def __init__(self, *args, **kwargs):
-             self.__instance = None
-             super().__init__(*args, **kwargs)
+	 def __init__(self, *args, **kwargs):
+	     self.__instance = None
+	     super().__init__(*args, **kwargs)
 
-         def __call__(self, *args, **kwargs):
-             if self.__instance is None:
-                 self.__instance = super().__call__(*args, **kwargs)
-                 return self.__instance
-             else:
-                 return self.__instance
+	 def __call__(self, *args, **kwargs):
+	     if self.__instance is None:
+		 self.__instance = super().__call__(*args, **kwargs)
+		 return self.__instance
+	     else:
+		 return self.__instance
    #+END_SRC
 
 ** Cached Instances
@@ -1661,65 +1661,65 @@ def list_transaction(orig_list):
      import weakref
 
      class Cached(type):
-         def __init__(self, *args, **kwargs):
-             super().__init__(*args, **kwargs)
-             self.__cache = weakref.WeakValueDictionary()
+	 def __init__(self, *args, **kwargs):
+	     super().__init__(*args, **kwargs)
+	     self.__cache = weakref.WeakValueDictionary()
 
-         def __call__(self, *args):
-             if args in self.__cache:
-                 return self.__cache[args]
-             else:
-                 obj = super().__call__(*args)
-                 self.__cache[args] = obj
-                 return obj
+	 def __call__(self, *args):
+	     if args in self.__cache:
+		 return self.__cache[args]
+	     else:
+		 obj = super().__call__(*args)
+		 self.__cache[args] = obj
+		 return obj
    #+END_SRC
 ** OrderedDict for Class Body
    This method is invoked immediately at the start of a class definition with the class name and base classes. It must then return a mapping object to use when processing the class body.
    #+BEGIN_SRC python
      # Metaclass that uses an OrderedDict for class body
      class OrderedMeta(type):
-         def __new__(cls, clsname, bases, clsdict):
-             d = dict(clsdict)
-             order = []
-             for name, value in clsdict.items():
-                 if isinstance(value, Typed):
-                     value._name = name
-                     order.append(name)
-             d['_order'] = order
-             return type.__new__(cls, clsname, bases, d)
+	 def __new__(cls, clsname, bases, clsdict):
+	     d = dict(clsdict)
+	     order = []
+	     for name, value in clsdict.items():
+		 if isinstance(value, Typed):
+		     value._name = name
+		     order.append(name)
+	     d['_order'] = order
+	     return type.__new__(cls, clsname, bases, d)
 
-         @classmethod
-         def __prepare__(cls, clsname, bases):
-             return OrderedDict()
+	 @classmethod
+	 def __prepare__(cls, clsname, bases):
+	     return OrderedDict()
    #+END_SRC
 
 ** Optional Arguments on Class Definitions
    #+BEGIN_SRC python
      class Spam(metaclass=MyMeta, debug=True, synchronize=True):
-         ...
+	 ...
    #+END_SRC
    To support such keyword arguments in a metaclass, make sure you define them on the
    ~__prepare__()~, ~__new__()~, and ~__init__()~ methods using keyword-only arguments
    #+BEGIN_SRC python
      class MyMeta(type):
-         # Optional
-         @classmethod
-         def __prepare__(cls, name, bases, *, debug=False, synchronize=False):
-             # Custom processing
-             ...
-             return super().__prepare__(name, bases)
+	 # Optional
+	 @classmethod
+	 def __prepare__(cls, name, bases, *, debug=False, synchronize=False):
+	     # Custom processing
+	     ...
+	     return super().__prepare__(name, bases)
 
-         # Required
-         def __new__(cls, name, bases, ns, *, debug=False, synchronize=False):
-             # Custom processing
-             ...
-             return super().__new__(cls, name, bases, ns)
+	 # Required
+	 def __new__(cls, name, bases, ns, *, debug=False, synchronize=False):
+	     # Custom processing
+	     ...
+	     return super().__new__(cls, name, bases, ns)
 
-         # Required
-         def __init__(self, name, bases, ns, *, debug=False, synchronize=False):
-             # Custom processing
-             ...
-             super().__init__(name, bases, ns)
+	 # Required
+	 def __init__(self, name, bases, ns, *, debug=False, synchronize=False):
+	     # Custom processing
+	     ...
+	     super().__init__(name, bases, ns)
    #+END_SRC
 
 * Packages and Modules
@@ -1727,8 +1727,8 @@ def list_transaction(orig_list):
    #+BEGIN_SRC python
      # __init__.py
      def A():
-         from .a import A
-         return A()
+	 from .a import A
+	 return A()
    #+END_SRC
 
 ** Organize Add-on Packages into a Common Package
@@ -1766,8 +1766,8 @@ def list_transaction(orig_list):
    WSGI: Web Server Gateway Interface. Same code for different web framework.
    #+BEGIN_SRC python
      def application(environ, start_response):
-         start_response('200 OK', [('Content-Type', 'text/html')])
-         return [b'<h1>Hello, web!</h1>']
+	 start_response('200 OK', [('Content-Type', 'text/html')])
+	 return [b'<h1>Hello, web!</h1>']
 
      from wsgiref.simple_server import make_server
      httpd = make_server('', 8000, application)
@@ -1784,32 +1784,32 @@ def list_transaction(orig_list):
 
 
       def notfound_404(environ, start_response):
-          start_response('404 Not Found', [('Content-type', 'text/plain')])
-          return [b'Not Found']
+	  start_response('404 Not Found', [('Content-type', 'text/plain')])
+	  return [b'Not Found']
 
 
       class PathDispatcher:
-          def __init__(self):
-              self.pathmap = {}
+	  def __init__(self):
+	      self.pathmap = {}
 
-          def __call__(self, environ, start_response):
-              path = environ['PATH_INFO']
+	  def __call__(self, environ, start_response):
+	      path = environ['PATH_INFO']
 
-              # extracts supplied query parameters from the request and puts them into a dictionary-like object
-              params = cgi.FieldStorage(environ['wsgi.input'], environ=environ)
-              method = environ['REQUEST_METHOD'].lower()
-              environ['params'] = {key: params.getvalue(key) for key in params}
-              handler = self.pathmap.get((method, path), notfound_404)
-              return handler(environ, start_response)
+	      # extracts supplied query parameters from the request and puts them into a dictionary-like object
+	      params = cgi.FieldStorage(environ['wsgi.input'], environ=environ)
+	      method = environ['REQUEST_METHOD'].lower()
+	      environ['params'] = {key: params.getvalue(key) for key in params}
+	      handler = self.pathmap.get((method, path), notfound_404)
+	      return handler(environ, start_response)
 
-          def register(self, method, path, function):
-              self.pathmap[method.lower(), path] = function
-              return function
+	  def register(self, method, path, function):
+	      self.pathmap[method.lower(), path] = function
+	      return function
 
 
       def hello(environ, start_response):
-          start_response('200 OK', [('Content-Type', 'text/html')])
-          return [b'<h1>Hello, web!</h1>']
+	  start_response('200 OK', [('Content-Type', 'text/html')])
+	  return [b'<h1>Hello, web!</h1>']
 
 
       from wsgiref.simple_server import make_server
@@ -1824,25 +1824,25 @@ def list_transaction(orig_list):
       from xmlrpc.server import SimpleXMLRPCServer
 
       class KeyValueServer:
-          _rpc_methods_ = ['get', 'set']
-          def __init__(self, address):
-              self._data = {}
-              self._serv = SimpleXMLRPCServer(address, allow_none=True)
-              for name in self._rpc_methods_:
-                  self._serv.register_function(getattr(self, name))
+	  _rpc_methods_ = ['get', 'set']
+	  def __init__(self, address):
+	      self._data = {}
+	      self._serv = SimpleXMLRPCServer(address, allow_none=True)
+	      for name in self._rpc_methods_:
+		  self._serv.register_function(getattr(self, name))
 
-          def get(self, name):
-              return self._data[name]
+	  def get(self, name):
+	      return self._data[name]
 
-          def set(self, name, value):
-              self._data[name] = value
+	  def set(self, name, value):
+	      self._data[name] = value
 
-          def serve_forever(self):
-              self._serv.serve_forever()
+	  def serve_forever(self):
+	      self._serv.serve_forever()
 
       if __name__ == '__main__':
-          kvserv = KeyValueServer(('', 15000))
-          kvserv.serve_forever()
+	  kvserv = KeyValueServer(('', 15000))
+	  kvserv.serve_forever()
     #+END_SRC
     - client
     #+BEGIN_SRC python
@@ -1861,27 +1861,27 @@ def list_transaction(orig_list):
      import os
 
      def client_authenticate(connection, secret_key):
-         '''
-         Authenticate client to a remote service.
-         connection represents a network connection.
-         secret_key is a key known only to both client/server.
-         '''
-         message = connection.recv(32)
-         hash = hmac.new(secret_key, message)
-         digest = hash.digest()
-         connection.send(digest)
+	 '''
+	 Authenticate client to a remote service.
+	 connection represents a network connection.
+	 secret_key is a key known only to both client/server.
+	 '''
+	 message = connection.recv(32)
+	 hash = hmac.new(secret_key, message)
+	 digest = hash.digest()
+	 connection.send(digest)
 
 
      def server_authenticate(connection, secret_key):
-         '''
-         Request client authentication.
-         '''
-         message = os.urandom(32)
-         connection.send(message)
-         hash = hmac.new(secret_key, message)
-         digest = hash.digest()
-         response = connection.recv(len(digest))
-         return hmac.compare_digest(digest, response)
+	 '''
+	 Request client authentication.
+	 '''
+	 message = os.urandom(32)
+	 connection.send(message)
+	 hash = hmac.new(secret_key, message)
+	 digest = hash.digest()
+	 response = connection.recv(len(digest))
+	 return hmac.compare_digest(digest, response)
    #+END_SRC
 
 ** SSL Wrapper
@@ -1890,7 +1890,7 @@ def list_transaction(orig_list):
      KEYFILE = 'server_key.pem'  # Private key of the server
      CERTFILE = 'server_cert.pem'  # Server certificate (given to client)
      s_ssl = ssl.wrap_socket(
-         s, keyfile=KEYFILE, certfile=CERTFILE, server_side=True)
+	 s, keyfile=KEYFILE, certfile=CERTFILE, server_side=True)
    #+END_SRC
 
 ** select
@@ -1898,31 +1898,31 @@ def list_transaction(orig_list):
      import select
 
      def event_loop(handlers):
-         while True:
-             wants_recv = [h for h in handlers if h.wants_to_receive()]
-             wants_send = [h for h in handlers if h.wants_to_send()]
-             can_recv, can_send, _ = select.select(wants_recv, wants_send, [])
-             for h in can_recv:
-                 h.handle_receive()
-             for h in can_send:
-                 h.handle_send()
+	 while True:
+	     wants_recv = [h for h in handlers if h.wants_to_receive()]
+	     wants_send = [h for h in handlers if h.wants_to_send()]
+	     can_recv, can_send, _ = select.select(wants_recv, wants_send, [])
+	     for h in can_recv:
+		 h.handle_receive()
+	     for h in can_send:
+		 h.handle_send()
    #+END_SRC
 
 ** Sending Large Arrays
    #+BEGIN_SRC python
      # zero copy with memoryview
      def send_from(arr, dest):
-         view = memoryview(arr).cast('B')
-         while len(view):
-             nsent = dest.send(view)
-             view = view[nsent:]
+	 view = memoryview(arr).cast('B')
+	 while len(view):
+	     nsent = dest.send(view)
+	     view = view[nsent:]
 
 
      def recv_into(arr, source):
-         view = memoryview(arr).cast('B')
-         while len(view):
-             nrecv = source.recv_into(view)
-             view = view[nrecv:]
+	 view = memoryview(arr).cast('B')
+	 while len(view):
+	     nrecv = source.recv_into(view)
+	     view = view[nrecv:]
    #+END_SRC
 * Concurrency
 ** Threading
@@ -1955,26 +1955,26 @@ def list_transaction(orig_list):
 
       @contextmanager
       def acquire(*locks):
-          # Sort locks by object identifier
-          locks = sorted(locks, key=lambda x: id(x))
+	  # Sort locks by object identifier
+	  locks = sorted(locks, key=lambda x: id(x))
 
-          # Make sure lock order of previously acquired locks is not violated
-          acquired = getattr(_local, 'acquired', [])
-          if acquired and max(id(lock) for lock in acquired) >= id(locks[0]):
-              raise RuntimeError('Lock Order Violation')
+	  # Make sure lock order of previously acquired locks is not violated
+	  acquired = getattr(_local, 'acquired', [])
+	  if acquired and max(id(lock) for lock in acquired) >= id(locks[0]):
+	      raise RuntimeError('Lock Order Violation')
 
-          # Acquire all of the locks
-          acquired.extend(locks)
-          _local.acquired = acquired
-          try:
-              for lock in locks:
-                  lock.acquire()
-              yield
-          finally:
-              # Release locks in reverse order of acquisition
-              for lock in reversed(locks):
-                  lock.release()
-              del acquired[-len(locks):]
+	  # Acquire all of the locks
+	  acquired.extend(locks)
+	  _local.acquired = acquired
+	  try:
+	      for lock in locks:
+		  lock.acquire()
+	      yield
+	  finally:
+	      # Release locks in reverse order of acquisition
+	      for lock in reversed(locks):
+		  lock.release()
+	      del acquired[-len(locks):]
 
 
       import threading
@@ -1982,14 +1982,14 @@ def list_transaction(orig_list):
       y_lock = threading.Lock()
 
       def thread_1():
-          while True:
-              with acquire(x_lock, y_lock):
-                  print('Thread-1')
+	  while True:
+	      with acquire(x_lock, y_lock):
+		  print('Thread-1')
 
       def thread_2():
-          while True:
-              with acquire(y_lock, x_lock):
-                  print('Thread-2')
+	  while True:
+	      with acquire(y_lock, x_lock):
+		  print('Thread-2')
     #+END_SRC
 
 ** Message Queue
@@ -2003,60 +2003,60 @@ def list_transaction(orig_list):
 
       # Sentinel used for shutdown
       class ActorExit(Exception):
-          pass
+	  pass
 
 
       class Actor:
-          def __init__(self):
-              self._mailbox = Queue()
+	  def __init__(self):
+	      self._mailbox = Queue()
 
-          def send(self, msg):
-              '''
-              Send a message to the actor
-              '''
-              self._mailbox.put(msg)
+	  def send(self, msg):
+	      '''
+	      Send a message to the actor
+	      '''
+	      self._mailbox.put(msg)
 
-          def recv(self):
-              '''
-              Receive an incoming message
-              '''
-              msg = self._mailbox.get()
-              if msg is ActorExit:
-                  raise ActorExit()
-              return msg
+	  def recv(self):
+	      '''
+	      Receive an incoming message
+	      '''
+	      msg = self._mailbox.get()
+	      if msg is ActorExit:
+		  raise ActorExit()
+	      return msg
 
-          def close(self):
-              '''
-              Close the actor, thus shutting it down
-              '''
-              self.send(ActorExit)
+	  def close(self):
+	      '''
+	      Close the actor, thus shutting it down
+	      '''
+	      self.send(ActorExit)
 
-          def start(self):
-              '''
-              Start concurrent execution
-              '''
-              self._terminated = Event()
-              t = Thread(target=self._bootstrap)
-              t.daemon = True
-              t.start()
+	  def start(self):
+	      '''
+	      Start concurrent execution
+	      '''
+	      self._terminated = Event()
+	      t = Thread(target=self._bootstrap)
+	      t.daemon = True
+	      t.start()
 
-          def _bootstrap(self):
-              try:
-                  self.run()
-              except ActorExit:
-                  pass
-              finally:
-                  self._terminated.set()
+	  def _bootstrap(self):
+	      try:
+		  self.run()
+	      except ActorExit:
+		  pass
+	      finally:
+		  self._terminated.set()
 
-          def join(self):
-              self._terminated.wait()
+	  def join(self):
+	      self._terminated.wait()
 
-          def run(self):
-              '''
-              Run method to be implemented by the user
-              '''
-              while True:
-                  msg = self.recv()
+	  def run(self):
+	      '''
+	      Run method to be implemented by the user
+	      '''
+	      while True:
+		  msg = self.recv()
     #+END_SRC
 
 * System Utilities
@@ -2079,19 +2079,19 @@ def list_transaction(orig_list):
 
 
      def time_exceeded(signo, frame):
-         print("Time's up!")
-         raise SystemExit(1)
+	 print("Time's up!")
+	 raise SystemExit(1)
 
 
      def set_max_runtime(seconds):
-         # Install the signal handler and set a resource limit
-         soft, hard = resource.getrlimit(resource.RLIMIT_CPU)
-         resource.setrlimit(resource.RLIMIT_CPU, (seconds, hard))
-         signal.signal(signal.SIGXCPU, time_exceeded)
+	 # Install the signal handler and set a resource limit
+	 soft, hard = resource.getrlimit(resource.RLIMIT_CPU)
+	 resource.setrlimit(resource.RLIMIT_CPU, (seconds, hard))
+	 signal.signal(signal.SIGXCPU, time_exceeded)
 
      def limit_memory(maxsize):
-         soft, hard = resource.getrlimit(resource.RLIMIT_AS)
-         resource.setrlimit(resource.RLIMIT_AS, (maxsize, hard))
+	 soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+	 resource.setrlimit(resource.RLIMIT_AS, (maxsize, hard))
    #+END_SRC
 
 ** webbrowser
@@ -2106,7 +2106,7 @@ def list_transaction(orig_list):
 ** Assert Regex
    #+BEGIN_SRC python
      with self.assertRaisesRegex(ValueError, 'error*'):
-         ...
+	 ...
    #+END_SRC
 
 ** Raise from another exception
@@ -2132,14 +2132,14 @@ def list_transaction(orig_list):
      from functools import wraps
 
      def timethis(func):
-         @wraps(func)
-         def wrapper(*args, **kwargs):
-             start = time.perf_counter()
-             r = func(*args, **kwargs)
-             end = time.perf_counter()
-             print('{}.{} : {}'.format(func.__module__, func.__name__, end - start))
-             return r
-         return wrapper
+	 @wraps(func)
+	 def wrapper(*args, **kwargs):
+	     start = time.perf_counter()
+	     r = func(*args, **kwargs)
+	     end = time.perf_counter()
+	     print('{}.{} : {}'.format(func.__module__, func.__name__, end - start))
+	     return r
+	 return wrapper
    #+END_SRC
 
 *** Contextmanager Version
@@ -2149,12 +2149,12 @@ def list_transaction(orig_list):
 
       @contextmanager
       def timeblock(label):
-          start = time.perf_counter()
-          try:
-              yield
-          finally:
-              end = time.perf_counter()
-              print('{} : {}'.format(label, end - start))
+	  start = time.perf_counter()
+	  try:
+	      yield
+	  finally:
+	      end = time.perf_counter()
+	      print('{} : {}'.format(label, end - start))
     #+END_SRC
 
 *** ~time.process_time()~
