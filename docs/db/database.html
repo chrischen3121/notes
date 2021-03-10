@@ -1,0 +1,2678 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SQL Database</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="database, sql" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+	displayAlign: "left",
+	displayIndent: "2em",
+
+	"HTML-CSS": { scale: 100,
+			linebreaks: { automatic: "false" },
+			webFont: "TeX"
+		       },
+	SVG: {scale: 100,
+	      linebreaks: { automatic: "false" },
+	      font: "TeX"},
+	NativeMML: {scale: 100},
+	TeX: { equationNumbers: {autoNumber: "AMS"},
+	       MultLineWidth: "85%",
+	       TagSide: "left",
+	       TagIndent: ".8em"
+	     }
+});
+</script>
+<script type="text/javascript"
+	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">SQL Database</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org10bd87e">1. Rational Algebra</a>
+<ul>
+<li><a href="#orgee28139">1.1. Basic</a></li>
+<li><a href="#org607c2da">1.2. Addition</a></li>
+<li><a href="#org3d04432">1.3. Modification</a></li>
+</ul>
+</li>
+<li><a href="#orgd2a7d45">2. SQL Language</a>
+<ul>
+<li><a href="#org9d4f84e">2.1. Command</a></li>
+<li><a href="#org8e9cf45">2.2. Datatype</a></li>
+<li><a href="#org8e5c152">2.3. Join</a></li>
+<li><a href="#org0bb215d">2.4. Subquery</a></li>
+</ul>
+</li>
+<li><a href="#org5c960ca">3. Design</a>
+<ul>
+<li><a href="#orge0c8c2e">3.1. Steps</a></li>
+<li><a href="#orgae8e8ff">3.2. Schema Pattern</a></li>
+<li><a href="#org590c850">3.3. Functional Dependency</a></li>
+<li><a href="#org11c279e">3.4. Multivalued Dependency</a></li>
+</ul>
+</li>
+<li><a href="#org639f097">4. Normalization</a>
+<ul>
+<li><a href="#orgd602bd9">4.1. 1-NF</a></li>
+<li><a href="#orge9a2c5a">4.2. 2-NF</a></li>
+<li><a href="#org1e16d11">4.3. 3-NF</a></li>
+<li><a href="#orgf2797b3">4.4. Boyce-Codd Normal Form(BCNF, 3.5-NF)</a></li>
+<li><a href="#orgc44aeb2">4.5. 4-NF</a></li>
+</ul>
+</li>
+<li><a href="#org5b116ad">5. Subclasses</a>
+<ul>
+<li><a href="#org5097a5b">5.1. Complete vs. Incomplete(Partial)</a></li>
+<li><a href="#org2bb66a6">5.2. Overlapping vs. Disjoint(Exclusive)</a></li>
+<li><a href="#orgf3a0567">5.3. How to design?</a></li>
+</ul>
+</li>
+<li><a href="#org2b5ff86">6. Constraints</a>
+<ul>
+<li><a href="#orgc1673c8">6.1. Motivation</a></li>
+<li><a href="#orgcd3f318">6.2. Syntax</a></li>
+<li><a href="#org46a546a">6.3. Foreign Key</a></li>
+</ul>
+</li>
+<li><a href="#orgca1ef2f">7. Triggers</a>
+<ul>
+<li><a href="#orgb5c1ea2">7.1. Motivation</a></li>
+<li><a href="#org879920b">7.2. Usage</a></li>
+</ul>
+</li>
+<li><a href="#org63bf2eb">8. Indexes</a>
+<ul>
+<li><a href="#org12da40c">8.1. Usage</a></li>
+<li><a href="#orgfde5031">8.2. Underlying Data Structures</a></li>
+<li><a href="#org5a42202">8.3. SQL Syntax</a></li>
+<li><a href="#org78f3152">8.4. Downsides</a></li>
+<li><a href="#org15121ee">8.5. Upsides</a></li>
+<li><a href="#org4cd3ada">8.6. Physical Design Advisors</a></li>
+</ul>
+</li>
+<li><a href="#orgaa1e66d">9. Transaction</a>
+<ul>
+<li><a href="#org2449964">9.1. Motivation</a></li>
+<li><a href="#org0996653">9.2. Properties</a></li>
+<li><a href="#orgd9fbc38">9.3. Isolation levels</a></li>
+</ul>
+</li>
+<li><a href="#org6ce4caa">10. SQLAlchemy</a>
+<ul>
+<li><a href="#org999814c">10.1. Core</a></li>
+<li><a href="#orgd53a22f">10.2. ORM</a></li>
+<li><a href="#orgdba6798">10.3. Alembic</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org10bd87e" class="outline-2">
+<h2 id="org10bd87e"><span class="section-number-2">1</span> Rational Algebra</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgee28139" class="outline-3">
+<h3 id="orgee28139"><span class="section-number-3">1.1</span> Basic</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>select \(\sigma_{P}(r)\)</li>
+<li>project \(\Pi_{S}(r)\)</li>
+<li>rename \(\rho_{x(A_1,A_2,...,A_n)}(r)\)</li>
+<li>union \(r\cup s\)</li>
+<li>difference \(r-s\)</li>
+<li>cartesian-product \(r\times s\)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org607c2da" class="outline-3">
+<h3 id="org607c2da"><span class="section-number-3">1.2</span> Addition</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org90b9c8c" class="outline-4">
+<h4 id="org90b9c8c"><span class="section-number-4">1.2.1</span> intersection</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+\[r\cap s = r-(r-s)\]
+</p>
+</div>
+</div>
+<div id="outline-container-orgfbce504" class="outline-4">
+<h4 id="orgfbce504"><span class="section-number-4">1.2.2</span> natual join</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+\[r\Join s = \Pi_{R\cup S}(\sigma_{r.A_1=s.A_1 \land ...}(r\times s))\]
+</p>
+</div>
+</div>
+<div id="outline-container-orgaa00de2" class="outline-4">
+<h4 id="orgaa00de2"><span class="section-number-4">1.2.3</span> theta join</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+\[r\Join_{\theta}s = \sigma_{\theta}(r\times s)\]
+</p>
+</div>
+</div>
+<div id="outline-container-org20c38a1" class="outline-4">
+<h4 id="org20c38a1"><span class="section-number-4">1.2.4</span> devision</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+\[temp1 \leftarrow \Pi_{R-S}(r)\]
+\[temp2 \leftarrow \Pi_{R-S}((temp1\times s) - \Pi_{R-S,S}(r))\]
+\[result = temp1 - temp2\]
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org5846c00"></a>Example:<br />
+<div class="outline-text-5" id="text-org5846c00">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> R</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Student</th>
+<th scope="col" class="org-left">Task</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Peter</td>
+<td class="org-left">Database1</td>
+</tr>
+
+<tr>
+<td class="org-left">Peter</td>
+<td class="org-left">Database2</td>
+</tr>
+
+<tr>
+<td class="org-left">Peter</td>
+<td class="org-left">Compiler1</td>
+</tr>
+
+<tr>
+<td class="org-left">Sara</td>
+<td class="org-left">Database1</td>
+</tr>
+
+<tr>
+<td class="org-left">Sara</td>
+<td class="org-left">Database2</td>
+</tr>
+
+<tr>
+<td class="org-left">Mary</td>
+<td class="org-left">Database1</td>
+</tr>
+
+<tr>
+<td class="org-left">Mary</td>
+<td class="org-left">Comipler1</td>
+</tr>
+</tbody>
+</table>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> S</caption>
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Task</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Database1</td>
+</tr>
+
+<tr>
+<td class="org-left">Database2</td>
+</tr>
+</tbody>
+</table>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 3:</span> R&divide; S</caption>
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Student</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Peter</td>
+</tr>
+
+<tr>
+<td class="org-left">Sara</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org83a5a3a" class="outline-4">
+<h4 id="org83a5a3a"><span class="section-number-4">1.2.5</span> aggregation</h4>
+<div class="outline-text-4" id="text-1-2-5">
+<p>
+\[group_{column}\zeta_{aggre\_func(column)}(r)\]
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org3d04432" class="outline-3">
+<h3 id="org3d04432"><span class="section-number-3">1.3</span> Modification</h3>
+<div class="outline-text-3" id="text-1-3">
+<ul class="org-ul">
+<li>delete \(r\leftarrow r - E\)</li>
+<li>insert \(r\leftarrow r\cup E\)</li>
+<li>update \(r\leftarrow \Pi_{F_1,F_2,...,F_n}(r)\)</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd2a7d45" class="outline-2">
+<h2 id="orgd2a7d45"><span class="section-number-2">2</span> SQL Language</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org9d4f84e" class="outline-3">
+<h3 id="org9d4f84e"><span class="section-number-3">2.1</span> Command</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org9994bfd" class="outline-4">
+<h4 id="org9994bfd"><span class="section-number-4">2.1.1</span> CREATE &amp; DROP &amp; ALTER</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> DATABASE dbname;
+USE DATABASE dbname;
+<span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #3a81c3; font-weight: bold;">table_name</span> <span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">column_name</span> <span style="color: #3a81c3; font-weight: bold;">TYPE</span> Constrains, ... <span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">DESC</span> <span style="color: #3a81c3; font-weight: bold;">table_name</span>;
+<span style="color: #3a81c3; font-weight: bold;">DROP</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span>;
+
+<span style="color: #3a81c3; font-weight: bold;">ALTER</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #3a81c3; font-weight: bold;">table_name</span>
+<span style="color: #3a81c3; font-weight: bold;">ADD</span> <span style="color: #3a81c3; font-weight: bold;">COLUMN</span> columnName ...
+<span style="color: #3a81c3; font-weight: bold;">ADD</span> <span style="color: #3a81c3; font-weight: bold;">PRIMARY</span> <span style="color: #3a81c3; font-weight: bold;">KEY</span> <span style="color: #3a81c3;">(</span>columnName<span style="color: #3a81c3;">)</span>
+RENAME <span style="color: #3a81c3; font-weight: bold;">TO</span> tableNewName
+CHANGE <span style="color: #3a81c3; font-weight: bold;">COLUMN</span> columnOldName columnNewName <span style="color: #3a81c3; font-weight: bold;">TYPE</span> ...
+<span style="color: #3a81c3; font-weight: bold;">MODIFY</span> <span style="color: #3a81c3; font-weight: bold;">COLUMN</span> columnName <span style="color: #3a81c3; font-weight: bold;">TYPE</span>...
+<span style="color: #3a81c3; font-weight: bold;">DROP</span> <span style="color: #3a81c3; font-weight: bold;">COLUMN</span> columnName
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org63c5098" class="outline-4">
+<h4 id="org63c5098"><span class="section-number-4">2.1.2</span> INSERT &amp; UPDATE &amp; DELETE</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">INSERT</span> <span style="color: #3a81c3; font-weight: bold;">INTO</span> tableName <span style="color: #3a81c3;">[</span><span style="color: #6c3163;">(</span>columnName1, columnName2, ...<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span> <span style="color: #3a81c3; font-weight: bold;">VALUES</span> <span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'value1'</span>, <span style="color: #2d9574;">'value2'</span>, ...<span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">UPDATE</span> tableName <span style="color: #3a81c3; font-weight: bold;">SET</span> columnName1 = <span style="color: #2d9574;">'value1'</span>, columnName2 = <span style="color: #2d9574;">'value2'</span> <span style="color: #3a81c3; font-weight: bold;">WHERE</span> expr;
+<span style="color: #3a81c3; font-weight: bold;">DELETE</span> <span style="color: #3a81c3; font-weight: bold;">FROM</span> tableName <span style="color: #3a81c3; font-weight: bold;">WHERE</span> expr;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdaccc07" class="outline-4">
+<h4 id="orgdaccc07"><span class="section-number-4">2.1.3</span> NOT</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+When 'NOT' use with 'BETWEEN' and 'LIKE', 'NOT' must follow with 'WHERE' or 'AND/OR'.
+'NOT IN' is an exception. "IS NOT NULL" also.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org82c29a8" class="outline-4">
+<h4 id="org82c29a8"><span class="section-number-4">2.1.4</span> SHOW</h4>
+<div class="outline-text-4" id="text-2-1-4">
+<div class="org-src-container">
+<pre class="src src-sql">SHOW <span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> tableName;
+SHOW COLUMNS <span style="color: #3a81c3; font-weight: bold;">FROM</span> tableName;
+SHOW INDEX <span style="color: #3a81c3; font-weight: bold;">FROM</span> tableName;
+SHOW WARNINGS;
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">UPDATE</span> tableName <span style="color: #3a81c3; font-weight: bold;">SET</span> columnName =
+<span style="color: #3a81c3; font-weight: bold;">CASE</span>
+  <span style="color: #3a81c3; font-weight: bold;">WHEN</span> column_1 = somevalue1
+    <span style="color: #3a81c3; font-weight: bold;">THEN</span> newValue;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2b594d8" class="outline-4">
+<h4 id="org2b594d8"><span class="section-number-4">2.1.5</span> GROUP BY</h4>
+<div class="outline-text-4" id="text-2-1-5">
+<p>
+remove the duplicates
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SELECT</span> columnName1, columnName2 <span style="color: #3a81c3; font-weight: bold;">FROM</span> tableName <span style="color: #3a81c3; font-weight: bold;">GROUP</span> <span style="color: #3a81c3; font-weight: bold;">BY</span> columnName2
+</pre>
+</div>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgc466d0e"></a>SUM, AVG, MAX, MIN, COUNT<br />
+<div class="outline-text-5" id="text-orgc466d0e">
+<p>
+match with GROUP_BY
+</p>
+
+<p>
+E.g:SUM(columnName) &#x2026; GROUP BY columnName
+</p>
+</div>
+</li>
+
+<li><a id="org7bdda5f"></a>HAVING<br />
+<div class="outline-text-5" id="text-org7bdda5f">
+<p>
+The HAVING clause was added to SQL because the WHERE keyword could not be used with aggregate functions.
+E.g: HAVING count(columnName) &gt; 5
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org086efc1" class="outline-4">
+<h4 id="org086efc1"><span class="section-number-4">2.1.6</span> WITH</h4>
+<div class="outline-text-4" id="text-2-1-6">
+<p>
+Define temporary view
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">WITH</span> temp_view_name<span style="color: #3a81c3;">(</span>columnName...<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span>
+     <span style="color: #3a81c3; font-weight: bold;">select</span> <span style="color: #3a81c3; font-weight: bold;">statement</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> ...
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> temp_view_name
+<span style="color: #3a81c3; font-weight: bold;">WHERE</span> ...
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org771f410" class="outline-4">
+<h4 id="org771f410"><span class="section-number-4">2.1.7</span> RECURSIVE</h4>
+<div class="outline-text-4" id="text-2-1-7">
+<ul class="org-ul">
+<li>CREAT RECURSIVE VIEW</li>
+<li>WITH RECURSIVE</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">WITH</span> <span style="color: #3a81c3; font-weight: bold;">RECURSIVE</span> empl<span style="color: #3a81c3;">(</span>employee_name, manager_name<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> <span style="color: #3a81c3;">(</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> employee_name, manager_name
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> manager
+<span style="color: #3a81c3; font-weight: bold;">UNION</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> manager.employee_name,empl.manager_name
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> manager, empl
+<span style="color: #3a81c3; font-weight: bold;">WHERE</span> manager.manager_name = empl.employee_name
+<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">SELECT</span> *
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> empl
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9f3604e" class="outline-4">
+<h4 id="org9f3604e"><span class="section-number-4">2.1.8</span> GRANT &amp; REVOKE</h4>
+<div class="outline-text-4" id="text-2-1-8">
+<ul class="org-ul">
+<li>GRANT statement ON table TO who</li>
+<li>REVOKE statement ON table FROM who</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge9b56ee" class="outline-4">
+<h4 id="orge9b56ee"><span class="section-number-4">2.1.9</span> Other Keywords</h4>
+<div class="outline-text-4" id="text-2-1-9">
+<ul class="org-ul">
+<li>REGEXP pattern</li>
+<li>IN ('value1', 'value2', &#x2026;)</li>
+<li><p>
+columnName BETWEEN value1 and value2
+</p>
+
+<p>
+Equivalent to "columnName &gt; value1 and columnName &lt; value2"
+</p></li>
+
+<li>FIRST, LAST, BEFORE, AFTER, SECOND&#x2026;</li>
+
+<li><p>
+ORDER BY
+</p>
+
+<p>
+ORDER BY columnName [ASC/DESC]
+</p></li>
+
+<li>EXISTS, NOT EXISTS are always using in corelated subquery.</li>
+
+<li><p>
+UNION
+</p>
+
+<p>
+Suppress the duplicates by default. UNION ALL can keep the duplicates.
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8e9cf45" class="outline-3">
+<h3 id="org8e9cf45"><span class="section-number-3">2.2</span> Datatype</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+CHAR, VARCHAR, BLOB, INT, DEC, DATE, DATETIME
+</p>
+</div>
+</div>
+<div id="outline-container-org8e5c152" class="outline-3">
+<h3 id="org8e5c152"><span class="section-number-3">2.3</span> Join</h3>
+<div class="outline-text-3" id="text-2-3">
+</div>
+<div id="outline-container-orgbbe6836" class="outline-4">
+<h4 id="orgbbe6836"><span class="section-number-4">2.3.1</span> Overview</h4>
+<div class="outline-text-4" id="text-2-3-1">
+
+<div class="figure">
+<p><img src="../resources/data/sqljoins.png" alt="sqljoins.png" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org4f195a1" class="outline-4">
+<h4 id="org4f195a1"><span class="section-number-4">2.3.2</span> Inner Join</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+An inner join is just a cartesian join with
+some result rows removed by a condition in the query.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0bb215d" class="outline-3">
+<h3 id="org0bb215d"><span class="section-number-3">2.4</span> Subquery</h3>
+<div class="outline-text-3" id="text-2-4">
+</div>
+<div id="outline-container-orgecd61fb" class="outline-4">
+<h4 id="orgecd61fb"><span class="section-number-4">2.4.1</span> Noncorrelated Subquery</h4>
+<div class="outline-text-4" id="text-2-4-1">
+<p>
+A subquery that stands alone and doesn't reference
+anything from the outer query.
+</p>
+
+<p>
+RDBMS will excute inner first, then excute outer.
+</p>
+</div>
+</div>
+<div id="outline-container-org37d8148" class="outline-4">
+<h4 id="org37d8148"><span class="section-number-4">2.4.2</span> Correlated Subquery</h4>
+<div class="outline-text-4" id="text-2-4-2">
+<p>
+A subquery that relies on values returned from
+the outer query.(Slow)
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c960ca" class="outline-2">
+<h2 id="org5c960ca"><span class="section-number-2">3</span> Design</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orge0c8c2e" class="outline-3">
+<h3 id="orge0c8c2e"><span class="section-number-3">3.1</span> Steps</h3>
+<div class="outline-text-3" id="text-3-1">
+<ol class="org-ol">
+<li>Find <b>the one thing</b> need to be described.</li>
+<li>List <b>necessary</b> information about this thing.(Depends on how to use this table)</li>
+<li>Break down the information <b>into pieces</b> .</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgae8e8ff" class="outline-3">
+<h3 id="orgae8e8ff"><span class="section-number-3">3.2</span> Schema Pattern</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+<div id="outline-container-org3056c74" class="outline-4">
+<h4 id="org3056c74"><span class="section-number-4">3.2.1</span> One to One</h4>
+<div class="outline-text-4" id="text-3-2-1">
+</div>
+<ul class="org-ul">
+<li><a id="org60c3af3"></a>When to use<br />
+<div class="outline-text-5" id="text-org60c3af3">
+<ol class="org-ol">
+<li>Allow you to write fast queries.</li>
+<li>If you have a column containing values you don't yet know.Iso NULL value.</li>
+<li>Make data less accessible.</li>
+<li>To store a large piece of data, like BLOB.</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org60137b0" class="outline-4">
+<h4 id="org60137b0"><span class="section-number-4">3.2.2</span> One to Many</h4>
+</div>
+<div id="outline-container-org960769e" class="outline-4">
+<h4 id="org960769e"><span class="section-number-4">3.2.3</span> Many to Many</h4>
+<div class="outline-text-4" id="text-3-2-3">
+<p>
+use junction table.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org590c850" class="outline-3">
+<h3 id="org590c850"><span class="section-number-3">3.3</span> Functional Dependency</h3>
+<div class="outline-text-3" id="text-3-3">
+</div>
+<div id="outline-container-orgbf158ea" class="outline-4">
+<h4 id="orgbf158ea"><span class="section-number-4">3.3.1</span> Definition</h4>
+<div class="outline-text-4" id="text-3-3-1">
+<p>
+\[\forall t,u \in R\  (t[\bar A]= u[\bar A]) \to (t[\bar B] = u[\bar B])\]
+</p>
+</div>
+</div>
+<div id="outline-container-org5f51bec" class="outline-4">
+<h4 id="org5f51bec"><span class="section-number-4">3.3.2</span> Functional Dependency</h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+If we have a functional dependency \(\bar A \to \bar B\)
+</p>
+
+<ul class="org-ul">
+<li><p>
+Trivial
+</p>
+
+<p>
+\(\bar B \subseteq \bar A\) and \(\bar A \to \bar A \cup \bar B\) elso.
+</p></li>
+
+<li><p>
+Nontrivial
+</p>
+
+<p>
+\(\bar B \nsubseteq \bar A\)
+</p></li>
+
+<li><p>
+Completely nontrivial
+</p>
+
+<p>
+\(\bar A \cap \bar B = \emptyset\)
+</p></li>
+</ul>
+</div>
+
+<ul class="org-ul">
+<li><a id="org6a07288"></a>Partial Functional Dependency<br />
+<div class="outline-text-5" id="text-org6a07288">
+<p>
+When a non-key column is dependent on some, but not all, of the composite PK.
+</p>
+</div>
+</li>
+
+<li><a id="org8c0ceb6"></a>Transitive Functional Dependency<br />
+<div class="outline-text-5" id="text-org8c0ceb6">
+<p>
+When any non-key column is dependent on any of the other non-key columns.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org812ba81" class="outline-4">
+<h4 id="org812ba81"><span class="section-number-4">3.3.3</span> Rules For FD</h4>
+<div class="outline-text-4" id="text-3-3-3">
+<ul class="org-ul">
+<li><p>
+Splitting rule
+</p>
+
+<p>
+If \(\bar A \to B_1, B_2\) , then \(\bar A \to B_1\ \bar A \to B_2\)
+</p></li>
+
+<li><p>
+Combining rule
+</p>
+
+<p>
+If \(\bar A \to B_1\ \bar A \to B_2\), then \(\bar A \to B_1, B_2\)
+</p></li>
+
+<li><p>
+Transitive rule
+</p>
+
+<p>
+If \(\bar A \to \bar B\) and \(\bar B \to \bar C\), then \(\bar A \to \bar C\)
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org82b8f7e" class="outline-4">
+<h4 id="org82b8f7e"><span class="section-number-4">3.3.4</span> Closure of Attributes</h4>
+<div class="outline-text-4" id="text-3-3-4">
+<p>
+Given relation, FDs, set of attributes \(\bar A\),
+Find all B such that \(\bar A \to B\).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org11c279e" class="outline-3">
+<h3 id="org11c279e"><span class="section-number-3">3.4</span> Multivalued Dependency</h3>
+<div class="outline-text-3" id="text-3-4">
+</div>
+<div id="outline-container-org830a036" class="outline-4">
+<h4 id="org830a036"><span class="section-number-4">3.4.1</span> Definition</h4>
+<div class="outline-text-4" id="text-3-4-1">
+<p>
+\[\forall t, u\in R:\ t[\bar A] = u[\bar A]\] then
+\[\exists v \in R:\]
+\[v[\bar A] = t[\bar A]\] and
+\[v[\bar B] = t[\bar B]\] and
+\[v[rest] = u[rest]\]
+</p>
+
+<p>
+MVD says, If two tuples have same value for \(\bar A\),
+then we have <b>every</b> combination for \(\bar B\) value and the rest.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">tuple</th>
+<th scope="col" class="org-left">\(\bar A\)</th>
+<th scope="col" class="org-left">\(\bar B\)</th>
+<th scope="col" class="org-left">rest</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">t</td>
+<td class="org-left">\(\bar a\)</td>
+<td class="org-left">\(\bar b_1\)</td>
+<td class="org-left">\(\bar r_1\)</td>
+</tr>
+
+<tr>
+<td class="org-left">u</td>
+<td class="org-left">\(\bar a\)</td>
+<td class="org-left">\(\bar b_2\)</td>
+<td class="org-left">\(\bar r_2\)</td>
+</tr>
+
+<tr>
+<td class="org-left">v</td>
+<td class="org-left">\(\bar a\)</td>
+<td class="org-left">\(\bar b_1\)</td>
+<td class="org-left">\(\bar r_2\)</td>
+</tr>
+</tbody>
+</table>
+<p>
+Note that, there aslo must exist w:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">w</td>
+<td class="org-left">\(\bar a\)</td>
+<td class="org-left">\(\bar b_2\)</td>
+<td class="org-left">\(\bar r_1\)</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li><p>
+Trivial MVDs
+</p>
+
+<p>
+\(\bar B\subseteq \bar A\) or \(\bar A\cup \bar B = all\ attributes\)
+always satisfied MVD.
+E.g. for first case, Consider \(\bar{AB} \twoheadrightarrow \bar B\).
+</p></li>
+
+<li><p>
+Nontrivial
+</p>
+
+<p>
+otherwise.
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd9f94db" class="outline-4">
+<h4 id="orgd9f94db"><span class="section-number-4">3.4.2</span> Rules For MVD</h4>
+<div class="outline-text-4" id="text-3-4-2">
+<p>
+MVD is a <b>tuple-generating</b> dependency.
+</p>
+<ul class="org-ul">
+<li>FD is a MVD</li>
+<li><p>
+Intersection rule
+</p>
+
+<p>
+If \((\bar A\twoheadrightarrow \bar B) \land (\bar A\twoheadrightarrow \bar C)\) ,
+then \(\bar A\twoheadrightarrow \bar B\cap \bar C\) .
+</p></li>
+
+<li><p>
+Transitive rule
+</p>
+
+<p>
+If \((\bar A\twoheadrightarrow \bar B) \land (\bar B\twoheadrightarrow \bar C)\) ,
+then \(\bar A\twoheadrightarrow \bar C - \bar B\) .
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org639f097" class="outline-2">
+<h2 id="org639f097"><span class="section-number-2">4</span> Normalization</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgd602bd9" class="outline-3">
+<h3 id="orgd602bd9"><span class="section-number-3">4.1</span> 1-NF</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Data in your column is atomic if it's been broken
+down into the smallest pieces that you need.
+</p>
+
+<ul class="org-ul">
+<li><p>
+Rule 1:
+A column with atomic data can't have several values of
+the same type of data in that column.
+One example obeys the rule 1:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">food_name</th>
+<th scope="col" class="org-left">ingredients</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">bread</td>
+<td class="org-left">flour, milk, egg, yeast, oil</td>
+</tr>
+
+<tr>
+<td class="org-left">salad</td>
+<td class="org-left">lettuce, tomato, cucumber</td>
+</tr>
+</tbody>
+</table></li>
+
+<li><p>
+Rule 2:
+A table with atomic data can't have multiple columns
+with the same type of data.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">teacher</th>
+<th scope="col" class="org-left">student1</th>
+<th scope="col" class="org-left">student2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Ms.Mary</td>
+<td class="org-left">Joe</td>
+<td class="org-left">Ron</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge9a2c5a" class="outline-3">
+<h3 id="orge9a2c5a"><span class="section-number-3">4.2</span> 2-NF</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li>Rule 1: Be in 1NF</li>
+<li>Rule 2: Have no partial functional dependencies.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1e16d11" class="outline-3">
+<h3 id="org1e16d11"><span class="section-number-3">4.3</span> 3-NF</h3>
+<div class="outline-text-3" id="text-4-3">
+<ul class="org-ul">
+<li>Rule 1: Be in 2NF</li>
+<li>Rule 2: Have no transitive dependencies.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf2797b3" class="outline-3">
+<h3 id="orgf2797b3"><span class="section-number-3">4.4</span> Boyce-Codd Normal Form(BCNF, 3.5-NF)</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+FD leads to the BCNF.
+</p>
+<ul class="org-ul">
+<li><p>
+Definition
+Relation R with FDs is in BCNF if:
+</p>
+<p class="verse">
+For each  nontrivial \(\bar A\to B\), \(\bar A\) is a key.<br />
+</p></li>
+</ul>
+</div>
+<div id="outline-container-org874eda4" class="outline-4">
+<h4 id="org874eda4"><span class="section-number-4">4.4.1</span> Validation Example</h4>
+<div class="outline-text-4" id="text-4-4-1">
+<ul class="org-ul">
+<li>R(A, B, C, D)</li>
+<li>FDs: \(AC\to D,\ D\to A,\ D\to C,\ D\to B\)</li>
+<li>For every \(\bar{left}\) can determine all the attributes.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc44aeb2" class="outline-3">
+<h3 id="orgc44aeb2"><span class="section-number-3">4.5</span> 4-NF</h3>
+<div class="outline-text-3" id="text-4-5">
+<ul class="org-ul">
+<li><p>
+Definition
+</p>
+
+<p>
+Relation R with MVDs is in 4NF if:
+</p>
+<p class="verse">
+For each nontrivial \(\bar A\twoheadrightarrow \bar B\), A is a key.<br />
+4NF is in BCNF.<br />
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org5b116ad" class="outline-2">
+<h2 id="org5b116ad"><span class="section-number-2">5</span> Subclasses</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org5097a5b" class="outline-3">
+<h3 id="org5097a5b"><span class="section-number-3">5.1</span> Complete vs. Incomplete(Partial)</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+Complete: Every object is in at least one subclass.
+</p>
+</div>
+</div>
+<div id="outline-container-org2bb66a6" class="outline-3">
+<h3 id="org2bb66a6"><span class="section-number-3">5.2</span> Overlapping vs. Disjoint(Exclusive)</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+Overlapping: One object is in two+ subclasses.
+</p>
+</div>
+</div>
+<div id="outline-container-orgf3a0567" class="outline-3">
+<h3 id="orgf3a0567"><span class="section-number-3">5.3</span> How to design?</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+3 choices:
+</p>
+<ol class="org-ol">
+<li>Subclass relations contain superclass key + specialized attrs</li>
+<li>Subclass relations contain all attributes</li>
+<li>One relation containing all superclass + subclass attrs</li>
+</ol>
+
+<p>
+Best translation may depend on properties:
+</p>
+<ul class="org-ul">
+<li>Heavily overlapping -&gt; design 3</li>
+<li>Disjoint, complete -&gt;design 2</li>
+</ul>
+
+<p>
+Examples:
+</p>
+<div class="org-src-container">
+<pre class="src src-plantuml"><span style="color: #3a81c3; font-weight: bold;">@startuml</span>
+<span style="color: #3a81c3; font-weight: bold;">title</span> Subclass Example
+Superclass <span style="color: #3a81c3; font-weight: bold;">&lt;|--</span> Subclass1
+Superclass <span style="color: #3a81c3; font-weight: bold;">&lt;|--</span> Subclass2
+<span style="color: #ba2f59; font-weight: bold;">class</span> Superclass<span style="color: #3a81c3;">{</span>
+k PK
+A
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #ba2f59; font-weight: bold;">class</span> Subclass1<span style="color: #3a81c3;">{</span>
+B
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #ba2f59; font-weight: bold;">class</span> Subclass2<span style="color: #3a81c3;">{</span>
+C
+<span style="color: #3a81c3;">}</span>
+<span style="color: #3a81c3; font-weight: bold;">@enduml</span>
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>S(_K_, A), S1(_K_, B), S2(_K_, C)</li>
+<li>S(_K_, A), S1(_K_, A, B), S2(_K_, A, C)</li>
+<li>S(_K_, A, B, C)</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-org2b5ff86" class="outline-2">
+<h2 id="org2b5ff86"><span class="section-number-2">6</span> Constraints</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgc1673c8" class="outline-3">
+<h3 id="orgc1673c8"><span class="section-number-3">6.1</span> Motivation</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Constrain allowable database states.(static)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcd3f318" class="outline-3">
+<h3 id="orgcd3f318"><span class="section-number-3">6.2</span> Syntax</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+Major keywords: PK, FK, UNIQUE, CHECK
+</p>
+
+
+<ul class="org-ul">
+<li><p>
+Examples:
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">Create</span> ...
+<span style="color: #3a81c3;">{</span>
+    columnName <span style="color: #3a81c3; font-weight: bold;">type</span> <span style="color: #3a81c3; font-weight: bold;">CHECK</span> <span style="color: #6c3163;">(</span>columnName <span style="color: #3a81c3; font-weight: bold;">IN</span> <span style="color: #2d9574;">(</span><span style="color: #2d9574;">'value1'</span>, <span style="color: #2d9574;">'value2'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
+
+<span style="color: #3a81c3; font-weight: bold;">ADD</span> <span style="color: #3a81c3; font-weight: bold;">CONSTRAINT</span> <span style="color: #3a81c3; font-weight: bold;">CHECK</span> columnName &gt; 1;
+
+<span style="color: #3a81c3; font-weight: bold;">CHECK</span> <span style="color: #2d9574;">'A'</span> = <span style="color: #3a81c3;">SUBSTRING</span><span style="color: #3a81c3;">(</span>columnName, 1, 1<span style="color: #3a81c3;">)</span>;
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org46a546a" class="outline-3">
+<h3 id="org46a546a"><span class="section-number-3">6.3</span> Foreign Key</h3>
+<div class="outline-text-3" id="text-6-3">
+</div>
+<div id="outline-container-org8280339" class="outline-4">
+<h4 id="org8280339"><span class="section-number-4">6.3.1</span> Facts</h4>
+<div class="outline-text-4" id="text-6-3-1">
+<ol class="org-ol">
+<li>A FK can have different name than the parent key.</li>
+<li>FK values can be NULL.</li>
+<li>We can make sure a FK contains a meaningful value by using a <b>constraint</b> .</li>
+<li>The FK doesn't have to be the primary key of the parent table, but it must be unique.</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org976c980" class="outline-4">
+<h4 id="org976c980"><span class="section-number-4">6.3.2</span> Creation</h4>
+<div class="outline-text-4" id="text-6-3-2">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #6c3163; font-weight: bold;">tableName</span>
+<span style="color: #3a81c3;">(</span>
+    ...
+    columnName <span style="color: #3a81c3; font-weight: bold;">TYPE</span> <span style="color: #3a81c3; font-weight: bold;">NOT</span> <span style="color: #3a81c3; font-weight: bold;">NULL</span>,
+    <span style="color: #6c3163;">[</span><span style="color: #3a81c3; font-weight: bold;">CONSTRAINT</span> <span style="color: #3a81c3; font-weight: bold;">constraint_name</span>,<span style="color: #6c3163;">]</span>
+    <span style="color: #3a81c3; font-weight: bold;">FOREIGN</span> <span style="color: #3a81c3; font-weight: bold;">KEY</span> <span style="color: #6c3163;">(</span>foreign_key_name<span style="color: #6c3163;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">REFERENCES</span> parent_tableName <span style="color: #6c3163;">(</span>parent_columnName<span style="color: #6c3163;">)</span>
+<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+You can name constraint_name and foreign_key_name whatever you like.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgca1ef2f" class="outline-2">
+<h2 id="orgca1ef2f"><span class="section-number-2">7</span> Triggers</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgb5c1ea2" class="outline-3">
+<h3 id="orgb5c1ea2"><span class="section-number-3">7.1</span> Motivation</h3>
+<div class="outline-text-3" id="text-7-1">
+<ul class="org-ul">
+<li>To enforce constraints(Dynamic)</li>
+<li>Move logic from apps into DBMS</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org879920b" class="outline-3">
+<h3 id="org879920b"><span class="section-number-3">7.2</span> Usage</h3>
+<div class="outline-text-3" id="text-7-2">
+</div>
+<div id="outline-container-org32e8a22" class="outline-4">
+<h4 id="org32e8a22"><span class="section-number-4">7.2.1</span> Event-Condition-Action Rules</h4>
+<div class="outline-text-4" id="text-7-2-1">
+<p>
+When <b>event</b> occurs, check <b>condition</b>; if true, do <b>action</b>.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orgbfec213"></a>syntax<br />
+<div class="outline-text-5" id="text-orgbfec213">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TRIGGER</span> <span style="color: #3a81c3; font-weight: bold;">trigger_name</span>
+<span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">BEFORE</span>|<span style="color: #3a81c3; font-weight: bold;">AFTER</span>|INSTEAD <span style="color: #3a81c3; font-weight: bold;">OF</span><span style="color: #3a81c3;">]</span> events
+,<span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">referencing</span>-variables<span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">For</span> <span style="color: #3a81c3; font-weight: bold;">Each</span> <span style="color: #ba2f59; font-weight: bold;">Row</span><span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">when</span> <span style="color: #6c3163;">(</span>condition<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
+,<span style="color: #3a81c3; font-weight: bold;">action</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="orgb3529ac"></a>events<br />
+<div class="outline-text-5" id="text-orgb3529ac">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">INSERT</span> <span style="color: #3a81c3; font-weight: bold;">ON</span> T
+<span style="color: #3a81c3; font-weight: bold;">DELETE</span> <span style="color: #3a81c3; font-weight: bold;">ON</span> T
+<span style="color: #3a81c3; font-weight: bold;">UPDATE</span> <span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">OF</span> C1,...,Cn<span style="color: #3a81c3;">]</span> <span style="color: #3a81c3; font-weight: bold;">ON</span> T
+</pre>
+</div>
+</div>
+</li>
+<li><a id="orgdc2ea30"></a>[For Each Row]<br />
+<div class="outline-text-5" id="text-orgdc2ea30">
+<p>
+Determines whether the trigger is row-level or statement-level
+</p>
+<ul class="org-ul">
+<li><p>
+referencing-variables
+</p>
+<div class="org-src-container">
+<pre class="src src-sql">DEPENDS <span style="color: #3a81c3; font-weight: bold;">ON</span> <span style="color: #3a81c3;">[</span><span style="color: #3a81c3; font-weight: bold;">For</span> <span style="color: #3a81c3; font-weight: bold;">Each</span> <span style="color: #ba2f59; font-weight: bold;">Row</span><span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3; font-weight: bold;">OLD</span> <span style="color: #ba2f59; font-weight: bold;">row</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> var
+<span style="color: #3a81c3; font-weight: bold;">NEW</span> <span style="color: #ba2f59; font-weight: bold;">row</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> var
+<span style="color: #3a81c3; font-weight: bold;">OLD</span> <span style="color: #3a81c3; font-weight: bold;">table</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> var
+<span style="color: #3a81c3; font-weight: bold;">NEW</span> <span style="color: #3a81c3; font-weight: bold;">table</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> var
+</pre>
+</div></li>
+
+<li><p>
+condition
+</p>
+
+<p>
+In <i>when</i> or <i>where</i> clause depends on the SQL Implementation.
+</p></li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org63bf2eb" class="outline-2">
+<h2 id="org63bf2eb"><span class="section-number-2">8</span> Indexes</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org12da40c" class="outline-3">
+<h3 id="org12da40c"><span class="section-number-3">8.1</span> Usage</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+Different between full table scans and immediate location of tuples.
+</p>
+</div>
+</div>
+<div id="outline-container-orgfde5031" class="outline-3">
+<h3 id="orgfde5031"><span class="section-number-3">8.2</span> Underlying Data Structures</h3>
+<div class="outline-text-3" id="text-8-2">
+<ul class="org-ul">
+<li><p>
+Balanced trees (B tree, B+ tree)
+</p>
+
+<p>
+When uses "&gt;, &lt;, &gt;=, &lt;=" in query.
+</p></li>
+<li><p>
+Hashtable
+</p>
+
+<p>
+When uses "=" in query.
+</p></li>
+<li>skiplist</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org5a42202" class="outline-3">
+<h3 id="org5a42202"><span class="section-number-3">8.3</span> SQL Syntax</h3>
+<div class="outline-text-3" id="text-8-3">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> INDEX IndexName <span style="color: #3a81c3; font-weight: bold;">ON</span> T<span style="color: #3a81c3;">(</span>A1,A2...<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">UNIQUE</span> INDEX ...
+<span style="color: #3a81c3; font-weight: bold;">DROP</span> INDEX IndexName
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org78f3152" class="outline-3">
+<h3 id="org78f3152"><span class="section-number-3">8.4</span> Downsides</h3>
+<div class="outline-text-3" id="text-8-4">
+<ul class="org-ul">
+<li>Extra space</li>
+<li>Index creation</li>
+<li><p>
+Index maintenance(Important)
+</p>
+
+<p>
+When updates database, indexes will also be updated.
+</p></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org15121ee" class="outline-3">
+<h3 id="org15121ee"><span class="section-number-3">8.5</span> Upsides</h3>
+<div class="outline-text-3" id="text-8-5">
+<p>
+Benefits depends on:
+</p>
+
+<ul class="org-ul">
+<li>Data distributions</li>
+<li>Query vs. update load</li>
+<li>Size of table(and possibly layout)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4cd3ada" class="outline-3">
+<h3 id="org4cd3ada"><span class="section-number-3">8.6</span> Physical Design Advisors</h3>
+<div class="outline-text-3" id="text-8-6">
+<ul class="org-ul">
+<li>Input (database statistics and workload)</li>
+<li>Output (recommended indexes)</li>
+</ul>
+
+
+<div class="figure">
+<p><img src="../resources/data/QueryOptimizer.png" alt="QueryOptimizer.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaa1e66d" class="outline-2">
+<h2 id="orgaa1e66d"><span class="section-number-2">9</span> Transaction</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-org2449964" class="outline-3">
+<h3 id="org2449964"><span class="section-number-3">9.1</span> Motivation</h3>
+<div class="outline-text-3" id="text-9-1">
+<ul class="org-ul">
+<li>Concurrent database access</li>
+<li>Resilience to system failures</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0996653" class="outline-3">
+<h3 id="org0996653"><span class="section-number-3">9.2</span> Properties</h3>
+<div class="outline-text-3" id="text-9-2">
+<ul class="org-ul">
+<li><p>
+A(Atomicity)
+</p>
+
+<p>
+Each transaction is "all-or-nothing", never left half done.
+</p></li>
+
+<li><p>
+C(Consistency)
+</p>
+
+<p>
+Can assume all constrants hold when transaction begins.
+Must guarantee all constraints hold when transaction ends.
+Serializability -&gt; constraints always hold
+</p></li>
+
+<li><p>
+I(Isolation)
+</p>
+
+<p>
+Serializability: Execution must be equivalent to some
+sequential(serial) order of all transactions.(e.g. T9, T1, T2, T3, &#x2026;)
+</p></li>
+
+<li><p>
+D(Durability)
+</p>
+
+<p>
+If system crashes after transaction commits,
+all effects of transaction remain in database.
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd9fbc38" class="outline-3">
+<h3 id="orgd9fbc38"><span class="section-number-3">9.3</span> Isolation levels</h3>
+<div class="outline-text-3" id="text-9-3">
+</div>
+<div id="outline-container-org11e7cc9" class="outline-4">
+<h4 id="org11e7cc9"><span class="section-number-4">9.3.1</span> read uncommitted: written by an uncommitted transaction</h4>
+</div>
+<div id="outline-container-org817e7af" class="outline-4">
+<h4 id="org817e7af"><span class="section-number-4">9.3.2</span> read committed(nonrepeatable reads): an item read multiple times cannot change values</h4>
+<div class="outline-text-4" id="text-9-3-2">
+<pre class="example">
+T1:    Update Student Set GPA=(1.1)*GPA
+
+T2.S1: Select AVG(GPA) From Student
+T2.S2: Select MAX(GPA) From Student
+</pre>
+<p>
+T2.S1 may excute before T1, T2.S2 may excute after T1.
+The GPAs in S1 and S2 are different, leads to a nonrepatable reads violation.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org9f0493d"></a>phantoms<br />
+<div class="outline-text-5" id="text-org9f0493d">
+<pre class="example">
+T1:    Insert Into Student [100 new tuples]
+
+T2.S1: Select AVG(GPA) From Student
+T2.S2: Select MAX(GPA) From Student
+</pre>
+<p>
+T2.S1 may excute before T1, T2.S2 may excute after T1.
+[100 new tuples] are known as the phantoms tuples.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgfd16e83" class="outline-4">
+<h4 id="orgfd16e83"><span class="section-number-4">9.3.3</span> Repeatable Read</h4>
+<div class="outline-text-4" id="text-9-3-3">
+<ul class="org-ul">
+<li>some system uses next-key locking to solve the phantom read</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb4c2426" class="outline-4">
+<h4 id="orgb4c2426"><span class="section-number-4">9.3.4</span> Serializable</h4>
+<div class="outline-text-4" id="text-9-3-4">
+<ul class="org-ul">
+<li>solves the phantom read by forcing transactions to be ordered(low performance)</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org543846f" class="outline-4">
+<h4 id="org543846f"><span class="section-number-4">9.3.5</span> Summary</h4>
+<div class="outline-text-4" id="text-9-3-5">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">levels</th>
+<th scope="col" class="org-left">dirty reads</th>
+<th scope="col" class="org-left">nonrepeatable reads</th>
+<th scope="col" class="org-left">phantoms</th>
+<th scope="col" class="org-left">locking reads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Read Uncommitted</td>
+<td class="org-left">Y</td>
+<td class="org-left">Y</td>
+<td class="org-left">Y</td>
+<td class="org-left">N</td>
+</tr>
+
+<tr>
+<td class="org-left">Read Committed</td>
+<td class="org-left">N</td>
+<td class="org-left">Y</td>
+<td class="org-left">Y</td>
+<td class="org-left">N</td>
+</tr>
+
+<tr>
+<td class="org-left">Repeatable Read</td>
+<td class="org-left">N</td>
+<td class="org-left">N</td>
+<td class="org-left">Y</td>
+<td class="org-left">N</td>
+</tr>
+
+<tr>
+<td class="org-left">Serializable</td>
+<td class="org-left">N</td>
+<td class="org-left">N</td>
+<td class="org-left">N</td>
+<td class="org-left">Y</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org6ce4caa" class="outline-2">
+<h2 id="org6ce4caa"><span class="section-number-2">10</span> SQLAlchemy</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-org999814c" class="outline-3">
+<h3 id="org999814c"><span class="section-number-3">10.1</span> Core</h3>
+<div class="outline-text-3" id="text-10-1">
+</div>
+<div id="outline-container-org8264aa6" class="outline-4">
+<h4 id="org8264aa6"><span class="section-number-4">10.1.1</span> create_engine(&#x2026;, echo=True)</h4>
+</div>
+<div id="outline-container-org0cfa7af" class="outline-4">
+<h4 id="org0cfa7af"><span class="section-number-4">10.1.2</span> Types</h4>
+<div class="outline-text-4" id="text-10-1-2">
+</div>
+<ul class="org-ul">
+<li><a id="org0097a73"></a>Generic<br />
+<div class="outline-text-5" id="text-org0097a73">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">SQLAlchemy</th>
+<th scope="col" class="org-left">Python</th>
+<th scope="col" class="org-left">SQL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">BigInteger</td>
+<td class="org-left">int</td>
+<td class="org-left">BIGINT</td>
+</tr>
+
+<tr>
+<td class="org-left">Boolean</td>
+<td class="org-left">bool</td>
+<td class="org-left">BOOLEAN or SMALLINT</td>
+</tr>
+
+<tr>
+<td class="org-left">Date</td>
+<td class="org-left">datetime.date</td>
+<td class="org-left">DATE(SQLite: STRING)</td>
+</tr>
+
+<tr>
+<td class="org-left">DateTime</td>
+<td class="org-left">datetime.datetime</td>
+<td class="org-left">DATETIME(SQLite: STRING)</td>
+</tr>
+
+<tr>
+<td class="org-left">Enum</td>
+<td class="org-left">str</td>
+<td class="org-left">ENUM or VARCHAR</td>
+</tr>
+
+<tr>
+<td class="org-left">Float</td>
+<td class="org-left">float or Decimal</td>
+<td class="org-left">FLOAT or REAL</td>
+</tr>
+
+<tr>
+<td class="org-left">Integer</td>
+<td class="org-left">int</td>
+<td class="org-left">INTEGER</td>
+</tr>
+
+<tr>
+<td class="org-left">Interval</td>
+<td class="org-left">datetime.timedelta</td>
+<td class="org-left">INTERVAL or DATE from epoch</td>
+</tr>
+
+<tr>
+<td class="org-left">LargeBinary</td>
+<td class="org-left">byte</td>
+<td class="org-left">BLOB or BYTEA</td>
+</tr>
+
+<tr>
+<td class="org-left">Numeric</td>
+<td class="org-left">decimal.Decimal</td>
+<td class="org-left">NUMERIC or DECIMAL</td>
+</tr>
+
+<tr>
+<td class="org-left">Unicode</td>
+<td class="org-left">unicode</td>
+<td class="org-left">UNICODE or VARCHAR</td>
+</tr>
+
+<tr>
+<td class="org-left">Text</td>
+<td class="org-left">str</td>
+<td class="org-left">CLOB or TEXT</td>
+</tr>
+
+<tr>
+<td class="org-left">Time</td>
+<td class="org-left">datetime.time</td>
+<td class="org-left">DATETIME</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+
+<li><a id="orgc7f84f0"></a>SQL standard<br />
+<div class="outline-text-5" id="text-orgc7f84f0">
+<p>
+See module <b>sqlalchemy.types</b>. The standard types are in all capital letters.
+</p>
+</div>
+</li>
+<li><a id="orgf18a904"></a>Vendor specific<br />
+<div class="outline-text-5" id="text-orgf18a904">
+<p>
+See module <b>sqlalchemy.dialects</b>
+</p>
+</div>
+</li>
+
+<li><a id="orgd91f03c"></a>User defined<br /></li>
+</ul>
+</div>
+
+<div id="outline-container-org0916ff5" class="outline-4">
+<h4 id="org0916ff5"><span class="section-number-4">10.1.3</span> Metadata</h4>
+<div class="outline-text-4" id="text-10-1-3">
+<p>
+Think metadata as a kind of catalog of Table objects with optional
+information about the engine and the connection.
+Read operations on metadata object are <b>thread-safe</b>, however,
+table construction is not completely <b>thread-safe</b>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgca6684e" class="outline-4">
+<h4 id="orgca6684e"><span class="section-number-4">10.1.4</span> Tables</h4>
+<div class="outline-text-4" id="text-10-1-4">
+</div>
+<ul class="org-ul">
+<li><a id="org0c4a47e"></a>Using user-defined Table objects<br />
+<div class="outline-text-5" id="text-org0c4a47e">
+<p>
+Table objects are initialized in SQLAlchemy Core in a supplied <b>MetaData object</b> by
+calling the Table constructor with the table name and metadata; any additional argu‐
+ments are assumed to be column objects.
+</p>
+</div>
+</li>
+
+<li><a id="org88def0c"></a>Using declarative classes that represent your tables(ORM)<br /></li>
+<li><a id="org983bfb0"></a>Inferring them from the database<br /></li>
+</ul>
+</div>
+
+<div id="outline-container-org8ab3fda" class="outline-4">
+<h4 id="org8ab3fda"><span class="section-number-4">10.1.5</span> Columns</h4>
+<div class="outline-text-4" id="text-10-1-5">
+<p>
+<b>Column</b> objects represent each field in the table.
+The columns are constructed by calling Column with a name, type, and then
+arguments that represent any additional SQL constructs and constraints
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">users</span> = Table<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'users'</span>, metadata,
+	      Column<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'user_id'</span>, Integer<span style="color: #2d9574;">()</span>, primary_key=<span style="color: #4e3163;">True</span><span style="color: #6c3163;">)</span>,
+	      Column<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'username'</span>, String<span style="color: #2d9574;">(</span>15<span style="color: #2d9574;">)</span>, nullable=<span style="color: #4e3163;">False</span>, unique=<span style="color: #4e3163;">True</span><span style="color: #6c3163;">)</span>,
+	      Column<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'email_address'</span>, String<span style="color: #2d9574;">(</span>255<span style="color: #2d9574;">)</span>, nullable=<span style="color: #4e3163;">False</span><span style="color: #6c3163;">)</span>,
+	      Column<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'phone'</span>, String<span style="color: #2d9574;">(</span>20<span style="color: #2d9574;">)</span>, nullable=<span style="color: #4e3163;">False</span><span style="color: #6c3163;">)</span>,
+	      Column<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'password'</span>, String<span style="color: #2d9574;">(</span>25<span style="color: #2d9574;">)</span>, nullable=<span style="color: #4e3163;">False</span><span style="color: #6c3163;">)</span>,
+	      Column<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'created_on'</span>, DateTime<span style="color: #2d9574;">()</span>, default=datetime.now<span style="color: #6c3163;">)</span>,
+	      Column<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'updated_on'</span>, DateTime<span style="color: #2d9574;">()</span>, default=datetime.now,
+		     onupdate=datetime.now<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>useful arg: primary_key, nullable, unique, default, onupdate</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2b5846d" class="outline-4">
+<h4 id="org2b5846d"><span class="section-number-4">10.1.6</span> Keys and Constraints</h4>
+<div class="outline-text-4" id="text-10-1-6">
+<ul class="org-ul">
+<li>PrimaryKeyConstraint</li>
+<li>UniqueConstraint</li>
+<li>CheckConstraint</li>
+<li>ForeignKeyConstraint</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-python">PrimaryKeyConstraint<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'user_id'</span>, name=<span style="color: #2d9574;">'user_pk'</span><span style="color: #3a81c3;">)</span>
+UniqueConstraint<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'username'</span>, name=<span style="color: #2d9574;">'uix_username'</span><span style="color: #3a81c3;">)</span>
+CheckConstraint<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'unit_cost &gt;= 0.00'</span>, name=<span style="color: #2d9574;">'unit_cost_positive'</span><span style="color: #3a81c3;">)</span>
+ForeignKeyConstraint<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'order_id'</span><span style="color: #6c3163;">]</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">'orders.order_id'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9c7f327" class="outline-4">
+<h4 id="org9c7f327"><span class="section-number-4">10.1.7</span> Index</h4>
+<div class="outline-text-4" id="text-10-1-7">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> Index
+Index<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'ix_cookies_cookie_name'</span>, <span style="color: #2d9574;">'cookie_name'</span><span style="color: #3a81c3;">)</span>
+Index<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'ix_test'</span>, mytable.c.cookie_sku, mytable.c.cookie_name<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf80cc21" class="outline-4">
+<h4 id="orgf80cc21"><span class="section-number-4">10.1.8</span> SQL</h4>
+<div class="outline-text-4" id="text-10-1-8">
+</div>
+<ul class="org-ul">
+<li><a id="org44574ed"></a>Insert<br />
+<div class="outline-text-5" id="text-org44574ed">
+<ul class="org-ul">
+<li><p>
+single insert
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">ins</span> = cookies.insert<span style="color: #3a81c3;">()</span>.values<span style="color: #3a81c3;">(</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">ins = insert(cookies).values( &lt;= the same</span>
+    cookie_name=<span style="color: #2d9574;">"chocolate chip"</span>,
+    cookie_recipe_url=<span style="color: #2d9574;">"http://some.aweso.me/cookie/recipe.html"</span>,
+    cookie_sku=<span style="color: #2d9574;">"CC01"</span>,
+    quantity=<span style="color: #2d9574;">"12"</span>,
+    unit_cost=<span style="color: #2d9574;">"0.50"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">str</span><span style="color: #6c3163;">(</span>ins<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">print sql statement</span>
+ins.<span style="color: #3a81c3;">compile</span><span style="color: #3a81c3;">()</span>.params <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">show arguments in sql statement</span>
+<span style="color: #715ab1;">result</span> = connection.execute<span style="color: #3a81c3;">(</span>ins<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">executing the insert statement</span>
+result.inserted_primary_key
+</pre>
+</div></li>
+<li><p>
+multiple inserts
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">result</span> = connection.execute<span style="color: #3a81c3;">(</span>ins, inventory_list<span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgbc74e8d"></a>Query<br />
+<div class="outline-text-5" id="text-orgbc74e8d">
+<p>
+The <b>select</b> method expects a list of columns to select;
+however, for convenience, it also accepts <b>Table</b> objects
+and selects all the columns on the table.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">s</span> = select<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>cookies<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">rp</span> = connection.execute<span style="color: #3a81c3;">(</span>s<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">results</span> = rp.fetchall<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+<ul class="org-ul">
+<li><a id="org746b952"></a>ResultProxy<br />
+<div class="outline-text-6" id="text-org746b952">
+<p>
+ResultProxy makes handling query results easier by allowing access
+using an index, name, or Column object.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">first_row</span> = results<span style="color: #3a81c3;">[</span>0<span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">get first row</span>
+first_row<span style="color: #3a81c3;">[</span>1<span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">access column by index</span>
+first_row.cookie_name <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">access column by name</span>
+first_row<span style="color: #3a81c3;">[</span>cookies.c.cookie_name<span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">access column by Column object</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+iterating over a ResultProxy
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">rp</span> = connection.execute<span style="color: #3a81c3;">(</span>s<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> record <span style="color: #3a81c3; font-weight: bold;">in</span> rp:
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>record.cookie_name<span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+<li>other methods: <i>first</i>, <i>fetchone</i>, <i>scalar</i>, <i>keys</i></li>
+</ul>
+</div>
+</li>
+
+<li><a id="org1306623"></a>Order By<br />
+<div class="outline-text-6" id="text-org1306623">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> desc
+<span style="color: #715ab1;">s</span> = select<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>cookies.c.cookie_name,
+	    cookies.c.quantity<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.order_by<span style="color: #3a81c3;">(</span>desc<span style="color: #6c3163;">(</span>cookies.c.quantity<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>.limit<span style="color: #3a81c3;">(</span>2<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgda999d6"></a>Built-In SQL Functions<br />
+<div class="outline-text-6" id="text-orgda999d6">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">s</span> = select<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>func.<span style="color: #3a81c3;">sum</span><span style="color: #2d9574;">(</span>cookies.c.quantity<span style="color: #2d9574;">)</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+count
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">s1</span> = select<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>func.count<span style="color: #2d9574;">(</span>cookies.c.cookie_name<span style="color: #2d9574;">)</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">s2</span> = select<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>func.count<span style="color: #2d9574;">(</span>cookies.c.cookie_name<span style="color: #2d9574;">)</span>.label<span style="color: #2d9574;">(</span><span style="color: #2d9574;">'inventory_count'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">rename</span>
+<span style="color: #715ab1;">record1</span> = connection.execute<span style="color: #3a81c3;">(</span>s<span style="color: #3a81c3;">)</span>.first<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">record2</span> = connection.execute<span style="color: #3a81c3;">(</span>s<span style="color: #3a81c3;">)</span>.first<span style="color: #3a81c3;">()</span>
+
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>record1.count_1<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">default: &lt;func_name&gt;_&lt;position&gt;</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>record2.inventory_count<span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</li>
+
+<li><a id="org83933c6"></a>Filtering<br />
+<div class="outline-text-6" id="text-org83933c6">
+<div class="org-src-container">
+<pre class="src src-python">select<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>cookies<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.where<span style="color: #3a81c3;">(</span>cookies.c.cookie_name == <span style="color: #2d9574;">'chocolate chip'</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+ClauseElements
+</p>
+
+<p>
+between(cleft, cright), concat(col_two), distinct(),
+in_([list]), notin_([list]), is_(None), isnot(None),
+contains(string), endswith(string), like(string),
+startswith(string), ilike(string)
+</p></li>
+
+<li>use and_, or_, not_ inside <b>where</b> clauses</li>
+</ul>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="org0d5637e"></a>Update<br />
+<div class="outline-text-5" id="text-org0d5637e">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> update
+<span style="color: #715ab1;">u</span> = update<span style="color: #3a81c3;">(</span>cookies<span style="color: #3a81c3;">)</span>.where<span style="color: #3a81c3;">(</span>cookies.c.cookie_name == <span style="color: #2d9574;">"chocolate chip"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">u</span> = u.values<span style="color: #3a81c3;">(</span>quantity=<span style="color: #6c3163;">(</span>cookies.c.quantity + 120<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">u = u.values({"quantity": 1, "cookie_name": "bear"}) # multi column update</span>
+<span style="color: #715ab1;">result</span> = connection.execute<span style="color: #3a81c3;">(</span>u<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>result.rowcount<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgc5a3512"></a>Delete<br />
+<div class="outline-text-5" id="text-orgc5a3512">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> delete
+<span style="color: #715ab1;">u</span> = delete<span style="color: #3a81c3;">(</span>cookies<span style="color: #3a81c3;">)</span>.where<span style="color: #3a81c3;">(</span>cookies.c.cookie_name == <span style="color: #2d9574;">"dark chocolate chip"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">result</span> = connection.execute<span style="color: #3a81c3;">(</span>u<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>result.rowcount<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org3f557c0"></a>Join<br />
+<div class="outline-text-5" id="text-org3f557c0">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">columns</span> = <span style="color: #3a81c3;">[</span>
+    orders.c.order_id,
+    users.c.username,
+    users.c.phone,
+    cookies.c.cookie_name,
+    line_items.c.quantity,
+    line_items.c.extended_cost,
+<span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">cookiemon_orders</span> = select<span style="color: #3a81c3;">(</span>columns<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">cookiemon_orders</span> = cookiemon_orders.select_from<span style="color: #3a81c3;">(</span>
+    orders.join<span style="color: #6c3163;">(</span>users<span style="color: #6c3163;">)</span>.join<span style="color: #6c3163;">(</span>line_items<span style="color: #6c3163;">)</span>.join<span style="color: #6c3163;">(</span>cookies<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>.where<span style="color: #3a81c3;">(</span>
+	users.c.username == <span style="color: #2d9574;">'cookiemon'</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgf77da2d"></a>Alias<br />
+<div class="outline-text-5" id="text-orgf77da2d">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">manager</span> = employee_table.alias<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'mgr'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">SELECT employee.name</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">FROM employee, employee AS mgr</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">WHERE employee.manager_id = mgr.id AND mgr.name = ?</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orga8ab717"></a>GroupBy<br />
+<div class="outline-text-5" id="text-orga8ab717">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">columns</span> = <span style="color: #3a81c3;">[</span>users.c.username, func.count<span style="color: #6c3163;">(</span>orders.c.order_id<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">all_orders</span> = select<span style="color: #3a81c3;">(</span>columns<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">all_orders</span> = all_orders.select_from<span style="color: #3a81c3;">(</span>users.outerjoin<span style="color: #6c3163;">(</span>orders<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">all_orders</span> = all_orders.group_by<span style="color: #3a81c3;">(</span>users.c.username<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org34a1f5d"></a>Raw Queries<br />
+<div class="outline-text-5" id="text-org34a1f5d">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> text
+<span style="color: #715ab1;">result</span> = connection.execute<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"select * from orders"</span><span style="color: #3a81c3;">)</span>.fetchall<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">stmt</span> = select<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>users<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.where<span style="color: #3a81c3;">(</span>text<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"username='cookiemon'"</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>connection.execute<span style="color: #6c3163;">(</span>stmt<span style="color: #6c3163;">)</span>.fetchall<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org9200280" class="outline-4">
+<h4 id="org9200280"><span class="section-number-4">10.1.9</span> Exceptions</h4>
+<div class="outline-text-4" id="text-10-1-9">
+<p>
+Common exceptions: AttributeError, IntegrityError&#x2026; in <b>sqlalchemy.exc</b> module
+</p>
+</div>
+</div>
+<div id="outline-container-orga2db67c" class="outline-4">
+<h4 id="orga2db67c"><span class="section-number-4">10.1.10</span> Transactions</h4>
+<div class="outline-text-4" id="text-10-1-10">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">transaction</span> = connection.begin<span style="color: #3a81c3;">()</span>
+connection.execute<span style="color: #3a81c3;">(</span>...<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">try</span>:
+    transaction.commit<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">except</span> IntegrityError <span style="color: #3a81c3; font-weight: bold;">as</span> error:
+    transaction.rollback<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>error<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org73d4a1d" class="outline-4">
+<h4 id="org73d4a1d"><span class="section-number-4">10.1.11</span> Reflection</h4>
+<div class="outline-text-4" id="text-10-1-11">
+<div class="org-src-container">
+<pre class="src src-python">metadata.reflect<span style="color: #3a81c3;">(</span>bind=engine<span style="color: #3a81c3;">)</span>
+metadata.tables.keys<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">show tables</span>
+<span style="color: #715ab1;">table_obj</span> = metadata.tables<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">"table_name"</span><span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd53a22f" class="outline-3">
+<h3 id="orgd53a22f"><span class="section-number-3">10.2</span> ORM</h3>
+<div class="outline-text-3" id="text-10-2">
+</div>
+<div id="outline-container-org12d289e" class="outline-4">
+<h4 id="org12d289e"><span class="section-number-4">10.2.1</span> User-defined tables</h4>
+<div class="outline-text-4" id="text-10-2-1">
+<p>
+The <b>declarative_base</b> combines a <b>metadata</b> container and
+a <b>mapper</b> that maps our class to a database table.
+</p>
+
+<p>
+A proper class for use with the ORM must do four things:
+</p>
+
+<ul class="org-ul">
+<li>Inherit from the <code>declarative_base</code> object.</li>
+<li>Define <code>__tablename__</code> , which is the table name to be used in the database.</li>
+<li>Contain one or more attributes that are Column objects.</li>
+<li>Ensure one or more attributes make up a primary key.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">Base</span> = declarative_base<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Cookie</span><span style="color: #3a81c3;">(</span>Base<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">__tablename__</span> = <span style="color: #2d9574;">'cookies'</span>
+
+    <span style="color: #715ab1;">cookie_id</span> = Column<span style="color: #3a81c3;">(</span>Integer<span style="color: #6c3163;">()</span>, primay_key=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    ...
+Cookie.__table__ <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as the table object using Table(...)</span>
+</pre>
+</div>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgcfa11fb"></a>Constraints<br />
+<div class="outline-text-5" id="text-orgcfa11fb">
+<p>
+use <code>__table_args__</code> to specify constraints like <b>Table constructor</b> in core section.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">SomeDataClass</span><span style="color: #3a81c3;">(</span>Base<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">__tablename__</span> = <span style="color: #2d9574;">'somedatatable'</span>
+    <span style="color: #715ab1;">__table_args__</span> = <span style="color: #3a81c3;">(</span>ForeignKeyConstraint<span style="color: #6c3163;">(</span><span style="color: #2d9574;">[</span><span style="color: #2d9574;">'id'</span><span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span><span style="color: #2d9574;">'other_table.id'</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span>,
+		      CheckConstraint<span style="color: #6c3163;">(</span>unit_cost &gt;= 0.00,
+				      name=<span style="color: #2d9574;">'unit_cost_positive'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org725327b"></a>FK<br />
+<div class="outline-text-5" id="text-org725327b">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> ForeignKey, Boolean
+<span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy.orm <span style="color: #3a81c3; font-weight: bold;">import</span> relationship, backref
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Order</span><span style="color: #3a81c3;">(</span>Base<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">__tablename__</span> = <span style="color: #2d9574;">'orders'</span>
+    <span style="color: #715ab1;">order_id</span> = Column<span style="color: #3a81c3;">(</span>Integer<span style="color: #6c3163;">()</span>, primary_key=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">user_id</span> = Column<span style="color: #3a81c3;">(</span>Integer<span style="color: #6c3163;">()</span>, ForeignKey<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'users.user_id'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">shipped</span> = Column<span style="color: #3a81c3;">(</span>Boolean<span style="color: #6c3163;">()</span>, default=<span style="color: #4e3163;">False</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">user</span> = relationship<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"User"</span>, backref=backref<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'orders'</span>, order_by=order_id<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">one(user) to many(orders) relationship</span>
+</pre>
+</div>
+<p>
+This relationship also establishes an orders property on
+the User class via the backref keyword argument, which is ordered by <i>order_id</i>.
+</p>
+
+<p>
+The <b>relationship</b> directive needs a target class for the relationship, and can
+optionally include a back reference to be added to target class.
+</p>
+</div>
+</li>
+
+<li><a id="org013c6ab"></a>Persistance<br />
+<div class="outline-text-5" id="text-org013c6ab">
+<div class="org-src-container">
+<pre class="src src-python">Base.metadata.create_all<span style="color: #3a81c3;">(</span>engine<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org3b81006" class="outline-4">
+<h4 id="org3b81006"><span class="section-number-4">10.2.2</span> Relationship</h4>
+<div class="outline-text-4" id="text-10-2-2">
+</div>
+<ul class="org-ul">
+<li><a id="org85a7f97"></a>one-to-one<br />
+<div class="outline-text-5" id="text-org85a7f97">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Key</span><span style="color: #3a81c3;">(</span>Model<span style="color: #3a81c3;">)</span>:
+    <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">...</span>
+    <span style="color: #715ab1;">lock_id</span> = Column<span style="color: #3a81c3;">(</span>Integer, ForeignKey<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'Locks.id'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Lock</span><span style="color: #3a81c3;">(</span>Model<span style="color: #3a81c3;">)</span>:
+    <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">...</span>
+    <span style="color: #715ab1;">key</span> = db.relationship<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Key'</span>, backref=<span style="color: #2d9574;">'lock'</span>, uselist=<span style="color: #4e3163;">False</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">backref add a lock obj to key</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org06da064"></a>one-to-many<br />
+<div class="outline-text-5" id="text-org06da064">
+<p>
+Just change <code>uselist</code> to <code>True</code> in one-to-one example.
+</p>
+</div>
+</li>
+
+<li><a id="org2f1ace6"></a>many-to-many<br /></li>
+</ul>
+</div>
+
+<div id="outline-container-org46a470c" class="outline-4">
+<h4 id="org46a470c"><span class="section-number-4">10.2.3</span> Session</h4>
+<div class="outline-text-4" id="text-10-2-3">
+<p>
+The session wraps a database connection via an engine,
+and provides an identity map for objects that you load
+via the session or associate with the session.
+</p>
+
+<p>
+A session also wraps a transaction, and that transaction
+will be open until the session is committed or rolled back.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orgd617c9e"></a>States<br />
+<div class="outline-text-5" id="text-orgd617c9e">
+<ul class="org-ul">
+<li><b>Transient</b>: The instance is not in session, and is not in the database</li>
+<li><b>Pending</b>: The instance has been added to the session with add(), but hasn’t been flushed or committed.</li>
+<li><b>Persistent</b>: The object in session has a corresponding record in the database.</li>
+<li><b>Detached</b>: The instance is no longer connected to the session, but has a record in the database.</li>
+</ul>
+</div>
+</li>
+
+<li><a id="org9686f2f"></a>Init<br />
+<div class="outline-text-5" id="text-org9686f2f">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> create_engine
+<span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy.orm <span style="color: #3a81c3; font-weight: bold;">import</span> sessionmaker
+<span style="color: #715ab1;">engine</span> = create_engine<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'sqlite:///:memory:'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">Session</span> = sessionmaker<span style="color: #3a81c3;">(</span>bind=engine<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">generate factory function</span>
+<span style="color: #715ab1;">session</span> = Session<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">establish the connection</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">or</span>
+<span style="color: #3a81c3; font-weight: bold;">with</span> engine.connect<span style="color: #3a81c3;">()</span> <span style="color: #3a81c3; font-weight: bold;">as</span> conn:
+    <span style="color: #715ab1;">session</span> = Session<span style="color: #3a81c3;">(</span>bind=conn<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org0358a9d" class="outline-4">
+<h4 id="org0358a9d"><span class="section-number-4">10.2.4</span> SQL</h4>
+<div class="outline-text-4" id="text-10-2-4">
+</div>
+<ul class="org-ul">
+<li><a id="orgb71acd8"></a>Insert<br />
+<ul class="org-ul">
+<li><a id="orgaeb6497"></a>add-&gt;commit<br />
+<div class="outline-text-6" id="text-orgaeb6497">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">cc_cookie</span> = Cookie<span style="color: #3a81c3;">(</span>...<span style="color: #3a81c3;">)</span>
+session.add<span style="color: #3a81c3;">(</span>cc_cookie<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>cc_cookie.cookie_id<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">None</span>
+session.commit<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>cc_cookie.cookie_id<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">auto generated no</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org1a6416d"></a>add-&gt;flush<br />
+<div class="outline-text-6" id="text-org1a6416d">
+<p>
+Use <b>flush</b> if you are going to do additional work with the objects after inserting them.
+</p>
+
+<p>
+A <b>flush</b> is like a <b>commit</b>; however, it doesn’t perform a database commit and end the transaction.
+The data objects are still associated with the session.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">cookie1</span> = Cookie<span style="color: #3a81c3;">(</span>...<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">cookie2</span> = Cookie<span style="color: #3a81c3;">(</span>...<span style="color: #3a81c3;">)</span>
+session.add<span style="color: #3a81c3;">(</span>cookie1<span style="color: #3a81c3;">)</span>
+session.add<span style="color: #3a81c3;">(</span>cookie2<span style="color: #3a81c3;">)</span>
+session.flush<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>cookie1.cookie_id<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">some number</span>
+</pre>
+</div>
+<p>
+after <b>flush</b>, the records in session are changed.
+</p>
+</div>
+</li>
+
+<li><a id="orgeb9d127"></a>bulk_save_objects<br />
+<div class="outline-text-6" id="text-orgeb9d127">
+<p>
+performance benefits:
+</p>
+<ul class="org-ul">
+<li>Relationship settings and actions are not respected or triggered.</li>
+<li>The objects are not connected to the session.</li>
+<li>Fetching primary keys is not done by default.</li>
+<li>No events will be triggered.</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python">session.bulk_save_objects<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>cookie1,cookie2<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+session.commit<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>after <b>bulk_save_objects</b>, the state is <b>Transient</b>. use <code>inspect</code> to see the object state</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> inspect
+inspect<span style="color: #3a81c3;">(</span>cookie1<span style="color: #3a81c3;">)</span>
+inspect<span style="color: #3a81c3;">(</span>cookie2<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> state <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'transient'</span>, <span style="color: #2d9574;">'pending'</span>, <span style="color: #2d9574;">'persistent'</span>, <span style="color: #2d9574;">'detached'</span><span style="color: #3a81c3;">]</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'{:&gt;10}: {}'</span>.<span style="color: #3a81c3;">format</span><span style="color: #6c3163;">(</span>state, <span style="color: #3a81c3;">getattr</span><span style="color: #2d9574;">(</span>insp, state<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="org5415725"></a>Query<br />
+<div class="outline-text-5" id="text-org5415725">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">cookies</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">all</span><span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+<p>
+fetch method: all, first, one, scalar
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">for</span> cookie <span style="color: #3a81c3; font-weight: bold;">in</span> session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>cookie<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+The iterable version is more memory efficient.
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="org6e1ed14"></a>Choose columns<br />
+<div class="outline-text-6" id="text-org6e1ed14">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>session.query<span style="color: #6c3163;">(</span>Cookie.cookie_name, Cookie.quantity<span style="color: #6c3163;">)</span>.first<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org87b1634"></a>Ordering<br />
+<div class="outline-text-6" id="text-org87b1634">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">for</span> cookie <span style="color: #3a81c3; font-weight: bold;">in</span> session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.order_by<span style="color: #3a81c3;">(</span>desc<span style="color: #6c3163;">(</span>Cookie.quantity<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'{:3} - {}'</span>.<span style="color: #3a81c3;">format</span><span style="color: #6c3163;">(</span>cookie.quantity, cookie.cookie_name<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org02218f3"></a>Limiting<br />
+<div class="outline-text-6" id="text-org02218f3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.order_by<span style="color: #3a81c3;">(</span>
+    Cookie.quantity<span style="color: #3a81c3;">)[</span>:2<span style="color: #3a81c3;">]</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">slices the return list. ineffecient.</span>
+<span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.order_by<span style="color: #3a81c3;">(</span>Cookie.quantity<span style="color: #3a81c3;">)</span>.limit<span style="color: #3a81c3;">(</span>2<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>result.cookie_name <span style="color: #3a81c3; font-weight: bold;">for</span> result <span style="color: #3a81c3; font-weight: bold;">in</span> query<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+This runs the query and slices the returned list. This can
+be very ineffecient with a large result set.
+</p>
+</div>
+</li>
+<li><a id="orgaed29f9"></a>Built-in functions<br />
+<div class="outline-text-6" id="text-orgaed29f9">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> func
+<span style="color: #715ab1;">inv_count</span> = session.query<span style="color: #3a81c3;">(</span>func.<span style="color: #3a81c3;">sum</span><span style="color: #6c3163;">(</span>Cookie.quantity<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>.scalar<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">rec_count</span> = session.query<span style="color: #3a81c3;">(</span>
+    func.count<span style="color: #6c3163;">(</span>Cookie.cookie_name<span style="color: #6c3163;">)</span>.label<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'inventory_count'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>.first<span style="color: #3a81c3;">()</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">rename</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org6ced84c"></a>Filtering<br />
+<div class="outline-text-6" id="text-org6ced84c">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">record</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">filter</span><span style="color: #3a81c3;">(</span>
+    Cookie.cookie_name == <span style="color: #2d9574;">'chocolate chip'</span><span style="color: #3a81c3;">)</span>.first<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">record</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.filter_by<span style="color: #3a81c3;">(</span>cookie_name=<span style="color: #2d9574;">'chocolate chip'</span><span style="color: #3a81c3;">)</span>.first<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">filter</span><span style="color: #3a81c3;">(</span>Cookie.cookie_name.like<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'%chocolate%'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org44f3228"></a>Conjunctions<br />
+<div class="outline-text-6" id="text-org44f3228">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">filter</span><span style="color: #3a81c3;">(</span>
+    Cookie.quantity &gt; 23, Cookie.unit_cost &lt; 0.40<span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">default and conjunctions</span>
+<span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> and_, or_, not_
+<span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">filter</span><span style="color: #3a81c3;">(</span>
+    or_<span style="color: #6c3163;">(</span>Cookie.quantity.between<span style="color: #2d9574;">(</span>10, 50<span style="color: #2d9574;">)</span>, Cookie.cookie_name.contains<span style="color: #2d9574;">(</span><span style="color: #2d9574;">'chip'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li><a id="orgd50dc43"></a>Update<br />
+<div class="outline-text-5" id="text-orgd50dc43">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">cc_cookie</span> = query.<span style="color: #3a81c3;">filter</span><span style="color: #3a81c3;">(</span>Cookie.cookie_name == <span style="color: #2d9574;">"chocolate chip"</span><span style="color: #3a81c3;">)</span>.first<span style="color: #3a81c3;">()</span>
+
+<span style="color: #715ab1;">cc_cookie.quantity</span> = cc_cookie.quantity + 120
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">or</span>
+query.update<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span>Cookie.quantity: Cookie.quantity - 20<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+
+session.commit<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>cc_cookie.quantity<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org8a0c4c0"></a>Delete<br />
+<ul class="org-ul">
+<li><a id="orgd87105c"></a>session.delete<br />
+<div class="outline-text-6" id="text-orgd87105c">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">query</span> = query.<span style="color: #3a81c3;">filter</span><span style="color: #3a81c3;">(</span>Cookie.cookie_name == <span style="color: #2d9574;">"dark chocolate chip"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">dcc_cookie</span> = query.one<span style="color: #3a81c3;">()</span>
+session.delete<span style="color: #3a81c3;">(</span>dcc_cookie<span style="color: #3a81c3;">)</span>
+session.commit<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org0202205"></a>query.delete<br />
+<div class="outline-text-6" id="text-org0202205">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">query</span> = query.<span style="color: #3a81c3;">filter</span><span style="color: #3a81c3;">(</span>Cookie.cookie_name == <span style="color: #2d9574;">"molasses"</span><span style="color: #3a81c3;">)</span>
+query.delete<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li><a id="org1cd8a9e"></a>Join<br />
+<div class="outline-text-5" id="text-org1cd8a9e">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>Order.order_id, User.username, User.phone,
+Cookie.cookie_name, LineItem.quantity,
+LineItem.extended_cost<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">query</span> = query.join<span style="color: #3a81c3;">(</span>User<span style="color: #3a81c3;">)</span>.join<span style="color: #3a81c3;">(</span>LineItem<span style="color: #3a81c3;">)</span>.join<span style="color: #3a81c3;">(</span>Cookie<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">results</span> = query.<span style="color: #3a81c3;">filter</span><span style="color: #3a81c3;">(</span>User.username == <span style="color: #2d9574;">'cookiemon'</span><span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">all</span><span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org756c5ee"></a>GroupBy<br />
+<div class="outline-text-5" id="text-org756c5ee">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">query</span> = session.query<span style="color: #3a81c3;">(</span>User.username, func.count<span style="color: #6c3163;">(</span>Order.order_id<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">query</span> = query.outerjoin<span style="color: #3a81c3;">(</span>Order<span style="color: #3a81c3;">)</span>.group_by<span style="color: #3a81c3;">(</span>User.username<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="orgab14b68"></a>Transaction<br />
+<div class="outline-text-5" id="text-orgab14b68">
+<p>
+Transaction begins after <b>session.commit()</b>
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org270bc8e" class="outline-4">
+<h4 id="org270bc8e"><span class="section-number-4">10.2.5</span> Exceptions</h4>
+<div class="outline-text-4" id="text-10-2-5">
+</div>
+<ul class="org-ul">
+<li><a id="org418bcf2"></a>MultipleResultsFound<br />
+<div class="outline-text-5" id="text-org418bcf2">
+<p>
+This exception occurs when we use the .one() query method, but get more than one result back.
+</p>
+</div>
+</li>
+<li><a id="org5641997"></a>DetachedInstanceError<br />
+<div class="outline-text-5" id="text-org5641997">
+<p>
+This exception occurs when we attempt to access an attribute on an instance that
+needs to be loaded from the database, but the instance we are using is not currently
+attached to the database.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org43db4a2" class="outline-4">
+<h4 id="org43db4a2"><span class="section-number-4">10.2.6</span> Reflection</h4>
+<div class="outline-text-4" id="text-10-2-6">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sqlalchemy.ext.automap <span style="color: #3a81c3; font-weight: bold;">import</span> automap_base
+<span style="color: #715ab1;">Base</span> = automap_base<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">use automap_base instead of declarative_base</span>
+Base.prepare<span style="color: #3a81c3;">(</span>engine, reflect=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+
+Base.classes.keys<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">show ORM classes</span>
+<span style="color: #715ab1;">User</span> = Base.classes.User
+<span style="color: #715ab1;">Order</span> = Base.classes.User
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdba6798" class="outline-3">
+<h3 id="orgdba6798"><span class="section-number-3">10.3</span> Alembic</h3>
+<div class="outline-text-3" id="text-10-3">
+</div>
+<div id="outline-container-org520e2fc" class="outline-4">
+<h4 id="org520e2fc"><span class="section-number-4">10.3.1</span> Configuring the Environment</h4>
+<div class="outline-text-4" id="text-10-3-1">
+<p>
+Use <code>alembic init migrations</code> to create a migrations environment.
+</p>
+<div class="org-src-container">
+<pre class="src src-text">          &#9500;&#9472;&#9472; migrations
+	  &#9474;&#160;&#160; &#9500;&#9472;&#9472; env.py
+	  &#9474;&#160;&#160; &#9500;&#9472;&#9472; README
+	  &#9474;&#160;&#160; &#9500;&#9472;&#9472; script.py.mako
+	  &#9474;&#160;&#160; &#9492;&#9472;&#9472; versions
+	  &#9492;&#9472;&#9472; alembic.ini
+</pre>
+</div>
+<ul class="org-ul">
+<li>set sqlalchemy.url in alembic.ini</li>
+<li><p>
+modify <b>env.py</b> to point metadata which is an attribute of the <code>Base</code> instance
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> app.db <span style="color: #3a81c3; font-weight: bold;">import</span> Base
+<span style="color: #715ab1;">target_metadata</span> = Base.metadata
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org329066b" class="outline-4">
+<h4 id="org329066b"><span class="section-number-4">10.3.2</span> Building Migrations Manually</h4>
+<div class="outline-text-4" id="text-10-3-2">
+<ol class="org-ol">
+<li><code>alembic revision -m "rev msg"</code>: create a migration file in the <b>alembic/versions/</b> subfolder</li>
+<li>rewrite <code>upgrade=/=downgrade</code> method within the migration file</li>
+<li><code>alembic upgrade head</code>: upgrade database to the highest alembic migration</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgaf5f9b8" class="outline-4">
+<h4 id="orgaf5f9b8"><span class="section-number-4">10.3.3</span> Autogenerating a Migration</h4>
+<div class="outline-text-4" id="text-10-3-3">
+<ol class="org-ol">
+<li><code>alembic revision --autogenerate -m "Added some model"</code></li>
+<li><code>alembic upgrade head</code></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org926ca22" class="outline-4">
+<h4 id="org926ca22"><span class="section-number-4">10.3.4</span> Version Control</h4>
+<div class="outline-text-4" id="text-10-3-4">
+<ul class="org-ul">
+<li><code>alembic current</code> see current revision</li>
+<li><code>alembic history</code> show history</li>
+<li><code>alembic downgrade revisionID</code></li>
+<li><code>alembic stamp revisionID</code> mark <b>revisionID</b> as the current migration level, used to <b>skip a migration</b> or <b>restore a database</b></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org882c9f3" class="outline-4">
+<h4 id="org882c9f3"><span class="section-number-4">10.3.5</span> Generating SQL</h4>
+<div class="outline-text-4" id="text-10-3-5">
+<p>
+<code>alembic upgrade org_revision:target_revision --sql</code>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

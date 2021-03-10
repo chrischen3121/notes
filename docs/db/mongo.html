@@ -1,0 +1,1437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MongoDB</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="MongoDB" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+</head>
+<body>
+<div id="content">
+<h1 class="title">MongoDB</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org04a0af7">1. Basic</a>
+<ul>
+<li><a href="#orge6baefd">1.1. CRUD</a></li>
+<li><a href="#org6a822af">1.2. Types</a></li>
+<li><a href="#org9b9bd92">1.3. Mongo Shell</a></li>
+<li><a href="#org6da0208">1.4. Tools</a></li>
+</ul>
+</li>
+<li><a href="#orgfae8f54">2. CRUD</a>
+<ul>
+<li><a href="#org00d54c6">2.1. query</a></li>
+<li><a href="#org1e14bf1">2.2. insert</a></li>
+<li><a href="#orgbb0596f">2.3. delete</a></li>
+<li><a href="#orgd82b0f6">2.4. update</a></li>
+</ul>
+</li>
+<li><a href="#org65f09cd">3. Server Administration</a>
+<ul>
+<li><a href="#org1205cdc">3.1. mongod options</a></li>
+<li><a href="#org259a504">3.2. Troubleshoot</a></li>
+</ul>
+</li>
+<li><a href="#org0add5d6">4. Indexing</a>
+<ul>
+<li><a href="#orgeb66039">4.1. Test Dataset</a></li>
+<li><a href="#org00e8a31">4.2. Designing Indexes</a></li>
+<li><a href="#orga51eca0">4.3. Specifying an Index to Use</a></li>
+<li><a href="#org5cb4bf1">4.4. Other Tips</a></li>
+<li><a href="#orgb861d00">4.5. Special Indexes</a></li>
+<li><a href="#org288de57">4.6. Special Collections</a></li>
+<li><a href="#orgf3e8749">4.7. Tailable Cursors</a></li>
+<li><a href="#org4a5e7b5">4.8. Changing Indexes</a></li>
+<li><a href="#orgc231e4b">4.9. GridFS</a></li>
+</ul>
+</li>
+<li><a href="#org15ec85a">5. Aggregation</a>
+<ul>
+<li><a href="#org60859a7">5.1. Reference</a></li>
+<li><a href="#org33b8ca2">5.2. Expressions</a></li>
+<li><a href="#org4f924ad">5.3. Accumulators</a></li>
+<li><a href="#orgdc62932">5.4. Writing Results to a Collection</a></li>
+</ul>
+</li>
+<li><a href="#org7bea922">6. Transactions</a>
+<ul>
+<li><a href="#orgd6855ea">6.1. Core API VS. Callback API</a></li>
+<li><a href="#org1b62e3a">6.2. Core API Example</a></li>
+<li><a href="#org1f52582">6.3. Callback API Example</a></li>
+</ul>
+</li>
+<li><a href="#orgb8682f6">7. Design Patterns</a>
+<ul>
+<li><a href="#org51691d4">7.1. Embedding vs References</a></li>
+</ul>
+</li>
+<li><a href="#org6cc837e">8. Replication</a>
+<ul>
+<li><a href="#org21e9c54">8.1. <code>rs</code></a></li>
+</ul>
+</li>
+<li><a href="#orga5a6f37">9. Cluster</a>
+<ul>
+<li><a href="#org57b0ed7">9.1. Tools</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org04a0af7" class="outline-2">
+<h2 id="org04a0af7"><span class="section-number-2">1</span> Basic</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orge6baefd" class="outline-3">
+<h3 id="orge6baefd"><span class="section-number-3">1.1</span> CRUD</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+create, read, update, and delete
+</p>
+
+<ul class="org-ul">
+<li>create: insertOne</li>
+<li>read: find, findOne</li>
+<li>update: updateOne</li>
+<li>delete: deleteOne</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6a822af" class="outline-3">
+<h3 id="org6a822af"><span class="section-number-3">1.2</span> Types</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+<code>null</code>, Boolean, Number, String, Date(int64 since epoch), Regular expression(query only), Array, Embedded document
+</p>
+<ul class="org-ul">
+<li>Binary data: Binary data is the only way to save non-UTF-8 strings to the database.</li>
+<li>Code: MongoDB also makes it possible to store arbitrary JavaScript in queries and documents: <code>{"x" : function() { /* ... */ }}</code></li>
+</ul>
+</div>
+<div id="outline-container-orgee7c907" class="outline-4">
+<h4 id="orgee7c907">Object ID</h4>
+<div class="outline-text-4" id="text-orgee7c907">
+<p>
+12-byte ID for documents
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">0</th>
+<th scope="col" class="org-right">1</th>
+<th scope="col" class="org-right">2</th>
+<th scope="col" class="org-left">3 4 5 6 7 8 9 10 11</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">Timestamp(seconds)</td>
+<td class="org-right">Random</td>
+<td class="org-right">Counter (random start value)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9b9bd92" class="outline-3">
+<h3 id="org9b9bd92"><span class="section-number-3">1.3</span> Mongo Shell</h3>
+<div class="outline-text-3" id="text-1-3">
+<div class="org-src-container">
+<pre class="src src-js">conn = <span style="color: #3a81c3; font-weight: bold;">new</span> <span style="color: #ba2f59; font-weight: bold;">Mongo</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"host:port"</span><span style="color: #3a81c3;">)</span>
+db = conn.getDB<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"myDB"</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>help</li>
+</ul>
+</div>
+
+<div id="outline-container-org2ea4aee" class="outline-4">
+<h4 id="org2ea4aee">Useful Helpers</h4>
+<div class="outline-text-4" id="text-org2ea4aee">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Helper</th>
+<th scope="col" class="org-left">Equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">use db</td>
+<td class="org-left">db.getSisterDB("db")</td>
+</tr>
+
+<tr>
+<td class="org-left">show dbs</td>
+<td class="org-left">db.getMongo().getDBs()</td>
+</tr>
+
+<tr>
+<td class="org-left">show collections</td>
+<td class="org-left">db.getCollectionNames()</td>
+</tr>
+</tbody>
+</table>
+<ul class="org-ul">
+<li><code>pwd()</code>:</li>
+<li><code>run("ls", "-l", "/home/myUser/my-scripts/")</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga2d24b0" class="outline-4">
+<h4 id="orga2d24b0">Custom Helper</h4>
+<div class="outline-text-4" id="text-orga2d24b0">
+<ol class="org-ol">
+<li>define helper function in js</li>
+<li>load js</li>
+<li><code>typeof helper_function</code></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org108b4be" class="outline-4">
+<h4 id="org108b4be">Frequently Loaded Scripts</h4>
+<div class="outline-text-4" id="text-org108b4be">
+<p>
+Use <code>.mongorc.js</code> in your home directory, This file is run whenever you start up the shell.
+</p>
+<ul class="org-ul">
+<li>common example in <code>.mongorc.js</code>: remove some of the more "dangerous" shell helpers</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #3a81c3; font-weight: bold;">var</span> <span style="color: #715ab1;">no</span> = <span style="color: #3a81c3; font-weight: bold;">function</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
+    print<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"Not on my watch."</span><span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>;
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Prevent dropping databases</span>
+db.dropDatabase = DB.<span style="color: #4e3163;">prototype</span>.dropDatabase = no;
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Prevent dropping collections</span>
+DBCollection.<span style="color: #4e3163;">prototype</span>.drop = no;
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Prevent dropping an index</span>
+DBCollection.<span style="color: #4e3163;">prototype</span>.dropIndex = no;
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Prevent dropping indexes</span>
+DBCollection.<span style="color: #4e3163;">prototype</span>.dropIndexes = no;
+</pre>
+</div>
+<ul class="org-ul">
+<li>use <code>--norc</code> option to disable <code>.mongorc.js</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3fb98fd" class="outline-4">
+<h4 id="org3fb98fd">Customizing Your Prompt</h4>
+<div class="outline-text-4" id="text-org3fb98fd">
+<p>
+Just set the <code>prompt</code> variable
+</p>
+<div class="org-src-container">
+<pre class="src src-js">prompt = <span style="color: #3a81c3; font-weight: bold;">function</span><span style="color: #3a81c3;">()</span> <span style="color: #3a81c3;">{</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #6c3163;">(</span><span style="color: #3a81c3; font-weight: bold;">typeof</span> db == <span style="color: #2d9574;">'undefined'</span><span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
+	<span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #2d9574;">'(nodb)&gt; '</span>;
+    <span style="color: #6c3163;">}</span>
+
+    <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Check the last db operation</span>
+    <span style="color: #3a81c3; font-weight: bold;">try</span> <span style="color: #6c3163;">{</span>
+	db.runCommand<span style="color: #2d9574;">(</span><span style="color: #67b11d;">{</span>getLastError:1<span style="color: #67b11d;">}</span><span style="color: #2d9574;">)</span>;
+    <span style="color: #6c3163;">}</span>
+    <span style="color: #3a81c3; font-weight: bold;">catch</span> <span style="color: #6c3163;">(</span>e<span style="color: #6c3163;">)</span> <span style="color: #6c3163;">{</span>
+	print<span style="color: #2d9574;">(</span>e<span style="color: #2d9574;">)</span>;
+    <span style="color: #6c3163;">}</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">return</span> db+<span style="color: #2d9574;">"&gt; "</span>;
+<span style="color: #3a81c3;">}</span>;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6da0208" class="outline-3">
+<h3 id="org6da0208"><span class="section-number-3">1.4</span> Tools</h3>
+<div class="outline-text-3" id="text-1-4">
+<ul class="org-ul">
+<li><code>mongoimport</code>: importing raw data from a data feed or MySQL</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfae8f54" class="outline-2">
+<h2 id="orgfae8f54"><span class="section-number-2">2</span> CRUD</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org00d54c6" class="outline-3">
+<h3 id="org00d54c6"><span class="section-number-3">2.1</span> query</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>some query condition: <code>$nin</code>, <code>$or</code>, <code>$exists</code>, <code>$regex</code></li>
+<li>Mongo uses the Perl Compatible Regular Expression</li>
+</ul>
+</div>
+<div id="outline-container-orga995cdf" class="outline-4">
+<h4 id="orga995cdf">querying arrays</h4>
+<div class="outline-text-4" id="text-orga995cdf">
+<ul class="org-ul">
+<li>contains</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-js">db.food.insertOne<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"fruit"</span> : <span style="color: #2d9574;">[</span><span style="color: #2d9574;">"apple"</span>, <span style="color: #2d9574;">"banana"</span>, <span style="color: #2d9574;">"peach"</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+db.food.find<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"fruit"</span> : <span style="color: #2d9574;">"banana"</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">successfully match the document</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>contains all: <code>db.food.find({fruit : {$all : ["apple", "banana"]}})</code></li>
+<li>exact match: <code>db.food.find({"fruit" : ["apple", "banana", "peach"]})</code></li>
+<li>index match: <code>db.food.find({"fruit.2" : "peach"})</code></li>
+<li><code>$size</code>: not working with <code>$gt</code></li>
+<li><code>$slice</code>: <code>db.blog.posts.findOne(criteria, {"comments" : {"$slice" : [23, 10]}})</code>, <code>db.blog.posts.findOne(criteria, {"comments" : {"$slice" : -1}})</code></li>
+<li><code>db.blog.posts.find({"comments.name" : "bob"}, {"comments.$" : 1})</code>: return the matching element with the <code>$</code></li>
+<li>range query on array elements: <code>db.test.find({"x" : {"$elemMatch" : {"$gt" : 10, "$lt" : 20}}})</code></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8b6a26c" class="outline-4">
+<h4 id="org8b6a26c">query embedded documents</h4>
+<div class="outline-text-4" id="text-org8b6a26c">
+<ul class="org-ul">
+<li><code>db.people.find({"name.first" : "Joe", "name.last" : "Schmoe"})</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5f84234" class="outline-4">
+<h4 id="org5f84234"><code>$where</code></h4>
+<div class="outline-text-4" id="text-org5f84234">
+<ul class="org-ul">
+<li>Allows you to execute arbitrary JavaScript as part of your query.(Insecure)</li>
+</ul>
+
+<p>
+"$where" queries should not be used unless <b>strictly necessary</b>: they are much slower than regular queries.
+Each document has to be converted from BSON to a JavaScript object and then run through the "$where" expression.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7481a2b" class="outline-4">
+<h4 id="org7481a2b">query options</h4>
+<div class="outline-text-4" id="text-org7481a2b">
+<p>
+limit, skip, sort
+</p>
+<ul class="org-ul">
+<li>Avoiding Large Skips: large skips are not very efficient</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd8bb460" class="outline-4">
+<h4 id="orgd8bb460">immortal cursors</h4>
+<div class="outline-text-4" id="text-orgd8bb460">
+<p>
+Tells the database not to time out the cursor.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1e14bf1" class="outline-3">
+<h3 id="org1e14bf1"><span class="section-number-3">2.2</span> insert</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-org9216922" class="outline-4">
+<h4 id="org9216922">insertMany</h4>
+<div class="outline-text-4" id="text-org9216922">
+<ul class="org-ul">
+<li>Batch inserts limit: 48 MB. Drivers will split up the batch insert into multiple 48 MB batch inserts</li>
+</ul>
+</div>
+
+<ul class="org-ul">
+<li><a id="org7c11a7f"></a>ordererd vs unordered<br />
+<div class="outline-text-5" id="text-org7c11a7f">
+<ul class="org-ul">
+<li>Executing an ordered list of operations on a sharded collection will generally be slower than executing an unordered list since with an ordered list, each operation must wait for the previous operation to finish.</li>
+<li>For unordered inserts, MongoDB will attempt to insert all documents, regardless of whether some insertions produce errors. execute the operations in parallel</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org23c42dc" class="outline-4">
+<h4 id="org23c42dc">insert</h4>
+<div class="outline-text-4" id="text-org23c42dc">
+<p>
+Old method before mongo 3.0. Use insertOne and insertMany instead
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbb0596f" class="outline-3">
+<h3 id="orgbb0596f"><span class="section-number-3">2.3</span> delete</h3>
+<div class="outline-text-3" id="text-2-3">
+<ul class="org-ul">
+<li><code>deleteOne</code></li>
+<li><code>deleteMany</code></li>
+<li>Clear an entire collection: <code>drop</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd82b0f6" class="outline-3">
+<h3 id="orgd82b0f6"><span class="section-number-3">2.4</span> update</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Updating a document is atomic
+</p>
+<ul class="org-ul">
+<li><code>updateOne</code></li>
+<li><code>updateMany</code></li>
+<li><code>replaceOne</code>: takes a filter as the first parameter, but as the second parameter replaceOne expects a document with which it will replace the document matching the filter.</li>
+</ul>
+<p>
+This can be useful to do a dramatic schema migration.
+</p>
+</div>
+
+<div id="outline-container-orgfd12c35" class="outline-4">
+<h4 id="orgfd12c35">update operaters</h4>
+<div class="outline-text-4" id="text-orgfd12c35">
+<ul class="org-ul">
+<li><code>{"$inc": {"field": 1}}</code>: create or increment 1</li>
+<li><code>{"$set": {"new/existed field": "newValue"}}</code>, <code>{"$unset": {"field": 1}}</code></li>
+<li>change embedded documents: <code>{"$set": {"field.sub": "newValue"}}</code></li>
+<li><code>{"$setOnInsert" : {"createdAt" : new Date()}}</code>: can be useful for creating padding, initializing counters, and for collections that do not use ObjectIds.</li>
+<li><code>findOneAndUpdate</code> (after 4.2): can return the item and update it in a single operation</li>
+<li><code>findOneAndReplace</code></li>
+<li><code>findOneAndDelete</code></li>
+</ul>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgaa394a5"></a>array operaters<br />
+<div class="outline-text-5" id="text-orgaa394a5">
+<ul class="org-ul">
+<li><code>{"$push": {"field": document}}</code> adds elements to the end of an array if the array exists and creates a new array if it does not.</li>
+<li><code>$each</code>: e.g. <code>{"$push" : {"hourly" : {"$each" : [562.776, 562.790, 559.123]}}})~</code></li>
+<li><code>$slice</code> can be used to create a queue in a document. e.g. <code>{"$push" : {"last5" : {"$each" : ["Nightmare on Elm Street", "Saw"], "$slice" : -5}}})</code></li>
+<li><code>$sort</code> If you only want the array to grow to a certain length, you can use the <code>$slice</code> modifier effectively making a “top N” list of items.</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-js">db.movies.updateOne<span style="color: #3a81c3;">(</span>
+    <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"genre"</span> : <span style="color: #2d9574;">"horror"</span><span style="color: #6c3163;">}</span>,
+    <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"$push"</span> : <span style="color: #2d9574;">{</span><span style="color: #2d9574;">"top10"</span> : <span style="color: #67b11d;">{</span><span style="color: #2d9574;">"$each"</span> : <span style="color: #b1951d;">[</span><span style="color: #3a81c3;">{</span><span style="color: #2d9574;">"name"</span> : <span style="color: #2d9574;">"Nightmare on Elm Street"</span>,
+				       <span style="color: #2d9574;">"rating"</span> : 6.6<span style="color: #3a81c3;">}</span>,
+				      <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">"name"</span> : <span style="color: #2d9574;">"Saw"</span>, <span style="color: #2d9574;">"rating"</span> : 4.3<span style="color: #3a81c3;">}</span><span style="color: #b1951d;">]</span>,
+			   <span style="color: #2d9574;">"$slice"</span> : -10,
+			   <span style="color: #2d9574;">"$sort"</span> : <span style="color: #b1951d;">{</span><span style="color: #2d9574;">"rating"</span> : -1<span style="color: #b1951d;">}</span><span style="color: #67b11d;">}</span><span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span>
+<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><code>$addToSet</code>: used to prevent duplicates</li>
+<li><code>{"$pop" : {"key" : 1}}</code> removes an element from the end of the array. <code>{"$pop" : {"key" : -1}}</code> removes it from the beginning.</li>
+<li><code>$pull</code> is used to remove elements of an array that match the given criteria.</li>
+<li>update first match: e.g. set in comments array <code>{"$set" : {"comments.$.author" : "Jim"}}</code></li>
+<li><code>$arrayFilters</code></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-js">db.blog.updateOne<span style="color: #3a81c3;">(</span>
+    <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"post"</span> : post_id <span style="color: #6c3163;">}</span>,
+    <span style="color: #6c3163;">{</span> $set: <span style="color: #2d9574;">{</span> <span style="color: #2d9574;">"comments.$[elem].hidden"</span> : <span style="color: #4e3163;">true</span> <span style="color: #2d9574;">}</span> <span style="color: #6c3163;">}</span>,
+    <span style="color: #6c3163;">{</span>
+	arrayFilters: <span style="color: #2d9574;">[</span> <span style="color: #67b11d;">{</span> <span style="color: #2d9574;">"elem.votes"</span>: <span style="color: #b1951d;">{</span> $lte: -5 <span style="color: #b1951d;">}</span> <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">]</span>
+    <span style="color: #6c3163;">}</span>
+<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">This command defines elem as the identifier for each matching element in the "comments" array.</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">If the votes value for the comment</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">identified by elem is less than or equal to -5, we will add a field called "hidden" to the</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">"comments" document and set its value to true.</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org740323a" class="outline-4">
+<h4 id="org740323a">upsert</h4>
+<div class="outline-text-4" id="text-org740323a">
+<p>
+Eliminating race condition: query-&gt;if exists-&gt;update
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org65f09cd" class="outline-2">
+<h2 id="org65f09cd"><span class="section-number-2">3</span> Server Administration</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org1205cdc" class="outline-3">
+<h3 id="org1205cdc"><span class="section-number-3">3.1</span> mongod options</h3>
+</div>
+<div id="outline-container-org259a504" class="outline-3">
+<h3 id="org259a504"><span class="section-number-3">3.2</span> Troubleshoot</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li><code>getLastError</code></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org0add5d6" class="outline-2">
+<h2 id="org0add5d6"><span class="section-number-2">4</span> Indexing</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgeb66039" class="outline-3">
+<h3 id="orgeb66039"><span class="section-number-3">4.1</span> Test Dataset</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i=0; i&lt;1000000; i++<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+    db.users.insertOne<span style="color: #6c3163;">(</span>
+	<span style="color: #2d9574;">{</span>
+	    <span style="color: #2d9574;">"i"</span> : i,
+	    <span style="color: #2d9574;">"username"</span> : <span style="color: #2d9574;">"user"</span>+i,
+	    <span style="color: #2d9574;">"age"</span> : Math.floor<span style="color: #67b11d;">(</span>Math.random<span style="color: #b1951d;">()</span>*120<span style="color: #67b11d;">)</span>,
+	    <span style="color: #2d9574;">"created"</span> : <span style="color: #3a81c3; font-weight: bold;">new</span> <span style="color: #ba2f59; font-weight: bold;">Date</span><span style="color: #67b11d;">()</span>
+	<span style="color: #2d9574;">}</span>
+    <span style="color: #6c3163;">)</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org0eaf18e" class="outline-4">
+<h4 id="org0eaf18e">Profiling</h4>
+<div class="outline-text-4" id="text-org0eaf18e">
+<p>
+<code>cursor.explain("executionStats")</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org33ef7c8" class="outline-4">
+<h4 id="org33ef7c8">Stages</h4>
+<div class="outline-text-4" id="text-org33ef7c8">
+<ul class="org-ul">
+<li>FETCH: "FETCH" stage will retrieve the documents themselves and return them in batches as the client requests them.</li>
+<li>SORT: means MongoDB would have been unable to sort the result set in the database using an index and instead would have had to do an in-memory sort.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org332cfe7" class="outline-4">
+<h4 id="org332cfe7">Query Types</h4>
+<div class="outline-text-4" id="text-org332cfe7">
+<ul class="org-ul">
+<li>equality filter: {"age": 25}</li>
+<li>multivalue filter: {"age": {"$gte": 40}}</li>
+<li>sort component</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org00e8a31" class="outline-3">
+<h3 id="org00e8a31"><span class="section-number-3">4.2</span> Designing Indexes</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li>selectivity: minimize the number of records scanned. "nReturned" is very close to "totalKeysExamined".</li>
+</ul>
+</div>
+
+<div id="outline-container-org6abcc6e" class="outline-4">
+<h4 id="org6abcc6e"><b>Cardinality</b></h4>
+<div class="outline-text-4" id="text-org6abcc6e">
+<p>
+Cardinality refers to how many distinct values there are for a field in a collection.
+e.g. "gender" low cardinality. "username" high cardinality
+In general, the greater the cardinality of a field, the more helpful an index on that field can be
+</p>
+</div>
+</div>
+
+<div id="outline-container-org65abbc9" class="outline-4">
+<h4 id="org65abbc9">Designing a Compound Index</h4>
+<div class="outline-text-4" id="text-org65abbc9">
+<ol class="org-ol">
+<li>Keys for equality filters should appear first.</li>
+<li>Keys used for sorting should appear before multivalue fields.</li>
+<li>Keys for multivalue filters should appear last.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga51eca0" class="outline-3">
+<h3 id="orga51eca0"><span class="section-number-3">4.3</span> Specifying an Index to Use</h3>
+<div class="outline-text-3" id="text-4-3">
+<ul class="org-ul">
+<li><code>hint([indexname])</code> or <code>hint([indexshape])</code></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org5cb4bf1" class="outline-3">
+<h3 id="org5cb4bf1"><span class="section-number-3">4.4</span> Other Tips</h3>
+<div class="outline-text-3" id="text-4-4">
+</div>
+<div id="outline-container-org3fed782" class="outline-4">
+<h4 id="org3fed782">Inefficient Operators</h4>
+<div class="outline-text-4" id="text-org3fed782">
+<ul class="org-ul">
+<li><code>$ne</code>: they basically have to scan the entire index.</li>
+<li><code>$not</code>: will fall back to doing a table scan</li>
+<li><code>$nin</code>: always uses a table scan</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd23297f" class="outline-4">
+<h4 id="orgd23297f"><code>$or</code></h4>
+<div class="outline-text-4" id="text-orgd23297f">
+<p>
+Performs two queries and then merges the results. In general, doing two queries and merging the results
+is much less efficient than doing a single query; thus, whenever possible, prefer <code>$in</code> to <code>$or</code>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb861d00" class="outline-3">
+<h3 id="orgb861d00"><span class="section-number-3">4.5</span> Special Indexes</h3>
+<div class="outline-text-3" id="text-4-5">
+</div>
+<div id="outline-container-orgc892c3f" class="outline-4">
+<h4 id="orgc892c3f">Index Options</h4>
+<div class="outline-text-4" id="text-orgc892c3f">
+<ul class="org-ul">
+<li>unique. notice: unique index count <code>null</code> as a value.</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="org1b9d78d"></a>partial<br />
+<div class="outline-text-5" id="text-org1b9d78d">
+<p>
+Partial indexes in MongoDB are only created on a subset of the data(the key existed)
+</p>
+<div class="org-src-container">
+<pre class="src src-js">db.users.ensureIndex<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"email"</span> : 1<span style="color: #6c3163;">}</span>,
+		     <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"partialFilterExpression"</span>: <span style="color: #2d9574;">{</span>email: <span style="color: #67b11d;">{</span>$exists: <span style="color: #4e3163;">true</span><span style="color: #67b11d;">}</span><span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+It is unlike sparse indexes on relational databases, which create fewer index entries pointing to a block of data.
+</p>
+</div>
+</li>
+<li><a id="org757a624"></a>Sparse<br />
+<div class="outline-text-5" id="text-org757a624">
+<p>
+"partial" index is the super set of "sparse" index.  always prefer "partial" to "sparse"
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgf919e4f" class="outline-4">
+<h4 id="orgf919e4f">Geospatial Indexes</h4>
+</div>
+<div id="outline-container-orgc7efc89" class="outline-4">
+<h4 id="orgc7efc89">Full Text Search</h4>
+<div class="outline-text-4" id="text-orgc7efc89">
+<ul class="org-ul">
+<li>poorer write performance on text-indexed collections than on others</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="orgd6161f1"></a>Create Text Indexes<br />
+<div class="outline-text-5" id="text-orgd6161f1">
+<div class="org-src-container">
+<pre class="src src-js">db.articles.createIndex<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"title"</span>: <span style="color: #2d9574;">"text"</span>,
+			 <span style="color: #2d9574;">"body"</span> : <span style="color: #2d9574;">"text"</span><span style="color: #6c3163;">}</span>,
+			<span style="color: #6c3163;">{</span><span style="color: #2d9574;">"weights"</span> : <span style="color: #2d9574;">{</span>
+			    <span style="color: #2d9574;">"title"</span> : 3,
+			    <span style="color: #2d9574;">"body"</span> : 2<span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span>,
+			<span style="color: #6c3163;">{</span><span style="color: #2d9574;">"default_language"</span> : <span style="color: #2d9574;">"chinese"</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">create not only indexes all top-level string fields,</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">but also searches embedded documents and arrays for string fields</span>
+db.articles.createIndex<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"$**"</span> : <span style="color: #2d9574;">"text"</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="orgf218d61"></a>Text Search<br />
+<div class="outline-text-5" id="text-orgf218d61">
+<div class="org-src-container">
+<pre class="src src-js">db.articles.find<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"$text"</span>: <span style="color: #2d9574;">{</span><span style="color: #2d9574;">"$search"</span>: <span style="color: #2d9574;">"impact crater lunar"</span><span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span>,
+		 <span style="color: #6c3163;">{</span>title: 1<span style="color: #6c3163;">}</span>
+		<span style="color: #3a81c3;">)</span>.limit<span style="color: #3a81c3;">(</span>10<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><code>$text</code>: will tokenize the search string using whitespace and most punctuation as delimiters.</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org9db7408" class="outline-4">
+<h4 id="org9db7408">TTL Indexes</h4>
+<div class="outline-text-4" id="text-org9db7408">
+<p>
+TTL indexes expire and remove data from normal collections based on the value of a date-typed field
+and a TTL value for the index.
+</p>
+<div class="org-src-container">
+<pre class="src src-js">db.sessions.createIndex<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"lastUpdated"</span> : 1<span style="color: #6c3163;">}</span>, <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"expireAfterSeconds"</span> : 60*60*24<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">change the expireAfterSeconds</span>
+db.runCommand<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"collMod"</span> : <span style="color: #2d9574;">"someapp.cache"</span>,
+	       <span style="color: #2d9574;">"index"</span> : <span style="color: #2d9574;">{</span><span style="color: #2d9574;">"keyPattern"</span> : <span style="color: #67b11d;">{</span><span style="color: #2d9574;">"lastUpdated"</span> : 1<span style="color: #67b11d;">}</span>,
+			  <span style="color: #2d9574;">"expireAfterSeconds"</span> : 3600 <span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+<ul class="org-ul">
+<li>MongoDB sweeps the TTL index once per minute</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org288de57" class="outline-3">
+<h3 id="org288de57"><span class="section-number-3">4.6</span> Special Collections</h3>
+<div class="outline-text-3" id="text-4-6">
+</div>
+<div id="outline-container-orgaefbae2" class="outline-4">
+<h4 id="orgaefbae2">Capped Collections</h4>
+<div class="outline-text-4" id="text-orgaefbae2">
+<p>
+like circular queues
+</p>
+<ul class="org-ul">
+<li>TTL indexes are recommended over capped collections because they perform better with the WiredTiger storage engine</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-js">db.createCollection<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"my_collection"</span>,
+		    <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"capped"</span> : <span style="color: #4e3163;">true</span>,
+		     <span style="color: #2d9574;">"size"</span> : 100000, <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">collection has a fixed size of 100,000 bytes</span>
+		     <span style="color: #2d9574;">"max"</span>: 100<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>; <span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">max number of documents</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">convert the test collection to a capped collection of 10,000 bytes</span>
+db.runCommand<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"convertToCapped"</span> : <span style="color: #2d9574;">"test"</span>, <span style="color: #2d9574;">"size"</span> : 10000<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf3e8749" class="outline-3">
+<h3 id="orgf3e8749"><span class="section-number-3">4.7</span> Tailable Cursors</h3>
+<div class="outline-text-3" id="text-4-7">
+<p>
+Tailable cursors are a special type of cursor that are not closed when their results are exhausted.
+They were inspired by the <code>tail -f</code> command
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4a5e7b5" class="outline-3">
+<h3 id="org4a5e7b5"><span class="section-number-3">4.8</span> Changing Indexes</h3>
+<div class="outline-text-3" id="text-4-8">
+<ul class="org-ul">
+<li>Background indexing is much slower than foreground indexing.</li>
+<li>4.2 introduced a hybrid index build. It only holds the exclusive lock at the beginning and end of the index build.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc231e4b" class="outline-3">
+<h3 id="orgc231e4b"><span class="section-number-3">4.9</span> GridFS</h3>
+<div class="outline-text-3" id="text-4-9">
+<ul class="org-ul">
+<li><i>mongofiles</i>: upload(put), download(get), list, search for, or delete files in GridFS.</li>
+</ul>
+</div>
+<div id="outline-container-orge7d1ace" class="outline-4">
+<h4 id="orge7d1ace">PyMongo API</h4>
+<div class="outline-text-4" id="text-orge7d1ace">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> pymongo
+<span style="color: #3a81c3; font-weight: bold;">import</span> gridfs
+<span style="color: #715ab1;">client</span> = pymongo.MongoClient<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">db</span> = client.test
+<span style="color: #715ab1;">fs</span> = gridfs.GridFS<span style="color: #3a81c3;">(</span>db<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">file_id</span> = fs.put<span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">"Hello, world"</span>, filename=<span style="color: #2d9574;">"foo.txt"</span><span style="color: #3a81c3;">)</span>
+fs.<span style="color: #3a81c3;">list</span><span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">['foo.txt']</span>
+fs.get<span style="color: #3a81c3;">(</span>file_id<span style="color: #3a81c3;">)</span>.read<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">b'Hello, world'</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org120804d" class="outline-4">
+<h4 id="org120804d">Chunk</h4>
+<div class="outline-text-4" id="text-org120804d">
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">chunk in fs.chunks</span>
+<span style="color: #3a81c3;">{</span>
+    <span style="color: #2d9574;">"_id"</span> : ObjectId<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"..."</span><span style="color: #6c3163;">)</span>,
+    <span style="color: #2d9574;">"n"</span> : 0,
+    <span style="color: #2d9574;">"data"</span> : BinData<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"..."</span><span style="color: #6c3163;">)</span>,
+    <span style="color: #2d9574;">"files_id"</span> : ObjectId<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"..."</span><span style="color: #6c3163;">)</span>
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>"files_id": The "_id" of the file document that contains the metadata for the file this chunk is from</li>
+<li>"n": The chunk's position in the file, relative to the other chunks</li>
+<li>"data": The bytes in this chunk of the file</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgba69d23" class="outline-4">
+<h4 id="orgba69d23">File Metadata</h4>
+<div class="outline-text-4" id="text-orgba69d23">
+<ul class="org-ul">
+<li>"length": The total number of bytes making up the content of the file.</li>
+<li>"chunkSize": The size of each chunk comprising the file, in bytes. The default is 255 KB, but this can be adjusted if needed.</li>
+<li>"uploadDate": A timestamp representing when this file was stored in GridFS.</li>
+<li>"md5": An MD5 checksum of this file’s contents, generated on the server side.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org15ec85a" class="outline-2">
+<h2 id="org15ec85a"><span class="section-number-2">5</span> Aggregation</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org60859a7" class="outline-3">
+<h3 id="org60859a7"><span class="section-number-3">5.1</span> Reference</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+<a href="https://docs.mongodb.com/manual/meta/aggregation-quick-reference/">Aggregation Quick Guide</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org33b8ca2" class="outline-3">
+<h3 id="org33b8ca2"><span class="section-number-3">5.2</span> Expressions</h3>
+<div class="outline-text-3" id="text-5-2">
+<ul class="org-ul">
+<li><p>
+Match: $match, $exists
+</p>
+<div class="org-src-container">
+<pre class="src src-js">db.companies.aggregate<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>
+  <span style="color: #2d9574;">{</span>$match: <span style="color: #67b11d;">{</span>founded_year: 2004<span style="color: #67b11d;">}</span><span style="color: #2d9574;">}</span>,
+  <span style="color: #2d9574;">{</span>$limit: 5<span style="color: #2d9574;">}</span>,
+  <span style="color: #2d9574;">{</span>$project: <span style="color: #67b11d;">{</span>
+    _id: 0,
+    name: 1,
+    founded_year: 1
+  <span style="color: #67b11d;">}</span><span style="color: #2d9574;">}</span>
+<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+
+<li>Projection: $project</li>
+<li><p>
+Array: $arrayElemAt, $slice, $filter, $unwind
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">bars is a list of 1440 records</span>
+db.getCollection<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"minbar"</span><span style="color: #3a81c3;">)</span>.aggregate<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">{</span>$match: <span style="color: #67b11d;">{</span><span style="color: #2d9574;">"symbol"</span>: <span style="color: #2d9574;">"btc.usdt/okex"</span><span style="color: #67b11d;">}</span><span style="color: #2d9574;">}</span>,
+				      <span style="color: #2d9574;">{</span>$limit: 50<span style="color: #2d9574;">}</span>,
+				      <span style="color: #2d9574;">{</span>$project: <span style="color: #67b11d;">{</span><span style="color: #2d9574;">"_id"</span>: 0, <span style="color: #2d9574;">"symbol"</span>: 1, <span style="color: #2d9574;">"date"</span>: 1, <span style="color: #2d9574;">"bars"</span>: 1,
+						  <span style="color: #2d9574;">"open"</span>: <span style="color: #b1951d;">{</span><span style="color: #2d9574;">"$arrayElemAt"</span>: <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">"$bars.open"</span>, 0<span style="color: #3a81c3;">]</span><span style="color: #b1951d;">}</span>,
+						  <span style="color: #2d9574;">"high"</span>: <span style="color: #b1951d;">{</span><span style="color: #2d9574;">"$max"</span>: <span style="color: #2d9574;">"$bars.high"</span><span style="color: #b1951d;">}</span>,
+						  <span style="color: #2d9574;">"low"</span>: <span style="color: #b1951d;">{</span><span style="color: #2d9574;">"$min"</span>: <span style="color: #2d9574;">"$bars.low"</span><span style="color: #b1951d;">}</span>,
+						  <span style="color: #2d9574;">"close"</span>: <span style="color: #b1951d;">{</span><span style="color: #2d9574;">"$arrayElemAt"</span>: <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">"$bars.close"</span>, -1<span style="color: #3a81c3;">]</span><span style="color: #b1951d;">}</span>,
+						  <span style="color: #2d9574;">"volume"</span>: <span style="color: #b1951d;">{</span><span style="color: #2d9574;">"$sum"</span>: <span style="color: #2d9574;">"$bars.volume"</span><span style="color: #b1951d;">}</span><span style="color: #67b11d;">}</span><span style="color: #2d9574;">}</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4f924ad" class="outline-3">
+<h3 id="org4f924ad"><span class="section-number-3">5.3</span> Accumulators</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+$max, $min, $sum, $avg, $first, $last, $push, $addToSet, $mergeObjects
+</p>
+</div>
+<div id="outline-container-orgbce8088" class="outline-4">
+<h4 id="orgbce8088">Project Stage</h4>
+<div class="outline-text-4" id="text-orgbce8088">
+<div class="org-src-container">
+<pre class="src src-js">db.companies.aggregate<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>
+    <span style="color: #2d9574;">{</span> $match: <span style="color: #67b11d;">{</span> <span style="color: #2d9574;">"funding_rounds"</span>: <span style="color: #b1951d;">{</span> $exists: <span style="color: #4e3163;">true</span>, $ne: <span style="color: #3a81c3;">[</span> <span style="color: #3a81c3;">]</span><span style="color: #b1951d;">}</span> <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $project: <span style="color: #67b11d;">{</span>
+	_id: 0,
+	name: 1,
+	largest_round: <span style="color: #b1951d;">{</span> $max: <span style="color: #2d9574;">"$funding_rounds.raised_amount"</span> <span style="color: #b1951d;">}</span>
+    <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>
+<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd79c85b" class="outline-4">
+<h4 id="orgd79c85b">Group Stage</h4>
+<div class="outline-text-4" id="text-orgd79c85b">
+<p>
+Fundamental to the group stage is the "_id" field that we specify as part of the document.
+This is the value of the $group operator itself, using a very strict interpretation.
+</p>
+<div class="org-src-container">
+<pre class="src src-js">db.companies.aggregate<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>
+    <span style="color: #2d9574;">{</span> $group: <span style="color: #67b11d;">{</span>
+	_id: <span style="color: #b1951d;">{</span> founded_year: <span style="color: #2d9574;">"$founded_year"</span> <span style="color: #b1951d;">}</span>,
+	average_number_of_employees: <span style="color: #b1951d;">{</span> $avg: <span style="color: #2d9574;">"$number_of_employees"</span> <span style="color: #b1951d;">}</span>
+    <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $sort: <span style="color: #67b11d;">{</span> average_number_of_employees: -1 <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>
+
+<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+db.companies.aggregate<span style="color: #3a81c3;">(</span> <span style="color: #6c3163;">[</span>
+    <span style="color: #2d9574;">{</span> $match: <span style="color: #67b11d;">{</span> <span style="color: #2d9574;">"relationships.person"</span>: <span style="color: #b1951d;">{</span> $ne: <span style="color: #4e3163;">null</span> <span style="color: #b1951d;">}</span> <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $project: <span style="color: #67b11d;">{</span> relationships: 1, _id: 0 <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $unwind: <span style="color: #2d9574;">"$relationships"</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $group: <span style="color: #67b11d;">{</span>
+	_id: <span style="color: #2d9574;">"$relationships.person"</span>,
+	count: <span style="color: #b1951d;">{</span> $sum: 1 <span style="color: #b1951d;">}</span>
+    <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $sort: <span style="color: #67b11d;">{</span> count: -1 <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>
+<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.pretty<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc8edb6f" class="outline-4">
+<h4 id="orgc8edb6f">Complex Example</h4>
+<div class="outline-text-4" id="text-orgc8edb6f">
+<div class="org-src-container">
+<pre class="src src-js">db.companies.aggregate<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>
+    <span style="color: #2d9574;">{</span> $match: <span style="color: #67b11d;">{</span> funding_rounds: <span style="color: #b1951d;">{</span> $exists: <span style="color: #4e3163;">true</span>, $ne: <span style="color: #3a81c3;">[</span> <span style="color: #3a81c3;">]</span> <span style="color: #b1951d;">}</span> <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $unwind: <span style="color: #2d9574;">"$funding_rounds"</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $sort: <span style="color: #67b11d;">{</span> <span style="color: #2d9574;">"funding_rounds.funded_year"</span>: 1,
+	       <span style="color: #2d9574;">"funding_rounds.funded_month"</span>: 1,
+	       <span style="color: #2d9574;">"funding_rounds.funded_day"</span>: 1 <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $group: <span style="color: #67b11d;">{</span>
+	_id: <span style="color: #b1951d;">{</span> company: <span style="color: #2d9574;">"$name"</span> <span style="color: #b1951d;">}</span>,
+	first_round: <span style="color: #b1951d;">{</span> $first: <span style="color: #2d9574;">"$funding_rounds"</span> <span style="color: #b1951d;">}</span>,
+	last_round: <span style="color: #b1951d;">{</span> $last: <span style="color: #2d9574;">"$funding_rounds"</span> <span style="color: #b1951d;">}</span>,
+	num_rounds: <span style="color: #b1951d;">{</span> $sum: 1 <span style="color: #b1951d;">}</span>,
+	total_raised: <span style="color: #b1951d;">{</span> $sum: <span style="color: #2d9574;">"$funding_rounds.raised_amount"</span> <span style="color: #b1951d;">}</span>
+    <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $project: <span style="color: #67b11d;">{</span>
+	_id: 0,
+	company: <span style="color: #2d9574;">"$_id.company"</span>,
+	first_round: <span style="color: #b1951d;">{</span>
+	    amount: <span style="color: #2d9574;">"$first_round.raised_amount"</span>,
+	    article: <span style="color: #2d9574;">"$first_round.source_url"</span>,
+	    year: <span style="color: #2d9574;">"$first_round.funded_year"</span>
+	<span style="color: #b1951d;">}</span>,
+	last_round: <span style="color: #b1951d;">{</span>
+	    amount: <span style="color: #2d9574;">"$last_round.raised_amount"</span>,
+	    article: <span style="color: #2d9574;">"$last_round.source_url"</span>,
+	    year: <span style="color: #2d9574;">"$last_round.funded_year"</span>
+	<span style="color: #b1951d;">}</span>,
+	num_rounds: 1,
+	total_raised: 1,
+    <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
+    <span style="color: #2d9574;">{</span> $sort: <span style="color: #67b11d;">{</span> total_raised: -1 <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>
+<span style="color: #6c3163;">]</span> <span style="color: #3a81c3;">)</span>.pretty<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc62932" class="outline-3">
+<h3 id="orgdc62932"><span class="section-number-3">5.4</span> Writing Results to a Collection</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+$out, $merge
+</p>
+<ul class="org-ul">
+<li>$merge was introduced in MongoDB version 4.2 and is the preferred stage for writing to a collection</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7bea922" class="outline-2">
+<h2 id="org7bea922"><span class="section-number-2">6</span> Transactions</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgd6855ea" class="outline-3">
+<h3 id="orgd6855ea"><span class="section-number-3">6.1</span> Core API VS. Callback API</h3>
+<div class="outline-text-3" id="text-6-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Core API</th>
+<th scope="col" class="org-left">Callback API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Requires explicit call to start the transaction and commit the transaction.</td>
+<td class="org-left">Starts a transaction, executes the specified operations, and commits (or aborts on error).</td>
+</tr>
+
+<tr>
+<td class="org-left">Does not incorporate error-handling logic for TransientTransactionError and UnknownTransactionCommitResult, and instead provides the flexibility to incorporate custom error handling for these errors.</td>
+<td class="org-left">Automatically incorporates error-handling logic for TransientTransactionError and UnknownTransactionCommitResult.</td>
+</tr>
+
+<tr>
+<td class="org-left">Requires explicit logical session to be passed to API for the specific transaction.</td>
+<td class="org-left">Requires explicit logical session to be passed to API for the specific transaction.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org1b62e3a" class="outline-3">
+<h3 id="org1b62e3a"><span class="section-number-3">6.2</span> Core API Example</h3>
+<div class="outline-text-3" id="text-6-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">uri</span> = <span style="color: #2d9574;">'mongodb+srv://server.example.com/'</span>
+<span style="color: #715ab1;">client</span> = MongoClient<span style="color: #3a81c3;">(</span>uriString<span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">my_wc_majority</span> = WriteConcern<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'majority'</span>, wtimeout=1000<span style="color: #3a81c3;">)</span>
+
+
+client.get_database<span style="color: #3a81c3;">(</span> <span style="color: #2d9574;">"webshop"</span>,
+		     write_concern=my_wc_majority<span style="color: #3a81c3;">)</span>.orders.insert_one<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"sku"</span>:
+		     <span style="color: #2d9574;">"abc123"</span>, <span style="color: #2d9574;">"qty"</span>:0<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+client.get_database<span style="color: #3a81c3;">(</span> <span style="color: #2d9574;">"webshop"</span>,
+		     write_concern=my_wc_majority<span style="color: #3a81c3;">)</span>.inventory.insert_one<span style="color: #3a81c3;">(</span>
+		     <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"sku"</span>: <span style="color: #2d9574;">"abc123"</span>, <span style="color: #2d9574;">"qty"</span>: 1000<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">update_orders_and_inventory</span><span style="color: #3a81c3;">(</span>my_session<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">orders</span> = session.client.webshop.orders
+    <span style="color: #715ab1;">inventory</span> = session.client.webshop.inventory
+
+
+    <span style="color: #3a81c3; font-weight: bold;">with</span> session.start_transaction<span style="color: #3a81c3;">(</span>
+	    read_concern=ReadConcern<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"snapshot"</span><span style="color: #6c3163;">)</span>,
+	    write_concern=WriteConcern<span style="color: #6c3163;">(</span>w=<span style="color: #2d9574;">"majority"</span><span style="color: #6c3163;">)</span>,
+	    read_preference=ReadPreference.PRIMARY<span style="color: #3a81c3;">)</span>:
+
+	orders.insert_one<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"sku"</span>: <span style="color: #2d9574;">"abc123"</span>, <span style="color: #2d9574;">"qty"</span>: 100<span style="color: #6c3163;">}</span>, session=my_session<span style="color: #3a81c3;">)</span>
+	inventory.update_one<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"sku"</span>: <span style="color: #2d9574;">"abc123"</span>, <span style="color: #2d9574;">"qty"</span>: <span style="color: #2d9574;">{</span><span style="color: #2d9574;">"$gte"</span>: 100<span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span>,
+			     <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"$inc"</span>: <span style="color: #2d9574;">{</span><span style="color: #2d9574;">"qty"</span>: -100<span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span>, session=my_session<span style="color: #3a81c3;">)</span>
+	commit_with_retry<span style="color: #3a81c3;">(</span>my_session<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">commit_with_retry</span><span style="color: #3a81c3;">(</span>session<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
+	<span style="color: #3a81c3; font-weight: bold;">try</span>:
+	    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Commit uses write concern set at transaction start.</span>
+	    session.commit_transaction<span style="color: #3a81c3;">()</span>
+	    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"Transaction committed."</span><span style="color: #3a81c3;">)</span>
+	    <span style="color: #3a81c3; font-weight: bold;">break</span>
+	<span style="color: #3a81c3; font-weight: bold;">except</span> <span style="color: #3a81c3;">(</span>ConnectionFailure, OperationFailure<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> exc:
+	    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Can retry commit</span>
+	    <span style="color: #3a81c3; font-weight: bold;">if</span> exc.has_error_label<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"UnknownTransactionCommitResult"</span><span style="color: #3a81c3;">)</span>:
+		<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"UnknownTransactionCommitResult, retrying "</span>
+		      <span style="color: #2d9574;">"commit operation ..."</span><span style="color: #3a81c3;">)</span>
+		<span style="color: #3a81c3; font-weight: bold;">continue</span>
+	    <span style="color: #3a81c3; font-weight: bold;">else</span>:
+		<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"Error during commit ..."</span><span style="color: #3a81c3;">)</span>
+		<span style="color: #3a81c3; font-weight: bold;">raise</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">run_transaction_with_retry</span><span style="color: #3a81c3;">(</span>txn_func, session<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
+	<span style="color: #3a81c3; font-weight: bold;">try</span>:
+	    txn_func<span style="color: #3a81c3;">(</span>session<span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">performs transaction</span>
+	    <span style="color: #3a81c3; font-weight: bold;">break</span>
+	<span style="color: #3a81c3; font-weight: bold;">except</span> <span style="color: #3a81c3;">(</span>ConnectionFailure, OperationFailure<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> exc:
+	    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">If transient error, retry the whole transaction</span>
+	    <span style="color: #3a81c3; font-weight: bold;">if</span> exc.has_error_label<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"TransientTransactionError"</span><span style="color: #3a81c3;">)</span>:
+		<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"TransientTransactionError, retrying transaction ..."</span><span style="color: #3a81c3;">)</span>
+		<span style="color: #3a81c3; font-weight: bold;">continue</span>
+	    <span style="color: #3a81c3; font-weight: bold;">else</span>:
+		<span style="color: #3a81c3; font-weight: bold;">raise</span>
+
+<span style="color: #3a81c3; font-weight: bold;">with</span> client.start_session<span style="color: #3a81c3;">()</span> <span style="color: #3a81c3; font-weight: bold;">as</span> my_session:
+    <span style="color: #3a81c3; font-weight: bold;">try</span>:
+	run_transaction_with_retry<span style="color: #3a81c3;">(</span>update_orders_and_inventory, my_session<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">except</span> <span style="color: #ba2f59; font-weight: bold;">Exception</span> <span style="color: #3a81c3; font-weight: bold;">as</span> exc:
+	<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Do something with error. The error handling code is not</span>
+	<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">implemented for you with the Core API.</span>
+	<span style="color: #3a81c3; font-weight: bold;">raise</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f52582" class="outline-3">
+<h3 id="org1f52582"><span class="section-number-3">6.3</span> Callback API Example</h3>
+<div class="outline-text-3" id="text-6-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">uriString</span> = <span style="color: #2d9574;">'mongodb+srv://server.example.com/'</span>
+<span style="color: #715ab1;">client</span> = MongoClient<span style="color: #3a81c3;">(</span>uriString<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">callback</span><span style="color: #3a81c3;">(</span>my_session<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">orders</span> = my_session.client.webshop.orders
+    <span style="color: #715ab1;">inventory</span> = my_session.client.webshop.inventory
+
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Important:: You must pass the session variable 'my_session' to</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">the operations.</span>
+
+    orders.insert_one<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"sku"</span>: <span style="color: #2d9574;">"abc123"</span>, <span style="color: #2d9574;">"qty"</span>: 100<span style="color: #6c3163;">}</span>, session=my_session<span style="color: #3a81c3;">)</span>
+    inventory.update_one<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"sku"</span>: <span style="color: #2d9574;">"abc123"</span>, <span style="color: #2d9574;">"qty"</span>: <span style="color: #2d9574;">{</span><span style="color: #2d9574;">"$gte"</span>: 100<span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span>,
+			 <span style="color: #6c3163;">{</span><span style="color: #2d9574;">"$inc"</span>: <span style="color: #2d9574;">{</span><span style="color: #2d9574;">"qty"</span>: -100<span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span>, session=my_session<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">with</span> client.start_session<span style="color: #3a81c3;">()</span> <span style="color: #3a81c3; font-weight: bold;">as</span> session:
+    session.with_transaction<span style="color: #3a81c3;">(</span>callback,
+			     read_concern=ReadConcern<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'local'</span><span style="color: #6c3163;">)</span>,
+			     write_concern=my_write_concern_majority,
+			     read_preference=ReadPreference.PRIMARY<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb8682f6" class="outline-2">
+<h2 id="orgb8682f6"><span class="section-number-2">7</span> Design Patterns</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+see <a href="https://www.mongodb.com/blog/post/building-with-patterns-a-summary">Summary</a>
+</p>
+</div>
+<div id="outline-container-org51691d4" class="outline-3">
+<h3 id="org51691d4"><span class="section-number-3">7.1</span> Embedding vs References</h3>
+<div class="outline-text-3" id="text-7-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Embedding is better for&#x2026;</th>
+<th scope="col" class="org-left">References are better for&#x2026;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Small subdocuments</td>
+<td class="org-left">Large subdocuments</td>
+</tr>
+
+<tr>
+<td class="org-left">Data that does not change regularly</td>
+<td class="org-left">Volatile data</td>
+</tr>
+
+<tr>
+<td class="org-left">When eventual consistency is acceptable</td>
+<td class="org-left">When immediate consistency is necessary</td>
+</tr>
+
+<tr>
+<td class="org-left">Documents that grow by a small amount</td>
+<td class="org-left">Documents that grow by a large amount</td>
+</tr>
+
+<tr>
+<td class="org-left">Data that you'll often need to perform a second query to fetch</td>
+<td class="org-left">Data that you'll often exclude from the results</td>
+</tr>
+
+<tr>
+<td class="org-left">Fast reads</td>
+<td class="org-left">Fast writes</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6cc837e" class="outline-2">
+<h2 id="org6cc837e"><span class="section-number-2">8</span> Replication</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org21e9c54" class="outline-3">
+<h3 id="org21e9c54"><span class="section-number-3">8.1</span> <code>rs</code></h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+<code>rs</code> is a global variable that contains replication helper functions
+</p>
+<div class="org-src-container">
+<pre class="src src-js">rsconf = <span style="color: #3a81c3;">{</span>
+    _id: <span style="color: #2d9574;">"replSetName"</span>,
+    members: <span style="color: #6c3163;">[</span>
+	<span style="color: #2d9574;">{</span>_id: 0, host: <span style="color: #2d9574;">"localhost:27017"</span><span style="color: #2d9574;">}</span>,
+	<span style="color: #2d9574;">{</span>_id: 1, host: <span style="color: #2d9574;">"localhost:27018"</span><span style="color: #2d9574;">}</span>,
+	<span style="color: #2d9574;">{</span>_id: 2, host: <span style="color: #2d9574;">"localhost:27019"</span><span style="color: #2d9574;">}</span>
+    <span style="color: #6c3163;">]</span>
+<span style="color: #3a81c3;">}</span>
+rs.initiate<span style="color: #3a81c3;">(</span>rsconf<span style="color: #3a81c3;">)</span>
+rs.status<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><code>rs.add</code></li>
+<li><code>rs.remove</code></li>
+<li><code>rs.config</code></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">change hostname</span>
+<span style="color: #3a81c3; font-weight: bold;">var</span> <span style="color: #715ab1;">config</span> = rs.config<span style="color: #3a81c3;">()</span>
+config.members<span style="color: #3a81c3;">[</span>0<span style="color: #3a81c3;">]</span>.host = <span style="color: #2d9574;">"localhost:27017"</span>
+rs.reconfig<span style="color: #3a81c3;">(</span>config<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga5a6f37" class="outline-2">
+<h2 id="orga5a6f37"><span class="section-number-2">9</span> Cluster</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-org57b0ed7" class="outline-3">
+<h3 id="org57b0ed7"><span class="section-number-3">9.1</span> Tools</h3>
+<div class="outline-text-3" id="text-9-1">
+<ul class="org-ul">
+<li>MongoDB Ops Manager</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

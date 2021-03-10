@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kafka</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="kafka" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Kafka</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3b8c1ba">1. MindMap</a></li>
+<li><a href="#org2ca0c60">2. Main Purpose</a></li>
+<li><a href="#org51d015d">3. 版本</a></li>
+<li><a href="#orgc5ab30f">4. 重要配置参数</a>
+<ul>
+<li><a href="#org570c340">4.1. Broker 端</a></li>
+<li><a href="#orgeb938fd">4.2. Topic 全局配置</a></li>
+<li><a href="#org57aeca0">4.3. Topic 自身配置</a></li>
+<li><a href="#org13acc65">4.4. JVM 参数</a></li>
+<li><a href="#orgd97685b">4.5. 操作系统参数</a></li>
+</ul>
+</li>
+<li><a href="#org6c1a0d7">5. Producer</a>
+<ul>
+<li><a href="#orgea19ad7">5.1. 分区策略</a></li>
+<li><a href="#org8a07a73">5.2. 压缩算法</a></li>
+<li><a href="#org028a941">5.3. 消息可靠性保障</a></li>
+<li><a href="#org75213ab">5.4. 无消息丢失配置</a></li>
+</ul>
+</li>
+<li><a href="#org9031d06">6. Installing</a>
+<ul>
+<li><a href="#orgbba2e05">6.1. Verifying</a></li>
+<li><a href="#orge04baf9">6.2. Choose Number of Partitions</a></li>
+<li><a href="#org63a1eaa">6.3. Log Configuration</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3b8c1ba" class="outline-2">
+<h2 id="org3b8c1ba"><span class="section-number-2">1</span> MindMap</h2>
+<div class="outline-text-2" id="text-1">
+
+<div class="figure">
+<p><img src="../resources/kafka/mindmap.jpg" alt="mindmap.jpg" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2ca0c60" class="outline-2">
+<h2 id="org2ca0c60"><span class="section-number-2">2</span> Main Purpose</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>削峰填谷：缓冲上下游瞬时突发流量，使其更平滑</li>
+<li>提供生产者消费者 API</li>
+<li>降低网络传输和磁盘存储开销</li>
+<li>拥抱错误，提供副本冗余机制</li>
+<li>实现高伸缩性架构</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org51d015d" class="outline-2">
+<h2 id="org51d015d"><span class="section-number-2">3</span> 版本</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><code>0.8</code>: 引入副本</li>
+<li><code>0.9</code>: Producer API 在这个版本中算比较稳定了；引入 kafka connect 组件</li>
+<li><code>0.10</code>: 引入 kafka stream；0.10.2.2 引入新版本 Consumer API</li>
+<li><code>0.11</code>: 引入幂等性 Producer API 以及事务（Transaction） API；消息格式做了重构；推荐 0.11.0.3 以上</li>
+<li><code>1.0~和~2.0</code>: kafka stream 改进，直接使用 2.0</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc5ab30f" class="outline-2">
+<h2 id="orgc5ab30f"><span class="section-number-2">4</span> 重要配置参数</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org570c340" class="outline-3">
+<h3 id="org570c340"><span class="section-number-3">4.1</span> Broker 端</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>log.dirs: 指定了 Broker 需要使用的若干个文件目录路径，可指定不同磁盘路径，提高吞吐量，并提供 Failover 功能</li>
+<li>zookeeper.connect: 与其他应用共用时指定 chroot, 例： <code>zk1:2181,zk2:2181,zk3:2181/kafka</code></li>
+<li>listeners, advertised.listeners: 告诉外部连接者要通过什么协议访问指定主机名和端口开放的 Kafka 服务 格式： &lt;协议名称，主机名，端口号&gt;，可自定义协议</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgeb938fd" class="outline-3">
+<h3 id="orgeb938fd"><span class="section-number-3">4.2</span> Topic 全局配置</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li>auto.create.topics.enable: 是否允许自动创建 Topic</li>
+<li>unclean.leader.election.enable: 是否允许 Unclean Leader 选举，配 false, 坚决不让那些落后太多的副本竞选 Leader</li>
+<li>auto.leader.rebalance.enable: 是否允许定期进行 Leader 选举，也配 false，理由换 Leader 代价太高</li>
+<li>log.retention.{hours|minutes|ms}</li>
+<li>log.retention.bytes: 指定 Broker 为消息保存的总磁盘容量大小</li>
+<li>message.max.bytes: 控制 Broker 能够接收的最大消息大小，可设置大一点，不会耗费额外磁盘空间</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org57aeca0" class="outline-3">
+<h3 id="org57aeca0"><span class="section-number-3">4.3</span> Topic 自身配置</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+会替换全局配置, 使用脚本：kafka-topics.sh, kafka-configs.sh
+</p>
+<ul class="org-ul">
+<li>retention.ms</li>
+<li>retention.bytes</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org13acc65" class="outline-3">
+<h3 id="org13acc65"><span class="section-number-3">4.4</span> JVM 参数</h3>
+<div class="outline-text-3" id="text-4-4">
+<ul class="org-ul">
+<li>Heap Size: 环境变量 KAFKA_HEAP_OPTS。建议 6GB，Kafka Broker 在与客户端进行交互时会在 JVM 堆上创建大量的 ByteBuffer 实例，默认 1GB 略少</li>
+<li>GC 设置：环境变量 KAFKA_JVM_PERFORMANCE_OPTS 。
+如果 CPU 资源非常充裕，建议使用 CMS 收集器，启用方法是指定-XX:+UseCurrentMarkSweepGC；否则使用吞吐量收集器，开启方法是指定-XX:+UseParallelGC；
+JAVA8 直接使用默认 G1 收集器，在没有任何调优的情况下，G1 表现得要比 CMS 出色，主要体现在更少的 Full GC，需要调整的参数更少等，所以使用 G1 就好了。</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #3a81c3;">export</span> <span style="color: #715ab1;">KAFKA_HEAP_OPTS</span>=--Xms6g --Xmx6g
+<span style="color: #3a81c3;">export</span> <span style="color: #715ab1;">KAFKA_JVM_PERFORMANCE_OPTS</span>= -server -XX:+UseG1GC -XX:<span style="color: #715ab1;">MaxGCPauseMillis</span>=20
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd97685b" class="outline-3">
+<h3 id="orgd97685b"><span class="section-number-3">4.5</span> 操作系统参数</h3>
+<div class="outline-text-3" id="text-4-5">
+<ul class="org-ul">
+<li>ulimit: 通常情况下将它设置成一个超大的值是合理的做法，比如 ulimit -n 1000000。不设大点会经常出现“Too many open files”错误</li>
+<li>文件系统：ZFS&gt;XFS&gt;ext4</li>
+<li>swap：设置成 0，当物理内存耗尽时，操作系统会触发 OOM killer 这个组件，它会随机挑选一个进程然后 kill 掉，根本不给用户任何的预警。</li>
+</ul>
+<p>
+设置成一个比较小的值，当开始使用 swap 空间时，你至少能够观测到 Broker 性能开始出现急剧下降，从而给你进一步调优和诊断问题的时间。设置成 1 即可
+</p>
+<ul class="org-ul">
+<li>页缓存落地间隔：默认 5 秒。一般情况下我们会认为这个时间太频繁了，可以适当地增加提交间隔来降低物理磁盘的写操作。</li>
+</ul>
+<p>
+Kafka 在软件层面已经提供了多副本的冗余机制，因此这里稍微拉大提交间隔去换取性能还是一个合理的做法
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org6c1a0d7" class="outline-2">
+<h2 id="org6c1a0d7"><span class="section-number-2">5</span> Producer</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgea19ad7" class="outline-3">
+<h3 id="orgea19ad7"><span class="section-number-3">5.1</span> 分区策略</h3>
+<div class="outline-text-3" id="text-5-1">
+<ul class="org-ul">
+<li>默认 Round-robin 策略： 非常优秀的负载均衡表现</li>
+<li><p>
+随机策略
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #ba2f59; font-weight: bold;">List</span><span style="color: #3a81c3;">&lt;</span><span style="color: #ba2f59; font-weight: bold;">PartitionInfo</span><span style="color: #3a81c3;">&gt;</span> <span style="color: #715ab1;">partitions</span> = cluster.partitionsForTopic<span style="color: #3a81c3;">(</span>topic<span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">return</span> ThreadLocalRandom.current<span style="color: #3a81c3;">()</span>.nextInt<span style="color: #3a81c3;">(</span>partitions.size<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div></li>
+
+<li><p>
+按消息键保序策略
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #ba2f59; font-weight: bold;">List</span> <span style="color: #715ab1;">partitions</span> = cluster.partitionsForTopic<span style="color: #3a81c3;">(</span>topic<span style="color: #3a81c3;">)</span>;
+<span style="color: #3a81c3; font-weight: bold;">return</span> Math.abs<span style="color: #3a81c3;">(</span>key.hashCode<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span> % partitions.size<span style="color: #3a81c3;">()</span>;
+</pre>
+</div></li>
+
+<li><p>
+自定义分区策略：重写 Partitioner 接口 partition 方法实现，签名
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">partition</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">String</span> <span style="color: #715ab1;">topic</span>, <span style="color: #ba2f59; font-weight: bold;">Object</span> <span style="color: #715ab1;">key</span>, <span style="color: #ba2f59; font-weight: bold;">byte</span><span style="color: #6c3163;">[]</span> <span style="color: #715ab1;">keyBytes</span>, <span style="color: #ba2f59; font-weight: bold;">Object</span> <span style="color: #715ab1;">value</span>, <span style="color: #ba2f59; font-weight: bold;">byte</span><span style="color: #6c3163;">[]</span> <span style="color: #715ab1;">valueBytes</span>, <span style="color: #ba2f59; font-weight: bold;">Cluster</span> <span style="color: #715ab1;">cluster</span><span style="color: #3a81c3;">)</span>;
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8a07a73" class="outline-3">
+<h3 id="org8a07a73"><span class="section-number-3">5.2</span> 压缩算法</h3>
+<div class="outline-text-3" id="text-5-2">
+<ul class="org-ul">
+<li>Producer 端压缩、Broker 端保持、Consumer 端解压缩</li>
+<li>可选算法： GZIP、Snappy、LZ4、Zstandard(简写 zstd，超高压缩比)</li>
+</ul>
+
+<div class="figure">
+<p><img src="../resources/kafka/compression_ratio.png" alt="compression_ratio.png" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org028a941" class="outline-3">
+<h3 id="org028a941"><span class="section-number-3">5.3</span> 消息可靠性保障</h3>
+<div class="outline-text-3" id="text-5-3">
+<ul class="org-ul">
+<li>最多一次（at most once）：消息可能会丢失，但绝不会被重复发送。</li>
+<li>至少一次（at least once）：消息不会丢失，但有可能被重复发送。</li>
+<li>精确一次（exactly once）：消息不会丢失，也不会被重复发送。</li>
+</ul>
+
+<p>
+Kafka 默认 at least once，网络抖动会导致 Producer 重传；禁止 producer 重试则改为 at most once；
+要实现精确一次，需用到幂等性（Idempotence）和事务（Transaction）机制。
+</p>
+</div>
+
+<div id="outline-container-org1500e06" class="outline-4">
+<h4 id="org1500e06">幂等性</h4>
+<div class="outline-text-4" id="text-org1500e06">
+<p>
+最大优势在于我们可以安全地重试任何幂等性操作，反正它们也不会破坏我们的系统状态
+</p>
+
+<ul class="org-ul">
+<li>0.11 版本后可指定幂等性 Producer： <code>props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG， true)</code>, Kafka 会自动做消息的重复去重，实现细节：空间换时间，消息多保存一些字段
+<ul class="org-ul">
+<li>只保证分区上的幂等性</li>
+<li>只保证单会话的幂等性，即进程重启，幂等性保证就消失了</li>
+</ul></li>
+<li>解决以上问题需使用事务 Producer</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2431a6e" class="outline-4">
+<h4 id="org2431a6e">事务</h4>
+<div class="outline-text-4" id="text-org2431a6e">
+<p>
+性能相比幂等性 Producer 更差。 启用方法： 开启 enable.idempotence = true。设置 Producer 端参数 transactional.id。最好为其设置一个有意义的名字。代码调整如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">producer.initTransactions<span style="color: #3a81c3;">()</span>;
+<span style="color: #3a81c3; font-weight: bold;">try</span> <span style="color: #3a81c3;">{</span>
+  producer.beginTransaction<span style="color: #6c3163;">()</span>;
+  producer.send<span style="color: #6c3163;">(</span>record1<span style="color: #6c3163;">)</span>;
+  producer.send<span style="color: #6c3163;">(</span>record2<span style="color: #6c3163;">)</span>;
+  producer.commitTransaction<span style="color: #6c3163;">()</span>;
+<span style="color: #3a81c3;">}</span> <span style="color: #3a81c3; font-weight: bold;">catch</span> <span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">KafkaException</span> <span style="color: #715ab1;">e</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  producer.abortTransaction<span style="color: #6c3163;">()</span>;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<p>
+Consumer 端需要设置 isolation.level 参数为 read_committed
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org75213ab" class="outline-3">
+<h3 id="org75213ab"><span class="section-number-3">5.4</span> 无消息丢失配置</h3>
+<div class="outline-text-3" id="text-5-4">
+<ol class="org-ol">
+<li>不要使用 producer.send(msg)，而要使用 producer.send(msg, callback)</li>
+<li>设置 acks = all，即等所有副本确认才算确认</li>
+<li>设置 Producer 的 retries 为一个较大的值</li>
+<li>设置 Broker 参数 unclean.leader.election.enable = false</li>
+<li>设置 replication.factor &gt;= 3，多冗余</li>
+<li>设置 Broker 参数 min.insync.replicas &gt; 1，至少写入多少个副本才算提交</li>
+<li>确保 replication.factor &gt; min.insync.replicas。 推荐设置成 replication.factor = min.insync.replicas + 1</li>
+<li>确保消息消费完成再提交。即 Consumer 不启用 enable.auto.commit</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9031d06" class="outline-2">
+<h2 id="org9031d06"><span class="section-number-2">6</span> Installing</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+See <a href="https://github.com/wurstmeister/kafka-docker">https://github.com/wurstmeister/kafka-docker</a>
+</p>
+<ul class="org-ul">
+<li>Change environment <code>KAFKA_ADVERTISED_HOST_NAME</code></li>
+</ul>
+</div>
+
+<div id="outline-container-orgbba2e05" class="outline-3">
+<h3 id="orgbba2e05"><span class="section-number-3">6.1</span> Verifying</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+<pre class="src src-bash">kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+kafka-topics.sh --zookeeper localhost:2181 --describe --topic test
+kafka-console-producer.sh --broker-list localhost:32772 --topic test
+kafka-console-consumer.sh --bootstrap-server localhost:32772 --topic test --from-beginning
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge04baf9" class="outline-3">
+<h3 id="orge04baf9"><span class="section-number-3">6.2</span> Choose Number of Partitions</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+Book REF: HOW TO CHOOSE THE NUMBER OF PARTITIONS
+</p>
+<ul class="org-ul">
+<li><p>
+suggestion
+</p>
+
+<p>
+If you have some estimate regarding the target throughput of the topic and the
+expected throughput of the consumers, you can divide the target throughput by
+the expected consumer throughput and derive the number of partitions this way.
+So if I want to be able to write and read 1 GB/sec from a topic, and I know each
+consumer can only process 50 MB/s, then I know I need at least 20 partitions.
+This way, I can have 20 consumers reading from the topic and achieve 1 GB/sec.
+If you don’t have this detailed information, our experience suggests that limiting
+the size of the partition on the disk to less than 6 GB per day of retention often
+gives satisfactory results.
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org63a1eaa" class="outline-3">
+<h3 id="org63a1eaa"><span class="section-number-3">6.3</span> Log Configuration</h3>
+<div class="outline-text-3" id="text-6-3">
+<ul class="org-ul">
+<li><code>log.retention.ms</code>: The most common configuration for how long Kafka will retain messages is by time.</li>
+<li><code>log.retention.bytes</code>: Another way to expire messages is based on the total number of bytes of messages retained.</li>
+<li><code>log.segment.bytes</code></li>
+<li><code>log.segment.ms</code></li>
+<li><code>message.max.bytes</code>: The Kafka broker limits the maximum size of a message that can be produced.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

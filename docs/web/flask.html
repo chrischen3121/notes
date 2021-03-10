@@ -1,0 +1,1685 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flask</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="flask, backend" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Flask</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga66660c">1. WSGI</a></li>
+<li><a href="#orged079f2">2. Context</a></li>
+<li><a href="#org1beb8aa">3. Request hooks</a></li>
+<li><a href="#org0ecdad3">4. Response</a>
+<ul>
+<li><a href="#orge404cfc">4.1. tuple</a></li>
+<li><a href="#orgdbbf81c">4.2. <b>response</b> object</a></li>
+<li><a href="#org1260385">4.3. redirect</a></li>
+<li><a href="#orgbfbc948">4.4. abort</a></li>
+</ul>
+</li>
+<li><a href="#org30a2294">5. Jinja2 template engine</a>
+<ul>
+<li><a href="#org6e614a7">5.1. Variable</a></li>
+<li><a href="#orga31347a">5.2. Filters</a></li>
+<li><a href="#org81f3c8f">5.3. Control structures</a></li>
+<li><a href="#orgee2eaf9">5.4. Inheritance</a></li>
+<li><a href="#org57931fd">5.5. Custom Error Pages</a></li>
+<li><a href="#org850e54d">5.6. Links</a></li>
+<li><a href="#org4ee11ae">5.7. Static files</a></li>
+</ul>
+</li>
+<li><a href="#orgbb51557">6. Web forms</a>
+<ul>
+<li><a href="#org0416cd1">6.1. flask_wtf</a></li>
+<li><a href="#org0d1f32e">6.2. redirect issue</a></li>
+<li><a href="#orga748a74">6.3. Sessions</a></li>
+<li><a href="#org2ceab7f">6.4. flash</a></li>
+</ul>
+</li>
+<li><a href="#orga994352">7. Databases</a>
+<ul>
+<li><a href="#orgba0ff40">7.1. ORMs/ODMs</a></li>
+<li><a href="#org797566b">7.2. flask_sqlalchemy</a></li>
+</ul>
+</li>
+<li><a href="#orgfd817d2">8. Application Structure</a>
+<ul>
+<li><a href="#org957abee">8.1. Configuration Example</a></li>
+<li><a href="#org026cf11">8.2. Dynamic App Creation</a></li>
+<li><a href="#orgf6670d6">8.3. Launch Script</a></li>
+<li><a href="#orgc7c4e67">8.4. <b>Project Generator</b></a></li>
+</ul>
+</li>
+<li><a href="#org3fac3a9">9. RESTful API</a>
+<ul>
+<li><a href="#orgf72a647">9.1. characteristics</a></li>
+<li><a href="#orgb4f63b3">9.2. Request Methods</a></li>
+<li><a href="#org4112fd0">9.3. URL</a></li>
+<li><a href="#org7d2af9f">9.4. Error Handling</a></li>
+<li><a href="#orgd6d0a67">9.5. Authentication</a></li>
+</ul>
+</li>
+<li><a href="#org759c06b">10. Extensions</a>
+<ul>
+<li><a href="#org4e69580">10.1. flask_script</a></li>
+<li><a href="#org74c1e7f">10.2. flask_bootstrap</a></li>
+<li><a href="#org42091c7">10.3. flask_moment</a></li>
+<li><a href="#org078f1d2">10.4. flask_mail</a></li>
+<li><a href="#orgd056eda">10.5. flask_restful</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga66660c" class="outline-2">
+<h2 id="orga66660c"><span class="section-number-2">1</span> WSGI</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Web Server Gateway Interface
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">application</span><span style="color: #3a81c3;">(</span>environ, start_response<span style="color: #3a81c3;">)</span>:
+    start_response<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'200 OK'</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">(</span><span style="color: #2d9574;">'Content-Type'</span>, <span style="color: #2d9574;">'text/html'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #2d9574;">'&lt;h1&gt;Hello, world!&lt;/h1&gt;'</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>environ: [dict] http request</li>
+<li>start_response: a function to send response</li>
+<li>return body(html)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orged079f2" class="outline-2">
+<h2 id="orged079f2"><span class="section-number-2">2</span> Context</h2>
+<div class="outline-text-2" id="text-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Variable name</th>
+<th scope="col" class="org-left">Context</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">current_app</td>
+<td class="org-left">Application context</td>
+<td class="org-left">The application instance for the active application</td>
+</tr>
+
+<tr>
+<td class="org-left">g</td>
+<td class="org-left">Application context</td>
+<td class="org-left">An object can use for temporary storage. reset with each request</td>
+</tr>
+
+<tr>
+<td class="org-left">request</td>
+<td class="org-left">Request context</td>
+<td class="org-left">The request object, which encapsulates a http request</td>
+</tr>
+
+<tr>
+<td class="org-left">session</td>
+<td class="org-left">Request context</td>
+<td class="org-left">The user session, a dictionary storage shared by requests within session</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org1beb8aa" class="outline-2">
+<h2 id="org1beb8aa"><span class="section-number-2">3</span> Request hooks</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+hook decorators
+</p>
+<ul class="org-ul">
+<li><b>before_first_request</b>: register a function to run before the first request</li>
+<li><b>before_request</b>: register a function to run before each request</li>
+<li><b>after_request</b>: register a function to run after each request if no unhandled exceptions occurred</li>
+<li><b>teardown_request</b>: register a function to run after each request even if unhandled exceptions occurred</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0ecdad3" class="outline-2">
+<h2 id="org0ecdad3"><span class="section-number-2">4</span> Response</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orge404cfc" class="outline-3">
+<h3 id="orge404cfc"><span class="section-number-3">4.1</span> tuple</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>Form: (html, status_code, headerdict)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdbbf81c" class="outline-3">
+<h3 id="orgdbbf81c"><span class="section-number-3">4.2</span> <b>response</b> object</h3>
+<div class="outline-text-3" id="text-4-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask <span style="color: #3a81c3; font-weight: bold;">import</span> make_response
+
+<span style="color: #ba2f59; font-weight: bold;">@app.route</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'/'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">index</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #715ab1;">response</span> = make_response<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'&lt;h1&gt;This document carries a cookie!&lt;/h1&gt;'</span><span style="color: #3a81c3;">)</span>
+    response.set_cookie<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'answer'</span>, <span style="color: #2d9574;">'42'</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> response
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1260385" class="outline-3">
+<h3 id="org1260385"><span class="section-number-3">4.3</span> redirect</h3>
+<div class="outline-text-3" id="text-4-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">return</span> redirect<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'http://www.example.com'</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbfbc948" class="outline-3">
+<h3 id="orgbfbc948"><span class="section-number-3">4.4</span> abort</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+used for error handling
+</p>
+<ul class="org-ul">
+<li>abort does not return control back to the function that calls it but gives control back to the web server by raising an exception.</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python">abort<span style="color: #3a81c3;">(</span>404<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org30a2294" class="outline-2">
+<h2 id="org30a2294"><span class="section-number-2">5</span> Jinja2 template engine</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org6e614a7" class="outline-3">
+<h3 id="org6e614a7"><span class="section-number-3">5.1</span> Variable</h3>
+<div class="outline-text-3" id="text-5-1">
+<ul class="org-ul">
+<li>Form: <code>{{ name }}</code></li>
+<li>Jinja2 recognizes variables of any typ</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-web">&lt;p&gt;A value from a dictionary: {{ mydict['key'] }}.&lt;/p&gt;
+&lt;p&gt;A value from a list: {{ mylist[3] }}.&lt;/p&gt;
+&lt;p&gt;A value from a list, with a variable index: {{ mylist[myintvar] }}.&lt;/p&gt;
+&lt;p&gt;A value from an object's method: {{ myobj.somemethod() }}.&lt;/p&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga31347a" class="outline-3">
+<h3 id="orga31347a"><span class="section-number-3">5.2</span> Filters</h3>
+<div class="outline-text-3" id="text-5-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Filter name</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">safe</td>
+<td class="org-left">Renders the value without applying escaping</td>
+</tr>
+
+<tr>
+<td class="org-left">capitalize</td>
+<td class="org-left">Converts the first char to uppercase</td>
+</tr>
+
+<tr>
+<td class="org-left">lower</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">upper</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">title</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">trim</td>
+<td class="org-left">Removes leading and trailing whitespace</td>
+</tr>
+
+<tr>
+<td class="org-left">striptags</td>
+<td class="org-left">Removes any HTML tags</td>
+</tr>
+</tbody>
+</table>
+<div class="org-src-container">
+<pre class="src src-web">&lt;h1&gt;Hello, {{ name|capitalize }}!&lt;/h1&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgc81ace3" class="outline-4">
+<h4 id="orgc81ace3"><span class="section-number-4">5.2.1</span> safe</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<ul class="org-ul">
+<li>Never use the safe filter on values that aren’t trusted, such as text entered by users on web forms.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org81f3c8f" class="outline-3">
+<h3 id="org81f3c8f"><span class="section-number-3">5.3</span> Control structures</h3>
+<div class="outline-text-3" id="text-5-3">
+</div>
+<div id="outline-container-org5170455" class="outline-4">
+<h4 id="org5170455"><span class="section-number-4">5.3.1</span> if</h4>
+<div class="outline-text-4" id="text-5-3-1">
+<div class="org-src-container">
+<pre class="src src-web">{% if user %}
+    Hello, {{ user }}!
+{% else %}
+    Hello, Stranger!
+{% endif %}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org86dafb9" class="outline-4">
+<h4 id="org86dafb9"><span class="section-number-4">5.3.2</span> for loop</h4>
+<div class="outline-text-4" id="text-5-3-2">
+<div class="org-src-container">
+<pre class="src src-web">&lt;ul&gt;
+    {% for comment in comments %}
+	&lt;li&gt;{{ comment }}&lt;/li&gt;
+    {% endfor %}
+&lt;/ul&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc5826ec" class="outline-4">
+<h4 id="orgc5826ec"><span class="section-number-4">5.3.3</span> macro</h4>
+<div class="outline-text-4" id="text-5-3-3">
+<p>
+macro are similar to functions in Python code
+</p>
+<div class="org-src-container">
+<pre class="src src-web">{% macro render_comment(comment) %}
+    &lt;li&gt;{{ comment }}&lt;/li&gt;
+{% endmacro %}
+
+&lt;ul&gt;
+    {% for comment in comments %}
+	{{ render_comment(comment) }}
+    {% endfor %}
+&lt;/ul&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org0d6fe70" class="outline-5">
+<h5 id="org0d6fe70">import macro from standalone macro file</h5>
+<div class="outline-text-5" id="text-org0d6fe70">
+<div class="org-src-container">
+<pre class="src src-web">{% import 'macros.html' as macros %}
+&lt;ul&gt;
+    {% for comment in comments %}
+	{{ macros.render_comment(comment) }}
+    {% endfor %}
+&lt;/ul&gt;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org45c7f1a" class="outline-4">
+<h4 id="org45c7f1a"><span class="section-number-4">5.3.4</span> include common file</h4>
+<div class="outline-text-4" id="text-5-3-4">
+<p>
+{% include 'common.html' %}
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgee2eaf9" class="outline-3">
+<h3 id="orgee2eaf9"><span class="section-number-3">5.4</span> Inheritance</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+Block tags define elements that a derived template can change.
+</p>
+</div>
+<div id="outline-container-org9bc9fac" class="outline-4">
+<h4 id="org9bc9fac"><span class="section-number-4">5.4.1</span> base template</h4>
+<div class="outline-text-4" id="text-5-4-1">
+<div class="org-src-container">
+<pre class="src src-web">&lt;html&gt;
+&lt;head&gt;
+    {% block head %}
+    &lt;title&gt;{% block title %}{% endblock %} - My Application&lt;/title&gt;
+    {% endblock %}
+&lt;/head&gt;
+&lt;body&gt;
+    {% block body %}
+    {% endblock %}
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9cff2c0" class="outline-4">
+<h4 id="org9cff2c0"><span class="section-number-4">5.4.2</span> extendsion template</h4>
+<div class="outline-text-4" id="text-5-4-2">
+<p>
+If the application needs to add its own content to a block that already has some content,
+then Jinja2’s super() function must be used.
+</p>
+<div class="org-src-container">
+<pre class="src src-web">{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+    {{ super() }} &lt;!--super() to retain the original contents --&gt;
+    &lt;style&gt;
+    &lt;/style&gt;
+{% endblock %}
+{% block body %}
+&lt;h1&gt;Hello, World!&lt;/h1&gt;
+{% endblock %}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org57931fd" class="outline-3">
+<h3 id="org57931fd"><span class="section-number-3">5.5</span> Custom Error Pages</h3>
+<div class="outline-text-3" id="text-5-5">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@app.errorhandler</span><span style="color: #3a81c3;">(</span>404<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">page_not_found</span><span style="color: #3a81c3;">(</span>e<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> render_template<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'404.html'</span><span style="color: #3a81c3;">)</span>, 404
+
+<span style="color: #ba2f59; font-weight: bold;">@app.errorhandler</span><span style="color: #3a81c3;">(</span>500<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">internal_server_error</span><span style="color: #3a81c3;">(</span>e<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> render_template<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'500.html'</span><span style="color: #3a81c3;">)</span>, 500
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org850e54d" class="outline-3">
+<h3 id="org850e54d"><span class="section-number-3">5.6</span> Links</h3>
+<div class="outline-text-3" id="text-5-6">
+<p>
+<b>url_for()</b> function to generate dynamic URLs from the imformation stored in the app's URL map.
+</p>
+<div class="org-src-container">
+<pre class="src src-python">url_for<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'user'</span>, name=<span style="color: #2d9574;">'john'</span>, _external=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">return http://localhost:5000/user/john</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>arg1: view function name</li>
+<li>args: view function args</li>
+<li><code>_external</code>: return an absolute URL</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4ee11ae" class="outline-3">
+<h3 id="org4ee11ae"><span class="section-number-3">5.7</span> Static files</h3>
+<div class="outline-text-3" id="text-5-7">
+<p>
+Flask looks for static files in a subdirectory called <i>static</i> located in the application’s root folder.
+</p>
+<div class="org-src-container">
+<pre class="src src-python">url_for<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'static'</span>, filename=<span style="color: #2d9574;">'css/styles.css'</span>, _external=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbb51557" class="outline-2">
+<h2 id="orgbb51557"><span class="section-number-2">6</span> Web forms</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Form data from clients is in request.form (POST)
+</p>
+</div>
+<div id="outline-container-org0416cd1" class="outline-3">
+<h3 id="org0416cd1"><span class="section-number-3">6.1</span> flask_wtf</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+<i>flask_wtf</i> wraps the <b>WTForms</b> packages, handles two things:
+</p>
+<ul class="org-ul">
+<li>generate HTML code for forms</li>
+<li>validate the submitted form data</li>
+</ul>
+</div>
+
+<div id="outline-container-org0264c52" class="outline-4">
+<h4 id="org0264c52"><span class="section-number-4">6.1.1</span> CSRF protection</h4>
+<div class="outline-text-4" id="text-6-1-1">
+<p>
+<i>flask_wtf</i> uses token to verify the authenticity of requests with form data
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">app</span> = Flask<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">__name__</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">app.config</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'SECRET_KEY'</span><span style="color: #3a81c3;">]</span> = <span style="color: #2d9574;">'hard to guess string'</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>the <b>SECRET_KEY</b> configuration is aslo used by Flask and other third-party extendsions</li>
+<li>For added security, the secret key should be stored in an environment variable</li>
+</ul>
+<p>
+instead of being embedded in the code.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org46be211" class="outline-4">
+<h4 id="org46be211"><span class="section-number-4">6.1.2</span> Form class</h4>
+<div class="outline-text-4" id="text-6-1-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_wtf <span style="color: #3a81c3; font-weight: bold;">import</span> FlaskForm
+<span style="color: #3a81c3; font-weight: bold;">from</span> wtforms <span style="color: #3a81c3; font-weight: bold;">import</span> StringField, SubmitField
+<span style="color: #3a81c3; font-weight: bold;">from</span> wtforms.validators <span style="color: #3a81c3; font-weight: bold;">import</span> Required
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">NameForm</span><span style="color: #3a81c3;">(</span>Form<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">name</span> = StringField<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'What is your name?'</span>, validators=<span style="color: #6c3163;">[</span>Required<span style="color: #2d9574;">()</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">submit</span> = SubmitField<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Submit'</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>the <b>StringField</b> class represents an &lt;input&gt; element with a type="text" attribute</li>
+<li>the <b>SubmitField</b> class represents an &lt;input&gt; element with a type="submit" attribute</li>
+</ul>
+</div>
+
+<div id="outline-container-org7d7febc" class="outline-5">
+<h5 id="org7d7febc">Fields</h5>
+<div class="outline-text-5" id="text-org7d7febc">
+<ul class="org-ul">
+<li>Text field: StringField, TextAreaField, PasswordField, HiddenField, DateField, DateTimeField,</li>
+</ul>
+<p>
+IntegerField, DecimalField, FloatField
+</p>
+<ul class="org-ul">
+<li>BooleanField: Checkbox with True and False values</li>
+<li>RadioField: List of radio buttons</li>
+<li>SelectField: Drop-down list of choices</li>
+<li>SelectMultipleField: Drop-down list of choices with multiple selection</li>
+<li>FileField: File upload field</li>
+<li>SubmitField: Form submission button</li>
+<li>FormField: Embed a form as a field in a container form</li>
+<li>FieldList: List of fields of a given type</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2374cb7" class="outline-5">
+<h5 id="org2374cb7">Validators</h5>
+<div class="outline-text-5" id="text-org2374cb7">
+<p>
+Email, IPAddress, Length, NumberRange, Optional, Required, Regexp, URL, AnyOf, NoneOf
+</p>
+<ul class="org-ul">
+<li>EqualTo: useful when requesting a password to be entered twice for confirmation</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6f5c81e" class="outline-5">
+<h5 id="org6f5c81e">Template</h5>
+<div class="outline-text-5" id="text-org6f5c81e">
+<div class="org-src-container">
+<pre class="src src-web">{% import "bootstrap/wtf.html" as wtf %}
+{{ wtf.quick_form(form) }}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd9ec31e" class="outline-5">
+<h5 id="orgd9ec31e">View function</h5>
+<div class="outline-text-5" id="text-orgd9ec31e">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@app.route</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'/'</span>, methods=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'GET'</span>, <span style="color: #2d9574;">'POST'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">index</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #715ab1;">name</span> = <span style="color: #4e3163;">None</span>
+    <span style="color: #715ab1;">form</span> = NameForm<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> form.validate_on_submit<span style="color: #3a81c3;">()</span>:
+	<span style="color: #715ab1;">name</span> = form.name.data
+	<span style="color: #715ab1;">form.name.data</span> = <span style="color: #2d9574;">''</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> render_template<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'index.html'</span>, form=form, name=name<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><b>methods</b> argument register the view function as a handler for GET and POST requests, default GET only.</li>
+<li><b>validate_on_submit</b> is True when the form was submitted and the data has been accepted by all the field validators</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0d1f32e" class="outline-3">
+<h3 id="org0d1f32e"><span class="section-number-3">6.2</span> redirect issue</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+Browsers repeat the last request they have sent when they are asked to refresh the page.
+When the last request sent is a POST request with form data, a refresh would cause a duplicate
+form submission.
+</p>
+<ul class="org-ul">
+<li>Good practice: never leave a POST request as a last request sent by the browser. Respond to POST requests with a redirect instead of a normal response.</li>
+<li>The trick is known as the <b>Post/Redirect/Get</b> pattern.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga748a74" class="outline-3">
+<h3 id="orga748a74"><span class="section-number-3">6.3</span> Sessions</h3>
+<div class="outline-text-3" id="text-6-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask <span style="color: #3a81c3; font-weight: bold;">import</span> Flask, render_template, session, redirect, url_for
+
+<span style="color: #ba2f59; font-weight: bold;">@app.route</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'/'</span>, methods=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'GET'</span>, <span style="color: #2d9574;">'POST'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">index</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #715ab1;">form</span> = NameForm<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> form.validate_on_submit<span style="color: #3a81c3;">()</span>:
+	<span style="color: #715ab1;">session</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'name'</span><span style="color: #3a81c3;">]</span> = form.name.data
+	<span style="color: #3a81c3; font-weight: bold;">return</span> redirect<span style="color: #3a81c3;">(</span>url_for<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'index'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> render_template<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'index.html'</span>, form=form, name=session.get<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'name'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2ceab7f" class="outline-3">
+<h3 id="org2ceab7f"><span class="section-number-3">6.4</span> flash</h3>
+<div class="outline-text-3" id="text-6-4">
+<ul class="org-ul">
+<li>To give the user a confirmation message after a request is completed</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask <span style="color: #3a81c3; font-weight: bold;">import</span> flash
+
+<span style="color: #715ab1;">old_name</span> = session.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'name'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">if</span> old_name <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #4e3163;">None</span> <span style="color: #3a81c3; font-weight: bold;">and</span> old_name != form.name.data:
+    flash<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Looks like you have changed your name!'</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgf1375b6" class="outline-4">
+<h4 id="orgf1375b6"><span class="section-number-4">6.4.1</span> render messages</h4>
+<div class="outline-text-4" id="text-6-4-1">
+<p>
+The best place to render flashed messages is the <i>base</i> template.
+</p>
+<ul class="org-ul">
+<li><p>
+use get_flashed_messages() to retrieve the messages and render them
+</p>
+<div class="org-src-container">
+<pre class="src src-web">{% for message in get_flashed_messages() %}
+&lt;div class="alert alert-warning"&gt;
+    &lt;button type="button" class="close" data-dismiss="alert"&gt;&amp;times;&lt;/button&gt;
+    {{ message }}
+&lt;/div&gt;
+{% endfor %}
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga994352" class="outline-2">
+<h2 id="orga994352"><span class="section-number-2">7</span> Databases</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgba0ff40" class="outline-3">
+<h3 id="orgba0ff40"><span class="section-number-3">7.1</span> ORMs/ODMs</h3>
+<div class="outline-text-3" id="text-7-1">
+<ul class="org-ul">
+<li>SQLAlchemy</li>
+<li>MongoEngine</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org797566b" class="outline-3">
+<h3 id="org797566b"><span class="section-number-3">7.2</span> flask_sqlalchemy</h3>
+<div class="outline-text-3" id="text-7-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask.ext.sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> SQLAlchemy
+
+<span style="color: #715ab1;">basedir</span> = os.path.abspath<span style="color: #3a81c3;">(</span>os.path.dirname<span style="color: #6c3163;">(</span>__file__<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">app</span> = Flask<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">__name__</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">app.config</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'SQLALCHEMY_DATABASE_URI'</span><span style="color: #3a81c3;">]</span> =\
+    <span style="color: #2d9574;">'sqlite:///'</span> + os.path.join<span style="color: #3a81c3;">(</span>basedir, <span style="color: #2d9574;">'data.sqlite'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">app.config</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'SQLALCHEMY_COMMIT_ON_TEARDOWN'</span><span style="color: #3a81c3;">]</span> = <span style="color: #4e3163;">True</span>
+
+<span style="color: #715ab1;">db</span> = SQLAlchemy<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga70b302" class="outline-4">
+<h4 id="orga70b302"><span class="section-number-4">7.2.1</span> Model</h4>
+<div class="outline-text-4" id="text-7-2-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Role</span><span style="color: #3a81c3;">(</span>db.Model<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">__tablename__</span> = <span style="color: #2d9574;">'roles'</span>
+    <span style="color: #3a81c3;">id</span> = db.Column<span style="color: #3a81c3;">(</span>db.Integer, primary_key=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">name</span> = db.Column<span style="color: #3a81c3;">(</span>db.String<span style="color: #6c3163;">(</span>64<span style="color: #6c3163;">)</span>, unique=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">users</span> = db.relationship<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'User'</span>, backref=<span style="color: #2d9574;">'role'</span>, laze=<span style="color: #2d9574;">'dynamic'</span><span style="color: #3a81c3;">)</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">__repr__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
+	<span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #2d9574;">'&lt;Role %r&gt;'</span> % <span style="color: #3a81c3; font-weight: bold;">self</span>.name
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">User</span><span style="color: #3a81c3;">(</span>db.Model<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">__tablename__</span> = <span style="color: #2d9574;">'users'</span>
+    <span style="color: #3a81c3;">id</span> = db.Column<span style="color: #3a81c3;">(</span>db.Integer, primary_key=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">username</span> = db.Column<span style="color: #3a81c3;">(</span>db.String<span style="color: #6c3163;">(</span>64<span style="color: #6c3163;">)</span>, unique=<span style="color: #4e3163;">True</span>, index=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">role_id</span> = db.Column<span style="color: #3a81c3;">(</span>db.Integer, db.ForeignKey<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'roles.id'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">__repr__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
+	<span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #2d9574;">'&lt;User %r&gt;'</span> % <span style="color: #3a81c3; font-weight: bold;">self</span>.username
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf643c83" class="outline-4">
+<h4 id="orgf643c83"><span class="section-number-4">7.2.2</span> Relationship</h4>
+<div class="outline-text-4" id="text-7-2-2">
+<p>
+SQLAlchemy relationship options: backref, primaryjoin, lazy, uselist, order_by, secondary, secondaryjoin
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga4c8630" class="outline-4">
+<h4 id="orga4c8630"><span class="section-number-4">7.2.3</span> Ops</h4>
+<div class="outline-text-4" id="text-7-2-3">
+</div>
+<div id="outline-container-orgff538d0" class="outline-5">
+<h5 id="orgff538d0">Creating</h5>
+<div class="outline-text-5" id="text-orgff538d0">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">db</span> = SQLAlchemy<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+
+db.drop_all<span style="color: #3a81c3;">()</span>
+db.create_all<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2d1b032" class="outline-5">
+<h5 id="org2d1b032">Inserting</h5>
+<div class="outline-text-5" id="text-org2d1b032">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">admin_role</span> = Role<span style="color: #3a81c3;">(</span>name=<span style="color: #2d9574;">'Admin'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">user_john</span> = User<span style="color: #3a81c3;">(</span>username=<span style="color: #2d9574;">'john'</span>, role=admin_role<span style="color: #3a81c3;">)</span>
+db.session.add<span style="color: #3a81c3;">(</span>admin_role<span style="color: #3a81c3;">)</span>
+db.session.add<span style="color: #3a81c3;">(</span>user_john<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+or
+</p>
+<div class="org-src-container">
+<pre class="src src-python">db.session.add_all<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>admin_role, user_john<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+commit
+</p>
+<div class="org-src-container">
+<pre class="src src-python">db.session.commit<span style="color: #3a81c3;">()</span>
+</pre>
+</div></li>
+<li><p>
+check
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>admin_role.<span style="color: #3a81c3;">id</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+
+<li>db.session.rollback()</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org54690a8" class="outline-5">
+<h5 id="org54690a8">Modifying</h5>
+<div class="outline-text-5" id="text-org54690a8">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">admin_role.name</span> = <span style="color: #2d9574;">'Administrator'</span>
+db.session.add<span style="color: #3a81c3;">(</span>admin_role<span style="color: #3a81c3;">)</span>
+db.session.commit<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf378d59" class="outline-5">
+<h5 id="orgf378d59">Deleting</h5>
+<div class="outline-text-5" id="text-orgf378d59">
+<div class="org-src-container">
+<pre class="src src-python">db.session.delete<span style="color: #3a81c3;">(</span>mod_role<span style="color: #3a81c3;">)</span>
+db.session.commit<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org87e7b34" class="outline-5">
+<h5 id="org87e7b34">Querying</h5>
+<div class="outline-text-5" id="text-org87e7b34">
+<div class="org-src-container">
+<pre class="src src-python">Role.query.<span style="color: #3a81c3;">all</span><span style="color: #3a81c3;">()</span>
+User.query.filter_by<span style="color: #3a81c3;">(</span>role=admin_role<span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">all</span><span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3;">str</span><span style="color: #3a81c3;">(</span>User.query.filter_by<span style="color: #6c3163;">(</span>role=user_role<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">check SQL query</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org730949a" class="outline-4">
+<h4 id="org730949a"><span class="section-number-4">7.2.4</span> Integration with the Python Shell</h4>
+<div class="outline-text-4" id="text-7-2-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_script <span style="color: #3a81c3; font-weight: bold;">import</span> Shell
+<span style="color: #3a81c3; font-weight: bold;">from</span> flask.ext.script <span style="color: #3a81c3; font-weight: bold;">import</span> Manager
+<span style="color: #715ab1;">manager</span> = Manager<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">make_shell_context</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3;">dict</span><span style="color: #3a81c3;">(</span>app=app, db=db, User=User, Role=Role<span style="color: #3a81c3;">)</span>
+manager.add_command<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"shell"</span>, Shell<span style="color: #6c3163;">(</span>make_context=make_shell_context<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org8af46b8" class="outline-4">
+<h4 id="org8af46b8"><span class="section-number-4">7.2.5</span> Database Migrations</h4>
+<div class="outline-text-4" id="text-7-2-5">
+<p>
+use flask-migrate
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_migrate <span style="color: #3a81c3; font-weight: bold;">import</span> Migrate, MigrateCommand
+<span style="color: #715ab1;">migrate</span> = Migrate<span style="color: #3a81c3;">(</span>app, db<span style="color: #3a81c3;">)</span>
+manager.add_command<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'db'</span>, MigrateCommand<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-sh">python main.py db init
+python main.py db migrate -m <span style="color: #2d9574;">"initial migration"</span>
+python main.py db upgrade
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfd817d2" class="outline-2">
+<h2 id="orgfd817d2"><span class="section-number-2">8</span> Application Structure</h2>
+<div class="outline-text-2" id="text-8">
+<div class="org-src-container">
+<pre class="src src-text">          &#9500;&#9472;&#9472; __init__.py
+	  &#9500;&#9472;&#9472; main/
+	      &#9500;&#9472;&#9472; __init__.py
+	      &#9500;&#9472;&#9472; errors.py
+	      &#9500;&#9472;&#9472; forms.py
+	      &#9492;&#9472;&#9472; views.py
+	  &#9500;&#9472;&#9472; static/
+	  &#9500;&#9472;&#9472; templates/
+	  &#9500;&#9472;&#9472; email.py
+	  &#9500;&#9472;&#9472; models.py
+	  &#9500;&#9472;&#9472; migrations/
+	  &#9500;&#9472;&#9472; venv/
+	  &#9500;&#9472;&#9472; tests/
+	  &#9500;&#9472;&#9472; requirements.txt
+	  &#9500;&#9472;&#9472; config.py
+	  &#9492;&#9472;&#9472; manage.py        launches the application and other application tasks.
+</pre>
+</div>
+</div>
+<div id="outline-container-org957abee" class="outline-3">
+<h3 id="org957abee"><span class="section-number-3">8.1</span> Configuration Example</h3>
+<div class="outline-text-3" id="text-8-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> os
+<span style="color: #715ab1;">basedir</span> = os.path.abspath<span style="color: #3a81c3;">(</span>os.path.dirname<span style="color: #6c3163;">(</span>__file__<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Config</span>:
+    <span style="color: #715ab1;">SECRET_KEY</span> = os.environ.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'SECRET_KEY'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">or</span> <span style="color: #2d9574;">'hard to guess string'</span>
+    <span style="color: #715ab1;">SQLALCHEMY_COMMIT_ON_TEARDOWN</span> = <span style="color: #4e3163;">True</span>
+    <span style="color: #715ab1;">FLASKY_MAIL_SUBJECT_PREFIX</span> = <span style="color: #2d9574;">'[Flasky]'</span>
+    <span style="color: #715ab1;">FLASKY_MAIL_SENDER</span> = <span style="color: #2d9574;">'Flasky Admin <a href="mailto:flasky%40example.com">&lt;flasky@example.com&gt;</a>'</span>
+    <span style="color: #715ab1;">FLASKY_ADMIN</span> = os.environ.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'FLASKY_ADMIN'</span><span style="color: #3a81c3;">)</span>
+
+    <span style="color: #ba2f59; font-weight: bold;">@staticmethod</span>
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">init_app</span><span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>:
+	<span style="color: #3a81c3; font-weight: bold;">pass</span>
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">DevelopmentConfig</span><span style="color: #3a81c3;">(</span>Config<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">DEBUG</span> = <span style="color: #4e3163;">True</span>
+    <span style="color: #715ab1;">MAIL_SERVER</span> = <span style="color: #2d9574;">'smtp.googlemail.com'</span>
+    <span style="color: #715ab1;">MAIL_PORT</span> = 587
+    <span style="color: #715ab1;">MAIL_USE_TLS</span> = <span style="color: #4e3163;">True</span>
+    <span style="color: #715ab1;">MAIL_USERNAME</span> = os.environ.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'MAIL_USERNAME'</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">MAIL_PASSWORD</span> = os.environ.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'MAIL_PASSWORD'</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">SQLALCHEMY_DATABASE_URI</span> = os.environ.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'DEV_DATABASE_URL'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">or</span> \
+	<span style="color: #2d9574;">'sqlite:///'</span> + os.path.join<span style="color: #3a81c3;">(</span>basedir, <span style="color: #2d9574;">'data-dev.sqlite'</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">TestingConfig</span><span style="color: #3a81c3;">(</span>Config<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">TESTING</span> = <span style="color: #4e3163;">True</span>
+    <span style="color: #715ab1;">SQLALCHEMY_DATABASE_URI</span> = os.environ.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'TEST_DATABASE_URL'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">or</span> \
+	<span style="color: #2d9574;">'sqlite:///'</span> + os.path.join<span style="color: #3a81c3;">(</span>basedir, <span style="color: #2d9574;">'data-test.sqlite'</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">ProductionConfig</span><span style="color: #3a81c3;">(</span>Config<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">SQLALCHEMY_DATABASE_URI</span> = os.environ.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'DATABASE_URL'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">or</span> \
+	<span style="color: #2d9574;">'sqlite:///'</span> + os.path.join<span style="color: #3a81c3;">(</span>basedir, <span style="color: #2d9574;">'data.sqlite'</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">config</span> = <span style="color: #3a81c3;">{</span>
+    <span style="color: #2d9574;">'development'</span>: DevelopmentConfig,
+    <span style="color: #2d9574;">'testing'</span>: TestingConfig,
+    <span style="color: #2d9574;">'production'</span>: ProductionConfig,
+
+    <span style="color: #2d9574;">'default'</span>: DevelopmentConfig
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org026cf11" class="outline-3">
+<h3 id="org026cf11"><span class="section-number-3">8.2</span> Dynamic App Creation</h3>
+<div class="outline-text-3" id="text-8-2">
+<ul class="org-ul">
+<li><i>app/__init__.py</i></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask <span style="color: #3a81c3; font-weight: bold;">import</span> Flask, render_template
+<span style="color: #3a81c3; font-weight: bold;">from</span> flask_bootstrap <span style="color: #3a81c3; font-weight: bold;">import</span> Bootstrap
+<span style="color: #3a81c3; font-weight: bold;">from</span> flask_mail <span style="color: #3a81c3; font-weight: bold;">import</span> Mail
+<span style="color: #3a81c3; font-weight: bold;">from</span> flask_moment <span style="color: #3a81c3; font-weight: bold;">import</span> Moment
+<span style="color: #3a81c3; font-weight: bold;">from</span> flask_sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> SQLAlchemy
+<span style="color: #3a81c3; font-weight: bold;">from</span> config <span style="color: #3a81c3; font-weight: bold;">import</span> config
+
+<span style="color: #715ab1;">bootstrap</span> = Bootstrap<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">mail</span> = Mail<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">moment</span> = Moment<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">db</span> = SQLAlchemy<span style="color: #3a81c3;">()</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">create_app</span><span style="color: #3a81c3;">(</span>config_name<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">app</span> = Flask<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">__name__</span><span style="color: #3a81c3;">)</span>
+    app.config.from_object<span style="color: #3a81c3;">(</span>config<span style="color: #6c3163;">[</span>config_name<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+    config<span style="color: #3a81c3;">[</span>config_name<span style="color: #3a81c3;">]</span>.init_app<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+
+    bootstrap.init_app<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+    mail.init_app<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+    moment.init_app<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+    db.init_app<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">from</span> main <span style="color: #3a81c3; font-weight: bold;">import</span> main <span style="color: #3a81c3; font-weight: bold;">as</span> main_blueprint <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">see below</span>
+    app.register_blueprint<span style="color: #3a81c3;">(</span>main_blueprint<span style="color: #3a81c3;">)</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">return</span> app
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org58316cf" class="outline-5">
+<h5 id="org58316cf">Blueprint</h5>
+<div class="outline-text-5" id="text-org58316cf">
+<p>
+A blueprint is similar to an application in that it can also define routes
+</p>
+<ul class="org-ul">
+<li><i>app/main/__init__.py</i></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask <span style="color: #3a81c3; font-weight: bold;">import</span> Blueprint
+<span style="color: #715ab1;">main</span> = Blueprint<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'main'</span>, <span style="color: #3a81c3;">__name__</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">from</span> . <span style="color: #3a81c3; font-weight: bold;">import</span> views, errors
+</pre>
+</div>
+<ul class="org-ul">
+<li><i>app/main/error.py</i></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask <span style="color: #3a81c3; font-weight: bold;">import</span> render_template
+<span style="color: #3a81c3; font-weight: bold;">from</span> . <span style="color: #3a81c3; font-weight: bold;">import</span> main
+
+<span style="color: #ba2f59; font-weight: bold;">@main.app_errorhandler</span><span style="color: #3a81c3;">(</span>404<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">page_not_found</span><span style="color: #3a81c3;">(</span>e<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> render_template<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'404.html'</span><span style="color: #3a81c3;">)</span>, 404
+
+<span style="color: #ba2f59; font-weight: bold;">@main.app_errorhandler</span><span style="color: #3a81c3;">(</span>500<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">internal_server_error</span><span style="color: #3a81c3;">(</span>e<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> render_template<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'500.html'</span><span style="color: #3a81c3;">)</span>, 500
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf6670d6" class="outline-3">
+<h3 id="orgf6670d6"><span class="section-number-3">8.3</span> Launch Script</h3>
+<div class="outline-text-3" id="text-8-3">
+<ul class="org-ul">
+<li><p>
+<i>app/manage.py</i>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">!/usr/bin/env python</span>
+<span style="color: #3a81c3; font-weight: bold;">import</span> os
+<span style="color: #3a81c3; font-weight: bold;">from</span> app <span style="color: #3a81c3; font-weight: bold;">import</span> create_app, db
+<span style="color: #3a81c3; font-weight: bold;">from</span> app.models <span style="color: #3a81c3; font-weight: bold;">import</span> User, Role
+<span style="color: #3a81c3; font-weight: bold;">from</span> flask_script <span style="color: #3a81c3; font-weight: bold;">import</span> Manager, Shell
+<span style="color: #3a81c3; font-weight: bold;">from</span> flask_migrate <span style="color: #3a81c3; font-weight: bold;">import</span> Migrate, MigrateCommand
+
+<span style="color: #715ab1;">app</span> = create_app<span style="color: #3a81c3;">(</span>os.getenv<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'FLASK_CONFIG'</span><span style="color: #6c3163;">)</span> <span style="color: #3a81c3; font-weight: bold;">or</span> <span style="color: #2d9574;">'default'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">manager</span> = Manager<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">migrate</span> = Migrate<span style="color: #3a81c3;">(</span>app, db<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">make_shell_context</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3;">dict</span><span style="color: #3a81c3;">(</span>app=app, db=db, User=User, Role=Role<span style="color: #3a81c3;">)</span>
+manager.add_command<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"shell"</span>, Shell<span style="color: #6c3163;">(</span>make_context=make_shell_context<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+manager.add_command<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'db'</span>, MigrateCommand<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">'__main__'</span>:
+    manager.run<span style="color: #3a81c3;">()</span>
+</pre>
+</div></li>
+<li><p>
+add test command
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@manager.command</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #da8b55;">"""Run the unit tests."""</span>
+    <span style="color: #3a81c3; font-weight: bold;">import</span> unittest
+    <span style="color: #715ab1;">tests</span> = unittest.TestLoader<span style="color: #3a81c3;">()</span>.discover<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'tests'</span><span style="color: #3a81c3;">)</span>
+    unittest.TextTestRunner<span style="color: #3a81c3;">(</span>verbosity=2<span style="color: #3a81c3;">)</span>.run<span style="color: #3a81c3;">(</span>tests<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+the function’s docstring is displayed in the help messages
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc7c4e67" class="outline-3">
+<h3 id="orgc7c4e67"><span class="section-number-3">8.4</span> <b>Project Generator</b></h3>
+<div class="outline-text-3" id="text-8-4">
+</div>
+<div id="outline-container-org4dfafb2" class="outline-4">
+<h4 id="org4dfafb2"><span class="section-number-4">8.4.1</span> <b>cookiecutter</b></h4>
+<div class="outline-text-4" id="text-8-4-1">
+<ul class="org-ul">
+<li>cookiecutter-flask</li>
+<li>cookiecutter-flask-restful</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org3fac3a9" class="outline-2">
+<h2 id="org3fac3a9"><span class="section-number-2">9</span> RESTful API</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-orgf72a647" class="outline-3">
+<h3 id="orgf72a647"><span class="section-number-3">9.1</span> characteristics</h3>
+<div class="outline-text-3" id="text-9-1">
+</div>
+<div id="outline-container-org331c5d1" class="outline-4">
+<h4 id="org331c5d1"><span class="section-number-4">9.1.1</span> Stateless</h4>
+<div class="outline-text-4" id="text-9-1-1">
+<p>
+A client request must contain all the information that is necessary to carry it out.
+The server must not store any state about the client that persists from one request to the next.
+</p>
+</div>
+</div>
+<div id="outline-container-org7a3ef0c" class="outline-4">
+<h4 id="org7a3ef0c"><span class="section-number-4">9.1.2</span> Cache</h4>
+<div class="outline-text-4" id="text-9-1-2">
+<p>
+Responses from the server can be labeled as <b>cacheable</b> or <b>noncacheable</b> so that
+clients (or intermediaries between clients and servers) can use a cache for optimization purposes.
+</p>
+</div>
+</div>
+<div id="outline-container-org58ac679" class="outline-4">
+<h4 id="org58ac679"><span class="section-number-4">9.1.3</span> Uniform Interface</h4>
+<div class="outline-text-4" id="text-9-1-3">
+<p>
+often HTTP, HTTPs
+</p>
+</div>
+</div>
+<div id="outline-container-orgf46d333" class="outline-4">
+<h4 id="orgf46d333"><span class="section-number-4">9.1.4</span> Layered System</h4>
+<div class="outline-text-4" id="text-9-1-4">
+<p>
+Proxy servers, caches, or gateways can be inserted between clients and servers
+as necessary to improve performance, reliability, and scalability.
+</p>
+</div>
+</div>
+<div id="outline-container-orgf73ee24" class="outline-4">
+<h4 id="orgf73ee24"><span class="section-number-4">9.1.5</span> Code-on-Demand</h4>
+<div class="outline-text-4" id="text-9-1-5">
+<p>
+Clients can optionally download code from the server to execute in their context.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb4f63b3" class="outline-3">
+<h3 id="orgb4f63b3"><span class="section-number-3">9.2</span> Request Methods</h3>
+<div class="outline-text-3" id="text-9-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Request method</th>
+<th scope="col" class="org-left">Target</th>
+<th scope="col" class="org-left">Description</th>
+<th scope="col" class="org-right">HTTP status code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">GET</td>
+<td class="org-left">Individual resource URL</td>
+<td class="org-left">Obtain the resource</td>
+<td class="org-right">200</td>
+</tr>
+
+<tr>
+<td class="org-left">GET</td>
+<td class="org-left">Resource collection URL</td>
+<td class="org-left">Obtain the collection of resources</td>
+<td class="org-right">200</td>
+</tr>
+
+<tr>
+<td class="org-left">POST</td>
+<td class="org-left">Resource collection URL</td>
+<td class="org-left">Create a new resource and add it to the collection</td>
+<td class="org-right">201</td>
+</tr>
+
+<tr>
+<td class="org-left">PUT</td>
+<td class="org-left">Individual resource URL</td>
+<td class="org-left">Create/Modify an existing resource</td>
+<td class="org-right">200</td>
+</tr>
+
+<tr>
+<td class="org-left">DELETE</td>
+<td class="org-left">Individual resource URL</td>
+<td class="org-left">Delete a resource</td>
+<td class="org-right">200</td>
+</tr>
+
+<tr>
+<td class="org-left">DELETE</td>
+<td class="org-left">Resource collection URL</td>
+<td class="org-left">Delete all resources in the collection</td>
+<td class="org-right">200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org4112fd0" class="outline-3">
+<h3 id="org4112fd0"><span class="section-number-3">9.3</span> URL</h3>
+<div class="outline-text-3" id="text-9-3">
+<p>
+<code>/api/v1.0/[collection]/[individual]</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7d2af9f" class="outline-3">
+<h3 id="org7d2af9f"><span class="section-number-3">9.4</span> Error Handling</h3>
+<div class="outline-text-3" id="text-9-4">
+<ul class="org-ul">
+<li>200: OK</li>
+<li>201: Created</li>
+<li>400: Bad request</li>
+<li>403: Forbidden</li>
+<li>404: Not found</li>
+<li>405: Method not allowed</li>
+<li>500: internal server error</li>
+</ul>
+</div>
+<div id="outline-container-org4bc4aee" class="outline-4">
+<h4 id="org4bc4aee"><span class="section-number-4">9.4.1</span> rehandle 404, 500</h4>
+<div class="outline-text-4" id="text-9-4-1">
+<p>
+404/500 are generated by Flask on its own and will usually return an HTML response
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@main.app_errorhandler</span><span style="color: #3a81c3;">(</span>404<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">page_not_found</span><span style="color: #3a81c3;">(</span>e<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">if</span> request.accept_mimetypes.accept_json <span style="color: #3a81c3; font-weight: bold;">and</span> \
+       <span style="color: #3a81c3; font-weight: bold;">not</span> request.accept_mimetypes.accept_html:
+	<span style="color: #715ab1;">response</span> = jsonify<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'error'</span>: <span style="color: #2d9574;">'not found'</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+	<span style="color: #715ab1;">response.status_code</span> = 404
+	<span style="color: #3a81c3; font-weight: bold;">return</span> response
+    <span style="color: #3a81c3; font-weight: bold;">return</span> render_template<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'404.html'</span><span style="color: #3a81c3;">)</span>, 404
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+implement rest of errors
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">app/api/errors.py: API error handler for status code 403</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">forbidden</span><span style="color: #3a81c3;">(</span>message<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">response</span> = jsonify<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'error'</span>: <span style="color: #2d9574;">'forbidden'</span>, <span style="color: #2d9574;">'message'</span>: message<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">response.status_code</span> = 403
+    <span style="color: #3a81c3; font-weight: bold;">return</span> response
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd6d0a67" class="outline-3">
+<h3 id="orgd6d0a67"><span class="section-number-3">9.5</span> Authentication</h3>
+<div class="outline-text-3" id="text-9-5">
+</div>
+<div id="outline-container-orgd513f84" class="outline-4">
+<h4 id="orgd513f84"><span class="section-number-4">9.5.1</span> flask-httpauth Usage</h4>
+<div class="outline-text-4" id="text-9-5-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_httpauth <span style="color: #3a81c3; font-weight: bold;">import</span> HTTPBasicAuth
+<span style="color: #715ab1;">auth</span> = HTTPBasicAuth<span style="color: #3a81c3;">()</span>
+
+<span style="color: #ba2f59; font-weight: bold;">@auth.verify_password</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">verify_password</span><span style="color: #3a81c3;">(</span>email, password<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">if</span> email == <span style="color: #2d9574;">''</span>:
+	<span style="color: #715ab1;">g.current_user</span> = AnonymousUser<span style="color: #3a81c3;">()</span>
+	<span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">True</span>
+    <span style="color: #715ab1;">user</span> = User.query.filter_by<span style="color: #3a81c3;">(</span>email = email<span style="color: #3a81c3;">)</span>.first<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3; font-weight: bold;">not</span> user:
+	<span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">False</span>
+    <span style="color: #715ab1;">g.current_user</span> = user
+    <span style="color: #3a81c3; font-weight: bold;">return</span> user.verify_password<span style="color: #3a81c3;">(</span>password<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>protect a route with the <b>auth.login_required</b> decorator</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8ed9711" class="outline-4">
+<h4 id="org8ed9711"><span class="section-number-4">9.5.2</span> Token-based Authentication</h4>
+<div class="outline-text-4" id="text-9-5-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">User</span><span style="color: #3a81c3;">(</span>db.Model<span style="color: #3a81c3;">)</span>:
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">...</span>
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">generate_auth_token</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, expiration<span style="color: #3a81c3;">)</span>:
+	<span style="color: #715ab1;">s</span> = Serializer<span style="color: #3a81c3;">(</span>current_app.config<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'SECRET_KEY'</span><span style="color: #6c3163;">]</span>,
+		       expires_in=expiration<span style="color: #3a81c3;">)</span>
+	<span style="color: #3a81c3; font-weight: bold;">return</span> s.dumps<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'id'</span>: <span style="color: #3a81c3; font-weight: bold;">self</span>.<span style="color: #3a81c3;">id</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+
+    <span style="color: #ba2f59; font-weight: bold;">@staticmethod</span>
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">verify_auth_token</span><span style="color: #3a81c3;">(</span>token<span style="color: #3a81c3;">)</span>:
+	<span style="color: #715ab1;">s</span> = Serializer<span style="color: #3a81c3;">(</span>current_app.config<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'SECRET_KEY'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+	<span style="color: #3a81c3; font-weight: bold;">try</span>:
+	    <span style="color: #715ab1;">data</span> = s.loads<span style="color: #3a81c3;">(</span>token<span style="color: #3a81c3;">)</span>
+	<span style="color: #3a81c3; font-weight: bold;">except</span>:
+	    <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">None</span>
+	<span style="color: #3a81c3; font-weight: bold;">return</span> User.query.get<span style="color: #3a81c3;">(</span>data<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'id'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-org03c44d4" class="outline-5">
+<h5 id="org03c44d4">Verification</h5>
+<div class="outline-text-5" id="text-org03c44d4">
+<ul class="org-ul">
+<li><i>app/api_1_0/authentication.py</i></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@auth.verify_password</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">verify_password</span><span style="color: #3a81c3;">(</span>email_or_token, password<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">if</span> email_or_token == <span style="color: #2d9574;">''</span>:
+	<span style="color: #715ab1;">g.current_user</span> = AnonymousUser<span style="color: #3a81c3;">()</span>
+	<span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">True</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> password == <span style="color: #2d9574;">''</span>:
+	<span style="color: #715ab1;">g.current_user</span> = User.verify_auth_token<span style="color: #3a81c3;">(</span>email_or_token<span style="color: #3a81c3;">)</span>
+	<span style="color: #715ab1;">g.token_used</span> = <span style="color: #4e3163;">True</span>
+	<span style="color: #3a81c3; font-weight: bold;">return</span> g.current_user <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #4e3163;">None</span>
+    <span style="color: #715ab1;">user</span> = User.query.filter_by<span style="color: #3a81c3;">(</span>email=email_or_token<span style="color: #3a81c3;">)</span>.first<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3; font-weight: bold;">not</span> user:
+	<span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">False</span>
+    <span style="color: #715ab1;">g.current_user</span> = user
+    <span style="color: #715ab1;">g.token_used</span> = <span style="color: #4e3163;">False</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> user.verify_password<span style="color: #3a81c3;">(</span>password<span style="color: #3a81c3;">)</span>
+
+<span style="color: #ba2f59; font-weight: bold;">@api.route</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'/token'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">get_token</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">if</span> g.current_user.is_anonymous<span style="color: #3a81c3;">()</span> <span style="color: #3a81c3; font-weight: bold;">or</span> g.token_used:
+	<span style="color: #3a81c3; font-weight: bold;">return</span> unauthorized<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Invalid credentials'</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> jsonify<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'token'</span>: g.current_user.generate_auth_token<span style="color: #2d9574;">(</span>
+	expiration=3600<span style="color: #2d9574;">)</span>, <span style="color: #2d9574;">'expiration'</span>: 3600<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org28066a4" class="outline-4">
+<h4 id="org28066a4"><span class="section-number-4">9.5.3</span> Serializing</h4>
+<div class="outline-text-4" id="text-9-5-3">
+<p>
+Model should implement <b>to_json</b> method and @staticmethod <b>from_json</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org48f18f0" class="outline-4">
+<h4 id="org48f18f0"><span class="section-number-4">9.5.4</span> Pagination of Large Resource</h4>
+<div class="outline-text-4" id="text-9-5-4">
+<p>
+Example:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@api.route</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'/posts/'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">get_posts</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #715ab1;">page</span> = request.args.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'page'</span>, 1, <span style="color: #3a81c3;">type</span>=<span style="color: #3a81c3;">int</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">pagination</span> = Post.query.paginate<span style="color: #3a81c3;">(</span>
+	page, per_page=current_app.config<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'FLASKY_POSTS_PER_PAGE'</span><span style="color: #6c3163;">]</span>,
+	error_out=<span style="color: #4e3163;">False</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">posts</span> = pagination.items
+    <span style="color: #715ab1;">prev</span> = <span style="color: #4e3163;">None</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> pagination.has_prev:
+	<span style="color: #715ab1;">prev</span> = url_for<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'api.get_posts'</span>, page=page-1, _external=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3;">next</span> = <span style="color: #4e3163;">None</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> pagination.has_next:
+	<span style="color: #3a81c3;">next</span> = url_for<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'api.get_posts'</span>, page=page+1, _external=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> jsonify<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span>
+	<span style="color: #2d9574;">'posts'</span>: <span style="color: #2d9574;">[</span>post.to_json<span style="color: #67b11d;">()</span> <span style="color: #3a81c3; font-weight: bold;">for</span> post <span style="color: #3a81c3; font-weight: bold;">in</span> posts<span style="color: #2d9574;">]</span>,
+	<span style="color: #2d9574;">'prev'</span>: prev,
+	<span style="color: #2d9574;">'next'</span>: <span style="color: #3a81c3;">next</span>,
+	<span style="color: #2d9574;">'count'</span>: pagination.total
+    <span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcfe9713" class="outline-4">
+<h4 id="orgcfe9713"><span class="section-number-4">9.5.5</span> Use httpie to test API</h4>
+<div class="outline-text-4" id="text-9-5-5">
+<div class="org-src-container">
+<pre class="src src-sh">http --json --auth : GET http://127.0.0.1:5000/api/v1.0/posts/
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org759c06b" class="outline-2">
+<h2 id="org759c06b"><span class="section-number-2">10</span> Extensions</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-org4e69580" class="outline-3">
+<h3 id="org4e69580"><span class="section-number-3">10.1</span> flask_script</h3>
+<div class="outline-text-3" id="text-10-1">
+<p>
+Command-Line Options
+</p>
+</div>
+</div>
+
+<div id="outline-container-org74c1e7f" class="outline-3">
+<h3 id="org74c1e7f"><span class="section-number-3">10.2</span> flask_bootstrap</h3>
+<div class="outline-text-3" id="text-10-2">
+<p>
+base template blocks
+</p>
+<ul class="org-ul">
+<li>doc, html_attribs, html, head, title, metas, styles, body_attribs, body, navbar, content, scripts</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org42091c7" class="outline-3">
+<h3 id="org42091c7"><span class="section-number-3">10.3</span> flask_moment</h3>
+<div class="outline-text-3" id="text-10-3">
+<ul class="org-ul">
+<li>Localization of dates and times</li>
+</ul>
+
+<p>
+client-side moment.js do the localization. <i>flask_moment</i> module integrates moment.js into Jinja2 templates.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org078f1d2" class="outline-3">
+<h3 id="org078f1d2"><span class="section-number-3">10.4</span> flask_mail</h3>
+<div class="outline-text-3" id="text-10-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_mail <span style="color: #3a81c3; font-weight: bold;">import</span> Mail
+<span style="color: #715ab1;">mail</span> = Mail<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">msg</span> = Message<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'test subject'</span>, sender=<span style="color: #2d9574;">'you@example.com'</span>,
+	      recipients=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'you@example.com'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">msg.body</span> = <span style="color: #2d9574;">'text body'</span>
+<span style="color: #715ab1;">msg.html</span> = <span style="color: #2d9574;">'&lt;b&gt;HTML&lt;/b&gt; body'</span>
+
+<span style="color: #3a81c3; font-weight: bold;">with</span> app.app_context<span style="color: #3a81c3;">()</span>: <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">send() uses current_app, so it needs to be executed with an activated application context.</span>
+    mail.send<span style="color: #3a81c3;">(</span>msg<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-orge39b417" class="outline-4">
+<h4 id="orge39b417"><span class="section-number-4">10.4.1</span> Simplify Mail Sending</h4>
+<div class="outline-text-4" id="text-10-4-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_mail <span style="color: #3a81c3; font-weight: bold;">import</span> Message
+
+<span style="color: #715ab1;">app.config</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'FLASKY_MAIL_SUBJECT_PREFIX'</span><span style="color: #3a81c3;">]</span> = <span style="color: #2d9574;">'[Flasky]'</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">application-specific configuration</span>
+<span style="color: #715ab1;">app.config</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'FLASKY_MAIL_SENDER'</span><span style="color: #3a81c3;">]</span> = <span style="color: #2d9574;">'Flasky Admin <a href="mailto:flasky%40example.com">&lt;flasky@example.com&gt;</a>'</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">application-specific configuration</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">send_email</span><span style="color: #3a81c3;">(</span>to, subject, template, **kwargs<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">msg</span> = Message<span style="color: #3a81c3;">(</span>app.config<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'FLASKY_MAIL_SUBJECT_PREFIX'</span><span style="color: #6c3163;">]</span> + subject,
+		  sender=app.config<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'FLASKY_MAIL_SENDER'</span><span style="color: #6c3163;">]</span>, recipients=<span style="color: #6c3163;">[</span>to<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">msg.body</span> = render_template<span style="color: #3a81c3;">(</span>template + <span style="color: #2d9574;">'.txt'</span>, **kwargs<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">content can be rendered!</span>
+    <span style="color: #715ab1;">msg.html</span> = render_template<span style="color: #3a81c3;">(</span>template + <span style="color: #2d9574;">'.html'</span>, **kwargs<span style="color: #3a81c3;">)</span>
+    mail.send<span style="color: #3a81c3;">(</span>msg<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf7f34f7" class="outline-4">
+<h4 id="orgf7f34f7"><span class="section-number-4">10.4.2</span> Configuration</h4>
+<div class="outline-text-4" id="text-10-4-2">
+<p>
+MAIL_HOSTNAME, MAIL_PORT, MAIL_USE_TLS, MAIL_USE_SSL, MAIL_USERNAME, MAIL_PASSWORD
+</p>
+</div>
+</div>
+
+<div id="outline-container-org93eb954" class="outline-4">
+<h4 id="org93eb954"><span class="section-number-4">10.4.3</span> Asynchronous Sending</h4>
+<div class="outline-text-4" id="text-10-4-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">thr</span> = Thread<span style="color: #3a81c3;">(</span>target=send_async_email, args=<span style="color: #6c3163;">[</span>app, msg<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+    thr.start<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd056eda" class="outline-3">
+<h3 id="orgd056eda"><span class="section-number-3">10.5</span> flask_restful</h3>
+</div>
+</div>
+</div>
+</body>
+</html>

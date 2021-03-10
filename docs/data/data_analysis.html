@@ -1,0 +1,3618 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2021-03-10 Wed 13:44 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DataAnalysis For Python</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="data analysis, python" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+	displayAlign: "left",
+	displayIndent: "2em",
+
+	"HTML-CSS": { scale: 100,
+			linebreaks: { automatic: "false" },
+			webFont: "TeX"
+		       },
+	SVG: {scale: 100,
+	      linebreaks: { automatic: "false" },
+	      font: "TeX"},
+	NativeMML: {scale: 100},
+	TeX: { equationNumbers: {autoNumber: "AMS"},
+	       MultLineWidth: "85%",
+	       TagSide: "left",
+	       TagIndent: ".8em"
+	     }
+});
+</script>
+<script type="text/javascript"
+	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">DataAnalysis For Python</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0b5e8cb">1. numpy</a>
+<ul>
+<li><a href="#org5f4b087">1.1. ndarray</a></li>
+<li><a href="#org8b0e555">1.2. matrix</a></li>
+<li><a href="#org2869777">1.3. Conditional Logic</a></li>
+<li><a href="#org7712cf3">1.4. Transpose</a></li>
+<li><a href="#org18d3206">1.5. Useful functions</a></li>
+</ul>
+</li>
+<li><a href="#org632fdd5">2. pandas</a>
+<ul>
+<li><a href="#org32a7059">2.1. Series</a></li>
+<li><a href="#org773522b">2.2. DataFrame</a></li>
+<li><a href="#org08daea1">2.3. Index</a></li>
+<li><a href="#orgcd81fd7">2.4. Functionality</a></li>
+<li><a href="#org9ff3a79">2.5. Statistic methods</a></li>
+<li><a href="#orga3996db">2.6. Hierarchical Indexing</a></li>
+<li><a href="#orgf796f5e">2.7. Panel</a></li>
+<li><a href="#orgf452b2f">2.8. config options</a></li>
+<li><a href="#orgb2beffd">2.9. Functional Method Chaining</a></li>
+</ul>
+</li>
+<li><a href="#orgb0b9dfa">3. Wrangling</a>
+<ul>
+<li><a href="#org3ff30be">3.1. Evaluate Data</a></li>
+<li><a href="#org1db08a8">3.2. Dealing with Missing Data</a></li>
+<li><a href="#org9c50b60">3.3. Data Input/Output</a></li>
+<li><a href="#org8081759">3.4. Concatenation</a></li>
+<li><a href="#org38f525b">3.5. Reshaping and Pivoting</a></li>
+<li><a href="#org3ac999d">3.6. Random Sampling</a></li>
+<li><a href="#orgf1d4e47">3.7. String Manipulation</a></li>
+<li><a href="#orgb727252">3.8. Check Duplicates</a></li>
+<li><a href="#org2268806">3.9. Indicator/Dummy</a></li>
+</ul>
+</li>
+<li><a href="#org8824d79">4. Plotting</a>
+<ul>
+<li><a href="#org3a8a488">4.1. Matplotlib Basic</a></li>
+<li><a href="#org88ea9fd">4.2. pandas Plotting</a></li>
+<li><a href="#org4bcef49">4.3. Saving Plots to File</a></li>
+<li><a href="#org536ff6f">4.4. interactive mode</a></li>
+<li><a href="#org35c28af">4.5. add-ons</a></li>
+</ul>
+</li>
+<li><a href="#org3a4ea7b">5. Group</a>
+<ul>
+<li><a href="#orgc1abae8">5.1. group by</a></li>
+<li><a href="#org48b5ab2">5.2. groupby aggregation</a></li>
+<li><a href="#orgdfdee36">5.3. <code>pivot_table</code></a></li>
+<li><a href="#org83bad35">5.4. <code>transform</code></a></li>
+<li><a href="#orgfed3c48">5.5. Examples</a></li>
+</ul>
+</li>
+<li><a href="#orgc9ed800">6. Timeseries</a>
+<ul>
+<li><a href="#orgee3fee6">6.1. Indexing</a></li>
+<li><a href="#org275380a">6.2. Special Frequencies</a></li>
+<li><a href="#org822bdb3">6.3. Offset Objects</a></li>
+<li><a href="#orgf88ffba">6.4. Time Zone Localization</a></li>
+<li><a href="#orgc110113">6.5. Periods</a></li>
+<li><a href="#orge00c17f">6.6. Resampling</a></li>
+<li><a href="#org9be426f">6.7. Moving Window</a></li>
+<li><a href="#org4ace7c5">6.8. Binary Moving Window</a></li>
+<li><a href="#org2a16648">6.9. User-Defined Moving Window Functions</a></li>
+<li><a href="#org405c151">6.10. Tips</a></li>
+</ul>
+</li>
+<li><a href="#org11edc0e">7. Categorical Data</a>
+<ul>
+<li><a href="#org0c13913">7.1. Motivation</a></li>
+<li><a href="#orgff90119">7.2. Categorical Type</a></li>
+<li><a href="#org6dd4a17">7.3. Categorical Methods</a></li>
+</ul>
+</li>
+<li><a href="#orgef46c6a">8. Modeling Libraries</a></li>
+<li><a href="#org8575a92">9. Other Tools</a>
+<ul>
+<li><a href="#org7b61764">9.1. ipyparallel</a></li>
+<li><a href="#org5fb7dcf">9.2. Scipy</a></li>
+<li><a href="#orgedcf4c0">9.3. Sympy</a></li>
+<li><a href="#org949f1c0">9.4. seaborn</a></li>
+<li><a href="#orgd88699a">9.5. plotly</a></li>
+<li><a href="#orgf8fd2a7">9.6. Blaze</a></li>
+<li><a href="#org9b65b6f">9.7. bcolz</a></li>
+<li><a href="#org233911b">9.8. Enthought Tool-Suite (ETS)</a></li>
+<li><a href="#org5722b10">9.9. bottleneck</a></li>
+<li><a href="#orgfbde9bc">9.10. SWIG</a></li>
+<li><a href="#org04c7058">9.11. zipline</a></li>
+</ul>
+</li>
+<li><a href="#org0497b6e">10. hdf</a>
+<ul>
+<li><a href="#orga5abea4">10.1. dataset</a></li>
+<li><a href="#org3eb2849">10.2. lookup tools</a></li>
+<li><a href="#orgc9187ed">10.3. notice</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0b5e8cb" class="outline-2">
+<h2 id="org0b5e8cb"><span class="section-number-2">1</span> numpy</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org5f4b087" class="outline-3">
+<h3 id="org5f4b087"><span class="section-number-3">1.1</span> ndarray</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+<span style="color: #715ab1;">py_array</span> = <span style="color: #3a81c3;">[</span>1, 2, 3, 4, 5<span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">np_array</span> = np.array<span style="color: #3a81c3;">(</span>py_array<span style="color: #3a81c3;">)</span>
+np_array.shape <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; (5,)</span>
+np_array.dtype <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; dtype('int64')</span>
+
+<span style="color: #715ab1;">py_array</span> = <span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span>1, 2, 3, 4<span style="color: #6c3163;">]</span>, <span style="color: #6c3163;">[</span>5, 6, 7, 8<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">np_array</span> = np.array<span style="color: #3a81c3;">(</span>py_array<span style="color: #3a81c3;">)</span>
+np_array.shape <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; (2, 4)</span>
+np_array.ndim <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 2</span>
+
+np.zeros<span style="color: #3a81c3;">(</span>10<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.])</span>
+np.ones<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>2, 3<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([[ 1.,  1.,  1.], [ 1.,  1.,  1.]])</span>
+np.empty<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>2, 3, 2<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[[ 0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.]],</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[[ 0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#         </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.,  0.]]])</span>
+
+<span style="color: #715ab1;">array</span> = np.arange<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([0, 1, 2, 3, 4])</span>
+<span style="color: #715ab1;">masked_array</span> = np.ma.masked_array<span style="color: #3a81c3;">(</span>array, array&lt;3<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; [-- -- -- 3 4]</span>
+np.random.randn<span style="color: #3a81c3;">(</span>2, 3<span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">np_array</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>1, 2, 3<span style="color: #6c3163;">]</span>, dtype=np.int32<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">np_array</span> = np_array.astype<span style="color: #3a81c3;">(</span>np.float64<span style="color: #3a81c3;">)</span>
+np_array.dtype <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; dtype('float64')</span>
+
+<span style="color: #715ab1;">x</span>, <span style="color: #715ab1;">y</span>=np.meshgrid<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span>2<span style="color: #6c3163;">)</span>,np.arange<span style="color: #6c3163;">(</span>2<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">x=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[0, 1],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[0, 1]])</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">y=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[0, 0],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[1, 1]])</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org7439b52" class="outline-4">
+<h4 id="org7439b52"><span class="section-number-4">1.1.1</span> Strides</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+indicating the number of bytes to "step" in order to advance
+one element along a dimension, \(3 * 4 * 5\) array of float64(8-bytes)
+has strides (160, 40, 8)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org868e226" class="outline-4">
+<h4 id="org868e226"><span class="section-number-4">1.1.2</span> Supported dtype</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<ul class="org-ul">
+<li>int8, uint8, int16, uint16, int32, uint32, int64, uint64</li>
+<li>float16, float32, float64, float128</li>
+<li>complex64, complex128, complex256</li>
+<li>bool</li>
+<li>object</li>
+<li>string_</li>
+<li>unicode_</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd6a2d48" class="outline-4">
+<h4 id="orgd6a2d48"><span class="section-number-4">1.1.3</span> Creating</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">array</td>
+<td class="org-left">Convert input data (list, tuple, array, or other sequence type) to an ndarray</td>
+</tr>
+
+<tr>
+<td class="org-left">asarray</td>
+<td class="org-left">Convert input to ndarray, but do not copy if the input is already an ndarray</td>
+</tr>
+
+<tr>
+<td class="org-left">arange</td>
+<td class="org-left">Like the built-in range but returns an ndarray instead of a list.</td>
+</tr>
+
+<tr>
+<td class="org-left">ones, ones_like</td>
+<td class="org-left">Produce an array of all 1’s with the given shape and dtype.</td>
+</tr>
+
+<tr>
+<td class="org-left">zeros, zeros_like</td>
+<td class="org-left">Produce an array of all 0’s with the given shape and dtype.</td>
+</tr>
+
+<tr>
+<td class="org-left">empty, empty_like</td>
+<td class="org-left">Create new arrays by allocating new memory</td>
+</tr>
+
+<tr>
+<td class="org-left">eye, identity</td>
+<td class="org-left">Create a square N x N identity matrix (1’s on the diagonal and 0’s elsewhere)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgea00c4d" class="outline-4">
+<h4 id="orgea00c4d"><span class="section-number-4">1.1.4</span> Indexing</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
+<a id="org47f66f9"></a>
+</p>
+</div>
+<div id="outline-container-org33117b2" class="outline-5">
+<h5 id="org33117b2">basic indexing</h5>
+<div class="outline-text-5" id="text-org33117b2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">arr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span>12<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>.reshape<span style="color: #3a81c3;">(</span>3,4<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 0,  1,  2,  3],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 4,  5,  6,  7],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 8,  9, 10, 11]])</span>
+
+arr<span style="color: #3a81c3;">[</span>1:, :3<span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 4,  5,  6],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 8,  9, 10]])</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orge7aae91" class="outline-5">
+<h5 id="orge7aae91">boolean indexing</h5>
+<div class="outline-text-5" id="text-orge7aae91">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">flags</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>1, 2, 3, 2, 2, 1<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">data</span> = np.random.randn<span style="color: #3a81c3;">(</span>6,2<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 2.11684529,  1.24861544],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[-0.34817586, -0.59905366],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[-0.84976431,  0.11840417],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.36648373,  1.33416664],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.37616856, -0.0032112 ],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[-0.7749904 , -0.60457688]])</span>
+flags ==2
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([False,  True, False,  True,  True, False], dtype=bool)</span>
+data<span style="color: #3a81c3;">[</span>flags == 2<span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[-0.34817586, -0.59905366],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.36648373,  1.33416664],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.37616856, -0.0032112 ]])</span>
+data<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">(</span>flags == 3<span style="color: #6c3163;">)</span> | <span style="color: #6c3163;">(</span>flags == 1<span style="color: #6c3163;">)</span>, 1:<span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 1.24861544],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.11840417],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[-0.60457688]])</span>
+<span style="color: #715ab1;">data</span><span style="color: #3a81c3;">[</span>data&lt;0<span style="color: #3a81c3;">]</span> = 0
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 2.11684529,  1.24861544],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.        ,  0.        ],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.        ,  0.11840417],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.36648373,  1.33416664],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.37616856,  0.        ],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 0.        ,  0.        ]])</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaa59167" class="outline-5">
+<h5 id="orgaa59167">fancy indexing</h5>
+<div class="outline-text-5" id="text-orgaa59167">
+<p class="verse">
+Fancy indexing is a term adopted by NumPy to describe indexing using <b>integer arrays</b> .<br />
+Unlike slicing, <code>always copies the data into a new array</code> .<br />
+</p>
+<div class="org-src-container">
+<pre class="src src-python">arr
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 0.,  0.,  0.,  0.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.,  1.,  1.,  1.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 2.,  2.,  2.,  2.]])</span>
+arr<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span>2, 1<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 2.,  2.,  2.,  2.],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 1.,  1.,  1.,  1.]])</span>
+<span style="color: #715ab1;">arr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span>12<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>.reshape<span style="color: #3a81c3;">(</span>3,4<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 0,  1,  2,  3],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 4,  5,  6,  7],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[ 8,  9, 10, 11]])</span>
+arr<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span>1,2<span style="color: #6c3163;">]</span>, <span style="color: #6c3163;">[</span>2,3<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([ 6, 11]) # choose location (1, 2) (2, 3)</span>
+
+arr<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span>1,2<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">][</span>:, <span style="color: #6c3163;">[</span>2,3<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 6,  7],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[10, 11]])</span>
+arr<span style="color: #3a81c3;">[</span>np.ix_<span style="color: #6c3163;">(</span><span style="color: #2d9574;">[</span>1,2<span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span>2,3<span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same effect</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([[ 6,  7],</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#        </span><span style="color: #2aa1ae; background-color: #ecf3ec;">[10, 11]])</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga3976e2" class="outline-4">
+<h4 id="orga3976e2"><span class="section-number-4">1.1.5</span> Reshape 1D to 2D</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">arr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>1,2,3<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+arr.reshape<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>-1, 1<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">[</span>1<span style="color: #2d9574;">]</span>,
+       <span style="color: #2d9574;">[</span>2<span style="color: #2d9574;">]</span>,
+       <span style="color: #2d9574;">[</span>3<span style="color: #2d9574;">]</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org8b0e555" class="outline-3">
+<h3 id="org8b0e555"><span class="section-number-3">1.2</span> matrix</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+matrix has two dimensions and implements row-column matrix multiplication
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2869777" class="outline-3">
+<h3 id="org2869777"><span class="section-number-3">1.3</span> Conditional Logic</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-orgd714ea9" class="outline-4">
+<h4 id="orgd714ea9"><span class="section-number-4">1.3.1</span> any, all</h4>
+</div>
+<div id="outline-container-orgfc083bf" class="outline-4">
+<h4 id="orgfc083bf"><span class="section-number-4">1.3.2</span> numpy.where</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+The <b>numpy.where</b> function is a vectorized version of the ternary expression x if
+condition else y. <b>numpy.where</b> is quicker than list comprehension.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">xarr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>1,1,1,1,1<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">yarr</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>2,2,2,2,2<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">cond</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #4e3163;">True</span>, <span style="color: #4e3163;">False</span>, <span style="color: #4e3163;">True</span>, <span style="color: #4e3163;">False</span>, <span style="color: #4e3163;">False</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+np.where<span style="color: #3a81c3;">(</span>cond, xarr, yarr<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([1, 2, 1, 2, 2])</span>
+np.where<span style="color: #3a81c3;">(</span>cond, 4, 3<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">array([4, 3, 4, 3, 3])</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7712cf3" class="outline-3">
+<h3 id="org7712cf3"><span class="section-number-3">1.4</span> Transpose</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Simple transposing with <code>.T</code> is just a special case of <code>swapaxes</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org18d3206" class="outline-3">
+<h3 id="org18d3206"><span class="section-number-3">1.5</span> Useful functions</h3>
+<div class="outline-text-3" id="text-1-5">
+</div>
+<div id="outline-container-orgc674993" class="outline-4">
+<h4 id="orgc674993"><span class="section-number-4">1.5.1</span> Math</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Method</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">sign</td>
+<td class="org-left">Returns on array of 1 and -1 depending on the sign of the values</td>
+</tr>
+
+<tr>
+<td class="org-left">sum</td>
+<td class="org-left">Sum of all the elements in the array or along an axis. Zero-length arrays have sum 0</td>
+</tr>
+
+<tr>
+<td class="org-left">mean</td>
+<td class="org-left">Arithmetic mean. Zero-length arrays have NaN mean</td>
+</tr>
+
+<tr>
+<td class="org-left">std, var</td>
+<td class="org-left">Standard deviation and variance, respectively, with optional degrees of freedom adjustment</td>
+</tr>
+
+<tr>
+<td class="org-left">min, max</td>
+<td class="org-left">Minimum and maximum</td>
+</tr>
+
+<tr>
+<td class="org-left">argmin, argmax</td>
+<td class="org-left">Indices of minimum and maximum elements, respectively</td>
+</tr>
+
+<tr>
+<td class="org-left">cumsum</td>
+<td class="org-left">Cumulative sum of elements starting from 0</td>
+</tr>
+
+<tr>
+<td class="org-left">cumprod</td>
+<td class="org-left">Cumulative product of elements starting from 1</td>
+</tr>
+
+<tr>
+<td class="org-left">abs, fabs</td>
+<td class="org-left">Use <b>fabs</b> as a faster alternative for non-complex-valued data</td>
+</tr>
+
+<tr>
+<td class="org-left">modf</td>
+<td class="org-left">Return factional and integral parts of array as separate array</td>
+</tr>
+
+<tr>
+<td class="org-left">rint</td>
+<td class="org-left">Round elements to the nearest integer, preserving the dtype</td>
+</tr>
+
+<tr>
+<td class="org-left">average</td>
+<td class="org-left">Compute the <b>weighted</b> average along the specified axis.</td>
+</tr>
+
+<tr>
+<td class="org-left">exp</td>
+<td class="org-left">Calculate the exponential of all elements in the input array.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orged50e4b" class="outline-4">
+<h4 id="orged50e4b"><span class="section-number-4">1.5.2</span> Linear Algebra</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">diag</td>
+<td class="org-left">Return the diagonal (or off-diagonal) elements of a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">dot</td>
+<td class="org-left"><b>Matrix multiplication</b></td>
+</tr>
+
+<tr>
+<td class="org-left">trace</td>
+<td class="org-left">Compute the sum of the diagonal elements</td>
+</tr>
+
+<tr>
+<td class="org-left">det</td>
+<td class="org-left">Compute the matrix determinant</td>
+</tr>
+
+<tr>
+<td class="org-left">eig</td>
+<td class="org-left">Compute the eigenvalues and eigenvectors of a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">inv</td>
+<td class="org-left">Compute the inverse of a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">pinv</td>
+<td class="org-left">Compute the Moore-Penrose pseudo-inverse inverse of a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">qr</td>
+<td class="org-left">Compute the QR decomposition</td>
+</tr>
+
+<tr>
+<td class="org-left">svd</td>
+<td class="org-left">Compute the singular value decomposition (SVD)</td>
+</tr>
+
+<tr>
+<td class="org-left">solve</td>
+<td class="org-left">Solve the linear system Ax = b for x, where A is a square matrix</td>
+</tr>
+
+<tr>
+<td class="org-left">lstsq</td>
+<td class="org-left">Compute the least-squares solution to y = Xb</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgaec000a" class="outline-4">
+<h4 id="orgaec000a"><span class="section-number-4">1.5.3</span> Random Number Generation</h4>
+<div class="outline-text-4" id="text-1-5-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">seed</td>
+<td class="org-left">Seed the random number generator</td>
+</tr>
+
+<tr>
+<td class="org-left">permutation</td>
+<td class="org-left">Return a random permutation of a sequence, or return a permuted range</td>
+</tr>
+
+<tr>
+<td class="org-left">shuffle</td>
+<td class="org-left">Randomly permute a sequence in place</td>
+</tr>
+
+<tr>
+<td class="org-left">rand</td>
+<td class="org-left">Draw samples from a uniform distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">randint</td>
+<td class="org-left">Draw random integers from a given low-to-high range</td>
+</tr>
+
+<tr>
+<td class="org-left">randn</td>
+<td class="org-left">Draw samples from a normal distribution with mean 0 and standard deviation 1 (MATLAB-like interface)</td>
+</tr>
+
+<tr>
+<td class="org-left">binomial</td>
+<td class="org-left">Draw samples a binomial distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">normal</td>
+<td class="org-left">Draw samples from a normal (Gaussian) distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">beta</td>
+<td class="org-left">Draw samples from a beta distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">chisquare</td>
+<td class="org-left">Draw samples from a chi-square distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">gamma</td>
+<td class="org-left">Draw samples from a gamma distribution</td>
+</tr>
+
+<tr>
+<td class="org-left">uniform</td>
+<td class="org-left">Draw samples from a uniform [0, 1) distribution</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org4050107" class="outline-4">
+<h4 id="org4050107"><span class="section-number-4">1.5.4</span> Set operations</h4>
+<div class="outline-text-4" id="text-1-5-4">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">unique(x)</td>
+<td class="org-left">Compute the sorted, unique elements in x</td>
+</tr>
+
+<tr>
+<td class="org-left">intersect1d(x, y)</td>
+<td class="org-left">Compute the sorted, common elements in x and y</td>
+</tr>
+
+<tr>
+<td class="org-left">union1d(x, y)</td>
+<td class="org-left">Compute the sorted union of elements</td>
+</tr>
+
+<tr>
+<td class="org-left">in1d(x, y)</td>
+<td class="org-left">Compute a boolean array indicating whether element of x is in y</td>
+</tr>
+
+<tr>
+<td class="org-left">setdiff1d(x, y)</td>
+<td class="org-left">Set difference, elements in x that are not in y</td>
+</tr>
+
+<tr>
+<td class="org-left">setxor1d(x, y)</td>
+<td class="org-left">Set symmetric differences; elements that are in either of the arrays, but not both</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org632fdd5" class="outline-2">
+<h2 id="org632fdd5"><span class="section-number-2">2</span> pandas</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org32a7059" class="outline-3">
+<h3 id="org32a7059"><span class="section-number-3">2.1</span> Series</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Series is a fixed-length <b>ordered dict</b>
+</p>
+</div>
+</div>
+<div id="outline-container-org773522b" class="outline-3">
+<h3 id="org773522b"><span class="section-number-3">2.2</span> DataFrame</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span>8<span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span>4,2<span style="color: #6c3163;">)</span>,
+		  columns=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>, <span style="color: #2d9574;">'r2'</span>, <span style="color: #2d9574;">'r3'</span>, <span style="color: #2d9574;">'r4'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+df.ix<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'r1'</span><span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">retrieve row</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1    0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c2    1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Name: r1, dtype: int64</span>
+
+df.ix<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>,<span style="color: #2d9574;">'r2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   0   1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   2   3</span>
+
+df.T
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1  r2  r3  r4</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1   0   2   4   6</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c2   1   3   5   7</span>
+
+<span style="color: #3a81c3; font-weight: bold;">del</span> df<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'c2'</span><span style="color: #3a81c3;">]</span>
+
+df.columns
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Index([u'c1'], dtype='object')</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org08daea1" class="outline-3">
+<h3 id="org08daea1"><span class="section-number-3">2.3</span> Index</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Index objects are immutable, functions as a fixed-size set.
+</p>
+<ul class="org-ul">
+<li>main type: <code>Index, Int64Index, MultiIndex, DatetimeIndex, PeriodIndex</code></li>
+</ul>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Method</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">append</td>
+<td class="org-left">Concatenate with additional Index objects, producing a new Index</td>
+</tr>
+
+<tr>
+<td class="org-left">diff</td>
+<td class="org-left">Compute set difference as an Index</td>
+</tr>
+
+<tr>
+<td class="org-left">intersection</td>
+<td class="org-left">Compute set intersection</td>
+</tr>
+
+<tr>
+<td class="org-left">union</td>
+<td class="org-left">Compute set union</td>
+</tr>
+
+<tr>
+<td class="org-left">isin</td>
+<td class="org-left">Compute boolean array indicating whether each value is contained in the passed collection</td>
+</tr>
+
+<tr>
+<td class="org-left">delete</td>
+<td class="org-left">Compute new Index with element at index i deleted</td>
+</tr>
+
+<tr>
+<td class="org-left">drop</td>
+<td class="org-left">Compute new index by deleting passed values</td>
+</tr>
+
+<tr>
+<td class="org-left">insert</td>
+<td class="org-left">Compute new Index by inserting element at index i</td>
+</tr>
+
+<tr>
+<td class="org-left">is_monotonic</td>
+<td class="org-left">Returns True if each element is greater than or equal to the previous element</td>
+</tr>
+
+<tr>
+<td class="org-left">is_unique</td>
+<td class="org-left">Returns True if the Index has no duplicate values</td>
+</tr>
+
+<tr>
+<td class="org-left">unique</td>
+<td class="org-left">Compute the array of unique values in the Index</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-orgff785cc" class="outline-4">
+<h4 id="orgff785cc"><span class="section-number-4">2.3.1</span> <code>rename</code> with functions</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<ul class="org-ul">
+<li><code>data.rename(index=str.title, columns=str.upper)</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcd81fd7" class="outline-3">
+<h3 id="orgcd81fd7"><span class="section-number-3">2.4</span> Functionality</h3>
+<div class="outline-text-3" id="text-2-4">
+</div>
+<div id="outline-container-org811a147" class="outline-4">
+<h4 id="org811a147"><span class="section-number-4">2.4.1</span> Reindexing</h4>
+<div class="outline-text-4" id="text-2-4-1">
+<p>
+Example:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">frame.reindex<span style="color: #3a81c3;">(</span>columns=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+frame.reindex<span style="color: #3a81c3;">(</span>index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'c'</span>, <span style="color: #2d9574;">'d'</span><span style="color: #6c3163;">]</span>, method=<span style="color: #2d9574;">'ffill'</span>, columns=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+frame.reindex<span style="color: #3a81c3;">(</span>frame2.index, method=<span style="color: #2d9574;">'ffill'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">is similar to frame.ix[['a', 'b', 'c', 'd'], ['c1', 'c2']]</span>
+</pre>
+</div>
+<p>
+reindex args: index, method, fill_value, limit, level, copy
+</p>
+</div>
+</div>
+<div id="outline-container-org3c413bc" class="outline-4">
+<h4 id="org3c413bc"><span class="section-number-4">2.4.2</span> Drop</h4>
+<div class="outline-text-4" id="text-2-4-2">
+<div class="org-src-container">
+<pre class="src src-python">frame.drop<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>, <span style="color: #2d9574;">'r2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+frame.drop<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span>, axis=1<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbe014e5" class="outline-4">
+<h4 id="orgbe014e5"><span class="section-number-4">2.4.3</span> Selection</h4>
+<div class="outline-text-4" id="text-2-4-3">
+<p>
+Indexing options:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">df[val]</td>
+<td class="org-left">Select column</td>
+</tr>
+
+<tr>
+<td class="org-left">df.loc[val]</td>
+<td class="org-left">Select row</td>
+</tr>
+
+<tr>
+<td class="org-left">df.loc[:, val]</td>
+<td class="org-left">Select column</td>
+</tr>
+
+<tr>
+<td class="org-left">df.loc[val1, val2]</td>
+<td class="org-left">Select both column and row</td>
+</tr>
+
+<tr>
+<td class="org-left">df.iloc[where]</td>
+<td class="org-left">Select row by int position</td>
+</tr>
+
+<tr>
+<td class="org-left">df.iloc[:, where]</td>
+<td class="org-left">Select column by int position</td>
+</tr>
+
+<tr>
+<td class="org-left">df.iloc[where_i, where_j]</td>
+<td class="org-left">Select both column and row by int position</td>
+</tr>
+
+<tr>
+<td class="org-left">df.at[label_i, label_j]</td>
+<td class="org-left">Select a single scalar value by row and column label</td>
+</tr>
+
+<tr>
+<td class="org-left">df.iat[i, j]</td>
+<td class="org-left">Select a single scalar value by int position</td>
+</tr>
+
+<tr>
+<td class="org-left">get_value, set_value</td>
+<td class="org-left">Select single value by row and column label</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgc1043f9" class="outline-4">
+<h4 id="orgc1043f9"><span class="section-number-4">2.4.4</span> Arithmetic</h4>
+<div class="outline-text-4" id="text-2-4-4">
+<ul class="org-ul">
+<li>Basic df1 + df2,</li>
+<li>use add method to fill na values: df1.add(df2, fill_value=0)</li>
+</ul>
+<ul class="org-ul">
+<li>Operation between Dataframe and Series</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span>6<span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span>3,2<span style="color: #6c3163;">)</span>,
+		  columns=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>, <span style="color: #2d9574;">'r2'</span>, <span style="color: #2d9574;">'r3'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   0   1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   2   3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   4   5</span>
+
+<span style="color: #715ab1;">s</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>4,5<span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1    4</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c2    5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dtype: int64</span>
+
+df + s
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   4   6</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   6   8</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   8  10</span>
+
+
+<span style="color: #715ab1;">s2</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>1,2,3<span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'r1'</span>, <span style="color: #2d9574;">'r2'</span>, <span style="color: #2d9574;">'r3'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1    1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2    2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3    3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dtype: int64</span>
+
+df.add<span style="color: #3a81c3;">(</span>s2, axis=0, fill_value=0<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   1   2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   4   5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   7   8</span>
+
+<span style="color: #715ab1;">df</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'sum_c'</span><span style="color: #3a81c3;">]</span> = df.<span style="color: #3a81c3;">eval</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'c1+c2'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c1  c2  sum_c</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r1   0   1      1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r2   2   3      5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">r3   4   5      9</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org89a73b5" class="outline-4">
+<h4 id="org89a73b5"><span class="section-number-4">2.4.5</span> Broadcasting</h4>
+<div class="outline-text-4" id="text-2-4-5">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">frame</span>=pd.DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span>12<span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>4,3<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>, columns=<span style="color: #3a81c3;">list</span><span style="color: #6c3163;">(</span><span style="color: #2d9574;">'bde'</span><span style="color: #6c3163;">)</span>, index=<span style="color: #3a81c3;">list</span><span style="color: #6c3163;">(</span><span style="color: #2d9574;">'1234'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">series</span> = frame.ix<span style="color: #3a81c3;">[</span>0<span style="color: #3a81c3;">]</span>
+frame - series
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">b  d  e</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1  0  0  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2  3  3  3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3  6  6  6</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4  9  9  9</span>
+
+<span style="color: #715ab1;">series2</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span>3<span style="color: #6c3163;">)</span>, index=<span style="color: #3a81c3;">list</span><span style="color: #6c3163;">(</span><span style="color: #2d9574;">'bef'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+frame + series2
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#      </span><span style="color: #2aa1ae; background-color: #ecf3ec;">b   d     e   f</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1  0.0 NaN   3.0 NaN</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2  3.0 NaN   6.0 NaN</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3  6.0 NaN   9.0 NaN</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4  9.0 NaN  12.0 NaN</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org7abf4e6" class="outline-4">
+<h4 id="org7abf4e6"><span class="section-number-4">2.4.6</span> Applying</h4>
+<div class="outline-text-4" id="text-2-4-6">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">f</span> = <span style="color: #3a81c3; font-weight: bold;">lambda</span> x: x.<span style="color: #3a81c3;">max</span><span style="color: #3a81c3;">()</span>
+frame.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span>f<span style="color: #3a81c3;">)</span>
+frame.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span>f, axis=1<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+<code>apply</code> <b>can also return a Series</b>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">f</span><span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>x.<span style="color: #3a81c3;">min</span><span style="color: #2d9574;">()</span>, x.<span style="color: #3a81c3;">max</span><span style="color: #2d9574;">()</span><span style="color: #6c3163;">]</span>, index=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'min'</span>, <span style="color: #2d9574;">'max'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+frame.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span>f<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;    a   b</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">min xxx xxx</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">max xxx xxx</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><b>map</b> method for applying an element-wise function on a Series</li>
+<li><b>applymap</b> for applying an element-wise function on a DataFrame</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc658dd0" class="outline-4">
+<h4 id="orgc658dd0"><span class="section-number-4">2.4.7</span> Sorting</h4>
+<div class="outline-text-4" id="text-2-4-7">
+<div class="org-src-container">
+<pre class="src src-python">df.sort_index<span style="color: #3a81c3;">()</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">by column(s)</span>
+df.sort_values<span style="color: #3a81c3;">(</span>by=<span style="color: #2d9574;">'c1'</span><span style="color: #3a81c3;">)</span>
+df.sort_values<span style="color: #3a81c3;">(</span>by=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'c1'</span>, <span style="color: #2d9574;">'c2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+series.sort_values<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb8f8b4c" class="outline-4">
+<h4 id="orgb8f8b4c"><span class="section-number-4">2.4.8</span> Ranking</h4>
+<div class="outline-text-4" id="text-2-4-8">
+<p>
+By default, rank breaks ties by assigning each group the mean rank
+</p>
+<ul class="org-ul">
+<li>args: 'average'(default), 'min', 'max', 'first'</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">obj</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>7, -5, 7, 4, 2, 0, 4, 7<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+obj.rank<span style="color: #3a81c3;">()</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0    7.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1    1.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2    7.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3    4.5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4    3.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">5    2.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6    4.5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">7    7.0</span>
+obj.rank<span style="color: #3a81c3;">(</span>method=<span style="color: #2d9574;">'first'</span>, ascending=<span style="color: #4e3163;">False</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0    1.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1    7.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2    2.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3    3.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4    5.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">5    6.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6    4.0</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbe1d937" class="outline-4">
+<h4 id="orgbe1d937"><span class="section-number-4">2.4.9</span> Binning</h4>
+<div class="outline-text-4" id="text-2-4-9">
+<ul class="org-ul">
+<li><code>cut</code></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">bins</span> = <span style="color: #3a81c3;">[</span>18, 25, 35, 60, 100<span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">cats</span> = pd.cut<span style="color: #3a81c3;">(</span>ages, bins<span style="color: #3a81c3;">)</span>
+cats <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Categories object [(18,25], (25, 35], ...]</span>
+</pre>
+</div>
+<p>
+useful options: <code>labels</code>, <code>precision</code>
+</p>
+<ul class="org-ul">
+<li><code>qcut</code></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python">pd.qcut<span style="color: #3a81c3;">(</span>data, <span style="color: #6c3163;">[</span>0, 0.1, 0.5, 0.9, 1.<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pass quantiles</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8582f52" class="outline-4">
+<h4 id="org8582f52"><span class="section-number-4">2.4.10</span> Other funtions</h4>
+<div class="outline-text-4" id="text-2-4-10">
+<ul class="org-ul">
+<li>numpy <b>ufancs</b> works fine with pandas objects</li>
+<li>isnull, notnull, dropna, fillna</li>
+<li>stack, unstack, swaplevel, sortlevel</li>
+<li>set_index, reset_index</li>
+<li>unique(series based), value_counts(series based), isin(element-wise)</li>
+<li>all, any</li>
+<li>replace: <code>data.replace(-999, np.nan)</code></li>
+<li>cut, qcut</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9ff3a79" class="outline-3">
+<h3 id="org9ff3a79"><span class="section-number-3">2.5</span> Statistic methods</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+Basic:
+count, describe, min, max, quantile, sum, pct_change, diff, corr, cov, corrwith
+</p>
+</div>
+<div id="outline-container-orgcac34b4" class="outline-4">
+<h4 id="orgcac34b4"><span class="section-number-4">2.5.1</span> mean, median, mad, var, std</h4>
+</div>
+<div id="outline-container-org0cd711a" class="outline-4">
+<h4 id="org0cd711a"><span class="section-number-4">2.5.2</span> argmin, argmax, idxmin, idxmax</h4>
+<div class="outline-text-4" id="text-2-5-2">
+<p>
+argmin/argmax: compute index locations (integers) at which minimum or maximum value obtained, respectively
+</p>
+</div>
+</div>
+
+<div id="outline-container-org09e9583" class="outline-4">
+<h4 id="org09e9583"><span class="section-number-4">2.5.3</span> cumsum, cummin, cummax, cumprod</h4>
+</div>
+<div id="outline-container-org9906a83" class="outline-4">
+<h4 id="org9906a83"><span class="section-number-4">2.5.4</span> skew</h4>
+<div class="outline-text-4" id="text-2-5-4">
+<p>
+Sample skewness (3rd moment) of values
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1ec7879" class="outline-4">
+<h4 id="org1ec7879"><span class="section-number-4">2.5.5</span> kurt</h4>
+<div class="outline-text-4" id="text-2-5-5">
+<p>
+Sample kurtosis (4th moment) of values
+</p>
+</div>
+</div>
+
+<div id="outline-container-org827c1de" class="outline-4">
+<h4 id="org827c1de"><span class="section-number-4">2.5.6</span> diff</h4>
+<div class="outline-text-4" id="text-2-5-6">
+<p>
+Compute 1st arithmetic difference (useful for time series)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge5fbf13" class="outline-4">
+<h4 id="orge5fbf13"><span class="section-number-4">2.5.7</span> corr, cov, corrwith</h4>
+<div class="outline-text-4" id="text-2-5-7">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> pandas_datareader <span style="color: #3a81c3; font-weight: bold;">as</span> pdr
+
+<span style="color: #715ab1;">all_data</span> = <span style="color: #3a81c3;">{}</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> ticker <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'AAPL'</span>, <span style="color: #2d9574;">'IBM'</span>, <span style="color: #2d9574;">'MSFT'</span>, <span style="color: #2d9574;">'GOOG'</span><span style="color: #3a81c3;">]</span>:
+    <span style="color: #715ab1;">all_data</span><span style="color: #3a81c3;">[</span>ticker<span style="color: #3a81c3;">]</span> = pdr.get_data_yahoo<span style="color: #3a81c3;">(</span>ticker, <span style="color: #2d9574;">'1/1/2000'</span>, <span style="color: #2d9574;">'1/1/2010'</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">price</span> = pd.DataFrame<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span>tic: data<span style="color: #2d9574;">[</span><span style="color: #2d9574;">'Adj Close'</span><span style="color: #2d9574;">]</span> <span style="color: #3a81c3; font-weight: bold;">for</span> tic, data <span style="color: #3a81c3; font-weight: bold;">in</span> all_data.iteritems<span style="color: #2d9574;">()</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">returns</span> = price.pct_change<span style="color: #3a81c3;">()</span>
+
+returns.MSFT.corr<span style="color: #3a81c3;">(</span>returns.IBM<span style="color: #3a81c3;">)</span>
+returns.MSFT.cov<span style="color: #3a81c3;">(</span>returns.IBM<span style="color: #3a81c3;">)</span>
+
+returns.corr<span style="color: #3a81c3;">()</span>
+
+factors_df.corrwith<span style="color: #3a81c3;">(</span>prices<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><code>DataFrame.corrwith</code>: Compute pairwise correlation.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgef3f183" class="outline-4">
+<h4 id="orgef3f183"><span class="section-number-4">2.5.8</span> common args</h4>
+<div class="outline-text-4" id="text-2-5-8">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Method</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">axis</td>
+<td class="org-left">Axis to reduce over. 0 for DataFrame’s rows and 1 for columns</td>
+</tr>
+
+<tr>
+<td class="org-left">skipna</td>
+<td class="org-left">Exclude missing values, True by default</td>
+</tr>
+
+<tr>
+<td class="org-left">level</td>
+<td class="org-left">Reduce grouped by level if the axis is hierarchically-indexed (MultiIndex)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>skipna</b> option:
+</p>
+<ul class="org-ul">
+<li>True(default): NA values are excluded unless the entire slice (row or column in this case) is NA</li>
+<li>False: if any value is <b>NA</b>, then return <b>NA</b></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga3996db" class="outline-3">
+<h3 id="orga3996db"><span class="section-number-3">2.6</span> Hierarchical Indexing</h3>
+<div class="outline-text-3" id="text-2-6">
+</div>
+<div id="outline-container-orga950d99" class="outline-4">
+<h4 id="orga950d99"><span class="section-number-4">2.6.1</span> Indexing</h4>
+<div class="outline-text-4" id="text-2-6-1">
+<div class="org-src-container">
+<pre class="src src-example">data[index_level1]
+data[index_level1 : index_level1]
+data[[index_level1, index_level1]]
+
+select by inner level:
+data[:, index_level2]
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org311464a" class="outline-4">
+<h4 id="org311464a"><span class="section-number-4">2.6.2</span> stack, unstack</h4>
+</div>
+<div id="outline-container-orgb0c9578" class="outline-4">
+<h4 id="orgb0c9578"><span class="section-number-4">2.6.3</span> swaplevel, sortlevel</h4>
+</div>
+</div>
+<div id="outline-container-orgf796f5e" class="outline-3">
+<h3 id="orgf796f5e"><span class="section-number-3">2.7</span> Panel</h3>
+<div class="outline-text-3" id="text-2-7">
+<p>
+Panel can be thought as a 3-dimensional analogue of DataFrame.
+Although hierarchical indexing makes using truly N-dimensional arrays unnecessary in a lot of cases
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">pdata</span> = pd.Panel<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span>stk: pdr.get_data_yahoo<span style="color: #2d9574;">(</span>stk, <span style="color: #2d9574;">'1/1/2009'</span>, <span style="color: #2d9574;">'6/1/2012'</span><span style="color: #2d9574;">)</span>
+		  <span style="color: #3a81c3; font-weight: bold;">for</span> stk <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #2d9574;">[</span><span style="color: #2d9574;">'AAPL'</span>, <span style="color: #2d9574;">'GOOG'</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+
+</pre>
+</div>
+</div>
+<div id="outline-container-org823a8ae" class="outline-4">
+<h4 id="org823a8ae"><span class="section-number-4">2.7.1</span> Useful functions</h4>
+<div class="outline-text-4" id="text-2-7-1">
+<ul class="org-ul">
+<li><p>
+ix
+</p>
+<div class="org-src-container">
+<pre class="src src-python">pdata.ix<span style="color: #3a81c3;">[</span>:, <span style="color: #2d9574;">'6/1/2012'</span>, :<span style="color: #3a81c3;">]</span>
+</pre>
+</div></li>
+<li><p>
+swapaxes
+</p>
+<div class="org-src-container">
+<pre class="src src-python">pdata.swapaxes<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'items'</span>, <span style="color: #2d9574;">'minor'</span><span style="color: #3a81c3;">)[</span><span style="color: #2d9574;">'Adj Close'</span><span style="color: #3a81c3;">]</span>
+</pre>
+</div></li>
+<li><p>
+to_frame
+</p>
+
+<p>
+index will be the <b>[major, minor]</b> axis, <b>items</b> will be the columns
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">stacked</span> = pdata.to_frame<span style="color: #3a81c3;">()</span>
+</pre>
+</div></li>
+
+<li><p>
+to_panel
+</p>
+<div class="org-src-container">
+<pre class="src src-python">stacked.to_panel<span style="color: #3a81c3;">()</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf452b2f" class="outline-3">
+<h3 id="orgf452b2f"><span class="section-number-3">2.8</span> config options</h3>
+<div class="outline-text-3" id="text-2-8">
+<p>
+pd.options categories:
+</p>
+<ul class="org-ul">
+<li>compute</li>
+<li>display</li>
+<li>io</li>
+<li>mode</li>
+<li>plotting</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb2beffd" class="outline-3">
+<h3 id="orgb2beffd"><span class="section-number-3">2.9</span> Functional Method Chaining</h3>
+<div class="outline-text-3" id="text-2-9">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Usual non-functional way</span>
+<span style="color: #715ab1;">df2</span> = df.copy<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">df2</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">"k"</span><span style="color: #3a81c3;">]</span> = v
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Functional assign way</span>
+<span style="color: #715ab1;">df2</span> = df.assign<span style="color: #3a81c3;">(</span>k=v<span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">result</span> = df2.assign<span style="color: #3a81c3;">(</span>col1_demeaned=df2.col1 - df2.col2.mean<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>.groupby<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"key"</span><span style="color: #3a81c3;">)</span>.col1_demeaned.std<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>Assigning in-place may execute faster than using assign, but assign enables easier method chaining</li>
+</ul>
+</div>
+<div id="outline-container-orgb36f660" class="outline-4">
+<h4 id="orgb36f660"><span class="section-number-4">2.9.1</span> <b>Fancy Method Chaining</b></h4>
+<div class="outline-text-4" id="text-2-9-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = load_data<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">df2</span> = df<span style="color: #3a81c3;">[</span>df<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'col2'</span><span style="color: #6c3163;">]</span> &lt; 0<span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">This can be rewritten as:</span>
+<span style="color: #715ab1;">df</span> = <span style="color: #3a81c3;">(</span>load_data<span style="color: #6c3163;">()</span>
+      <span style="color: #6c3163;">[</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> x: x<span style="color: #2d9574;">[</span><span style="color: #2d9574;">'col2'</span><span style="color: #2d9574;">]</span> &lt; 0<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">write the entire sequence as a single chained expression</span>
+<span style="color: #715ab1;">result</span> = <span style="color: #3a81c3;">(</span>load_data<span style="color: #6c3163;">()</span>
+	  <span style="color: #6c3163;">[</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> x: x.col2 &lt; 0<span style="color: #6c3163;">]</span>
+	  .assign<span style="color: #6c3163;">(</span>col1_demeaned=<span style="color: #3a81c3; font-weight: bold;">lambda</span> x: x.col1 - x.col1.mean<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span>
+	  .groupby<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'key'</span><span style="color: #6c3163;">)</span>
+	  .col1_demeaned.std<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgefafbd8" class="outline-4">
+<h4 id="orgefafbd8"><span class="section-number-4">2.9.2</span> <code>pipe</code> method</h4>
+<div class="outline-text-4" id="text-2-9-2">
+<p>
+The statement <code>f(df)</code> and <code>df.pipe(f)</code> are equivalent
+</p>
+</div>
+<div id="outline-container-org48f1c11" class="outline-5">
+<h5 id="org48f1c11">useful pattern for <code>pipe</code></h5>
+<div class="outline-text-5" id="text-org48f1c11">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">group_demean</span><span style="color: #3a81c3;">(</span>df, by, cols<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">result</span> = df.copy<span style="color: #3a81c3;">()</span>
+    <span style="color: #715ab1;">g</span> = df.groupby<span style="color: #3a81c3;">(</span>by<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">for</span> c <span style="color: #3a81c3; font-weight: bold;">in</span> cols:
+	<span style="color: #715ab1;">result</span><span style="color: #3a81c3;">[</span>c<span style="color: #3a81c3;">]</span> = df<span style="color: #3a81c3;">[</span>c<span style="color: #3a81c3;">]</span> - g<span style="color: #3a81c3;">[</span>c<span style="color: #3a81c3;">]</span>.transform<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"mean"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> result
+
+
+<span style="color: #715ab1;">result</span> = df<span style="color: #3a81c3;">[</span>df.col1 &lt; 0<span style="color: #3a81c3;">]</span>.pipe<span style="color: #3a81c3;">(</span>group_demean, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">"key1"</span>, <span style="color: #2d9574;">"key2"</span><span style="color: #6c3163;">]</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">"col1"</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb0b9dfa" class="outline-2">
+<h2 id="orgb0b9dfa"><span class="section-number-2">3</span> Wrangling</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org3ff30be" class="outline-3">
+<h3 id="org3ff30be"><span class="section-number-3">3.1</span> Evaluate Data</h3>
+<div class="outline-text-3" id="text-3-1">
+</div>
+<div id="outline-container-org16224f6" class="outline-4">
+<h4 id="org16224f6"><span class="section-number-4">3.1.1</span> Quality</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+Data in low quality is called <b>dirty</b> data.
+</p>
+<ul class="org-ul">
+<li>missing value</li>
+<li>invalid value</li>
+<li>inaccurate value</li>
+<li>inconsistent value, e.g. different unit(cm/inch)</li>
+</ul>
+</div>
+
+<div id="outline-container-org357ade6" class="outline-5">
+<h5 id="org357ade6">Evaluate Method</h5>
+<div class="outline-text-5" id="text-org357ade6">
+<p>
+head, tail, info, value_counts, plot
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1db08a8" class="outline-3">
+<h3 id="org1db08a8"><span class="section-number-3">3.2</span> Dealing with Missing Data</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+<div id="outline-container-orgb095ec7" class="outline-4">
+<h4 id="orgb095ec7"><span class="section-number-4">3.2.1</span> Imputation</h4>
+<div class="outline-text-4" id="text-3-2-1">
+</div>
+<div id="outline-container-org7c1eeb7" class="outline-5">
+<h5 id="org7c1eeb7">Why impute</h5>
+<div class="outline-text-5" id="text-org7c1eeb7">
+<ul class="org-ul">
+<li>Not much data</li>
+<li>Removing data could affect representativeness</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgec20b3a" class="outline-5">
+<h5 id="orgec20b3a">Methods</h5>
+<div class="outline-text-5" id="text-orgec20b3a">
+<dl class="org-dl">
+<dt>Mean Imputation</dt><dd>Drawbacks: Lessens correlations between variables</dd>
+<dt>Linear Regression</dt><dd>Drawbacks: Over emphasize trends; Exist values suggest too much certainty.</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9c50b60" class="outline-3">
+<h3 id="org9c50b60"><span class="section-number-3">3.3</span> Data Input/Output</h3>
+<div class="outline-text-3" id="text-3-3">
+</div>
+<div id="outline-container-org5d6fa2f" class="outline-4">
+<h4 id="org5d6fa2f"><span class="section-number-4">3.3.1</span> Reading option categories</h4>
+<div class="outline-text-4" id="text-3-3-1">
+</div>
+<div id="outline-container-org81eb274" class="outline-5">
+<h5 id="org81eb274">Indexing</h5>
+<div class="outline-text-5" id="text-org81eb274">
+<p>
+Can treat one or more columns as the returned DataFrame, and whether
+to get column names from the file, the user, or not at all.
+</p>
+</div>
+</div>
+<div id="outline-container-orge74b880" class="outline-5">
+<h5 id="orge74b880">Type inference and data conversion</h5>
+<div class="outline-text-5" id="text-orge74b880">
+<p>
+This includes the user-defined value conversions and custom list of
+missing value markers.
+</p>
+</div>
+</div>
+<div id="outline-container-orgfb7269a" class="outline-5">
+<h5 id="orgfb7269a">Datetime parsing</h5>
+<div class="outline-text-5" id="text-orgfb7269a">
+<p>
+Includes combining capability, including combining date and time information
+spread over multiple columns into a single column in the result.
+</p>
+</div>
+</div>
+<div id="outline-container-orgc0d0dfc" class="outline-5">
+<h5 id="orgc0d0dfc">Iterating</h5>
+<div class="outline-text-5" id="text-orgc0d0dfc">
+<p>
+Support for iterating over chunks of very large files.
+</p>
+</div>
+</div>
+<div id="outline-container-org7761db1" class="outline-5">
+<h5 id="org7761db1">Unclean data issues</h5>
+<div class="outline-text-5" id="text-org7761db1">
+<p>
+Skipping rows or a footer, comments, or other minor things like numeric data
+with thousands separated by commas.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org03c8e3b" class="outline-4">
+<h4 id="org03c8e3b"><span class="section-number-4">3.3.2</span> Hints</h4>
+<div class="outline-text-4" id="text-3-3-2">
+<ul class="org-ul">
+<li><b>from_csv</b>: a convenience method simpler than read_csv</li>
+<li>pickle related: <b>load</b>, <b>save</b></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgdf4514a" class="outline-4">
+<h4 id="orgdf4514a"><span class="section-number-4">3.3.3</span> Useful <code>read_csv</code> parameters</h4>
+<div class="outline-text-4" id="text-3-3-3">
+<ul class="org-ul">
+<li>nrows</li>
+<li>chunksize</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">chunker</span> = pd.read_csv<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"data.csv"</span>, chunksize=1000<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> piece_df <span style="color: #3a81c3; font-weight: bold;">in</span> chunker:
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">do somethine with piece_df</span>
+    ...
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org8081759" class="outline-3">
+<h3 id="org8081759"><span class="section-number-3">3.4</span> Concatenation</h3>
+<div class="outline-text-3" id="text-3-4">
+<ul class="org-ul">
+<li><b>pd.merge</b>, <b>merge</b> method</li>
+<li><b>join</b> method: performs a left join on the join keys</li>
+<li><b>pd.concat</b></li>
+<li><b>combine_first</b>: patching missing data from another df</li>
+<li><b>align</b>: align two object on their axes with the specified join method for each axis Index</li>
+</ul>
+</div>
+<div id="outline-container-org662cb06" class="outline-4">
+<h4 id="org662cb06"><span class="section-number-4">3.4.1</span> concat args</h4>
+<div class="outline-text-4" id="text-3-4-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Argument</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">objs</td>
+<td class="org-left">List or <b>dict</b> of pandas objects to be concatenated. The only required argument</td>
+</tr>
+
+<tr>
+<td class="org-left">axis</td>
+<td class="org-left">Axis to concatenate along; defaults to 0</td>
+</tr>
+
+<tr>
+<td class="org-left">join</td>
+<td class="org-left">One of 'inner', 'outer' , defaulting to 'outer'</td>
+</tr>
+
+<tr>
+<td class="org-left">join_axes</td>
+<td class="org-left">Specific indexes to use for the other n-1 axes instead of performing union/intersection logic</td>
+</tr>
+
+<tr>
+<td class="org-left">keys</td>
+<td class="org-left">Values to associate with objects being concatenated, forming a hierarchical index along the concatenation axis</td>
+</tr>
+
+<tr>
+<td class="org-left">levels</td>
+<td class="org-left">Specific indexes to use as hierarchical index level or levels if keys passed</td>
+</tr>
+
+<tr>
+<td class="org-left">names</td>
+<td class="org-left">Names for created hierarchical levels if keys and / or levels passed</td>
+</tr>
+
+<tr>
+<td class="org-left">verify_integrity</td>
+<td class="org-left">Check new axis in concatenated object for duplicates and raise exception if so. By default( False ) allows duplicates</td>
+</tr>
+
+<tr>
+<td class="org-left">ignore_index</td>
+<td class="org-left">Do not preserve indexes along concatenation axis , instead producing a new range(total_length) index</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org38f525b" class="outline-3">
+<h3 id="org38f525b"><span class="section-number-3">3.5</span> Reshaping and Pivoting</h3>
+<div class="outline-text-3" id="text-3-5">
+</div>
+<div id="outline-container-org02a2e99" class="outline-4">
+<h4 id="org02a2e99"><span class="section-number-4">3.5.1</span> stack</h4>
+<div class="outline-text-4" id="text-3-5-1">
+<p>
+Pivots from the columns in the data to the rows.
+Stacking filters out missing data by default.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">data</span> = DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span>6<span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>2, 3<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span>, columns=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'c'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+data
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">a  b  c</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0  0  1  2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1  3  4  5</span>
+data.stack<span style="color: #3a81c3;">()</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0  a    0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">b    1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c    2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1  a    3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">b    4</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c    5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dtype: int64</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org01eb39b" class="outline-4">
+<h4 id="org01eb39b"><span class="section-number-4">3.5.2</span> unstack</h4>
+<div class="outline-text-4" id="text-3-5-2">
+<p>
+Pivots from the rows into the columns
+</p>
+<div class="org-src-container">
+<pre class="src src-python">data.stack<span style="color: #3a81c3;">()</span>.unstack<span style="color: #3a81c3;">()</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">a  b  c</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0  0  1  2</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1  3  4  5</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">can specific level number or name</span>
+data.stack<span style="color: #3a81c3;">()</span>.unstack<span style="color: #3a81c3;">(</span>0<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0  1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">a  0  3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">b  1  4</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">c  2  5</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4769d3c" class="outline-4">
+<h4 id="org4769d3c"><span class="section-number-4">3.5.3</span> pivot &amp; melt</h4>
+<div class="outline-text-4" id="text-3-5-3">
+<p>
+<b>pivot</b> is a shortcut for creating a hierarchical index using <b>set_index</b> and reshaping with <b>unstack</b>
+</p>
+<div class="org-src-container">
+<pre class="src src-python">quotes.head<span style="color: #3a81c3;">()</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#                   </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Open        High         Low       Close    Volume  \</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Date</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-04  626.951088  629.511067  624.241073  626.751061   3927000</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-05  627.181073  627.841071  621.541045  623.991055   6031900</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-06  625.861078  625.861078  606.361042  608.261023   7987100</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-07  609.401025  610.001045  592.651008  594.101005  12876600</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-08  592.000997  603.251034  589.110988  602.021036   9483900</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#              </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Adj Close symbol</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Date</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-04  313.062468   GOOG</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-05  311.683844   GOOG</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-06  303.826685   GOOG</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-07  296.753749   GOOG</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-08  300.709808   GOOG</span>
+quotes.pivot<span style="color: #3a81c3;">(</span>columns=<span style="color: #2d9574;">'symbol'</span>, values=<span style="color: #2d9574;">'Close'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">symbol            AAPL        GOOG         IBM       MSFT</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Date</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-04  214.009998  626.751061  132.449997  30.950001</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-05  214.379993  623.991055  130.850006  30.959999</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-06  210.969995  608.261023  130.000000  30.770000</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-07  210.580000  594.101005  129.550003  30.450001</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2010-01-08  211.980005  602.021036  130.850006  30.660000</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3ac999d" class="outline-3">
+<h3 id="org3ac999d"><span class="section-number-3">3.6</span> Random Sampling</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+<code>df.take</code>, <code>df.sample</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = DataFrame<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span>5 * 4<span style="color: #6c3163;">)</span>.reshape<span style="color: #6c3163;">(</span>5, 4<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+df
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0   1   2   3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0   0   1   2   3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1   4   5   6   7</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2   8   9  10  11</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3  12  13  14  15</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4  16  17  18  19</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">simple sampling</span>
+df.sample<span style="color: #3a81c3;">(</span>n=3<span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">sampler</span> = np.random.permutation<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span>
+sampler
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([1, 3, 4, 0, 2])</span>
+df.take<span style="color: #3a81c3;">(</span>sampler<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#     </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0   1   2   3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1   4   5   6   7</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3  12  13  14  15</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4  16  17  18  19</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0   0   1   2   3</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2   8   9  10  11</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf1d4e47" class="outline-3">
+<h3 id="orgf1d4e47"><span class="section-number-3">3.7</span> String Manipulation</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+df.str.XXX
+</p>
+</div>
+<div id="outline-container-org91b1220" class="outline-4">
+<h4 id="org91b1220"><span class="section-number-4">3.7.1</span> Vectorized string methods</h4>
+<div class="outline-text-4" id="text-3-7-1">
+<p>
+cat, contains, count, endswith/startswith, findall, get,
+join, len, lower, upper, match, pad, center, repeat, replace,
+slice, split, strip/rstrip/lstrip
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb727252" class="outline-3">
+<h3 id="orgb727252"><span class="section-number-3">3.8</span> Check Duplicates</h3>
+<div class="outline-text-3" id="text-3-8">
+<p>
+pandas.Index.is_unique, pandas.Series.is_unique
+</p>
+</div>
+</div>
+<div id="outline-container-org2268806" class="outline-3">
+<h3 id="org2268806"><span class="section-number-3">3.9</span> Indicator/Dummy</h3>
+<div class="outline-text-3" id="text-3-9">
+<p>
+Converting Categorical Variable into "dummy" Matrix, use <code>~pd.get_dummies</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'key'</span>: <span style="color: #2d9574;">[</span><span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'c'</span>, <span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'b'</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+df
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#   </span><span style="color: #2aa1ae; background-color: #ecf3ec;">key</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0   b</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1   b</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2   a</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3   c</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4   a</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">5   b</span>
+
+pd.get_dummies<span style="color: #3a81c3;">(</span>df<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'key'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">a  b  c</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0  0  1  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1  0  1  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2  1  0  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3  0  0  1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4  1  0  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">5  0  1  0</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8824d79" class="outline-2">
+<h2 id="org8824d79"><span class="section-number-2">4</span> Plotting</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org3a8a488" class="outline-3">
+<h3 id="org3a8a488"><span class="section-number-3">4.1</span> Matplotlib Basic</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-org15bab4e" class="outline-4">
+<h4 id="org15bab4e"><span class="section-number-4">4.1.1</span> Figures and Subplots</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">fig</span> = plt.figure<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">ax1</span> = fig.add_subplot<span style="color: #3a81c3;">(</span>2, 2, 1<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">get a reference of active figure</span>
+plt.gcf<span style="color: #3a81c3;">()</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">all in one subplots</span>
+<span style="color: #715ab1;">fig</span>, <span style="color: #715ab1;">axes</span> = plt.subplots<span style="color: #3a81c3;">(</span>2,3, figsize=<span style="color: #6c3163;">(</span>14, 8<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3e14bb8" class="outline-4">
+<h4 id="org3e14bb8"><span class="section-number-4">4.1.2</span> subplots options</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Argument</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">figsize</td>
+<td class="org-left">Size of figure</td>
+</tr>
+
+<tr>
+<td class="org-left">nrows</td>
+<td class="org-left">Number of rows of subplots</td>
+</tr>
+
+<tr>
+<td class="org-left">ncols</td>
+<td class="org-left">Number of columns of subplots</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>sharex</b></td>
+<td class="org-left">All subplots use the same X-axis ticks</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>sharey</b></td>
+<td class="org-left">see above</td>
+</tr>
+
+<tr>
+<td class="org-left">subpot_kw</td>
+<td class="org-left">creating dict of keywords</td>
+</tr>
+
+<tr>
+<td class="org-left">**fig_kw</td>
+<td class="org-left">Additional keywords</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org80e099b" class="outline-4">
+<h4 id="org80e099b"><span class="section-number-4">4.1.3</span> Adjusting Size</h4>
+<div class="outline-text-4" id="text-4-1-3">
+<p>
+subplots_adjust
+</p>
+<ul class="org-ul">
+<li>args: left, right, bottom, top, wspace, hspace</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7bb283b" class="outline-4">
+<h4 id="org7bb283b"><span class="section-number-4">4.1.4</span> global configuration</h4>
+<div class="outline-text-4" id="text-4-1-4">
+<p>
+plt.rc
+</p>
+<div class="org-src-container">
+<pre class="src src-python">plt.rc<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'figure'</span>, figsize=<span style="color: #6c3163;">(</span>10, 10<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">font_options</span> = <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">'family'</span> : <span style="color: #2d9574;">'monospace'</span>,
+		<span style="color: #2d9574;">'weight'</span> : <span style="color: #2d9574;">'bold'</span>,
+		<span style="color: #2d9574;">'size'</span>
+		: <span style="color: #2d9574;">'small'</span><span style="color: #3a81c3;">}</span>
+plt.rc<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'font'</span>, **font_options<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5ac5652" class="outline-4">
+<h4 id="org5ac5652"><span class="section-number-4">4.1.5</span> Choosing Plotting Range</h4>
+<div class="outline-text-4" id="text-4-1-5">
+<p>
+<code>plt.xlim</code>, <code>plt.ylim</code>, <code>ax.set_xlim</code>, <code>ax.set_ylim</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6dc9b33" class="outline-4">
+<h4 id="org6dc9b33"><span class="section-number-4">4.1.6</span> title, label, tick, ticklabel, legend</h4>
+<div class="outline-text-4" id="text-4-1-6">
+<p>
+<code>set_title</code>, <code>set_xlabel</code>, <code>set_xticks</code>, <code>set_xticklabels</code>, <code>set</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">ticks</span> = ax.set_xticks<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>0, 250, 500, 750, 1000<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">labels</span> = ax.set_xticklabels<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">"one"</span>, <span style="color: #2d9574;">"tow"</span>, <span style="color: #2d9574;">"three"</span>, <span style="color: #2d9574;">"four"</span>, <span style="color: #2d9574;">"five"</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">ax.set</span>
+<span style="color: #715ab1;">props</span> = <span style="color: #3a81c3;">{</span>
+    <span style="color: #2d9574;">"title"</span>: <span style="color: #2d9574;">"My first matplotlib plot"</span>,
+    <span style="color: #2d9574;">"xlabel"</span>: <span style="color: #2d9574;">"Stages"</span>
+<span style="color: #3a81c3;">}</span>
+ax.<span style="color: #3a81c3;">set</span><span style="color: #3a81c3;">(</span>**props<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">legend</span>
+ax.legend<span style="color: #3a81c3;">(</span>loc=<span style="color: #2d9574;">'best'</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">show the label</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeb2d94d" class="outline-4">
+<h4 id="orgeb2d94d"><span class="section-number-4">4.1.7</span> Annotations</h4>
+<div class="outline-text-4" id="text-4-1-7">
+<p>
+<code>ax.text</code>, <code>ax.arrow</code>, <code>ax.annotate</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-python">ax.annotate<span style="color: #3a81c3;">(</span>label, xy=<span style="color: #6c3163;">(</span>date, spx.asof<span style="color: #2d9574;">(</span>date<span style="color: #2d9574;">)</span> + 50<span style="color: #6c3163;">)</span>,
+	    xytext=<span style="color: #6c3163;">(</span>date, spx.asof<span style="color: #2d9574;">(</span>date<span style="color: #2d9574;">)</span> + 200<span style="color: #6c3163;">)</span>,
+	    arrowprops=<span style="color: #3a81c3;">dict</span><span style="color: #6c3163;">(</span>facecolor=<span style="color: #2d9574;">'black'</span><span style="color: #6c3163;">)</span>,
+	    horizontalalignment=<span style="color: #2d9574;">'left'</span>, verticalalignment=<span style="color: #2d9574;">'top'</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>util function: <code>asof</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org88ea9fd" class="outline-3">
+<h3 id="org88ea9fd"><span class="section-number-3">4.2</span> pandas Plotting</h3>
+<div class="outline-text-3" id="text-4-2">
+</div>
+<div id="outline-container-orga9a31f6" class="outline-4">
+<h4 id="orga9a31f6"><span class="section-number-4">4.2.1</span> Line Plots</h4>
+<div class="outline-text-4" id="text-4-2-1">
+</div>
+<div id="outline-container-org0dce694" class="outline-5">
+<h5 id="org0dce694">Series</h5>
+<div class="outline-text-5" id="text-org0dce694">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Argument</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">label</td>
+<td class="org-left">Label for plot legend</td>
+</tr>
+
+<tr>
+<td class="org-left">ax</td>
+<td class="org-left">matplotlib subplot object to plot on. If nothing passed, uses active matplotlib subplot</td>
+</tr>
+
+<tr>
+<td class="org-left">style</td>
+<td class="org-left">Style string, like 'ko&#x2013;' , to be passed to matplotlib</td>
+</tr>
+
+<tr>
+<td class="org-left">alpha</td>
+<td class="org-left">The plot fill opacity (from 0 to 1)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgaa8b212" class="outline-5">
+<h5 id="orgaa8b212">DataFrame</h5>
+<div class="outline-text-5" id="text-orgaa8b212">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Argument</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">kind</td>
+<td class="org-left">Can be 'line', 'bar', 'barh', 'kde'</td>
+</tr>
+
+<tr>
+<td class="org-left">logy</td>
+<td class="org-left">Use logarithmic scaling on the Y axis</td>
+</tr>
+
+<tr>
+<td class="org-left">use_index</td>
+<td class="org-left">Use the object index for tick labels</td>
+</tr>
+
+<tr>
+<td class="org-left">rot</td>
+<td class="org-left">Rotation of tick labels (0 through 360)</td>
+</tr>
+
+<tr>
+<td class="org-left">xticks</td>
+<td class="org-left">Values to use for X axis ticks</td>
+</tr>
+
+<tr>
+<td class="org-left">yticks</td>
+<td class="org-left">Values to use for Y axis ticks</td>
+</tr>
+
+<tr>
+<td class="org-left">xlim</td>
+<td class="org-left">X axis limits (e.g. [0, 10] )</td>
+</tr>
+
+<tr>
+<td class="org-left">ylim</td>
+<td class="org-left">Y axis limits</td>
+</tr>
+
+<tr>
+<td class="org-left">grid</td>
+<td class="org-left">Display axis grid (on by default)</td>
+</tr>
+
+<tr>
+<td class="org-left">subplots</td>
+<td class="org-left">Plot each DataFrame column in a separate subplot</td>
+</tr>
+
+<tr>
+<td class="org-left">sharex, sharey</td>
+<td class="org-left">If subplots=True , share the same Y/x axis</td>
+</tr>
+
+<tr>
+<td class="org-left">figsize</td>
+<td class="org-left">Size of figure to create as tuple</td>
+</tr>
+
+<tr>
+<td class="org-left">title</td>
+<td class="org-left">Plot title as string</td>
+</tr>
+
+<tr>
+<td class="org-left">legend</td>
+<td class="org-left">Add a subplot legend ( True by default)</td>
+</tr>
+
+<tr>
+<td class="org-left">sort_columns</td>
+<td class="org-left">Plot columns in alphabetical order</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org9555d37" class="outline-5">
+<h5 id="org9555d37">steps</h5>
+<div class="outline-text-5" id="text-org9555d37">
+<p>
+<code>plt.plot(data, drawstyle="steps-post")</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgebe4c13" class="outline-4">
+<h4 id="orgebe4c13"><span class="section-number-4">4.2.2</span> Bar Plots</h4>
+<div class="outline-text-4" id="text-4-2-2">
+<ul class="org-ul">
+<li>kind='bar': for vertical bars, 'barh' for horizontal bars</li>
+<li>stacked=True: stacked bar plots</li>
+<li>useful recipe: s.value_counts().plot(kind='bar')</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org224ccf4" class="outline-4">
+<h4 id="org224ccf4"><span class="section-number-4">4.2.3</span> Histogram &amp; Density Plots</h4>
+<div class="outline-text-4" id="text-4-2-3">
+<ul class="org-ul">
+<li>A kind of bar plot that gives a discretized display of value frequency</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">comp1</span> = np.random.normal<span style="color: #3a81c3;">(</span>0, 1, size=200<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">N(0, 1)</span>
+<span style="color: #715ab1;">comp2</span> = np.random.normal<span style="color: #3a81c3;">(</span>10, 2, size=200<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">N(10, 4)</span>
+<span style="color: #715ab1;">values</span> = Series<span style="color: #3a81c3;">(</span>np.concatenate<span style="color: #6c3163;">(</span><span style="color: #2d9574;">[</span>comp1, comp2<span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">fig</span> = plt.figure<span style="color: #3a81c3;">(</span>figsize=<span style="color: #6c3163;">(</span>10, 5<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+values.hist<span style="color: #3a81c3;">(</span>bins=100, alpha=0.3, color=<span style="color: #2d9574;">'k'</span>, normed=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+values.plot<span style="color: #3a81c3;">(</span>kind=<span style="color: #2d9574;">'kde'</span>, style=<span style="color: #2d9574;">'k--'</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+
+<div class="figure">
+<p><img src="../resources/data/hist_kde_plot.png" alt="hist_kde_plot.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgea20498" class="outline-4">
+<h4 id="orgea20498"><span class="section-number-4">4.2.4</span> Scatter Plots</h4>
+<div class="outline-text-4" id="text-4-2-4">
+<p>
+pairs plot or scatter plot matrix: <b>scatter_matrix</b>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4bcef49" class="outline-3">
+<h3 id="org4bcef49"><span class="section-number-3">4.3</span> Saving Plots to File</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+Figure.savefig args
+</p>
+<ul class="org-ul">
+<li>fname, dpi, facecolor, edgecolor, format</li>
+<li>bbox_inches: The portion of the figure to save</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org536ff6f" class="outline-3">
+<h3 id="org536ff6f"><span class="section-number-3">4.4</span> interactive mode</h3>
+</div>
+<div id="outline-container-org35c28af" class="outline-3">
+<h3 id="org35c28af"><span class="section-number-3">4.5</span> add-ons</h3>
+<div class="outline-text-3" id="text-4-5">
+<ul class="org-ul">
+<li>mplot3d</li>
+<li><b>basemap</b> /cartopy: projection and mapping(plotting 2D data on maps)</li>
+<li><b>seaborn</b> /holoviews/ggplot: higher-level plotting interfaces</li>
+<li>axes_grid:  axes and axis helpers</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org3a4ea7b" class="outline-2">
+<h2 id="org3a4ea7b"><span class="section-number-2">5</span> Group</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgc1abae8" class="outline-3">
+<h3 id="orgc1abae8"><span class="section-number-3">5.1</span> group by</h3>
+<div class="outline-text-3" id="text-5-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">series groupby</span>
+df<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'data1'</span><span style="color: #3a81c3;">]</span>.groupby<span style="color: #3a81c3;">(</span>df<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'key1'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+df.groupby<span style="color: #3a81c3;">(</span>df<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'key1'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)[</span><span style="color: #2d9574;">'data1'</span><span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">syntactic sugar</span>
+<span style="color: #3a81c3;">dict</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">list</span><span style="color: #6c3163;">(</span>df.groupby<span style="color: #2d9574;">(</span><span style="color: #2d9574;">'key1'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">df groupby</span>
+df.groupby<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'key1'</span>, <span style="color: #2d9574;">'key2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">options: as_index, axis</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">get group size</span>
+df.groupby<span style="color: #3a81c3;">()</span>.size<span style="color: #3a81c3;">()</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">iterations</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> name, group <span style="color: #3a81c3; font-weight: bold;">in</span> df.groupby<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'key1'</span><span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span> name, group
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org91a2482" class="outline-4">
+<h4 id="org91a2482"><span class="section-number-4">5.1.1</span> Using Mapping Dict(or Series)</h4>
+<div class="outline-text-4" id="text-5-1-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">using mapping dict</span>
+<span style="color: #715ab1;">mapping</span> = <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">'a'</span>: <span style="color: #2d9574;">'group1'</span>, <span style="color: #2d9574;">'b'</span>: <span style="color: #2d9574;">'group1'</span>, <span style="color: #2d9574;">'c'</span>: <span style="color: #2d9574;">'group2'</span><span style="color: #3a81c3;">}</span>
+df.groupby<span style="color: #3a81c3;">(</span>mapping, axis=1<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org077f249" class="outline-4">
+<h4 id="org077f249"><span class="section-number-4">5.1.2</span> Using a Function</h4>
+<div class="outline-text-4" id="text-5-1-2">
+<p>
+Any function passed as a group key will be called once per
+index value, with the return values being used as the group names
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">using function</span>
+df.groupby<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">len</span><span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">sum</span><span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdbca5d9" class="outline-4">
+<h4 id="orgdbca5d9"><span class="section-number-4">5.1.3</span> Using Mixing</h4>
+<div class="outline-text-4" id="text-5-1-3">
+<p>
+Mixing functions with arrays, dicts or Series is not a problem as
+everything gets converted to arrays internally
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">key_list</span> = <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'one'</span>, <span style="color: #2d9574;">'one'</span>, <span style="color: #2d9574;">'two'</span><span style="color: #3a81c3;">]</span>
+df.groupby<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #3a81c3;">len</span>, key_list<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">min</span><span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48b5ab2" class="outline-3">
+<h3 id="org48b5ab2"><span class="section-number-3">5.2</span> groupby aggregation</h3>
+<div class="outline-text-3" id="text-5-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> Optimized Groupby Methods</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Name</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">count</td>
+<td class="org-left">Number of non-NA values in the groupNumber of non</td>
+</tr>
+
+<tr>
+<td class="org-left">sum</td>
+<td class="org-left">Sum of non-NA values</td>
+</tr>
+
+<tr>
+<td class="org-left">mean</td>
+<td class="org-left">Mean of non-NA values</td>
+</tr>
+
+<tr>
+<td class="org-left">median</td>
+<td class="org-left">Arithmetic median of non-NA values</td>
+</tr>
+
+<tr>
+<td class="org-left">std, var</td>
+<td class="org-left">Unbiased (n - 1 denominator) standard deviation and variance</td>
+</tr>
+
+<tr>
+<td class="org-left">min, max</td>
+<td class="org-left">Minimum and maximum of non-NA values</td>
+</tr>
+
+<tr>
+<td class="org-left">prod</td>
+<td class="org-left">Product of non-NA values</td>
+</tr>
+
+<tr>
+<td class="org-left">first, last</td>
+<td class="org-left">First and last non-NA values</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="outline-container-org5183bb5" class="outline-4">
+<h4 id="org5183bb5"><span class="section-number-4">5.2.1</span> <code>agg</code></h4>
+<div class="outline-text-4" id="text-5-2-1">
+</div>
+<div id="outline-container-org000d891" class="outline-5">
+<h5 id="org000d891">Series</h5>
+<div class="outline-text-5" id="text-org000d891">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">grouped</span> = series.groupby<span style="color: #3a81c3;">(</span>group_key<span style="color: #3a81c3;">)</span>
+grouped.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'std'</span>, transform_function<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+grouped.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">(</span><span style="color: #2d9574;">'foo'</span>, <span style="color: #2d9574;">'mean'</span><span style="color: #2d9574;">)</span>, <span style="color: #2d9574;">(</span><span style="color: #2d9574;">'bar'</span>, <span style="color: #2d9574;">'np.std'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">foo bar will be the column name of result df</span>
+grouped.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"tip"</span>: np.<span style="color: #3a81c3;">max</span>, <span style="color: #2d9574;">"size"</span>: <span style="color: #2d9574;">"sum"</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org959046f" class="outline-5">
+<h5 id="org959046f">DataFrame</h5>
+<div class="outline-text-5" id="text-org959046f">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">grouped</span> = df.groupby<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"column"</span><span style="color: #3a81c3;">)</span>
+grouped.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'col1'</span>: <span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'col2'</span>: <span style="color: #2d9574;">'std'</span>, <span style="color: #2d9574;">'col3'</span>: np.<span style="color: #3a81c3;">max</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+grouped.agg<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'col1'</span>: <span style="color: #2d9574;">[</span><span style="color: #2d9574;">'mean'</span>, <span style="color: #2d9574;">'std'</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org182bea9" class="outline-4">
+<h4 id="org182bea9"><span class="section-number-4">5.2.2</span> apply</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<p>
+apply function has args:
+</p>
+<div class="org-src-container">
+<pre class="src src-python">df.groupby<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'key1'</span>, <span style="color: #2d9574;">'key2'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span>top, n=1<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0fdc1da" class="outline-4">
+<h4 id="org0fdc1da"><span class="section-number-4">5.2.3</span> transform</h4>
+<div class="outline-text-4" id="text-5-2-3">
+<p>
+Like <code>apply</code>, <code>transform</code> works with functions that return Series, but the result must be
+the <b>same size</b> as the input
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgae5dc51" class="outline-4">
+<h4 id="orgae5dc51"><span class="section-number-4">5.2.4</span> fillna with group value</h4>
+<div class="outline-text-4" id="text-5-2-4">
+<div class="org-src-container">
+<pre class="src src-python">grouped.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> g: g.fillna<span style="color: #6c3163;">(</span>g.mean<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">fill_values</span> = <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">'a'</span>: 5, <span style="color: #2d9574;">'b'</span>: 4<span style="color: #3a81c3;">}</span>
+grouped.fillna<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> g: g.fillna<span style="color: #6c3163;">(</span>fill_values<span style="color: #2d9574;">[</span>g.name<span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdfdee36" class="outline-3">
+<h3 id="orgdfdee36"><span class="section-number-3">5.3</span> <code>pivot_table</code></h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+In addition to providing a convenience interface to <code>groupby</code> + <code>reshape</code>
+<img src="../resources/data/pivot_table.jpg" alt="pivot_table.jpg" />
+</p>
+<ul class="org-ul">
+<li><p>
+<code>crossbar</code> is a special case of a pivot table.
+</p>
+<div class="org-src-container">
+<pre class="src src-python">data
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#  </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Sample Nationality Handedness</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 1 USA Right-handed</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1 2 Japan  Left-handed</span>
+pd.crosstab<span style="color: #3a81c3;">(</span>data.Nationality, data.Handedness, margins=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Handedness Left-handed Right-handed All</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Nationality</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Japan      2 3 5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">USA        1 4 5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">All        3 7 10</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org83bad35" class="outline-3">
+<h3 id="org83bad35"><span class="section-number-3">5.4</span> <code>transform</code></h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+similar to <code>apply</code> but imposes more constraints:
+</p>
+<ul class="org-ul">
+<li>It can produce a scalar value to be broadcast to the shape of the group</li>
+<li>It can produce an object of the <b>same shape</b> as the input group</li>
+<li>It must not mutate its input</li>
+</ul>
+</div>
+
+<div id="outline-container-orgf318f72" class="outline-4">
+<h4 id="orgf318f72"><span class="section-number-4">5.4.1</span> examples</h4>
+<div class="outline-text-4" id="text-5-4-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'key'</span>: <span style="color: #2d9574;">[</span><span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'c'</span><span style="color: #2d9574;">]</span> * 2, <span style="color: #2d9574;">'value'</span>: np.arange<span style="color: #2d9574;">(</span>6.<span style="color: #2d9574;">)</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt;</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#   </span><span style="color: #2aa1ae; background-color: #ecf3ec;">key  value</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0   a    0.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1   b    1.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2   c    2.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3   a    3.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4   b    4.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">5   c    5.0</span>
+df.groupby<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"key"</span><span style="color: #3a81c3;">)</span>.transform<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> x: x.mean<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">or df.groupby("key").transform("mean")</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; same shape</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">value</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0    1.5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1    2.5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2    3.5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3    1.5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4    2.5</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">5    3.5</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org94454c6" class="outline-4">
+<h4 id="org94454c6"><span class="section-number-4">5.4.2</span> <i>unwrapped</i> group operation</h4>
+<div class="outline-text-4" id="text-5-4-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">normalized</span> = <span style="color: #3a81c3;">(</span>df<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'value'</span><span style="color: #6c3163;">]</span> - g.transform<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'mean'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> / g.transform<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'std'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">faster than</span>
+g.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> x: <span style="color: #6c3163;">(</span>x - x.mean<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span> / x.std<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfed3c48" class="outline-3">
+<h3 id="orgfed3c48"><span class="section-number-3">5.5</span> Examples</h3>
+<div class="outline-text-3" id="text-5-5">
+</div>
+<div id="outline-container-org9eb4c07" class="outline-4">
+<h4 id="org9eb4c07"><span class="section-number-4">5.5.1</span> Group Weighted Average</h4>
+<div class="outline-text-4" id="text-5-5-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'category'</span>: <span style="color: #2d9574;">[</span><span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'a'</span>,
+				<span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'b'</span><span style="color: #2d9574;">]</span>,
+		   <span style="color: #2d9574;">'data'</span>: np.random.randn<span style="color: #2d9574;">(</span>8<span style="color: #2d9574;">)</span>,
+		   <span style="color: #2d9574;">'weights'</span>: np.random.rand<span style="color: #2d9574;">(</span>8<span style="color: #2d9574;">)</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+df.groupby<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"category"</span><span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">lambda</span> g: np.average<span style="color: #6c3163;">(</span>g<span style="color: #2d9574;">[</span><span style="color: #2d9574;">'data'</span><span style="color: #2d9574;">]</span>, weights=g<span style="color: #2d9574;">[</span><span style="color: #2d9574;">'weights'</span><span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org286dec7" class="outline-4">
+<h4 id="org286dec7"><span class="section-number-4">5.5.2</span> <b>Group Correlation</b></h4>
+<div class="outline-text-4" id="text-5-5-2">
+<div class="org-src-container">
+<pre class="src src-python">prices.columns
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">AAPL,MSFT,XOM,SPX</span>
+
+<span style="color: #715ab1;">spx_corr</span> = <span style="color: #3a81c3; font-weight: bold;">lambda</span> x: x.corrwith<span style="color: #3a81c3;">(</span>x<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'SPX'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">rets</span> = prices.pct_change<span style="color: #3a81c3;">()</span>.dropna<span style="color: #3a81c3;">()</span>
+
+<span style="color: #715ab1;">get_year</span> = <span style="color: #3a81c3; font-weight: bold;">lambda</span> x: x.year
+<span style="color: #715ab1;">by_year</span> = rets.groupby<span style="color: #3a81c3;">(</span>get_year<span style="color: #3a81c3;">)</span>
+by_year.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span>spx_corr<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">AAPL MSFT XOM SPX</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2003 0.541124 0.745174 0.661265 1.0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2004 0.374283 0.588531 0.557742 1.0</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org525150f" class="outline-4">
+<h4 id="org525150f"><span class="section-number-4">5.5.3</span> Group-Wise Linear Regression</h4>
+<div class="outline-text-4" id="text-5-5-3">
+<div class="org-src-container">
+<pre class="src src-python">prices.columns
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">AAPL,MSFT,XOM,SPX</span>
+<span style="color: #715ab1;">rets</span> = prices.pct_change<span style="color: #3a81c3;">()</span>.dropna<span style="color: #3a81c3;">()</span>
+
+<span style="color: #715ab1;">get_year</span> = <span style="color: #3a81c3; font-weight: bold;">lambda</span> x: x.year
+<span style="color: #715ab1;">by_year</span> = rets.groupby<span style="color: #3a81c3;">(</span>get_year<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">import</span> statsmodels.api <span style="color: #3a81c3; font-weight: bold;">as</span> sm
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">regress</span><span style="color: #3a81c3;">(</span>data, yvar, xvars<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">Y</span> = data<span style="color: #3a81c3;">[</span>yvar<span style="color: #3a81c3;">]</span>
+    <span style="color: #715ab1;">X</span> = data<span style="color: #3a81c3;">[</span>xvars<span style="color: #3a81c3;">]</span>
+    <span style="color: #715ab1;">X</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'intercept'</span><span style="color: #3a81c3;">]</span> = 1.
+    <span style="color: #715ab1;">result</span> = sm.OLS<span style="color: #3a81c3;">(</span>Y, X<span style="color: #3a81c3;">)</span>.fit<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> result.params
+
+by_year.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span>regress, <span style="color: #2d9574;">'AAPL'</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">'SPX'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga27c39c" class="outline-4">
+<h4 id="orga27c39c"><span class="section-number-4">5.5.4</span> Grouped Time Resampling</h4>
+<div class="outline-text-4" id="text-5-5-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">times</span> = pd.date_range<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'2017-05-20 00:00'</span>, freq=<span style="color: #2d9574;">'1min'</span>, periods=N<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">df</span> = pd.DataFrame<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'time'</span>: times.repeat<span style="color: #2d9574;">(</span>3<span style="color: #2d9574;">)</span>,
+		   <span style="color: #2d9574;">'key'</span>: np.tile<span style="color: #2d9574;">(</span><span style="color: #67b11d;">[</span><span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'c'</span><span style="color: #67b11d;">]</span>, N<span style="color: #2d9574;">)</span>,
+		   <span style="color: #2d9574;">'value'</span>: np.arange<span style="color: #2d9574;">(</span>N * 3.<span style="color: #2d9574;">)</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">time_key</span> = pd.TimeGrouper<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'5min'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">resampled</span> = <span style="color: #3a81c3;">(</span>df.set_index<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'time'</span><span style="color: #6c3163;">)</span>.groupby<span style="color: #6c3163;">(</span><span style="color: #2d9574;">[</span><span style="color: #2d9574;">'key'</span>, time_key<span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span>.<span style="color: #3a81c3;">sum</span><span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc9ed800" class="outline-2">
+<h2 id="orgc9ed800"><span class="section-number-2">6</span> Timeseries</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgee3fee6" class="outline-3">
+<h3 id="orgee3fee6"><span class="section-number-3">6.1</span> Indexing</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+<pre class="src src-python">ts<span style="color: #3a81c3;">[</span><span style="color: #6c3163;">(</span>time<span style="color: #2d9574;">(</span>10,0<span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as</span>
+ts.at_time<span style="color: #3a81c3;">(</span>time<span style="color: #6c3163;">(</span>10,0<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+
+ts.between_time<span style="color: #3a81c3;">(</span>time<span style="color: #6c3163;">(</span>10, 0<span style="color: #6c3163;">)</span>, time<span style="color: #6c3163;">(</span>10, 30<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+ts.asof<span style="color: #3a81c3;">(</span>pd.date_range<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'2016-05-01 10:00'</span>, periods=4, freq=<span style="color: #2d9574;">'B'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-org1c445fa" class="outline-4">
+<h4 id="org1c445fa"><span class="section-number-4">6.1.1</span> asof</h4>
+<div class="outline-text-4" id="text-6-1-1">
+<p>
+By passing an array of timestamps to the asof method, you will obtain
+an array of the last valid(non-NA) values at or before each timestamps.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org275380a" class="outline-3">
+<h3 id="org275380a"><span class="section-number-3">6.2</span> Special Frequencies</h3>
+<div class="outline-text-3" id="text-6-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> Base Time Series Frequencies</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Alias</th>
+<th scope="col" class="org-left">Offset Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">D</td>
+<td class="org-left">Day</td>
+</tr>
+
+<tr>
+<td class="org-left">B</td>
+<td class="org-left">BusinessDay</td>
+</tr>
+
+<tr>
+<td class="org-left">H</td>
+<td class="org-left">Hour</td>
+</tr>
+
+<tr>
+<td class="org-left">T or min</td>
+<td class="org-left">Minute</td>
+</tr>
+
+<tr>
+<td class="org-left">S</td>
+<td class="org-left">Second</td>
+</tr>
+
+<tr>
+<td class="org-left">L or ms</td>
+<td class="org-left">Milli</td>
+</tr>
+
+<tr>
+<td class="org-left">U</td>
+<td class="org-left">Micro</td>
+</tr>
+
+<tr>
+<td class="org-left">M</td>
+<td class="org-left">MonthEnd</td>
+</tr>
+
+<tr>
+<td class="org-left">BM</td>
+<td class="org-left">BusinessMonthEnd</td>
+</tr>
+
+<tr>
+<td class="org-left">MS</td>
+<td class="org-left">MonthBegin</td>
+</tr>
+
+<tr>
+<td class="org-left">BMS</td>
+<td class="org-left">BusinessMonthBegin</td>
+</tr>
+
+<tr>
+<td class="org-left">W-Mon, W-TUE, &#x2026;</td>
+<td class="org-left">Week</td>
+</tr>
+
+<tr>
+<td class="org-left">WOM-1MON, &#x2026;</td>
+<td class="org-left">WeekOfMonth</td>
+</tr>
+
+<tr>
+<td class="org-left">Q-JAN, Q-FEB, &#x2026;</td>
+<td class="org-left">QuarterEnd</td>
+</tr>
+
+<tr>
+<td class="org-left">BQ-JAN, BQ-FEB, &#x2026;</td>
+<td class="org-left">BusinessQuarterEnd</td>
+</tr>
+
+<tr>
+<td class="org-left">QS-JAN, &#x2026;</td>
+<td class="org-left">QuarterBegin</td>
+</tr>
+
+<tr>
+<td class="org-left">BQS-JAN, &#x2026;</td>
+<td class="org-left">BusinessQuarterBegin</td>
+</tr>
+
+<tr>
+<td class="org-left">A-JAN, &#x2026;</td>
+<td class="org-left">YearEnd</td>
+</tr>
+
+<tr>
+<td class="org-left">BA-JAN, &#x2026;</td>
+<td class="org-left">BusinessYearEnd</td>
+</tr>
+
+<tr>
+<td class="org-left">AS-JAN, &#x2026;</td>
+<td class="org-left">YearBegin</td>
+</tr>
+
+<tr>
+<td class="org-left">BAS-JAN, &#x2026;</td>
+<td class="org-left">BusinessYearBegin</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="outline-container-org927100f" class="outline-4">
+<h4 id="org927100f"><span class="section-number-4">6.2.1</span> examples</h4>
+<div class="outline-text-4" id="text-6-2-1">
+<ul class="org-ul">
+<li>"1h30min"</li>
+<li>"WOM-3FRI": the third Friday of each month:</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org822bdb3" class="outline-3">
+<h3 id="org822bdb3"><span class="section-number-3">6.3</span> Offset Objects</h3>
+<div class="outline-text-3" id="text-6-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> pandas.tseries.offsets <span style="color: #3a81c3; font-weight: bold;">import</span> Day, MonthEnd
+
+<span style="color: #715ab1;">now</span> = datetime<span style="color: #3a81c3;">(</span>2011, 11, 17<span style="color: #3a81c3;">)</span>
+now + 3 * Day<span style="color: #3a81c3;">()</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; Timestamp('2011-11-20 00:00:00')</span>
+now + MonthEnd<span style="color: #3a81c3;">()</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-&gt; Timestamp('2011-11-30 00:00:00') "roll forward"</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as</span>
+<span style="color: #715ab1;">offset</span> = MonthEnd<span style="color: #3a81c3;">()</span>
+offset.rollforward<span style="color: #3a81c3;">(</span>now<span style="color: #3a81c3;">)</span>
+
+offset.rollback<span style="color: #3a81c3;">(</span>now<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">from</span> pandas.tseries.frequencies <span style="color: #3a81c3; font-weight: bold;">import</span> to_offset
+<span style="color: #715ab1;">offset</span> = to_offset<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"WOM-3FRI"</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>rollforward/rollback is useful with groupby(like resample but slower): <code>ts.groupby(offset.rollforward).mean()</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf88ffba" class="outline-3">
+<h3 id="orgf88ffba"><span class="section-number-3">6.4</span> Time Zone Localization</h3>
+<div class="outline-text-3" id="text-6-4">
+<ul class="org-ul">
+<li><code>ts.tz_localize("UTC")</code>: same way like <code>dt.replace</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc110113" class="outline-3">
+<h3 id="orgc110113"><span class="section-number-3">6.5</span> Periods</h3>
+<div class="outline-text-3" id="text-6-5">
+<p>
+Periods represent timespans, like days, months, quarters, or years.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">p</span> = pd.Period<span style="color: #3a81c3;">(</span>2007, freq=<span style="color: #2d9574;">"A-DEC"</span><span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">represents the full timespan from 2017-1-1 to 2017-12-31.</span>
+p + 5  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Period('2012', 'A-DEC')</span>
+
+<span style="color: #715ab1;">rng</span> = pd.period_range<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"2000-01-01"</span>, <span style="color: #2d9574;">"2000-06-30"</span>, freq=<span style="color: #2d9574;">"M"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">rng -&gt; PeriodIndex(['2000-01', '2000-02', '2000-03', '2000-04', '2000-05', '2000-06'], dtype='period[M]', freq='M')</span>
+
+<span style="color: #715ab1;">m</span> = p.asfreq<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"M"</span>, how=<span style="color: #2d9574;">"start"</span><span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">converting from low to high frequency</span>
+m.asfreq<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"A-DEC"</span><span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">converting from high to low frequency depending on where the subperiod &#8220;belongs.&#8221;</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-org72a3727" class="outline-4">
+<h4 id="org72a3727"><span class="section-number-4">6.5.1</span> Frequencies</h4>
+<div class="outline-text-4" id="text-6-5-1">
+<ul class="org-ul">
+<li>A-DEC: annual frequency end at DEC</li>
+<li>Q-SEP: fiscal quarter Q4 end at SEP</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge40ffb3" class="outline-4">
+<h4 id="orge40ffb3"><span class="section-number-4">6.5.2</span> Converting from/to Timestamps</h4>
+<div class="outline-text-4" id="text-6-5-2">
+<ul class="org-ul">
+<li><code>ts.to_period</code></li>
+<li><code>ts.to_timestamp(how="end")</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfa39106" class="outline-4">
+<h4 id="orgfa39106"><span class="section-number-4">6.5.3</span> From Different Columns</h4>
+<div class="outline-text-4" id="text-6-5-3">
+<p>
+<code>pd.PeriodIndex(year=data.year, quarter=data.quarter, freq='Q-DEC')</code>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge00c17f" class="outline-3">
+<h3 id="orge00c17f"><span class="section-number-3">6.6</span> Resampling</h3>
+<div class="outline-text-3" id="text-6-6">
+</div>
+<div id="outline-container-orga409387" class="outline-4">
+<h4 id="orga409387"><span class="section-number-4">6.6.1</span> Downsampling</h4>
+<div class="outline-text-4" id="text-6-6-1">
+<ul class="org-ul">
+<li>Label: <code>resample(label="right")</code>. For "T" freq, <b>9:01</b> represents <b>9:00~9:01</b></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6768da9" class="outline-4">
+<h4 id="org6768da9"><span class="section-number-4">6.6.2</span> Upsampling</h4>
+<div class="outline-text-4" id="text-6-6-2">
+<p>
+often need an aggregation function
+</p>
+<ul class="org-ul">
+<li>without any aggregation, but introduce None data: <code>asfreq</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9be426f" class="outline-3">
+<h3 id="org9be426f"><span class="section-number-3">6.7</span> Moving Window</h3>
+<div class="outline-text-3" id="text-6-7">
+<p>
+Can be useful for <b>smoothing noisy</b> or <b>gappy</b> data.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Function</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">rolling_count</td>
+<td class="org-left">Returns number of non-NA observations in each trailing window.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_sum</td>
+<td class="org-left">Moving window sum.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_mean</td>
+<td class="org-left">Moving window mean.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_median</td>
+<td class="org-left">Moving window median.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_var, rolling_std</td>
+<td class="org-left">Moving window variance and standard deviation, respectively. Uses n - 1 denominator.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_skew, rolling_kurt</td>
+<td class="org-left">Moving window skewness (3rd moment) and kurtosis (4th moment), respectively.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_min, rolling_max</td>
+<td class="org-left">Moving window minimum and maximum.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_quantile</td>
+<td class="org-left">Moving window score at percentile/sample quantile.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_corr, rolling_cov</td>
+<td class="org-left">Moving window correlation and covariance.</td>
+</tr>
+
+<tr>
+<td class="org-left">rolling_apply</td>
+<td class="org-left">Apply generic array function over a moving window.</td>
+</tr>
+
+<tr>
+<td class="org-left">ewma</td>
+<td class="org-left">Exponentially-weighted moving average.</td>
+</tr>
+
+<tr>
+<td class="org-left">ewmvar, ewmstd</td>
+<td class="org-left">Exponentially-weighted moving variance and standard deviation.</td>
+</tr>
+
+<tr>
+<td class="org-left">ewmcorr, ewmcov</td>
+<td class="org-left">Exponentially-weighted moving correlation and covariance.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="outline-container-orgace62d9" class="outline-4">
+<h4 id="orgace62d9"><span class="section-number-4">6.7.1</span> <code>rolling</code></h4>
+<div class="outline-text-4" id="text-6-7-1">
+<ul class="org-ul">
+<li>rolling by time offset: <code>close_px.rolling('20D').mean()</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2d3b081" class="outline-4">
+<h4 id="org2d3b081"><span class="section-number-4">6.7.2</span> <code>expanding</code></h4>
+<div class="outline-text-4" id="text-6-7-2">
+<p>
+The expanding mean starts the time window from the beginning of the time series and increases the size of the window
+until it encompasses the whole series.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga4f157c" class="outline-4">
+<h4 id="orga4f157c"><span class="section-number-4">6.7.3</span> <code>ewm</code></h4>
+<div class="outline-text-4" id="text-6-7-3">
+<p>
+The idea is to specify a constant decay factor to give more weight to more recent observations.
+There are a couple of ways to specify the decay factor. A popular one is using a <i>span</i>.
+which makes the result comparable to a simple moving window function with window size equal to the <i>span</i>.
+</p>
+<ul class="org-ul">
+<li>with decay factor <i>span</i>: <code>aapl_px.ewm(span=30).mean()</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4ace7c5" class="outline-3">
+<h3 id="org4ace7c5"><span class="section-number-3">6.8</span> Binary Moving Window</h3>
+<div class="outline-text-3" id="text-6-8">
+<p>
+Some statistical operators need to operate on two time series, like correlation and covariance
+</p>
+<div class="org-src-container">
+<pre class="src src-python">aapl_rets.rolling<span style="color: #3a81c3;">(</span>125, min_periods=100<span style="color: #3a81c3;">)</span>.corr<span style="color: #3a81c3;">(</span>spx_rets<span style="color: #3a81c3;">)</span>
+rets_df.rolling<span style="color: #3a81c3;">(</span>125, min_periods=100<span style="color: #3a81c3;">)</span>.corr<span style="color: #3a81c3;">(</span>spx_rets<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2a16648" class="outline-3">
+<h3 id="org2a16648"><span class="section-number-3">6.9</span> User-Defined Moving Window Functions</h3>
+<div class="outline-text-3" id="text-6-9">
+<p>
+The only requirement is that the function produce a single value (a reduction) from each piece of the array.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> scipy.stats <span style="color: #3a81c3; font-weight: bold;">import</span> percentileofscore
+<span style="color: #715ab1;">score_at_2percent</span> = <span style="color: #3a81c3; font-weight: bold;">lambda</span> x: percentileofscore<span style="color: #3a81c3;">(</span>x, 0.02<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">result</span> = returns.AAPL.rolling<span style="color: #3a81c3;">(</span>250<span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">apply</span><span style="color: #3a81c3;">(</span>score_at_2percent<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org405c151" class="outline-3">
+<h3 id="org405c151"><span class="section-number-3">6.10</span> Tips</h3>
+<div class="outline-text-3" id="text-6-10">
+<ul class="org-ul">
+<li>normalized date range: <code>pd.date_range('2012-05-02 12:56:31', periods=5, normalize=True)</code></li>
+<li>shift by freq: <code>ts.shift(2, freq="M")</code></li>
+<li>shortcut for ohlc reampling: ts.resample("5min").ohlc()</li>
+<li>rolling with min_periods: <code>aapl_px.rolling(125, min_periods=100)</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org11edc0e" class="outline-2">
+<h2 id="org11edc0e"><span class="section-number-2">7</span> Categorical Data</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-org0c13913" class="outline-3">
+<h3 id="org0c13913"><span class="section-number-3">7.1</span> Motivation</h3>
+<div class="outline-text-3" id="text-7-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">values</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>0, 1, 0, 0<span style="color: #6c3163;">]</span> * 2<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">dim</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'apple'</span>, <span style="color: #2d9574;">'orange'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dim</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 apple</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1 orange</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dtype: object</span>
+dim.take<span style="color: #3a81c3;">(</span>values<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 apple</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1 orange</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 apple</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 apple</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">...</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>The representation <code>values</code> as integers is called the categorical or dictionary-encoded representation.</li>
+<li>The array <code>dim</code> of distinct values can be called the categories, dictionary, or levels of the data.</li>
+<li>The integer values that reference the categories are called the <i>category codes</i> or <i>simply codes</i>.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgff90119" class="outline-3">
+<h3 id="orgff90119"><span class="section-number-3">7.2</span> Categorical Type</h3>
+<div class="outline-text-3" id="text-7-2">
+<ul class="org-ul">
+<li><code>pd.Categorical(data: Iterable[str])</code></li>
+<li>converting string series to categorical: <code>s.astype("category")</code></li>
+<li>converting integer series to categorical: <code>pd.Categorical.from_codes(codes: pd.Series[int], categories: Iterable[str])</code></li>
+<li>numeric data to categorical: <code>bins = pd.qcut(data, 4, labels=["Q1", "Q2", "Q3", "Q4"])</code>. often using <code>groupby(bins)</code> after</li>
+</ul>
+</div>
+<div id="outline-container-org9b05590" class="outline-4">
+<h4 id="org9b05590"><span class="section-number-4">7.2.1</span> Better Performance</h4>
+<div class="outline-text-4" id="text-7-2-1">
+<ul class="org-ul">
+<li><code>categories.memory_usage()</code> is less</li>
+<li>GroupBy operations can be significantly faster with categoricals</li>
+<li>In large datasets, categoricals are often used as a convenient tool for memory savings and better performance</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6dd4a17" class="outline-3">
+<h3 id="org6dd4a17"><span class="section-number-3">7.3</span> Categorical Methods</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+<code>Series.cat</code> is similar to <code>Series.str</code>
+</p>
+<ul class="org-ul">
+<li>categorical is replaced with string categories:  <code>cat_s.cat.set_categories(actual_categories)</code></li>
+<li>methods: <code>add_categories</code>, <code>as_ordered</code>, <code>as_unordered</code>, <code>remove_categories</code>, <code>remove_unused_categories</code>,
+<code>rename_categories</code>, <code>reorder_categories</code>, <code>set_categories</code></li>
+</ul>
+</div>
+
+<div id="outline-container-orgad2193e" class="outline-4">
+<h4 id="orgad2193e"><span class="section-number-4">7.3.1</span> Creating Dummy Variables for Modeling</h4>
+<div class="outline-text-4" id="text-7-3-1">
+<p>
+When you're using statistics or machine learning tools, you'll often transform categorical data
+into dummy variables, also known as one-hot encoding.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">cat_s</span> = pd.Series<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">'a'</span>, <span style="color: #2d9574;">'b'</span>, <span style="color: #2d9574;">'c'</span>, <span style="color: #2d9574;">'d'</span><span style="color: #6c3163;">]</span> * 2, dtype=<span style="color: #2d9574;">'category'</span><span style="color: #3a81c3;">)</span>
+pd.get_dummies<span style="color: #3a81c3;">(</span>cat_s<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#    </span><span style="color: #2aa1ae; background-color: #ecf3ec;">a  b  c  d</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0  1  0  0  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1  0  1  0  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2  0  0  1  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3  0  0  0  1</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">4  1  0  0  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">5  0  1  0  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6  0  0  1  0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">7  0  0  0  1</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgef46c6a" class="outline-2">
+<h2 id="orgef46c6a"><span class="section-number-2">8</span> Modeling Libraries</h2>
+<div class="outline-text-2" id="text-8">
+<ul class="org-ul">
+<li><code>patsy</code> for describing statistical models</li>
+<li><code>statsmodel</code></li>
+<li><code>scikit-learn</code>: <code>scikit-image</code>, <code>scikits-cuda</code></li>
+<li><code>TensorFlow</code>, <code>PyTorch</code></li>
+</ul>
+</div>
+<div id="outline-container-orgd56521f" class="outline-4">
+<h4 id="orgd56521f"><span class="section-number-4">8.0.1</span> Books</h4>
+<div class="outline-text-4" id="text-8-0-1">
+<ul class="org-ul">
+<li>Introduction to Machine Learning with Python by Andreas Mueller and Sarah Guido (O’Reilly)</li>
+<li>Python Data Science Handbook by Jake VanderPlas (O’Reilly)</li>
+<li>Python Machine Learning by Sebastian Raschka (Packt Publishing)</li>
+<li>Hands-On Machine Learning with Scikit-Learn and TensorFlow by Aurélien Géron (O’Reilly)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8575a92" class="outline-2">
+<h2 id="org8575a92"><span class="section-number-2">9</span> Other Tools</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-org7b61764" class="outline-3">
+<h3 id="org7b61764"><span class="section-number-3">9.1</span> ipyparallel</h3>
+<div class="outline-text-3" id="text-9-1">
+<div class="org-src-container">
+<pre class="src src-sh">ipcluster start --n=4
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> ipyparallel <span style="color: #3a81c3; font-weight: bold;">import</span> Client
+<span style="color: #715ab1;">rc</span> = Client<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">dview</span> = rc<span style="color: #3a81c3;">[</span>:<span style="color: #3a81c3;">]</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; &lt;DirectView [0, 1, 2, 3&gt;]</span>
+dview.apply_sync<span style="color: #3a81c3;">(</span>os.getpid<span style="color: #3a81c3;">)</span>
+
+dview.scatter<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'a'</span>, <span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span>10<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">distribute data (map)</span>
+dview.execute<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'print(a)'</span><span style="color: #3a81c3;">)</span>.display_outputs<span style="color: #3a81c3;">()</span>
+dview.execute<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'b=sum(a)'</span><span style="color: #3a81c3;">)</span>
+dview.gather<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'b'</span><span style="color: #3a81c3;">)</span>.r <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">reduce</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5fb7dcf" class="outline-3">
+<h3 id="org5fb7dcf"><span class="section-number-3">9.2</span> Scipy</h3>
+</div>
+<div id="outline-container-orgedcf4c0" class="outline-3">
+<h3 id="orgedcf4c0"><span class="section-number-3">9.3</span> Sympy</h3>
+<div class="outline-text-3" id="text-9-3">
+<p>
+Main computer algebra module in Python
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> sympy <span style="color: #3a81c3; font-weight: bold;">as</span> S
+<span style="color: #3a81c3; font-weight: bold;">from</span> sympy <span style="color: #3a81c3; font-weight: bold;">import</span> init_printing
+init_printing<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">for latex printing</span>
+
+<span style="color: #715ab1;">x</span> = S.symbols<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'x'</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">p</span>=<span style="color: #3a81c3;">sum</span><span style="color: #3a81c3;">(</span>x**i <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span>3<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">2nd order polynomial</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; x**2 + x + 1</span>
+
+S.solve<span style="color: #3a81c3;">(</span>p<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">solves p == 0</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; [-1/2 - sqrt(3)*I/2, -1/2 + sqrt(3)*I/2]</span>
+
+S.roots<span style="color: #3a81c3;">(</span>p<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; {-1/2 - sqrt(3)*I/2: 1, -1/2 + sqrt(3)*I/2: 1}</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-org78650e9" class="outline-4">
+<h4 id="org78650e9"><span class="section-number-4">9.3.1</span> lambdify</h4>
+<div class="outline-text-4" id="text-9-3-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">y</span> = S.tan<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span> * x + x**2
+<span style="color: #715ab1;">yf</span>= S.lambdify<span style="color: #3a81c3;">(</span>x,y,&#8217;numpy&#8217;<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; &lt;function numpy.&lt;lambda&gt;&gt;</span>
+yf<span style="color: #3a81c3;">(</span>np.arange<span style="color: #6c3163;">(</span>3<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdceac35" class="outline-4">
+<h4 id="orgdceac35"><span class="section-number-4">9.3.2</span> Alternative SAGE</h4>
+<div class="outline-text-4" id="text-9-3-2">
+<ul class="org-ul">
+<li>open source mathematics software package</li>
+<li>non pure-python module.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org949f1c0" class="outline-3">
+<h3 id="org949f1c0"><span class="section-number-3">9.4</span> seaborn</h3>
+<div class="outline-text-3" id="text-9-4">
+<p>
+Beautifully formatted plots
+</p>
+</div>
+</div>
+<div id="outline-container-orgd88699a" class="outline-3">
+<h3 id="orgd88699a"><span class="section-number-3">9.5</span> plotly</h3>
+</div>
+<div id="outline-container-orgf8fd2a7" class="outline-3">
+<h3 id="orgf8fd2a7"><span class="section-number-3">9.6</span> Blaze</h3>
+<div class="outline-text-3" id="text-9-6">
+<ul class="org-ul">
+<li>Big data(too big to fit in RAM)</li>
+<li>tight integration with Pandas dataframes</li>
+</ul>
+
+<p>
+<a href="https://github.com/blaze/blaze">https://github.com/blaze/blaze</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9b65b6f" class="outline-3">
+<h3 id="org9b65b6f"><span class="section-number-3">9.7</span> bcolz</h3>
+<div class="outline-text-3" id="text-9-7">
+<p>
+columnar and compressed data containers(either in-memory and on-disk)
+</p>
+<ul class="org-ul">
+<li>based on numpy</li>
+<li>support for PyTables and pandas dataframes</li>
+<li>takes advantage of multi-core architecture</li>
+</ul>
+
+<p>
+<a href="https://github.com/Blosc/bcolz">https://github.com/Blosc/bcolz</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org233911b" class="outline-3">
+<h3 id="org233911b"><span class="section-number-3">9.8</span> Enthought Tool-Suite (ETS)</h3>
+<div class="outline-text-3" id="text-9-8">
+<p>
+ETS is a collection of components developed by Enthought and our partners,
+which we use every day to construct custom scientific applications.
+</p>
+</div>
+<div id="outline-container-org1b316d9" class="outline-4">
+<h4 id="org1b316d9"><span class="section-number-4">9.8.1</span> Chaco</h4>
+<div class="outline-text-4" id="text-9-8-1">
+<p>
+2-Dimensional Plotting, interactive visualization.
+</p>
+</div>
+</div>
+<div id="outline-container-org47bf59b" class="outline-4">
+<h4 id="org47bf59b"><span class="section-number-4">9.8.2</span> Mayavi</h4>
+<div class="outline-text-4" id="text-9-8-2">
+<p>
+Another Enthought-supported 3D visualization package that sits on VTK.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org5722b10" class="outline-3">
+<h3 id="org5722b10"><span class="section-number-3">9.9</span> bottleneck</h3>
+<div class="outline-text-3" id="text-9-9">
+<p>
+provides an alternate implementation of NaN-friendly moving window functions.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfbde9bc" class="outline-3">
+<h3 id="orgfbde9bc"><span class="section-number-3">9.10</span> SWIG</h3>
+<div class="outline-text-3" id="text-9-10">
+<p>
+Wrapper for c, c++ libraries.
+</p>
+<ul class="org-ul">
+<li>generate python PYD</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org04c7058" class="outline-3">
+<h3 id="org04c7058"><span class="section-number-3">9.11</span> zipline</h3>
+</div>
+</div>
+
+<div id="outline-container-org0497b6e" class="outline-2">
+<h2 id="org0497b6e"><span class="section-number-2">10</span> hdf</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-orga5abea4" class="outline-3">
+<h3 id="orga5abea4"><span class="section-number-3">10.1</span> dataset</h3>
+<div class="outline-text-3" id="text-10-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">f</span> = h5py.File<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"testfile.hdf5"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">dset</span> = f.create_dataset<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"big dataset"</span>, <span style="color: #6c3163;">(</span>1024**3, <span style="color: #6c3163;">)</span>, dtype=np.float32<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">dset</span><span style="color: #3a81c3;">[</span>0:1024<span style="color: #3a81c3;">]</span> = np.arange<span style="color: #3a81c3;">(</span>1024<span style="color: #3a81c3;">)</span>
+f.flush<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dump cache on disk</span>
+
+<span style="color: #3a81c3; font-weight: bold;">with</span> dset.astype<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'float64'</span><span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">out</span> = dset<span style="color: #3a81c3;">[</span>0,:<span style="color: #3a81c3;">]</span>
+out.dtype <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; dtype('float64')</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgf4a66cc" class="outline-4">
+<h4 id="orgf4a66cc"><span class="section-number-4">10.1.1</span> Ellipsis</h4>
+<div class="outline-text-4" id="text-10-1-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">dset</span> = f.create_dataset<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'4d'</span>, shape=<span style="color: #6c3163;">(</span>100, 80, 50, 20<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+dset<span style="color: #3a81c3;">[</span>0,...,0<span style="color: #3a81c3;">]</span>.shape
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; (80, 50)</span>
+dset<span style="color: #3a81c3;">[</span>...<span style="color: #3a81c3;">]</span>.shape
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; (100, 80, 50, 20)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org89d3f0a" class="outline-4">
+<h4 id="org89d3f0a"><span class="section-number-4">10.1.2</span> chunks</h4>
+<div class="outline-text-4" id="text-10-1-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">dset</span> = f.create_dataset<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'chunked'</span>, <span style="color: #6c3163;">(</span>100,480,640<span style="color: #6c3163;">)</span>, dtype=<span style="color: #2d9574;">'i1'</span>, chunks=<span style="color: #6c3163;">(</span>1, 64, 64<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org46fab0f" class="outline-4">
+<h4 id="org46fab0f"><span class="section-number-4">10.1.3</span> float data saving space</h4>
+<div class="outline-text-4" id="text-10-1-3">
+<ul class="org-ul">
+<li>it’s common practice to store these data points on disk as <b>single-precision</b></li>
+</ul>
+</div>
+<div id="outline-container-orgf384554" class="outline-5">
+<h5 id="orgf384554">read float32 in as double precision</h5>
+<div class="outline-text-5" id="text-orgf384554">
+<ul class="org-ul">
+<li>one way</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">big_out</span> = np.empty<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>100, 1000<span style="color: #6c3163;">)</span>, dtype=np.float64<span style="color: #3a81c3;">)</span>
+dset.read_direct<span style="color: #3a81c3;">(</span>big_out<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>another way</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">with</span> dset.astype<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'float64'</span><span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">out</span> = dset<span style="color: #3a81c3;">[</span>0,:<span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3eb2849" class="outline-3">
+<h3 id="org3eb2849"><span class="section-number-3">10.2</span> lookup tools</h3>
+<div class="outline-text-3" id="text-10-2">
+</div>
+<div id="outline-container-orgd8980f3" class="outline-4">
+<h4 id="orgd8980f3"><span class="section-number-4">10.2.1</span> HDFView</h4>
+</div>
+<div id="outline-container-org6112819" class="outline-4">
+<h4 id="org6112819"><span class="section-number-4">10.2.2</span> h5ls</h4>
+<div class="outline-text-4" id="text-10-2-2">
+<div class="org-src-container">
+<pre class="src src-sh">h5ls -vlr
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc9187ed" class="outline-3">
+<h3 id="orgc9187ed"><span class="section-number-3">10.3</span> notice</h3>
+<div class="outline-text-3" id="text-10-3">
+<ul class="org-ul">
+<li>slice on hdf table will do read&amp;write on disk</li>
+<li><p>
+use np.s_ to get a slice object
+</p>
+<div class="org-src-container">
+<pre class="src src-python">dset.read_direct<span style="color: #3a81c3;">(</span>out, source_sel=np.s_<span style="color: #6c3163;">[</span>0,:<span style="color: #6c3163;">]</span>, dest_sel=np.s_<span style="color: #6c3163;">[</span>50,:<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

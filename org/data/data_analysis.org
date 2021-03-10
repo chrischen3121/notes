@@ -154,8 +154,8 @@
       arr = np.array([1,2,3])
       arr.reshape((-1, 1))
       array([[1],
-             [2],
-             [3]])
+	     [2],
+	     [3]])
     #+END_SRC
 ** matrix
    matrix has two dimensions and implements row-column matrix multiplication
@@ -240,7 +240,7 @@
 ** DataFrame
 #+BEGIN_SRC python
   df = pd.DataFrame(np.arange(8).reshape(4,2),
-                    columns=['c1', 'c2'], index=['r1', 'r2', 'r3', 'r4'])
+		    columns=['c1', 'c2'], index=['r1', 'r2', 'r3', 'r4'])
 
   df.ix['r1'] # retrieve row
   # c1    0
@@ -319,7 +319,7 @@ reindex args: index, method, fill_value, limit, level, copy
 - Operation between Dataframe and Series
 #+BEGIN_SRC python
   df = pd.DataFrame(np.arange(6).reshape(3,2),
-                    columns=['c1', 'c2'], index=['r1', 'r2', 'r3'])
+		    columns=['c1', 'c2'], index=['r1', 'r2', 'r3'])
 
   #     c1  c2
   # r1   0   1
@@ -387,7 +387,7 @@ reindex args: index, method, fill_value, limit, level, copy
     ~apply~ *can also return a Series*
     #+BEGIN_SRC python
       def f(x):
-          return pd.Series([x.min(), x.max()], index=['min', 'max'])
+	  return pd.Series([x.min(), x.max()], index=['min', 'max'])
       frame.apply(f)
       #=>    a   b
       # min xxx xxx
@@ -481,7 +481,7 @@ reindex args: index, method, fill_value, limit, level, copy
 
       all_data = {}
       for ticker in ['AAPL', 'IBM', 'MSFT', 'GOOG']:
-          all_data[ticker] = pdr.get_data_yahoo(ticker, '1/1/2000', '1/1/2010')
+	  all_data[ticker] = pdr.get_data_yahoo(ticker, '1/1/2000', '1/1/2010')
 
       price = pd.DataFrame({tic: data['Adj Close'] for tic, data in all_data.iteritems()})
       returns = price.pct_change()
@@ -523,28 +523,28 @@ reindex args: index, method, fill_value, limit, level, copy
    Although hierarchical indexing makes using truly N-dimensional arrays unnecessary in a lot of cases
    #+BEGIN_SRC python
      pdata = pd.Panel({stk: pdr.get_data_yahoo(stk, '1/1/2009', '6/1/2012')
-                       for stk in ['AAPL', 'GOOG']})
+		       for stk in ['AAPL', 'GOOG']})
 
    #+END_SRC
 *** Useful functions
     - ix
       #+BEGIN_SRC python
-        pdata.ix[:, '6/1/2012', :]
+	pdata.ix[:, '6/1/2012', :]
       #+END_SRC
     - swapaxes
       #+BEGIN_SRC python
-        pdata.swapaxes('items', 'minor')['Adj Close']
+	pdata.swapaxes('items', 'minor')['Adj Close']
       #+END_SRC
     - to_frame
 
       index will be the *[major, minor]* axis, *items* will be the columns
       #+BEGIN_SRC python
-        stacked = pdata.to_frame()
+	stacked = pdata.to_frame()
       #+END_SRC
 
     - to_panel
       #+BEGIN_SRC python
-        stacked.to_panel()
+	stacked.to_panel()
       #+END_SRC
 
 ** config options
@@ -573,14 +573,14 @@ reindex args: index, method, fill_value, limit, level, copy
      df2 = df[df['col2'] < 0]
      # This can be rewritten as:
      df = (load_data()
-           [lambda x: x['col2'] < 0])
+	   [lambda x: x['col2'] < 0])
 
      # write the entire sequence as a single chained expression
      result = (load_data()
-               [lambda x: x.col2 < 0]
-               .assign(col1_demeaned=lambda x: x.col1 - x.col1.mean())
-               .groupby('key')
-               .col1_demeaned.std())
+	       [lambda x: x.col2 < 0]
+	       .assign(col1_demeaned=lambda x: x.col1 - x.col1.mean())
+	       .groupby('key')
+	       .col1_demeaned.std())
    #+END_SRC
 
 *** ~pipe~ method
@@ -588,11 +588,11 @@ reindex args: index, method, fill_value, limit, level, copy
 **** useful pattern for ~pipe~
      #+BEGIN_SRC python
        def group_demean(df, by, cols):
-           result = df.copy()
-           g = df.groupby(by)
-           for c in cols:
-               result[c] = df[c] - g[c].transform("mean")
-           return result
+	   result = df.copy()
+	   g = df.groupby(by)
+	   for c in cols:
+	       result[c] = df[c] - g[c].transform("mean")
+	   return result
 
 
        result = df[df.col1 < 0].pipe(group_demean, ["key1", "key2"], ["col1"])
@@ -646,8 +646,8 @@ reindex args: index, method, fill_value, limit, level, copy
     #+BEGIN_SRC python
       chunker = pd.read_csv("data.csv", chunksize=1000)
       for piece_df in chunker:
-          # do somethine with piece_df
-          ...
+	  # do somethine with piece_df
+	  ...
     #+END_SRC
 ** Concatenation
    - *pd.merge*, *merge* method
@@ -831,9 +831,9 @@ reindex args: index, method, fill_value, limit, level, copy
     #+BEGIN_SRC python
       plt.rc('figure', figsize=(10, 10))
       font_options = {'family' : 'monospace',
-                      'weight' : 'bold',
-                      'size'
-                      : 'small'}
+		      'weight' : 'bold',
+		      'size'
+		      : 'small'}
       plt.rc('font', **font_options)
     #+END_SRC
 
@@ -848,8 +848,8 @@ reindex args: index, method, fill_value, limit, level, copy
 
       # ax.set
       props = {
-          "title": "My first matplotlib plot",
-          "xlabel": "Stages"
+	  "title": "My first matplotlib plot",
+	  "xlabel": "Stages"
       }
       ax.set(**props)
 
@@ -861,9 +861,9 @@ reindex args: index, method, fill_value, limit, level, copy
     ~ax.text~, ~ax.arrow~, ~ax.annotate~
      #+BEGIN_SRC python
        ax.annotate(label, xy=(date, spx.asof(date) + 50),
-                   xytext=(date, spx.asof(date) + 200),
-                   arrowprops=dict(facecolor='black'),
-                   horizontalalignment='left', verticalalignment='top')
+		   xytext=(date, spx.asof(date) + 200),
+		   arrowprops=dict(facecolor='black'),
+		   horizontalalignment='left', verticalalignment='top')
      #+END_SRC
      - util function: ~asof~
 
@@ -947,7 +947,7 @@ reindex args: index, method, fill_value, limit, level, copy
 
      # iterations
      for name, group in df.groupby('key1'):
-         print name, group
+	 print name, group
    #+END_SRC
 
 *** Using Mapping Dict(or Series)
@@ -1074,9 +1074,9 @@ reindex args: index, method, fill_value, limit, level, copy
 *** Group Weighted Average
     #+BEGIN_SRC python
       df = pd.DataFrame({'category': ['a', 'a', 'a', 'a',
-                                      'b', 'b', 'b', 'b'],
-                         'data': np.random.randn(8),
-                         'weights': np.random.rand(8)})
+				      'b', 'b', 'b', 'b'],
+			 'data': np.random.randn(8),
+			 'weights': np.random.rand(8)})
       df.groupby("category").apply(lambda g: np.average(g['data'], weights=g['weights']))
     #+END_SRC
 
@@ -1107,11 +1107,11 @@ reindex args: index, method, fill_value, limit, level, copy
 
       import statsmodels.api as sm
       def regress(data, yvar, xvars):
-          Y = data[yvar]
-          X = data[xvars]
-          X['intercept'] = 1.
-          result = sm.OLS(Y, X).fit()
-          return result.params
+	  Y = data[yvar]
+	  X = data[xvars]
+	  X['intercept'] = 1.
+	  result = sm.OLS(Y, X).fit()
+	  return result.params
 
       by_year.apply(regress, 'AAPL', ['SPX'])
     #+END_SRC
@@ -1120,8 +1120,8 @@ reindex args: index, method, fill_value, limit, level, copy
     #+BEGIN_SRC python
       times = pd.date_range('2017-05-20 00:00', freq='1min', periods=N)
       df = pd.DataFrame({'time': times.repeat(3),
-                         'key': np.tile(['a', 'b', 'c'], N),
-                         'value': np.arange(N * 3.)})
+			 'key': np.tile(['a', 'b', 'c'], N),
+			 'value': np.arange(N * 3.)})
       time_key = pd.TimeGrouper('5min')
       resampled = (df.set_index('time').groupby(['key', time_key]).sum())
     #+END_SRC
@@ -1424,7 +1424,7 @@ reindex args: index, method, fill_value, limit, level, copy
      f.flush() # dump cache on disk
 
      with dset.astype('float64'):
-         out = dset[0,:]
+	 out = dset[0,:]
      out.dtype #=> dtype('float64')
    #+END_SRC
 
@@ -1452,7 +1452,7 @@ reindex args: index, method, fill_value, limit, level, copy
      - another way
      #+BEGIN_SRC python
        with dset.astype('float64'):
-           out = dset[0,:]
+	   out = dset[0,:]
      #+END_SRC
 
 ** lookup tools

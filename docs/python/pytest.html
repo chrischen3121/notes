@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pytest</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="python, test, pytest" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Pytest</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6ce550e">1. Intro</a>
+<ul>
+<li><a href="#org63a9f5a">1.1. Test Discovery</a></li>
+<li><a href="#orgda4e557">1.2. Useful Options</a></li>
+<li><a href="#org2e8e4d1">1.3. Plugin Options</a></li>
+</ul>
+</li>
+<li><a href="#org7644f04">2. Markers</a>
+<ul>
+<li><a href="#orgd0f14ae">2.1. Skip Test on Some Versions</a></li>
+<li><a href="#org0b0ae16">2.2. Parametrized</a></li>
+</ul>
+</li>
+<li><a href="#org1099c0c">3. Fixtures</a>
+<ul>
+<li><a href="#orgf01bac7">3.1. Tracing Fixture Execution</a></li>
+<li><a href="#org829caac">3.2. Data Fixture</a></li>
+<li><a href="#orgb191fad">3.3. Fixtures for Resource</a></li>
+<li><a href="#org7003861">3.4. Specifying Fixtures with <code>usefixtures</code></a></li>
+<li><a href="#org268285a">3.5. Fixture Scope</a></li>
+<li><a href="#org061af74">3.6. Autouse Fixture</a></li>
+<li><a href="#org62613bc">3.7. Renaming Fixture</a></li>
+<li><a href="#org47c7fc0">3.8. <b>Parametrizing Fixtures</b></a></li>
+</ul>
+</li>
+<li><a href="#orga6b2fd4">4. Builtin Fixtures</a>
+<ul>
+<li><a href="#org73e0912">4.1. <code>tmpdir</code> &amp; <code>tmpdir_factory</code></a></li>
+<li><a href="#orgc409cb0">4.2. request</a></li>
+<li><a href="#org488423c">4.3. pytestconfig</a></li>
+<li><a href="#orgf77d0ec">4.4. cache</a></li>
+<li><a href="#org9f1a84a">4.5. capsys</a></li>
+<li><a href="#orgbc84435">4.6. monkeypatch</a></li>
+<li><a href="#org0871db5">4.7. doctest_namespace</a></li>
+<li><a href="#orgdf7ce0c">4.8. recwarn</a></li>
+</ul>
+</li>
+<li><a href="#org858d9af">5. Mocks</a></li>
+<li><a href="#orgddf6453">6. Asycnio</a>
+<ul>
+<li><a href="#orgc15b2da">6.1. <code>pytest-asyncio</code></a></li>
+<li><a href="#orgbae674b">6.2. <code>asynctest</code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6ce550e" class="outline-2">
+<h2 id="org6ce550e"><span class="section-number-2">1</span> Intro</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org63a9f5a" class="outline-3">
+<h3 id="org63a9f5a"><span class="section-number-3">1.1</span> Test Discovery</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>Test files should be named <code>=test_&lt;something&gt;.py</code> or <code>&lt;something&gt;_test.py</code>.</li>
+<li>Test methods and functions should be named <code>test_&lt;something&gt;</code>.</li>
+<li>Test classes should be named <code>Test&lt;Something&gt;</code>.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgda4e557" class="outline-3">
+<h3 id="orgda4e557"><span class="section-number-3">1.2</span> Useful Options</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li><code>--collect-only</code></li>
+<li><code>-v, --verbose</code></li>
+<li><code>-x, --exitfirst</code>: useful when debugging a problem</li>
+<li><code>-s, --capture=method</code>: method should be one of <code>fd|sys|no</code>. <code>-s</code> is shortcut for <code>--capture=no</code></li>
+<li><code>–lf, --last-failed</code>: only run last failing tests, or use <code>–ff, –failed-first</code></li>
+<li><code>-l, --showlocals</code>: local variables and their values are displayed with tracebacks for failing tests</li>
+<li><code>--tb=style</code>: useful styles <code>short</code>, <code>line</code>, and <code>no</code></li>
+<li><code>--durations=N</code>: show N slowest setup/test durations (N=0 for all), helpful to speed up testing</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2e8e4d1" class="outline-3">
+<h3 id="org2e8e4d1"><span class="section-number-3">1.3</span> Plugin Options</h3>
+<div class="outline-text-3" id="text-1-3">
+<ul class="org-ul">
+<li><code>--pdb</code></li>
+<li><code>--cov</code>, <code>--cov-report=html</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7644f04" class="outline-2">
+<h2 id="org7644f04"><span class="section-number-2">2</span> Markers</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Markers are one of the best ways to mark a subset of your test functions so that they can be run together.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> pytest
+
+<span style="color: #ba2f59; font-weight: bold;">@pytest.mark.somemark</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test_func</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">pass</span>
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-bash">pytest -v -m <span style="color: #2d9574;">'some mark'</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgd0f14ae" class="outline-3">
+<h3 id="orgd0f14ae"><span class="section-number-3">2.1</span> Skip Test on Some Versions</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@pytest.mark.skipif</span><span style="color: #3a81c3;">(</span>tasks.__version__ &lt; &#8203;<span style="color: #2d9574;">'0.2.0'</span>&#8203;,
+		    reason=&#8203;<span style="color: #2d9574;">'not supported until version 0.2.0'</span>&#8203;<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0b0ae16" class="outline-3">
+<h3 id="org0b0ae16"><span class="section-number-3">2.2</span> Parametrized</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Parametrized testing is a way to send multiple sets of data through the same test and
+have pytest report if any of the sets failed. <code>@pytest.mark.parametrize</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@pytest.mark.parametrize</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'arg1,arg2'</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">(</span>1, <span style="color: #2d9574;">'arg2_value1'</span><span style="color: #2d9574;">)</span>, <span style="color: #2d9574;">(</span>2, <span style="color: #2d9574;">'arg2_value2'</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1099c0c" class="outline-2">
+<h2 id="org1099c0c"><span class="section-number-2">3</span> Fixtures</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgf01bac7" class="outline-3">
+<h3 id="orgf01bac7"><span class="section-number-3">3.1</span> Tracing Fixture Execution</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li><code>--setup-show</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org829caac" class="outline-3">
+<h3 id="org829caac"><span class="section-number-3">3.2</span> Data Fixture</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@pytest.fixture</span><span style="color: #3a81c3;">(</span>name=<span style="color: #2d9574;">'show_on_result'</span>, scope=<span style="color: #2d9574;">'session'</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">a_tuple</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3;">(</span>1, 2, 3<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb191fad" class="outline-3">
+<h3 id="orgb191fad"><span class="section-number-3">3.3</span> Fixtures for Resource</h3>
+<div class="outline-text-3" id="text-3-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@pytest.fixture</span><span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">resource</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Setup</span>
+    <span style="color: #3a81c3; font-weight: bold;">yield</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Teardown</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7003861" class="outline-3">
+<h3 id="org7003861"><span class="section-number-3">3.4</span> Specifying Fixtures with <code>usefixtures</code></h3>
+<div class="outline-text-3" id="text-3-4">
+<ul class="org-ul">
+<li><code>@pytest.mark.usefixtures('fixture1', 'fixture2')</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org268285a" class="outline-3">
+<h3 id="org268285a"><span class="section-number-3">3.5</span> Fixture Scope</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+function(default), class, module, session
+</p>
+</div>
+<div id="outline-container-org05ffb47" class="outline-4">
+<h4 id="org05ffb47"><span class="section-number-4">3.5.1</span> Class Scope</h4>
+<div class="outline-text-4" id="text-3-5-1">
+<ul class="org-ul">
+<li>need to use <code>usefixtures</code></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">class scope</span>
+<span style="color: #ba2f59; font-weight: bold;">@pytest.fixture</span><span style="color: #3a81c3;">(</span>scope=&#8203;<span style="color: #2d9574;">'class'</span>&#8203;<span style="color: #3a81c3;">)</span>
+&#8203;<span style="color: #3a81c3; font-weight: bold;">def</span>&#8203; <span style="color: #6c3163; font-weight: bold;">class_scope</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #da8b55;">"""A class scope fixture."""</span>
+
+<span style="color: #ba2f59; font-weight: bold;">@pytest.mark.usefixtures</span><span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'class_scope'</span>&#8203;<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">TestClass</span>:
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test_method</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
+	<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">use class_scope fixture</span>
+	<span style="color: #3a81c3; font-weight: bold;">pass</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org061af74" class="outline-3">
+<h3 id="org061af74"><span class="section-number-3">3.6</span> Autouse Fixture</h3>
+<div class="outline-text-3" id="text-3-6">
+<ul class="org-ul">
+<li><code>@pytest.fixture(autouse=True)</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org62613bc" class="outline-3">
+<h3 id="org62613bc"><span class="section-number-3">3.7</span> Renaming Fixture</h3>
+<div class="outline-text-3" id="text-3-7">
+<ul class="org-ul">
+<li><code>@pytest.fixture(name='simple')</code></li>
+<li>Use <code>--fixtures</code> option to list all the fixtures available for the test</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org47c7fc0" class="outline-3">
+<h3 id="org47c7fc0"><span class="section-number-3">3.8</span> <b>Parametrizing Fixtures</b></h3>
+<div class="outline-text-3" id="text-3-8">
+<ul class="org-ul">
+<li><code>@pytest.fixture(params=tasks_to_try, ids=task_ids)</code></li>
+<li>With parametrized fixtures, every test function that uses that fixture will be called multiple times.</li>
+<li>Use <code>ids</code> to specify fixture identities.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orga6b2fd4" class="outline-2">
+<h2 id="orga6b2fd4"><span class="section-number-2">4</span> Builtin Fixtures</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org73e0912" class="outline-3">
+<h3 id="org73e0912"><span class="section-number-3">4.1</span> <code>tmpdir</code> &amp; <code>tmpdir_factory</code></h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>We get session scope temporary directories and files from the <code>tmpdir_factory</code> fixture, and function scope directories and files from the <code>tmpdir</code> fixture.</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">a_dir</span> = tmpdir_factory.mktemp<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'mydir'</span>&#8203;<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">a_file</span> = a_dir.join<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'something.txt'</span>&#8203;<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">a_sub_dir</span> = a_dir.mkdir<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'anything'</span>&#8203;<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">another_file</span> = a_sub_dir.join<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'something_else.txt'</span>&#8203;<span style="color: #3a81c3;">)</span>
+a_file.write<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'contents may settle during shipping'</span>&#8203;<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">assert</span>&#8203; a_file.read<span style="color: #3a81c3;">()</span> == &#8203;<span style="color: #2d9574;">'contents may settle during shipping'</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc409cb0" class="outline-3">
+<h3 id="orgc409cb0"><span class="section-number-3">4.2</span> request</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li>Used with fixture parametrization <code>request.param</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org488423c" class="outline-3">
+<h3 id="org488423c"><span class="section-number-3">4.3</span> pytestconfig</h3>
+<div class="outline-text-3" id="text-4-3">
+<ul class="org-ul">
+<li><p>
+Adding command-line options via pytest_addoption should be done via plugins or in the <code>conftest.py</code> file at the top of your project directory structure.
+</p>
+<div class="org-src-container">
+<pre class="src src-python">            &#8203;<span style="color: #3a81c3; font-weight: bold;">def</span>&#8203; <span style="color: #6c3163; font-weight: bold;">pytest_addoption</span><span style="color: #3a81c3;">(</span>parser<span style="color: #3a81c3;">)</span>:
+		parser.addoption<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">"--myopt"</span>&#8203;, action=&#8203;<span style="color: #2d9574;">"store_true"</span>&#8203;,
+				 <span style="color: #3a81c3;">help</span>=&#8203;<span style="color: #2d9574;">"some boolean option"</span>&#8203;<span style="color: #3a81c3;">)</span>
+		parser.addoption<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">"--foo"</span>&#8203;, action=&#8203;<span style="color: #2d9574;">"store"</span>&#8203;, default=&#8203;<span style="color: #2d9574;">"bar"</span>&#8203;,
+				 <span style="color: #3a81c3;">help</span>=&#8203;<span style="color: #2d9574;">"foo: bar or baz"</span>&#8203;<span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+</ul>
+<ul class="org-ul">
+<li><p>
+Using options
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span>&#8203; <span style="color: #6c3163; font-weight: bold;">test_option</span><span style="color: #3a81c3;">(</span>pytestconfig<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span>&#8203;<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'"foo" set to:'</span>&#8203;, pytestconfig.getoption<span style="color: #6c3163;">(</span>&#8203;<span style="color: #2d9574;">'foo'</span>&#8203;<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">print</span>&#8203;<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'"myopt" set to:'</span>&#8203;, pytestconfig.getoption<span style="color: #6c3163;">(</span>&#8203;<span style="color: #2d9574;">'myopt'</span>&#8203;<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf77d0ec" class="outline-3">
+<h3 id="orgf77d0ec"><span class="section-number-3">4.4</span> cache</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+Storing information about one test session and retrieving it in the next. examples: <code>--lf</code>, <code>--ff</code>
+</p>
+<ul class="org-ul">
+<li>command line options: <code>--cache-show</code>, <code>--cache-clear</code></li>
+<li><code>cache.get</code>, <code>cache.set</code></li>
+<li>By convention, key names start with the name of your application or plugin, followed by a /,</li>
+</ul>
+<p>
+and continuing to separate sections of the key name with /’s. The value you store can be anything
+that is convertible to json, since that’s how it’s represented in the .cache directory.
+</p>
+<ul class="org-ul">
+<li><code>cache</code> is function scope fixture, using <code>request.config.cache</code> in any other scopes.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9f1a84a" class="outline-3">
+<h3 id="org9f1a84a"><span class="section-number-3">4.5</span> capsys</h3>
+<div class="outline-text-3" id="text-4-5">
+<ul class="org-ul">
+<li><code>out, err = capsys.readouterr()</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbc84435" class="outline-3">
+<h3 id="orgbc84435"><span class="section-number-3">4.6</span> monkeypatch</h3>
+<div class="outline-text-3" id="text-4-6">
+<ul class="org-ul">
+<li><code>setattr</code>, <code>delattr</code>: Set/Delete an attribute.</li>
+<li><code>setitem</code>, <code>delitem</code>: Set/Delete a dictionary entry.</li>
+<li><code>setenv</code>, <code>delenv</code>: Set/Delete an environmental variable.</li>
+<li><code>syspath_prepend</code>: Prepend path to <code>sys.path</code></li>
+<li><code>chdir</code>: Change the current working directory.</li>
+<li>examples:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span>&#8203; <span style="color: #6c3163; font-weight: bold;">test_def_prefs_change_home</span><span style="color: #3a81c3;">(</span>tmpdir, monkeypatch<span style="color: #3a81c3;">)</span>:
+    monkeypatch.setenv<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'HOME'</span>&#8203;, tmpdir.mkdir<span style="color: #6c3163;">(</span>&#8203;<span style="color: #2d9574;">'home'</span>&#8203;<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+    cheese.write_default_cheese_preferences<span style="color: #3a81c3;">()</span>
+    <span style="color: #715ab1;">expected</span> = cheese._default_prefs
+    <span style="color: #715ab1;">actual</span> = cheese.read_cheese_preferences<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">assert</span>&#8203; expected == actual
+
+<span style="color: #715ab1;">fake_home_dir</span> = tmpdir.mkdir<span style="color: #3a81c3;">(</span>&#8203;<span style="color: #2d9574;">'home'</span>&#8203;<span style="color: #3a81c3;">)</span>
+monkeypatch.<span style="color: #3a81c3;">setattr</span><span style="color: #3a81c3;">(</span>cheese.os.path, &#8203;<span style="color: #2d9574;">'expanduser'</span>&#8203;,
+		    <span style="color: #6c3163;">(</span>&#8203;<span style="color: #3a81c3; font-weight: bold;">lambda</span>&#8203; x: x.replace<span style="color: #2d9574;">(</span>&#8203;<span style="color: #2d9574;">'~'</span>&#8203;, <span style="color: #3a81c3;">str</span><span style="color: #67b11d;">(</span>fake_home_dir<span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><code>monkeypatch</code> fixture functions can be in conjunction with <code>unittest.mock</code> to temporarily replace attributes with mock objects</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0871db5" class="outline-3">
+<h3 id="org0871db5"><span class="section-number-3">4.7</span> doctest_namespace</h3>
+</div>
+<div id="outline-container-orgdf7ce0c" class="outline-3">
+<h3 id="orgdf7ce0c"><span class="section-number-3">4.8</span> recwarn</h3>
+<div class="outline-text-3" id="text-4-8">
+<ul class="org-ul">
+<li>Examine <code>warnings</code> generated by code under test</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org858d9af" class="outline-2">
+<h2 id="org858d9af"><span class="section-number-2">5</span> Mocks</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><code>mocker.patch</code></li>
+<li><code>mocker.patch.object</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgddf6453" class="outline-2">
+<h2 id="orgddf6453"><span class="section-number-2">6</span> Asycnio</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgc15b2da" class="outline-3">
+<h3 id="orgc15b2da"><span class="section-number-3">6.1</span> <code>pytest-asyncio</code></h3>
+<div class="outline-text-3" id="text-6-1">
+<ul class="org-ul">
+<li><code>@pytest.fixture</code> can decorate coroutines or async generators</li>
+<li>custom event loop</li>
+<li><code>@pytest.mark.asyncio</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbae674b" class="outline-3">
+<h3 id="orgbae674b"><span class="section-number-3">6.2</span> <code>asynctest</code></h3>
+<div class="outline-text-3" id="text-6-2">
+</div>
+<div id="outline-container-orgf9d0bb4" class="outline-4">
+<h4 id="orgf9d0bb4"><span class="section-number-4">6.2.1</span> Mock</h4>
+<div class="outline-text-4" id="text-6-2-1">
+<ul class="org-ul">
+<li><code>asynctest.Mock(object)</code></li>
+<li><code>asynctest.create_autospec(class/func)</code>: to create mock objects</li>
+<li><code>side_effect</code> can be a function, an exception object or class or any iterable object.</li>
+<li>Putting it all together</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asynctest
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">TestCacheWithMagicMethods</span><span style="color: #3a81c3;">(</span>asynctest.TestCase<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">test_one_user_added_to_cache</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
+	<span style="color: #715ab1;">user</span> = StubClient.User<span style="color: #3a81c3;">(</span>1, <span style="color: #2d9574;">"a.dmin"</span><span style="color: #3a81c3;">)</span>
+
+	<span style="color: #715ab1;">AsyncClientMock</span> = asynctest.create_autospec<span style="color: #3a81c3;">(</span>AsyncClient<span style="color: #3a81c3;">)</span>
+
+	<span style="color: #715ab1;">transaction</span> = asynctest.MagicMock<span style="color: #3a81c3;">()</span>
+	<span style="color: #715ab1;">transaction.__aenter__.side_effect</span> = AsyncClientMock
+
+	<span style="color: #715ab1;">cursor</span> = asynctest.MagicMock<span style="color: #3a81c3;">()</span>
+	<span style="color: #715ab1;">cursor.__aiter__.return_value</span> = <span style="color: #3a81c3;">[</span>user<span style="color: #3a81c3;">]</span>
+
+	<span style="color: #715ab1;">client</span> = AsyncClientMock<span style="color: #3a81c3;">()</span>
+	<span style="color: #715ab1;">client.new_transaction.return_value</span> = transaction
+	<span style="color: #715ab1;">client.get_users_cursor.return_value</span> = cursor
+
+	<span style="color: #715ab1;">cache</span> = <span style="color: #3a81c3;">{}</span>
+
+	<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">The user has been added to the cache</span>
+	<span style="color: #715ab1;">nb_added</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> cache_users_with_cursor<span style="color: #3a81c3;">(</span>client, cache<span style="color: #3a81c3;">)</span>
+
+	<span style="color: #3a81c3; font-weight: bold;">self</span>.assertEqual<span style="color: #3a81c3;">(</span>nb_added, 1<span style="color: #3a81c3;">)</span>
+	<span style="color: #3a81c3; font-weight: bold;">self</span>.assertEqual<span style="color: #3a81c3;">(</span>cache<span style="color: #6c3163;">[</span>1<span style="color: #6c3163;">]</span>, user<span style="color: #3a81c3;">)</span>
+
+	<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">The user was already there</span>
+	<span style="color: #715ab1;">nb_added</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> cache_users_with_cursor<span style="color: #3a81c3;">(</span>client, cache<span style="color: #3a81c3;">)</span>
+	<span style="color: #3a81c3; font-weight: bold;">self</span>.assertEqual<span style="color: #3a81c3;">(</span>nb_added, 0<span style="color: #3a81c3;">)</span>
+	<span style="color: #3a81c3; font-weight: bold;">self</span>.assertEqual<span style="color: #3a81c3;">(</span>cache<span style="color: #6c3163;">[</span>1<span style="color: #6c3163;">]</span>, user<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org2af6a98" class="outline-4">
+<h4 id="org2af6a98"><span class="section-number-4">6.2.2</span> Patching</h4>
+<div class="outline-text-4" id="text-6-2-2">
+<p>
+Patching is especially useful when one need a mock, but can't pass it as a parameter of the function to be tested.
+</p>
+<ul class="org-ul">
+<li>When an object is hard to mock, it sometimes shows a <b>limitation in the design</b>: a coupling that is too tight</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">with</span> asynctest.patch<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"logging.debug"</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> debug_mock:
+    <span style="color: #3a81c3; font-weight: bold;">await</span> cache_users_async<span style="color: #3a81c3;">(</span>client, cache<span style="color: #3a81c3;">)</span>
+debug_mock.assert_called<span style="color: #3a81c3;">()</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">or</span>
+<span style="color: #ba2f59; font-weight: bold;">@asynctest.patch</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"logging.error"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #ba2f59; font-weight: bold;">@asynctest.patch</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"logging.debug"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">test_with_decorator</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, debug_mock, error_mock<span style="color: #3a81c3;">)</span>:
+    ...
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

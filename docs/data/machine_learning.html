@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Machine Learning</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="machine learning" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+	displayAlign: "left",
+	displayIndent: "2em",
+
+	"HTML-CSS": { scale: 100,
+			linebreaks: { automatic: "false" },
+			webFont: "TeX"
+		       },
+	SVG: {scale: 100,
+	      linebreaks: { automatic: "false" },
+	      font: "TeX"},
+	NativeMML: {scale: 100},
+	TeX: { equationNumbers: {autoNumber: "AMS"},
+	       MultLineWidth: "85%",
+	       TagSide: "left",
+	       TagIndent: ".8em"
+	     }
+});
+</script>
+<script type="text/javascript"
+	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Machine Learning</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1d174eb">1. Definition</a></li>
+<li><a href="#orga209732">2. Roadmap</a></li>
+<li><a href="#org4bf1e69">3. Supervised</a>
+<ul>
+<li><a href="#org14f5b2f">3.1. Regression problem</a>
+<ul>
+<li><a href="#orga89f49b">3.1.1. Linear Regression</a></li>
+<li><a href="#org5618202">3.1.2. Polynomial Regression</a></li>
+<li><a href="#orga39f434">3.1.3. Gradient Descent</a></li>
+<li><a href="#org6f58867">3.1.4. Normal Equation</a></li>
+</ul>
+</li>
+<li><a href="#orgd95ecef">3.2. Classification problem</a>
+<ul>
+<li><a href="#org96873b1">3.2.1. Logistic Regression</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org63d4947">4. Unsupervised</a>
+<ul>
+<li><a href="#org220a8a3">4.1. Clustering problem</a>
+<ul>
+<li><a href="#org848b638">4.1.1. Examples</a></li>
+</ul>
+</li>
+<li><a href="#orgab9e0df">4.2. Non-clustering problem</a>
+<ul>
+<li><a href="#org6c40621">4.2.1. Cocktail party algorithm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1d174eb" class="outline-2">
+<h2 id="org1d174eb"><span class="section-number-2">1</span> Definition</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+A computer program is said to learn from experience <b>E</b> with respect to some task <b>T</b>
+and some performance measure <b>P</b>, if its performance on <b>T</b>, as measured by <b>P</b>, impoves
+with experience <b>E</b> &#x2013; Tom Mitchell(1998)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga209732" class="outline-2">
+<h2 id="orga209732"><span class="section-number-2">2</span> Roadmap</h2>
+<div class="outline-text-2" id="text-2">
+
+<div class="figure">
+<p><img src="../resources/ml/roadmap.png" alt="roadmap.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4bf1e69" class="outline-2">
+<h2 id="org4bf1e69"><span class="section-number-2">3</span> Supervised</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Teach the computer how to do something
+</p>
+<ul class="org-ul">
+<li>"right answers" given</li>
+</ul>
+</div>
+
+<div id="outline-container-org14f5b2f" class="outline-3">
+<h3 id="org14f5b2f"><span class="section-number-3">3.1</span> Regression problem</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+predict continuous valued output
+</p>
+</div>
+<div id="outline-container-orga89f49b" class="outline-4">
+<h4 id="orga89f49b"><span class="section-number-4">3.1.1</span> Linear Regression</h4>
+<div class="outline-text-4" id="text-3-1-1">
+</div>
+<div id="outline-container-org4b695de" class="outline-5">
+<h5 id="org4b695de">Hypothesis</h5>
+<div class="outline-text-5" id="text-org4b695de">
+<p>
+\[h_\theta(x_0, x_1, \dots)=\theta_0 x_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta_n x_n (x_0 = 1)\]
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orgb9fe085"></a>vectorized<br />
+<div class="outline-text-6" id="text-orgb9fe085">
+<p>
+\[h_\theta(x)=\theta^T \cdot x\]
+</p>
+<ul class="org-ul">
+<li>\(\theta\) and \(x\) are \(n\times 1\) matrices or \(n\) vectors</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org932294f" class="outline-5">
+<h5 id="org932294f">Cost Function</h5>
+<div class="outline-text-5" id="text-org932294f">
+<p>
+Called <b>Squared error function</b> or <b>Mean squared error</b>
+\[J(\theta_0, \theta_1)=\frac{1}{2m}\sum_{i=1}^m(\hat{y^i}-y^i)^2=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x^i)-y^i)^2\]
+</p>
+<ul class="org-ul">
+<li>Goal: minimize \(J(\theta_0, \theta_1)\)</li>
+<li>\(\frac{1}{2}\) is a convenience for the computation of the gradient descent,</li>
+</ul>
+<p>
+as the derivative term of the square function will cancel out the \(\frac{1}{2}\) term.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orge704ca5"></a>vectorized<br />
+<div class="outline-text-6" id="text-orge704ca5">
+<p>
+\[J(\theta)=\frac{1}{2m}\sum_{i=1}^m(h_\theta(x^i)-y^i)^2=\frac{1}{2m}\sum_{i=1}^m (\theta^T x^i-y^i)^2=\frac{1}{2m}(\theta^T x-y)^2\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5618202" class="outline-4">
+<h4 id="org5618202"><span class="section-number-4">3.1.2</span> Polynomial Regression</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<ul class="org-ul">
+<li>Let \(x_1=x, x_2=x^2\)
+\[h_\theta(x)=\theta_0+\theta_1 x_1+\theta_2 x_2\]</li>
+<li>need to use feature scaling</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga39f434" class="outline-4">
+<h4 id="orga39f434"><span class="section-number-4">3.1.3</span> Gradient Descent</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<p>
+To find the minimum value of the cost function.
+</p>
+<ol class="org-ol">
+<li>Start with some parameters \(\theta_0, \theta_1, \dots\)</li>
+<li>Keep changing parameters to reduce \(J(\theta_0, \theta_1, \dots)\)</li>
+</ol>
+</div>
+<div id="outline-container-org59f882b" class="outline-5">
+<h5 id="org59f882b">idea</h5>
+<div class="outline-text-5" id="text-org59f882b">
+<p>
+repeat until convergence
+\[\theta_j=\theta_j-\alpha\frac{d}{d\theta_j}J(\theta_0, \theta_1, \dots)\]
+</p>
+<ul class="org-ul">
+<li>\(\alpha\) too smaller: gradient descent can be slow</li>
+<li>\(\alpha\) too large: gradient descent can overshoot the minimum</li>
+<li>Solve equation:
+\[\theta_0 = \theta_0-\alpha\frac{1}{m}\sum_{i=1}^m(h_\theta(x^i)-y^i)\]
+\[\theta_1 = \theta_1-\alpha\frac{1}{m}\sum_{i=1}^m((h_\theta(x^i)-y^i)x^i)\]</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="orgdd8e0f3"></a>vectorized<br />
+<div class="outline-text-6" id="text-orgdd8e0f3">
+<p>
+repeat until convergence
+\[\begin{align*}
+      \theta_j & = \theta_j-\alpha\frac{d}{d\theta_j}J(\theta) \\
+      & = \theta_j-\alpha\frac{1}{m}\sum_{i=1}^m(\theta^T x^i - y^i)x_j^i
+      \end{align*}\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org578b4ef" class="outline-5">
+<h5 id="org578b4ef">Batch Gradient Descent</h5>
+<div class="outline-text-5" id="text-org578b4ef">
+<p>
+Each step of gradient descent uses all the training examples.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9a606fe" class="outline-5">
+<h5 id="org9a606fe">Other Method to find min value of the cost function</h5>
+<div class="outline-text-5" id="text-org9a606fe">
+<p>
+Normal Equations Method
+</p>
+<ul class="org-ul">
+<li>Gradient Descent scales better to large data sets</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org436867e" class="outline-5">
+<h5 id="org436867e">Feature Scaling</h5>
+<div class="outline-text-5" id="text-org436867e">
+<ul class="org-ul">
+<li>mean normalization
+\[\frac{x_i - \mu}{range}\]
+range could be replaced with std</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5f1c91a" class="outline-5">
+<h5 id="org5f1c91a">Learning Rate</h5>
+<div class="outline-text-5" id="text-org5f1c91a">
+<ul class="org-ul">
+<li><b>Debugging gradient descent</b>: Plot cost function with number of iterations on the x-axis</li>
+<li><b>Automatic convergence test</b>: Declare convergence if \(J(θ)\) decreases by less than \(E\)(some small value, e.g. \(10^{-3}\)) in one iteration</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6f58867" class="outline-4">
+<h4 id="org6f58867"><span class="section-number-4">3.1.4</span> Normal Equation</h4>
+<div class="outline-text-4" id="text-3-1-4">
+<p>
+Minimize J by taking its derivatives with respect to \(\theta_j\), and set them to zero.
+\[\theta=(X^T X)^{-1}X^T y\]
+</p>
+</div>
+<div id="outline-container-orgce12c3c" class="outline-5">
+<h5 id="orgce12c3c">vs Gradient Descent</h5>
+<div class="outline-text-5" id="text-orgce12c3c">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Gradient Descent</th>
+<th scope="col" class="org-left">Normal Equation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Need to choose \(\alpha\)</td>
+<td class="org-left">No need to choose \(\alpha\)</td>
+</tr>
+
+<tr>
+<td class="org-left">Needs many iterations</td>
+<td class="org-left">No need to iterate</td>
+</tr>
+
+<tr>
+<td class="org-left">\(O(k n^2)\)</td>
+<td class="org-left">\(O(n^3)\) to calculate \((X^T X)^{-1}\)</td>
+</tr>
+
+<tr>
+<td class="org-left">Works well when n is large</td>
+<td class="org-left">Slow if \(n\) is large. \(n > 10000\)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org469bb9a" class="outline-5">
+<h5 id="org469bb9a">\((X^T X)^{-1}\) is noninvertible</h5>
+<div class="outline-text-5" id="text-org469bb9a">
+<ul class="org-ul">
+<li>Redundant features (they are linearly dependent)</li>
+<li>Too many features \(m\le n\), In this case, delete some features or use regularization</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgd95ecef" class="outline-3">
+<h3 id="orgd95ecef"><span class="section-number-3">3.2</span> Classification problem</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+predict discrete valued output
+</p>
+</div>
+<div id="outline-container-org96873b1" class="outline-4">
+<h4 id="org96873b1"><span class="section-number-4">3.2.1</span> Logistic Regression</h4>
+<div class="outline-text-4" id="text-3-2-1">
+</div>
+<div id="outline-container-org79baf2e" class="outline-5">
+<h5 id="org79baf2e">Hypothesis</h5>
+<div class="outline-text-5" id="text-org79baf2e">
+<ul class="org-ul">
+<li>Logistic(Sigmoid) function</li>
+</ul>
+<p>
+\[h_\theta(x)=g(\theta^T x)\]
+where
+\[g(z)=\frac{1}{1+e^{-z}}\]
+</p>
+
+<div class="figure">
+<p><img src="../resources/ml/LogisticFunc.png" alt="LogisticFunc.png" />
+</p>
+</div>
+
+<p>
+combine together:
+\[h_\theta(x)=\frac{1}{1+e^{-\theta^T x}}\]
+</p>
+
+<ul class="org-ul">
+<li>\(y=1\) if \(g(z)\ge 0.5\) -&gt; \(z\ge 0\)</li>
+<li>\(y=0\) if \(g(z) < 0.5\) -&gt; \(z < 0\)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga7df4a6" class="outline-5">
+<h5 id="orga7df4a6">Cost Function</h5>
+<div class="outline-text-5" id="text-orga7df4a6">
+<p>
+\[Cost(h_\theta(x), y)=
+\begin{cases}
+-\log(h_\theta(x)),  & \mbox{if }y=1 \\
+-\log(1-h_\theta(x)), & \mbox{if }y=0
+\end{cases}\]
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org63d4947" class="outline-2">
+<h2 id="org63d4947"><span class="section-number-2">4</span> Unsupervised</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Let computer learn by itself
+</p>
+</div>
+
+<div id="outline-container-org220a8a3" class="outline-3">
+<h3 id="org220a8a3"><span class="section-number-3">4.1</span> Clustering problem</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-org848b638" class="outline-4">
+<h4 id="org848b638"><span class="section-number-4">4.1.1</span> Examples</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<ul class="org-ul">
+<li>Social network analysis</li>
+<li>Market segmentation(categorize customers)</li>
+<li>Astronomical data analysis</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgab9e0df" class="outline-3">
+<h3 id="orgab9e0df"><span class="section-number-3">4.2</span> Non-clustering problem</h3>
+<div class="outline-text-3" id="text-4-2">
+</div>
+<div id="outline-container-org6c40621" class="outline-4">
+<h4 id="org6c40621"><span class="section-number-4">4.2.1</span> Cocktail party algorithm</h4>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

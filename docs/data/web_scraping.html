@@ -1,0 +1,918 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Web Scraping</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="data analysis, python, scraping" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Web Scraping</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org10f528e">1. Background Research</a>
+<ul>
+<li><a href="#org8e15538">1.1. Identifying the technology</a></li>
+</ul>
+</li>
+<li><a href="#orge51610e">2. urllib</a>
+<ul>
+<li><a href="#org91d56d9">2.1. setting a user agent</a></li>
+<li><a href="#org0e48502">2.2. urlparse</a></li>
+<li><a href="#org020dc1a">2.3. urljoin</a></li>
+<li><a href="#org0a2d4be">2.4. robots.txt parser</a></li>
+<li><a href="#orgb62de7a">2.5. Supporting proxies</a></li>
+<li><a href="#org2b4f785">2.6. Avoiding spider traps</a></li>
+<li><a href="#org19c234b">2.7. full feature code</a></li>
+</ul>
+</li>
+<li><a href="#org6523220">3. Requests</a>
+<ul>
+<li><a href="#org9c37071">3.1. Basic use</a></li>
+<li><a href="#org35b9041">3.2. cookies</a></li>
+<li><a href="#orgdc8144d">3.3. Session</a></li>
+</ul>
+</li>
+<li><a href="#org60366bb">4. Parsing Tools</a></li>
+<li><a href="#orga23f148">5. Scrapy</a>
+<ul>
+<li><a href="#org6d10dfb">5.1. Commands</a></li>
+<li><a href="#org893e5b4">5.2. Spider Example</a></li>
+<li><a href="#org3803bc7">5.3. Feed Export</a></li>
+<li><a href="#orgb43fda3">5.4. Settings</a></li>
+<li><a href="#org19e7364">5.5. Deploy(Scrapyd)</a></li>
+</ul>
+</li>
+<li><a href="#orgeab7af3">6. Selenium</a>
+<ul>
+<li><a href="#orgf67fd79">6.1. Waiting until fully loaded</a></li>
+<li><a href="#org1f01e12">6.2. Selectors</a></li>
+<li><a href="#org2b1e2d3">6.3. Handling Redirects</a></li>
+</ul>
+</li>
+<li><a href="#org33da3e1">7. Avoiding Scraping Traps</a>
+<ul>
+<li><a href="#orgc558296">7.1. Adjust Youer Headers</a></li>
+<li><a href="#org4520e48">7.2. Handling Cookies</a></li>
+<li><a href="#org77534fd">7.3. Timing is Everything</a></li>
+<li><a href="#orga9ef80b">7.4. Hidden Input Field Values(or hidden by CSS)</a></li>
+</ul>
+</li>
+<li><a href="#orgf018c28">8. Scaping Rule Checklist</a></li>
+<li><a href="#orgf3bb51c">9. Tor</a>
+<ul>
+<li><a href="#org3acaf7c">9.1. PySocks</a></li>
+<li><a href="#org734dff5">9.2. polipo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org10f528e" class="outline-2">
+<h2 id="org10f528e"><span class="section-number-2">1</span> Background Research</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>robots.txt</li>
+<li>sitemap</li>
+<li>Google search: site:xxx.com:</li>
+</ul>
+</div>
+<div id="outline-container-org8e15538" class="outline-3">
+<h3 id="org8e15538"><span class="section-number-3">1.1</span> Identifying the technology</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-orgd4a97e6" class="outline-4">
+<h4 id="orgd4a97e6"><span class="section-number-4">1.1.1</span> detectem</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<div class="org-src-container">
+<pre class="src src-shell">docker pull scrapinghub/splash
+pip install detectem
+
+det http://example.webscraping.com
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb3dec56" class="outline-4">
+<h4 id="orgb3dec56"><span class="section-number-4">1.1.2</span> wappalyzer</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<div class="org-src-container">
+<pre class="src src-shell">docker pull wappalyzer/cli
+docker run wappalyzer/cli http://example.webscraping.com
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd99622d" class="outline-4">
+<h4 id="orgd99622d"><span class="section-number-4">1.1.3</span> whois</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<div class="org-src-container">
+<pre class="src src-shell">pip install python-whois
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> whois <span style="color: #3a81c3; font-weight: bold;">import</span> whois
+whois<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"xxx.com"</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orge51610e" class="outline-2">
+<h2 id="orge51610e"><span class="section-number-2">2</span> urllib</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-python">urllib.request.urlopen<span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>.read<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-org91d56d9" class="outline-3">
+<h3 id="org91d56d9"><span class="section-number-3">2.1</span> setting a user agent</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">request</span> = urllib.request.Request<span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>
+request.add_header<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'User-agent'</span>, user_agent<span style="color: #3a81c3;">)</span>
+urllib.request.urlopen<span style="color: #3a81c3;">(</span>request<span style="color: #3a81c3;">)</span>.read<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org0e48502" class="outline-3">
+<h3 id="org0e48502"><span class="section-number-3">2.2</span> urlparse</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> urllib.parse <span style="color: #3a81c3; font-weight: bold;">import</span> urlparse
+urlparse<span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>.netloc
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org020dc1a" class="outline-3">
+<h3 id="org020dc1a"><span class="section-number-3">2.3</span> urljoin</h3>
+<div class="outline-text-3" id="text-2-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> urllib.parse <span style="color: #3a81c3; font-weight: bold;">import</span> urljoin
+<span style="color: #715ab1;">abs_link</span> = urljoin<span style="color: #3a81c3;">(</span>start_url, link<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org0a2d4be" class="outline-3">
+<h3 id="org0a2d4be"><span class="section-number-3">2.4</span> robots.txt parser</h3>
+<div class="outline-text-3" id="text-2-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> urllib <span style="color: #3a81c3; font-weight: bold;">import</span> robotparser
+<span style="color: #715ab1;">rp</span> = robotparser.RobotFileParser<span style="color: #3a81c3;">(</span>robots_url<span style="color: #3a81c3;">)</span>
+rp.read<span style="color: #3a81c3;">()</span>
+rp.can_fetch<span style="color: #3a81c3;">(</span>useragent, url<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+useful function
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">get_robots_parser</span><span style="color: #3a81c3;">(</span>robots_url<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">" Return the robots parser object using the robots_url "</span>
+    <span style="color: #715ab1;">rp</span> = robotparser.RobotFileParser<span style="color: #3a81c3;">()</span>
+    rp.set_url<span style="color: #3a81c3;">(</span>robots_url<span style="color: #3a81c3;">)</span>
+    rp.read<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> rp
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb62de7a" class="outline-3">
+<h3 id="orgb62de7a"><span class="section-number-3">2.5</span> Supporting proxies</h3>
+<div class="outline-text-3" id="text-2-5">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">proxy</span> = <span style="color: #2d9574;">'http://myproxy.net:1234'</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">example string</span>
+<span style="color: #715ab1;">proxy_handler</span> = urllib.request.ProxyHandler<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'http'</span>: proxy<span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">opener</span> = urllib.request.build_opener<span style="color: #3a81c3;">(</span>proxy_handler<span style="color: #3a81c3;">)</span>
+urllib.request.install_opener<span style="color: #3a81c3;">(</span>opener<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">now requests via urllib.request will be handled via proxy</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2b4f785" class="outline-3">
+<h3 id="org2b4f785"><span class="section-number-3">2.6</span> Avoiding spider traps</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+use <b>depth</b>. when a maximum depth is reached, the crawler does
+not add links from that web page to the queue.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org19c234b" class="outline-3">
+<h3 id="org19c234b"><span class="section-number-3">2.7</span> full feature code</h3>
+<div class="outline-text-3" id="text-2-7">
+<p>
+<a href="https://github.com/kjam/wswp/blob/master/code/chp1/advanced_link_crawler.py">advanced_link_crawler.py</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6523220" class="outline-2">
+<h2 id="org6523220"><span class="section-number-2">3</span> Requests</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org9c37071" class="outline-3">
+<h3 id="org9c37071"><span class="section-number-3">3.1</span> Basic use</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> requests
+<span style="color: #715ab1;">params</span> = <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">'firstname'</span>: <span style="color: #2d9574;">'Ryan'</span>, <span style="color: #2d9574;">'lastname'</span>: <span style="color: #2d9574;">'Mitchell'</span><span style="color: #3a81c3;">}</span>
+<span style="color: #715ab1;">r</span> = requests.post<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"http://pythonscraping.com/files/processing.php"</span>, data=params<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>r.text<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org35b9041" class="outline-3">
+<h3 id="org35b9041"><span class="section-number-3">3.2</span> cookies</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> requests
+<span style="color: #715ab1;">params</span> = <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">'username'</span>: <span style="color: #2d9574;">'Ryan'</span>, <span style="color: #2d9574;">'password'</span>: <span style="color: #2d9574;">'password'</span><span style="color: #3a81c3;">}</span>
+<span style="color: #715ab1;">r</span> = requests.post<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"http://pythonscraping.com/pages/cookies/welcome.php"</span>, params<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>r.cookies.get_dict<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">r</span> = requests.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"http://pythonscraping.com/pages/cookies/profile.php"</span>, cookies=r.cookies<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>r.text<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc8144d" class="outline-3">
+<h3 id="orgdc8144d"><span class="section-number-3">3.3</span> Session</h3>
+<div class="outline-text-3" id="text-3-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">session</span> = requests.Session<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">params</span> = <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">'username'</span>: <span style="color: #2d9574;">'username'</span>, <span style="color: #2d9574;">'password'</span>: <span style="color: #2d9574;">'password'</span><span style="color: #3a81c3;">}</span>
+<span style="color: #715ab1;">s</span> = session.post<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"http://pythonscraping.com/pages/cookies/welcome.php"</span>, params<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>s.cookies.get_dict<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">s</span> = session.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"http://pythonscraping.com/pages/cookies/profile.php"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>s.text<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org60366bb" class="outline-2">
+<h2 id="org60366bb"><span class="section-number-2">4</span> Parsing Tools</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>BeautifulSoup</li>
+<li>lxml: fast</li>
+<li>HTML Parser: built-in</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga23f148" class="outline-2">
+<h2 id="orga23f148"><span class="section-number-2">5</span> Scrapy</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+docs: <a href="https://docs.scrapy.org/en/latest/index.html">https://docs.scrapy.org/en/latest/index.html</a>
+</p>
+<pre class="example">
+	├── scrapy.cfg # deploy configuration file
+	└── myproject # import your code from here
+	    ├── __init__.py
+	    ├── items.py: # each scrapy item object represents a single page on the website
+	    ├── middlewares.py
+	    ├── pipelines.py
+	    ├── settings.py
+	    └── spiders
+		├── spider1.py
+		├── spider2.py
+		└── __init__.py
+</pre>
+</div>
+<div id="outline-container-org6d10dfb" class="outline-3">
+<h3 id="org6d10dfb"><span class="section-number-3">5.1</span> Commands</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+see: <a href="https://docs.scrapy.org/en/latest/topics/commands.html">https://docs.scrapy.org/en/latest/topics/commands.html</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org893e5b4" class="outline-3">
+<h3 id="org893e5b4"><span class="section-number-3">5.2</span> Spider Example</h3>
+<div class="outline-text-3" id="text-5-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> scrapy
+
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">QuotesSpider</span><span style="color: #3a81c3;">(</span>scrapy.Spider<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">name</span> = <span style="color: #2d9574;">"quotes"</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">start_urls = [</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">'http://quotes.toscrape.com/page/1/',</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">'http://quotes.toscrape.com/page/2/',</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">]</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">start_urls attribute is a shortcut to the start_requests method</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">start_requests</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
+	<span style="color: #715ab1;">urls</span> = <span style="color: #3a81c3;">[</span>
+	    <span style="color: #2d9574;">'http://quotes.toscrape.com/page/1/'</span>,
+	    <span style="color: #2d9574;">'http://quotes.toscrape.com/page/2/'</span>,
+	<span style="color: #3a81c3;">]</span>
+	<span style="color: #3a81c3; font-weight: bold;">for</span> url <span style="color: #3a81c3; font-weight: bold;">in</span> urls:
+	    <span style="color: #3a81c3; font-weight: bold;">yield</span> scrapy.Request<span style="color: #3a81c3;">(</span>url=url, callback=<span style="color: #3a81c3; font-weight: bold;">self</span>.parse<span style="color: #3a81c3;">)</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">parse</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, response<span style="color: #3a81c3;">)</span>: <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">response is a TextResponse object</span>
+	<span style="color: #715ab1;">page</span> = response.url.split<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"/"</span><span style="color: #3a81c3;">)[</span>-2<span style="color: #3a81c3;">]</span>
+	<span style="color: #715ab1;">filename</span> = <span style="color: #2d9574;">'quotes-%s.html'</span> % page
+	<span style="color: #3a81c3; font-weight: bold;">with</span> <span style="color: #3a81c3;">open</span><span style="color: #3a81c3;">(</span>filename, <span style="color: #2d9574;">'wb'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> f:
+	    f.write<span style="color: #3a81c3;">(</span>response.body<span style="color: #3a81c3;">)</span>
+	<span style="color: #3a81c3; font-weight: bold;">self</span>.log<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Saved file %s'</span> % filename<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-org76fc5b4" class="outline-4">
+<h4 id="org76fc5b4"><span class="section-number-4">5.2.1</span> Interactive Shell</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<div class="org-src-container">
+<pre class="src src-shell">scrapy shell <span style="color: #2d9574;">'url'</span>
+</pre>
+</div>
+</div>
+<div id="outline-container-org8f9c0dd" class="outline-5">
+<h5 id="org8f9c0dd">inspection with spider</h5>
+<div class="outline-text-5" id="text-org8f9c0dd">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">parse</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, response<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">from</span> scrapy.shell <span style="color: #3a81c3; font-weight: bold;">import</span> inspect_response
+    inspect_response<span style="color: #3a81c3;">(</span>response, <span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf002ed9" class="outline-4">
+<h4 id="orgf002ed9"><span class="section-number-4">5.2.2</span> CSS selector</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<div class="org-src-container">
+<pre class="src src-python">response.css<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'title'</span><span style="color: #3a81c3;">)</span>.extract<span style="color: #3a81c3;">()</span>
+response.css<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'title::text'</span><span style="color: #3a81c3;">)</span>.extract_first<span style="color: #3a81c3;">()</span>
+response.css<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'title::text'</span><span style="color: #3a81c3;">)[</span>0<span style="color: #3a81c3;">]</span>.extract<span style="color: #3a81c3;">()</span>
+response.css<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'title::text'</span><span style="color: #3a81c3;">)</span>.re<span style="color: #3a81c3;">(</span>r<span style="color: #2d9574;">'Q\w+'</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org11fa111" class="outline-4">
+<h4 id="org11fa111"><span class="section-number-4">5.2.3</span> XPath selector</h4>
+<div class="outline-text-4" id="text-5-2-3">
+<div class="org-src-container">
+<pre class="src src-python">response.xpath<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'//title'</span><span style="color: #3a81c3;">)</span>
+response.xpath<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'//title/text()'</span><span style="color: #3a81c3;">)</span>.extract_first<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org109c322" class="outline-4">
+<h4 id="org109c322"><span class="section-number-4">5.2.4</span> Following links</h4>
+<div class="outline-text-4" id="text-5-2-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">next_page</span> = response.css<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'li.next a::attr(href)'</span><span style="color: #3a81c3;">)</span>.extract_first<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">if</span> next_page <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #4e3163;">None</span>:
+    <span style="color: #715ab1;">next_page</span> = response.urljoin<span style="color: #3a81c3;">(</span>next_page<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> scrapy.Request<span style="color: #3a81c3;">(</span>next_page, callback=<span style="color: #3a81c3; font-weight: bold;">self</span>.parse<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+shortcut:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">next_page</span> = response.css<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'li.next a::attr(href)'</span><span style="color: #3a81c3;">)</span>.extract_first<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">if</span> next_page <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #4e3163;">None</span>:
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> response.follow<span style="color: #3a81c3;">(</span>next_page, callback=<span style="color: #3a81c3; font-weight: bold;">self</span>.parse<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">supports relative URLs directly</span>
+</pre>
+</div>
+<p>
+simpler version:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">for</span> href <span style="color: #3a81c3; font-weight: bold;">in</span> response.css<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'li.next a::attr(href)'</span><span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> response.follow<span style="color: #3a81c3;">(</span>href, callback=<span style="color: #3a81c3; font-weight: bold;">self</span>.parse<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+simplest version:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">for</span> a <span style="color: #3a81c3; font-weight: bold;">in</span> response.css<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'li.next a'</span><span style="color: #3a81c3;">)</span>: <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">for a elements, css method uses their href attribute automatically</span>
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> response.follow<span style="color: #3a81c3;">(</span>a, callback=<span style="color: #3a81c3; font-weight: bold;">self</span>.parse<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3803bc7" class="outline-3">
+<h3 id="org3803bc7"><span class="section-number-3">5.3</span> Feed Export</h3>
+<div class="outline-text-3" id="text-5-3">
+<div class="org-src-container">
+<pre class="src src-shell">scrapy crawl spider_name -o some_items.csv -t csv
+scrapy crawl spider_name -o some_items.json -t json
+scrapy crawl spider_name -o some_items.xml -t xml
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb43fda3" class="outline-3">
+<h3 id="orgb43fda3"><span class="section-number-3">5.4</span> Settings</h3>
+<div class="outline-text-3" id="text-5-4">
+</div>
+<div id="outline-container-org8d6da26" class="outline-5">
+<h5 id="org8d6da26">Command Line(most precedence)</h5>
+<div class="outline-text-5" id="text-org8d6da26">
+<div class="org-src-container">
+<pre class="src src-shell">scrapy crawl myspider -s <span style="color: #715ab1;">LOG_FILE</span>=scrapy.log
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfbeb257" class="outline-5">
+<h5 id="orgfbeb257">Settings per-spider</h5>
+<div class="outline-text-5" id="text-orgfbeb257">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">MySpider</span><span style="color: #3a81c3;">(</span>scrapy.Spider<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">name</span> = <span style="color: #2d9574;">'myspider'</span>
+
+    <span style="color: #715ab1;">custom_settings</span> = <span style="color: #3a81c3;">{</span>
+	<span style="color: #2d9574;">'SOME_SETTING'</span>: <span style="color: #2d9574;">'some value'</span>,
+    <span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org87ba452" class="outline-5">
+<h5 id="org87ba452">Project settings module</h5>
+<div class="outline-text-5" id="text-org87ba452">
+<p>
+settings.py in project root
+</p>
+</div>
+</div>
+<div id="outline-container-org4501a35" class="outline-5">
+<h5 id="org4501a35">Default settings per-command</h5>
+<div class="outline-text-5" id="text-org4501a35">
+<p>
+<code>default_settings</code> attribute of the command class.
+</p>
+</div>
+</div>
+<div id="outline-container-org0f21a60" class="outline-5">
+<h5 id="org0f21a60">Default global settings(less precedence)</h5>
+<div class="outline-text-5" id="text-org0f21a60">
+<p>
+<code>scrapy.settings.default_settings</code>
+</p>
+</div>
+</div>
+<div id="outline-container-org860094a" class="outline-5">
+<h5 id="org860094a">Access settings</h5>
+<div class="outline-text-5" id="text-org860094a">
+<p>
+In a spider, the settings are available through self.settings
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfd7d02b" class="outline-5">
+<h5 id="orgfd7d02b">Useful settings</h5>
+<div class="outline-text-5" id="text-orgfd7d02b">
+<ul class="org-ul">
+<li>DOWNLOAD_DELAY</li>
+<li>ROBOTSTXT_OBEY</li>
+<li>USER_AGENT</li>
+<li>DEFAULT_REQUEST_HEADERS</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org19e7364" class="outline-3">
+<h3 id="org19e7364"><span class="section-number-3">5.5</span> Deploy(Scrapyd)</h3>
+</div>
+</div>
+
+<div id="outline-container-orgeab7af3" class="outline-2">
+<h2 id="orgeab7af3"><span class="section-number-2">6</span> Selenium</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+often using with non-GUI engine PhantomJS
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">driver</span> = webdriver.PhantomJS<span style="color: #3a81c3;">(</span>executable_path=<span style="color: #2d9574;">''</span><span style="color: #3a81c3;">)</span>
+driver.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"http://pythonscraping.com/pages/javascript/ajaxDemo.html"</span><span style="color: #3a81c3;">)</span>
+time.sleep<span style="color: #3a81c3;">(</span>3<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>driver.find_element_by_id<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"content"</span><span style="color: #6c3163;">)</span>.text<span style="color: #3a81c3;">)</span>
+driver.close<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgf67fd79" class="outline-3">
+<h3 id="orgf67fd79"><span class="section-number-3">6.1</span> Waiting until fully loaded</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> selenium.webdriver.common.by <span style="color: #3a81c3; font-weight: bold;">import</span> By
+<span style="color: #3a81c3; font-weight: bold;">from</span> selenium.webdriver.support.ui <span style="color: #3a81c3; font-weight: bold;">import</span> WebDriverWait
+<span style="color: #3a81c3; font-weight: bold;">from</span> selenium.webdriver.support <span style="color: #3a81c3; font-weight: bold;">import</span> expected_conditions <span style="color: #3a81c3; font-weight: bold;">as</span> EC
+<span style="color: #715ab1;">driver</span> = webdriver.PhantomJS<span style="color: #3a81c3;">(</span>executable_path=<span style="color: #2d9574;">''</span><span style="color: #3a81c3;">)</span>
+driver.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"http://pythonscraping.com/pages/javascript/ajaxDemo.html"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">try</span>:
+    <span style="color: #715ab1;">element</span> = WebDriverWait<span style="color: #3a81c3;">(</span>driver, 10<span style="color: #3a81c3;">)</span>.until<span style="color: #3a81c3;">(</span>
+	EC.presence_of_element_located<span style="color: #6c3163;">(</span><span style="color: #2d9574;">(</span>By.ID, <span style="color: #2d9574;">"loadedButton"</span><span style="color: #2d9574;">)</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">finally</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>driver.find_element_by_id<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"content"</span><span style="color: #6c3163;">)</span>.text<span style="color: #3a81c3;">)</span>
+    driver.close<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f01e12" class="outline-3">
+<h3 id="org1f01e12"><span class="section-number-3">6.2</span> Selectors</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+The following locator selection strategies can used with the By object:
+</p>
+<ul class="org-ul">
+<li>ID: Used in the example; finds elements by their HTML id attribute.</li>
+<li>CLASS_NAME</li>
+</ul>
+
+<p>
+Used to find elements by their HTML class attribute. Why is this function CLASS_NAME: and not simply CLASS?
+Using the form object.CLASS would create problems for Selenium’s Java library, where .class is a reserved method.
+In order to keep the Selenium syntax consistent between different languages, CLASS_NAME was used instead.
+</p>
+
+<ul class="org-ul">
+<li>CSS_SELECTOR</li>
+</ul>
+
+<p>
+Find elements by their class, id, or tag name, using the #idName, .className, tagName convention.
+</p>
+
+<ul class="org-ul">
+<li>LINK_TEXT</li>
+</ul>
+
+<p>
+Finds HTML &lt;a&gt; tags by the text they contain. For example, a link that says
+“Next” can be selected using (By.LINK_TEXT, "Next").
+</p>
+
+<ul class="org-ul">
+<li>PARTIAL_LINK_TEXT: Similar to LINK_TEXT , but matches on a partial string.</li>
+<li>NAME: Finds HTML tags by their name attribute. This is handy for HTML forms.</li>
+<li>TAG_NAME: Finds HTML tags by their tag name.</li>
+<li>XPATH: Uses an XPath expression (the syntax of which is described in the upcoming sidebar) to select matching elements.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2b1e2d3" class="outline-3">
+<h3 id="org2b1e2d3"><span class="section-number-3">6.3</span> Handling Redirects</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+We can detect that redirect in a clever way by “watching” an element in the DOM
+when the page initially loads, then repeatedly calling that element until Selenium
+throws a StaleElementReferenceException; that is, the element is no longer
+attached to the page's DOM and the site has redirected:
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> selenium <span style="color: #3a81c3; font-weight: bold;">import</span> webdriver
+<span style="color: #3a81c3; font-weight: bold;">import</span> time
+<span style="color: #3a81c3; font-weight: bold;">from</span> selenium.webdriver.remote.webelement <span style="color: #3a81c3; font-weight: bold;">import</span> WebElement
+<span style="color: #3a81c3; font-weight: bold;">from</span> selenium.common.exceptions <span style="color: #3a81c3; font-weight: bold;">import</span> StaleElementReferenceException
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">waitForLoad</span><span style="color: #3a81c3;">(</span>driver<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">elem</span> = driver.find_element_by_tag_name<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"html"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">count</span> = 0
+    <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
+	<span style="color: #715ab1;">count</span> += 1
+	<span style="color: #3a81c3; font-weight: bold;">if</span> count &gt; 20:
+	    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"Timing out after 10 seconds and returning"</span><span style="color: #3a81c3;">)</span>
+	    <span style="color: #3a81c3; font-weight: bold;">return</span>
+    time.sleep<span style="color: #3a81c3;">(</span>.5<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">try</span>:
+	elem == driver.find_element_by_tag_name<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"html"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">except</span> StaleElementReferenceException:
+	<span style="color: #3a81c3; font-weight: bold;">return</span>
+<span style="color: #715ab1;">driver</span> = webdriver.PhantomJS<span style="color: #3a81c3;">(</span>executable_path=<span style="color: #2d9574;">'&lt;Path to Phantom JS&gt;'</span><span style="color: #3a81c3;">)</span>
+driver.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"http://pythonscraping.com/pages/javascript/redirectDemo1.html"</span><span style="color: #3a81c3;">)</span>
+waitForLoad<span style="color: #3a81c3;">(</span>driver<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>driver.page_source<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org33da3e1" class="outline-2">
+<h2 id="org33da3e1"><span class="section-number-2">7</span> Avoiding Scraping Traps</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgc558296" class="outline-3">
+<h3 id="orgc558296"><span class="section-number-3">7.1</span> Adjust Youer Headers</h3>
+<div class="outline-text-3" id="text-7-1">
+<pre class="example">
+User-Agent:Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X)
+AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257
+Safari/9537.53
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org4520e48" class="outline-3">
+<h3 id="org4520e48"><span class="section-number-3">7.2</span> Handling Cookies</h3>
+</div>
+<div id="outline-container-org77534fd" class="outline-3">
+<h3 id="org77534fd"><span class="section-number-3">7.3</span> Timing is Everything</h3>
+</div>
+<div id="outline-container-orga9ef80b" class="outline-3">
+<h3 id="orga9ef80b"><span class="section-number-3">7.4</span> Hidden Input Field Values(or hidden by CSS)</h3>
+</div>
+</div>
+
+
+<div id="outline-container-orgf018c28" class="outline-2">
+<h2 id="orgf018c28"><span class="section-number-2">8</span> Scaping Rule Checklist</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+If you keep getting blocked by websites and you don’t know why, here’s a checklist you can use to remedy the problem
+</p>
+
+<ul class="org-ul">
+<li>First, if the page you are receiving from the web server is blank, missing information, or is otherwise not what you expect (or have seen in your own browser), it is likely caused by JavaScript being executed on the site to create the page.</li>
+<li>If you are submitting a form or making a POST request to a website, check the page to make sure that everything the website is expecting you to submit is being submitted and in the correct format. Use a tool such as Chrome’s Network inspector to view an actual POST command sent to the site to make sure you’ve got everything.</li>
+<li>If you are trying to log into a site and can’t make the login “stick,” or the website is experiencing other strange “state” behavior, check your cookies. Make sure that cookies are being persisted correctly between each page load and that your cookies are sent to the site for every request.</li>
+<li>If you are getting HTTP errors from the client, especially 403 Forbidden errors, it might indicate that the website has identified your IP address as a bot and is unwilling to accept any more requests. You will need to either wait until your IP address is removed from the list, or obtain a new IP address. To make sure you don’t get blocked again, try the following:
+<ul class="org-ul">
+<li>Make sure that your scrapers aren’t moving through the site too quickly. Fast scraping is a bad practice that places a heavy burden on the web administrator’s servers, can land you in legal trouble, and is the number-one cause of scrapers getting blacklisted. Add delays to your scrapers and let them run overnight. Remember: Being in a rush to write programs or gather data is a sign of bad project management; plan ahead to avoid messes like this in the first place.</li>
+<li>The obvious one: change your headers! Some sites will block anything that advertises itself as a scraper. Copy your own browser’s headers if you’re unsure about what some reasonable header values are.</li>
+<li>Make sure you’re not clicking on or accessing anything that a human normally would not be able to</li>
+<li>If you find yourself jumping through a lot of difficult hoops to gain access, consider contacting the website administrator to let them know what you’re doing. Try emailing webmaster@&lt;domain name&gt; or admin@&lt;domain name&gt; for permission to use your scrapers. Admins are people, too!</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf3bb51c" class="outline-2">
+<h2 id="orgf3bb51c"><span class="section-number-2">9</span> Tor</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+<pre class="src src-shell">sudo apt-get install tor tor-geoipdb
+tor Socks5Proxy host:port <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">use sock5 proxy</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">test</span>
+sudo apt-get install torsocks
+torsocks curl <span style="color: #2d9574;">'https://api.ipify.org'</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">or http://icanhazip.com/</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org3acaf7c" class="outline-3">
+<h3 id="org3acaf7c"><span class="section-number-3">9.1</span> PySocks</h3>
+<div class="outline-text-3" id="text-9-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> socks
+<span style="color: #3a81c3; font-weight: bold;">import</span> socket
+<span style="color: #3a81c3; font-weight: bold;">from</span> urllib.request <span style="color: #3a81c3; font-weight: bold;">import</span> urlopen
+socks.set_default_proxy<span style="color: #3a81c3;">(</span>socks.SOCKS5, <span style="color: #2d9574;">"localhost"</span>, 9050<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">socket.socket</span> = socks.socksocket
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>urlopen<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'https://api.ipify.org'</span><span style="color: #6c3163;">)</span>.read<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org734dff5" class="outline-3">
+<h3 id="org734dff5"><span class="section-number-3">9.2</span> polipo</h3>
+<div class="outline-text-3" id="text-9-2">
+<p>
+http proxy wrapper
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">sudo apt-get install polipo
+</pre>
+</div>
+<p>
+add following config to <code>/etc/polipo/config</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-conf"><span style="color: #715ab1;">socksParentProxy</span> = <span style="color: #2d9574;">"localhost:1080"</span>
+<span style="color: #715ab1;">socksProxyType</span> = socks5
+</pre>
+</div>
+<p>
+default port: 8123
+</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

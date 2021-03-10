@@ -1,0 +1,1820 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Probability</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="math, probability" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+	displayAlign: "left",
+	displayIndent: "2em",
+
+	"HTML-CSS": { scale: 100,
+			linebreaks: { automatic: "false" },
+			webFont: "TeX"
+		       },
+	SVG: {scale: 100,
+	      linebreaks: { automatic: "false" },
+	      font: "TeX"},
+	NativeMML: {scale: 100},
+	TeX: { equationNumbers: {autoNumber: "AMS"},
+	       MultLineWidth: "85%",
+	       TagSide: "left",
+	       TagIndent: ".8em"
+	     }
+});
+</script>
+<script type="text/javascript"
+	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Probability</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9df8e02">1. Basic conceptions</a></li>
+<li><a href="#org4b07900">2. Conditional probabilities</a></li>
+<li><a href="#org471287b">3. Random Variables</a></li>
+<li><a href="#org2d4cc98">4. Counting</a></li>
+<li><a href="#org81aed20">5. Linear Transforms</a></li>
+<li><a href="#orga98acb8">6. Discrete distributions</a></li>
+<li><a href="#org0fe0d6b">7. Continuous distributions</a></li>
+<li><a href="#orge776772">8. Binomial Theorem</a></li>
+<li><a href="#org21a5d4d">9. Function of Random Variable</a></li>
+<li><a href="#orgb91c3e8">10. Conditional probability distributions</a></li>
+<li><a href="#org8681648">11. Joint probability distributions</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org9df8e02" class="outline-2">
+<h2 id="org9df8e02"><span class="section-number-2">1</span> Basic conceptions</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org2f3629b" class="outline-3">
+<h3 id="org2f3629b"><span class="section-number-3">1.1</span> Terms</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org6114b47" class="outline-4">
+<h4 id="org6114b47"><span class="section-number-4">1.1.1</span> experiment</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+Every probabilistic model involves an underlying process, called the <b>experiment</b>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8430d34" class="outline-4">
+<h4 id="org8430d34"><span class="section-number-4">1.1.2</span> sample space</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+The set of all possible outcomes is called the <b>sample space</b> of the experiment, denoted by \(\Omega\).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1208634" class="outline-4">
+<h4 id="org1208634"><span class="section-number-4">1.1.3</span> event</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+A subset of the <b>sample space</b>, that is, a collection of possible outcomes is called an <b>event</b>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfc35a78" class="outline-4">
+<h4 id="orgfc35a78"><span class="section-number-4">1.1.4</span> observation</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
+The outcome of each event is called <b>observation</b>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1edfb36" class="outline-3">
+<h3 id="org1edfb36"><span class="section-number-3">1.2</span> Set</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+A <b>set</b> is a collection of objects, which are the <b>elements</b> of the set.
+</p>
+</div>
+<div id="outline-container-org8cc9747" class="outline-4">
+<h4 id="org8cc9747"><span class="section-number-4">1.2.1</span> countable \(S=\{x_1, x_2, \cdots\}\)</h4>
+</div>
+<div id="outline-container-orge7da7d9" class="outline-4">
+<h4 id="orge7da7d9"><span class="section-number-4">1.2.2</span> uncountable \(S=\{x|x\ satisfies\ P\}\)</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+ex:
+\[\{k|k/2\ is\ integer\}\]
+\[\{x|0\le x\le 1\}\]
+</p>
+</div>
+</div>
+<div id="outline-container-orgf892191" class="outline-4">
+<h4 id="orgf892191"><span class="section-number-4">1.2.3</span> complement</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+The complement of a set S, with respect to the universe \(\Omega\), is the set \(\{x\in\Omega|x\notin S\}\)
+of all elements of \(\Omega\) that do not belong to S, and is denoted by \(S^c\). Note that \(\Omega^c = \emptyset\).
+</p>
+</div>
+</div>
+<div id="outline-container-orgc0277d9" class="outline-4">
+<h4 id="orgc0277d9"><span class="section-number-4">1.2.4</span> union</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+\[S\cup T = \{x|x\in S\ or\ x\in T\}\]
+\[\bigcup_{n=1}^{\infty} = S_1\cup S_2 \cup \cdots = \{x|x\in S_n\ for\ some\ n\}\]
+</p>
+</div>
+</div>
+<div id="outline-container-org788f305" class="outline-4">
+<h4 id="org788f305"><span class="section-number-4">1.2.5</span> intersection</h4>
+<div class="outline-text-4" id="text-1-2-5">
+<p>
+\[S\cap T = \{x|x\in S\ and\ x\in T\}\]
+\[\bigcap_{n=1}^{\infty} = S_1\cap S_2 \cap \cdots = \{x|x\in S_n\ for\ all\ n\}\]
+</p>
+</div>
+</div>
+<div id="outline-container-org7a7d247" class="outline-4">
+<h4 id="org7a7d247"><span class="section-number-4">1.2.6</span> difference</h4>
+<div class="outline-text-4" id="text-1-2-6">
+<p>
+\[S\setminus T=S\cap T^c\]
+\[S\setminus T=S\setminus (S\cap T)\]
+</p>
+</div>
+</div>
+<div id="outline-container-org85271ab" class="outline-4">
+<h4 id="org85271ab"><span class="section-number-4">1.2.7</span> scalar set</h4>
+<div class="outline-text-4" id="text-1-2-7">
+<p>
+The set of scalars (real numbers) is denoted by \(\Re\),
+The two-dimensional plane is denoted by \(\Re_2\)
+</p>
+</div>
+</div>
+<div id="outline-container-org04227bb" class="outline-4">
+<h4 id="org04227bb"><span class="section-number-4">1.2.8</span> algebra of set</h4>
+<div class="outline-text-4" id="text-1-2-8">
+</div>
+<ul class="org-ul">
+<li><a id="orgdea9d2d"></a>Commutative<br />
+<div class="outline-text-5" id="text-orgdea9d2d">
+<p>
+\[S\cap T=T\cap S\]
+\[S\cup T=T\cup S\]
+</p>
+</div>
+</li>
+
+<li><a id="org1271cd4"></a>Associative<br />
+<div class="outline-text-5" id="text-org1271cd4">
+<p>
+\[S\cap(T\cap U)=(S\cap T)\cap U\]
+\[S\cup(T\cup U)=(S\cup T)\cup U\]
+</p>
+</div>
+</li>
+
+<li><a id="org368c507"></a>Distributive<br />
+<div class="outline-text-5" id="text-org368c507">
+<p>
+\[S\cap(T\cup U)=(S\cap T)\cup(S\cap U)\]
+\[S\cup(T\cap U)=(S\cup T)\cap(S\cup U)\]
+</p>
+</div>
+</li>
+
+<li><a id="org66670b0"></a>de Morgan’s laws:<br />
+<div class="outline-text-5" id="text-org66670b0">
+<p>
+\[(\bigcup_n S_n)^c=\bigcap_n S_n^c\]
+\[(\bigcap_n S_n)^c=\bigcup_n S_n^c\]
+</p>
+</div>
+</li>
+
+<li><a id="orgfd7744c"></a>others<br />
+<div class="outline-text-5" id="text-orgfd7744c">
+<p>
+\[(S^c)^c=S\]
+\[S\cap S^c=\emptyset\]
+\[S\cup\Omega=\Omega\]
+\[S\cap\Omega=S\]
+\[(S\setminus T)\cup T = S\cup T\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org294833d" class="outline-3">
+<h3 id="org294833d"><span class="section-number-3">1.3</span> Axioms</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org748240f" class="outline-4">
+<h4 id="org748240f"><span class="section-number-4">1.3.1</span> Nonnegativity</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+For every event A,
+\[P(A) \ge 0\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org00eecff" class="outline-4">
+<h4 id="org00eecff"><span class="section-number-4">1.3.2</span> Normalization</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<p>
+The probability of the entire sample space \(\omega\) is equal to 1.
+\[P(\Omega) = 1\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org40cf9ce" class="outline-4">
+<h4 id="org40cf9ce"><span class="section-number-4">1.3.3</span> Additivity</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+If A and B are two disjoint events, then the probability of their union satisfies.
+\[P(A\cup B)=P(A)+P(B)\]
+or \(A_1, A_2, \cdots\) are disjoint events,
+\[P(\bigcup_{i=1}^n A_i) = \sum_{i=1}^n P(A_i)\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9ad5099" class="outline-3">
+<h3 id="org9ad5099"><span class="section-number-3">1.4</span> Consequences</h3>
+<div class="outline-text-3" id="text-1-4">
+</div>
+<div id="outline-container-org00d08da" class="outline-4">
+<h4 id="org00d08da"><span class="section-number-4">1.4.1</span> The probability of the empty set</h4>
+<div class="outline-text-4" id="text-1-4-1">
+<p>
+\[1=P(\Omega)=P(\Omega\cup\emptyset)=P(\Omega)+P(\emptyset)=1+P(\emptyset)\]
+\[\therefore P(\emptyset)=0\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2b73f8e" class="outline-4">
+<h4 id="org2b73f8e"><span class="section-number-4">1.4.2</span> Monotonicity</h4>
+<div class="outline-text-4" id="text-1-4-2">
+<p>
+If \(A\subseteq B\), then \(P(A)\le P(B)\)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org090c36c" class="outline-4">
+<h4 id="org090c36c"><span class="section-number-4">1.4.3</span> Addition law</h4>
+<div class="outline-text-4" id="text-1-4-3">
+<p>
+\[P(A\cup B)=P(A)+P(B)-P(A\cap B)\]
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org820049d"></a>proof<br />
+<div class="outline-text-5" id="text-org820049d">
+<p>
+\[P(A) = P(A\cap B) + P(A\setminus B)\]
+\[P(B) = P(B\cap A) + P(B\setminus A)\]
+\[P(A)+P(B) = 2P(A\cap B) + P(A\setminus B) + P(B\setminus A)\]
+\[P(A)+P(B) = P(A\cap B) + P((A\setminus B)\cup(B\setminus A)\cup(A\cap B))\ (axioms 3)\]
+\[P(A)+P(B) = P(A\cap B) + P(A\cup B)\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org73a7631" class="outline-4">
+<h4 id="org73a7631"><span class="section-number-4">1.4.4</span> others</h4>
+<div class="outline-text-4" id="text-1-4-4">
+<ul class="org-ul">
+<li>\(P(A\cup B)\le P(A)+P(B)\) (addition law &amp; axioms 1)</li>
+<li>\(P(A\cup B\cup C) = P(A) + P(A^c\cap B) + P(A^c\cap B^c\cap C)\) (axioms 3)</li>
+<li>if \(P(A\cap B)\) equals to 0, then A and B are mutually exclusive</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c13591" class="outline-3">
+<h3 id="org5c13591"><span class="section-number-3">1.5</span> Random Variable</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+<b>random variable</b> is a variable that can takes on a set of values
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2ddb0be" class="outline-3">
+<h3 id="org2ddb0be"><span class="section-number-3">1.6</span> Discrete Variable</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+<b>discrete</b>: if a variable is discrete, that means it can only take exact values.
+</p>
+</div>
+
+<div id="outline-container-org315e5ee" class="outline-4">
+<h4 id="org315e5ee"><span class="section-number-4">1.6.1</span> PMF</h4>
+<div class="outline-text-4" id="text-1-6-1">
+<p>
+Probability mass function is the probability distribution of a discrete random variable.
+\[PMF_X(x)=P(X=x)\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org81c903d" class="outline-3">
+<h3 id="org81c903d"><span class="section-number-3">1.7</span> Continuous Variable</h3>
+<div class="outline-text-3" id="text-1-7">
+</div>
+<div id="outline-container-org34409c5" class="outline-4">
+<h4 id="org34409c5"><span class="section-number-4">1.7.1</span> PDF</h4>
+<div class="outline-text-4" id="text-1-7-1">
+<p>
+Probability density function: like PMF to the discrete variable
+</p>
+</div>
+</div>
+
+<div id="outline-container-org96846fe" class="outline-4">
+<h4 id="org96846fe"><span class="section-number-4">1.7.2</span> CDF</h4>
+<div class="outline-text-4" id="text-1-7-2">
+<p>
+Cumulative distribution function
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdddc1d2" class="outline-3">
+<h3 id="orgdddc1d2"><span class="section-number-3">1.8</span> Expectation</h3>
+<div class="outline-text-3" id="text-1-8">
+</div>
+<div id="outline-container-org1d61f9a" class="outline-4">
+<h4 id="org1d61f9a"><span class="section-number-4">1.8.1</span> Discrete</h4>
+<div class="outline-text-4" id="text-1-8-1">
+<p>
+\[E[X]=\sum_{x\in R_X}xPMF_X(x)\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org60492e7" class="outline-4">
+<h4 id="org60492e7"><span class="section-number-4">1.8.2</span> Continuous</h4>
+<div class="outline-text-4" id="text-1-8-2">
+<p>
+\[E[X]=\int_{-\infty}^{\infty}xPDF_X(x)dx=\int_{-\infty}^{\infty}xd(CDF_X(x))\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org319bc30" class="outline-4">
+<h4 id="org319bc30"><span class="section-number-4">1.8.3</span> Transformation</h4>
+<div class="outline-text-4" id="text-1-8-3">
+<p>
+Let \(Y = g(X)\), then
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orga432cd8"></a>Discrete<br />
+<div class="outline-text-5" id="text-orga432cd8">
+<p>
+\[E[Y]=\sum_{x\in R_X}g(x)PMF_X(x)\]
+</p>
+</div>
+</li>
+
+<li><a id="orgf4dcd94"></a>Continuous<br />
+<div class="outline-text-5" id="text-orgf4dcd94">
+<p>
+\[E[Y]=\int_{-\infty}^{\infty}g(x)PDF_X(x)dx=\int_{-\infty}^{\infty}g(x)d(CDF_X(x))\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd678c37" class="outline-3">
+<h3 id="orgd678c37"><span class="section-number-3">1.9</span> Variance</h3>
+<div class="outline-text-3" id="text-1-9">
+<p>
+\[\begin{align*}
+Var[X] & = E[(X-E[X])^2] \\
+& = E[X^2-2E[X] X + E[X]^2] \\
+& = E[X^2]-2E[X]\cdot E[X] + E[X]^2 \\
+& = E[X^2]-E[X]^2
+\end{align*}\]
+</p>
+</div>
+
+<div id="outline-container-org2c45dfd" class="outline-4">
+<h4 id="org2c45dfd"><span class="section-number-4">1.9.1</span> More details</h4>
+<div class="outline-text-4" id="text-1-9-1">
+<p>
+\[Var[aX+b]=a^2Var[X]\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1d442b3" class="outline-3">
+<h3 id="org1d442b3"><span class="section-number-3">1.10</span> Standard Deviation</h3>
+<div class="outline-text-3" id="text-1-10">
+<p>
+\[\sigma=\sqrt{Var[X]}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb5b6f62" class="outline-3">
+<h3 id="orgb5b6f62"><span class="section-number-3">1.11</span> Moment</h3>
+<div class="outline-text-3" id="text-1-11">
+<p>
+The \(n_{th}\) moment of a random variable is the expected value of its \(n_{th}\) power
+\[\mu_X(n)=E[X^n]\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org56a90b8" class="outline-3">
+<h3 id="org56a90b8"><span class="section-number-3">1.12</span> Central Moment</h3>
+<div class="outline-text-3" id="text-1-12">
+<p>
+The \(n_{th}\) central moment of a random variable X is the expected value of
+the \(n_{th}\) power of the deviation of X from its expected value.
+\[\bar\mu_X(n)=E[(X-E[X])^n]\]
+</p>
+<ul class="org-ul">
+<li>Variance: 2nd central moment</li>
+<li>Skewness: 3th central moment</li>
+<li>Kurtosis: 4th central moment</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4b07900" class="outline-2">
+<h2 id="org4b07900"><span class="section-number-2">2</span> Conditional probabilities</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orge90f7bf" class="outline-3">
+<h3 id="orge90f7bf"><span class="section-number-3">2.1</span> Conceptions</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org2a88e10" class="outline-4">
+<h4 id="org2a88e10"><span class="section-number-4">2.1.1</span> \(P(A|B)\)</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+The conditional probability of <b>A</b> given <b>B</b>, Ex:
+</p>
+<div class="org-src-container">
+<pre class="src src-dot">graph probabilityTree{
+  size=<span style="color: #2d9574;">"2,2"</span>;
+  node [shape=circle fontsize=14 width=0.1 fontname=<span style="color: #2d9574;">"Inconsolata"</span>];
+  <span style="color: #2d9574;">"begin"</span> -- <span style="color: #2d9574;">"A"</span> [label=<span style="color: #2d9574;">"0.5"</span>];
+    <span style="color: #2d9574;">"A"</span> -- <span style="color: #2d9574;">"B"</span> [label=<span style="color: #2d9574;">"0.3"</span>];
+    <span style="color: #2d9574;">"A"</span> -- <span style="color: #2d9574;">"C"</span> [label=<span style="color: #2d9574;">"0.7"</span>];
+  <span style="color: #2d9574;">"begin"</span> -- <span style="color: #2d9574;">"D"</span> [label=<span style="color: #2d9574;">"0.5"</span>];
+    <span style="color: #2d9574;">"D"</span> -- <span style="color: #2d9574;">"E"</span> [label=<span style="color: #2d9574;">"1"</span>];
+}
+</pre>
+</div>
+
+<p>
+then, \(P(B|A)=0.3\)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga16b67b" class="outline-4">
+<h4 id="orga16b67b"><span class="section-number-4">2.1.2</span> \(P(A|B) = \frac{P(A\cap B)}{P(B)}\)</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<ul class="org-ul">
+<li>useful restatement: \(P(A\cap B)=P(A|B)P(B)\)</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org8058f74" class="outline-3">
+<h3 id="org8058f74"><span class="section-number-3">2.2</span> Axioms</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-orge803ccb" class="outline-4">
+<h4 id="orge803ccb"><span class="section-number-4">2.2.1</span> Nonnegativity</h4>
+</div>
+<div id="outline-container-orge56eaf4" class="outline-4">
+<h4 id="orge56eaf4"><span class="section-number-4">2.2.2</span> Normalization</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+\[P(B|B)=\frac{P(B)}{P(B)}=1\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org45822e7" class="outline-4">
+<h4 id="org45822e7"><span class="section-number-4">2.2.3</span> Additivity</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+If \(A_1, A_2, \cdots\) are disjoint events,
+\[P(\bigcup_{i=1}^n A_i|B) = \sum_{i=1}^n P(A_i|B)\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0f48704" class="outline-3">
+<h3 id="org0f48704"><span class="section-number-3">2.3</span> Consequences</h3>
+<div class="outline-text-3" id="text-2-3">
+</div>
+<div id="outline-container-org2c57fd5" class="outline-4">
+<h4 id="org2c57fd5"><span class="section-number-4">2.3.1</span> Multiplication Rule</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+\[P(\cap_{i=1}^{n}A_i)=P(A_1)P(A_2|A_1)P(A_3|A_1\cap A_2)\cdots P(A_n|\cap_{i=1}^{n-1}A_i)=\prod_{i=1}^n P(A_n|\cap_{i=1}^{n-1}A_i)\]
+</p>
+<ul class="org-ul">
+<li>proof
+\[P(\cap_{i=1}^n A_i)=P(A_1)\frac{P(A_1\cap A_2)}{P(A_1)}\cdots\frac{P(\cap_{i=1}^n A_i)}{P(\cap_{i=1}^{n-1} A_i)}\]
+\[=P(A_1)P(A_2|A_1)\cdots P(A_n|\cap_{i=1}^{n-1} A_i)\]</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org613c208" class="outline-3">
+<h3 id="org613c208"><span class="section-number-3">2.4</span> Total Probability Theorem</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Let \(A_1, A_2,\cdots, A_n\) be <b>disjoint</b> events that form a partition of the sample space,
+then for any event B:
+\[P(B)=P(A_1\cap B)+\cdots+P(A_n\cap B)\]
+\[=P(A_1)P(B|A_1)+\cdots+P(A_n)P(B|A_n)\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8c66343" class="outline-3">
+<h3 id="org8c66343"><span class="section-number-3">2.5</span> Bayes’ Rule</h3>
+<div class="outline-text-3" id="text-2-5">
+<ul class="org-ul">
+<li>Useful for finding reverse conditional probabilities.</li>
+</ul>
+<p>
+Let \(A_1, A_2,\cdots, A_n\) be <b>disjoint</b> events that form a partition of the sample space,
+then for any event B:
+\[P(A_i\cap B)=P(A_i|B)P(B)=P(A_i)P(B|A_i)\]
+\[P(A_i|B)=\frac{P(A_i)P(B|A_i)}{P(B)}\]
+</p>
+<ul class="org-ul">
+<li>depends on total probability theorem, we have:</li>
+</ul>
+<p>
+\[P(A_i|B)=\frac{P(A_i)P(B|A_i)}{P(A_1)P(B|A_1)+\cdots+P(A_n)P(B|A_n)}\]
+</p>
+</div>
+
+<div id="outline-container-org717b49c" class="outline-4">
+<h4 id="org717b49c"><span class="section-number-4">2.5.1</span> two events</h4>
+<div class="outline-text-4" id="text-2-5-1">
+<p>
+\[P(A|B)=\frac{P(B|A)P(A)}{P(B)}\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2d5ed24" class="outline-3">
+<h3 id="org2d5ed24"><span class="section-number-3">2.6</span> Independence</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+if <b>A</b> and <b>B</b> are independent events.
+\[P(A|B)=P(A)\]
+is equivalent to
+\[P(A\cap B)=P(A)P(B)\]
+</p>
+<ul class="org-ul">
+<li>If \(A\) and \(B\) are independent, so are \(A\) and \(B^c\)</li>
+</ul>
+</div>
+<div id="outline-container-org4376e3b" class="outline-4">
+<h4 id="org4376e3b"><span class="section-number-4">2.6.1</span> more events</h4>
+<div class="outline-text-4" id="text-2-6-1">
+<p>
+\[P(\bigcap_{i=1}^n A_i)=\prod_{i=1}^n P(A_i)\]
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org7677825" class="outline-3">
+<h3 id="org7677825"><span class="section-number-3">2.7</span> Conditional Independence</h3>
+<div class="outline-text-3" id="text-2-7">
+<p>
+Two events <b>A</b> and <b>B</b> are said to be conditionally independent
+\[P(A\cap B|C)=P(A|C)P(B|C)\]
+is equivalent to(hint: <b>Bayes' rule</b>)
+\[P(A|B\cap C)=P(A|C)\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org471287b" class="outline-2">
+<h2 id="org471287b"><span class="section-number-2">3</span> Random Variables</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>difinition: A <b>random variable</b> is a real-valued function of the outcome of the experiment</li>
+<li>A <b>function of a random variable</b> defines another random variable</li>
+</ul>
+</div>
+<div id="outline-container-org84306a1" class="outline-3">
+<h3 id="org84306a1"><span class="section-number-3">3.1</span> Discrete RV</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li>A (discrete) random variable has an associated probability mass function(PMF)</li>
+</ul>
+</div>
+<div id="outline-container-org4afba65" class="outline-4">
+<h4 id="org4afba65"><span class="section-number-4">3.1.1</span> PMF</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+Probability mass function,
+\[PMF_X(x)=P(X=x)\]
+Note that:
+\[\sum_x PMF_X(x)=1\]
+</p>
+</div>
+</div>
+<div id="outline-container-orgd9a1afb" class="outline-4">
+<h4 id="orgd9a1afb"><span class="section-number-4">3.1.2</span> CDF</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+\[CDF_X(x)=P(X\le x)=\sum_{k\le x}PMF_X(k)\]
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orga2a3180" class="outline-3">
+<h3 id="orga2a3180"><span class="section-number-3">3.2</span> Continuous RV</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+<div id="outline-container-orgbf42aaa" class="outline-4">
+<h4 id="orgbf42aaa"><span class="section-number-4">3.2.1</span> PDF</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+\[\begin{align*}
+PDF_X(x) & =\lim_{\varDelta x\to 0}\frac{P(x\le X \le x+\varDelta x)}{\varDelta x}\\
+& =\lim_{\varDelta x\to 0}\frac{CDF_X(x+\varDelta x)-CDF_X(x)}{\varDelta x}\\
+& = CDF^\prime_X(x)
+\end{align*}\]
+</p>
+
+<p>
+\[\begin{align*}
+P_X(a < x \le b) & = CDF_X(b)-CDF_X(a)\\
+& = \int_{-\infty}^b PDF_X(x)\mathrm{d}x - \int_{-\infty}^a PDF_X(x)\mathrm{d}x\\
+& = \int_a^b PDF_X(x)\mathrm{d}x
+\end{align*}\]
+</p>
+
+<ul class="org-ul">
+<li>\(\int_{-\infty}^{\infty}PDF_X(x)\mathrm{d}x = 1\)</li>
+<li>\(PDF_X(x)\ge 0\) for all \(x\)</li>
+
+<li>If \(\varDelta x\) is very small, then \(P(x\le X \le x+\varDelta x) \approx PDF_X(x)\cdot \varDelta x\)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge934186" class="outline-4">
+<h4 id="orge934186"><span class="section-number-4">3.2.2</span> CDF</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+\[CDF_X(x)=P(X\le x)=\int_{-\infty}^x PDF_X(u)\mathrm{d}u\]
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2d4cc98" class="outline-2">
+<h2 id="org2d4cc98"><span class="section-number-2">4</span> Counting</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>Permutations of n objects: \(n!\)</li>
+<li>k-permutations of n objects: \(\frac{n!}{(n-k)!}\)</li>
+<li>Combinations of k out of n objects: \({n\choose k}=\frac{n!}{k!(n-k)!}\)</li>
+<li><p>
+Partitions of \(n\) objects into \(r\) groups with <i>i</i> th group having \(n_i\) objests:
+</p>
+
+<p>
+\[{n \choose n_1,n_2,\cdots,n_r} = \frac{n!}{n_1!n_2!\cdots n_r!}\]
+this is called <b>multinomial coefficient</b>
+</p></li>
+</ul>
+</div>
+
+<div id="outline-container-org5b1e525" class="outline-3">
+<h3 id="org5b1e525"><span class="section-number-3">4.1</span> <i>n</i> balls into <i>m</i> boxes</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>ball same, box same -&gt; enum</li>
+<li>ball same, box diff -&gt; partition
+<ul class="org-ul">
+<li>box not null: \({n-1 \choose k-1}\)</li>
+<li>box nullable: \({n+k-1 \choose k-1}\)</li>
+</ul></li>
+</ul>
+
+<p>
+<a href="https://en.wikipedia.org/wiki/Twelvefold_way">detail</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org81aed20" class="outline-2">
+<h2 id="org81aed20"><span class="section-number-2">5</span> Linear Transforms</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<b>Linear transforms</b> are when a variable X is transformed into aX + b, where a and b are constants.
+The probabilities of each Y should be the same as X
+\[E(aX+b)=aE[X]+b\]
+\[Var(aX+b)=a^2Var[X]\]
+</p>
+</div>
+
+<div id="outline-container-org58c7174" class="outline-3">
+<h3 id="org58c7174"><span class="section-number-3">5.1</span> Independent observations</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+\[E(X_1+X_2+...X_n) = nE[X]\]
+\[Var(X_1+X_2+...X_n) = nVar[X]\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org78d7562" class="outline-3">
+<h3 id="org78d7562"><span class="section-number-3">5.2</span> Independent Variables</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+X and Y are <b>independent</b> random variables
+\[E(X+Y)=E[X]+E[Y]\]
+\[E(X-Y)=E[X]-E[Y]\]
+\[Var(X+Y)=Var[X]+Var(Y)\]
+\[Var(X-Y)=Var[X]+Var(Y)\]
+</p>
+<ul class="org-ul">
+<li>linear transforms
+\[E(aX+bY)=aE[X]+bE[Y]\]
+\[E(aX-bY)=aE[X]-bE[Y]\]
+\[Var(aX+bY)=a2Var[X]+b2Var(Y)\]
+\[Var(aX-bY)=a2Var[X]-b2Var(Y)\]</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga98acb8" class="outline-2">
+<h2 id="orga98acb8"><span class="section-number-2">6</span> Discrete distributions</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org5e994e8" class="outline-3">
+<h3 id="org5e994e8"><span class="section-number-3">6.1</span> Bernoulli distribution</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Let \(X\) be a discrete random variable. Let its support be \(R_X = \{0, 1\}\), the probability of \(X=1\) is \(p\)
+</p>
+
+<p>
+\[X\sim Bernoulli(p)\]
+</p>
+</div>
+<div id="outline-container-org941f370" class="outline-4">
+<h4 id="org941f370"><span class="section-number-4">6.1.1</span> PMF</h4>
+<div class="outline-text-4" id="text-6-1-1">
+<p>
+\[PMF_X(x)= \begin{cases}
+p,  & \mbox{if }x = 1 \\
+1-p, & \mbox{if }x = 0 \\
+0, & \mbox{if }x\notin R_X \\
+\end{cases}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga8bd062" class="outline-4">
+<h4 id="orga8bd062"><span class="section-number-4">6.1.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-6-1-2">
+<p>
+\[E[X]=p\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org43176f9" class="outline-4">
+<h4 id="org43176f9"><span class="section-number-4">6.1.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-6-1-3">
+<p>
+\[Var[X]=p(1-p)\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org02440ca" class="outline-4">
+<h4 id="org02440ca"><span class="section-number-4">6.1.4</span> CDF</h4>
+<div class="outline-text-4" id="text-6-1-4">
+<p>
+\[CDF_X(x)= \begin{cases}
+0,  & \mbox{if }x < 0\\
+1-p, & \mbox{if }0 \le x < 1 \\
+1, & \mbox{if }x\ge 1 \\
+\end{cases}\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgece857e" class="outline-3">
+<h3 id="orgece857e"><span class="section-number-3">6.2</span> Uniform distribution</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+\[X\sim Uniform(a, b)\]
+A discrete random variable has a uniform distribution if all the values belonging to its support have the same probability density.
+Let \(X\) be a discrete random variable. Let its support be \(R_X=\{a, a+k, a+2k \dots b\}\). Let the number of \(R_X\) be \(N\), then \(N=\frac{b-a}{k}+1=\frac{b-a+k}{k}\)
+</p>
+</div>
+<div id="outline-container-orgbb6f1cb" class="outline-4">
+<h4 id="orgbb6f1cb"><span class="section-number-4">6.2.1</span> PMF</h4>
+<div class="outline-text-4" id="text-6-2-1">
+<p>
+\[PMF_X(x)=\frac{1}{N}=\frac{k}{b-a+k}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org190b9f7" class="outline-4">
+<h4 id="org190b9f7"><span class="section-number-4">6.2.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-6-2-2">
+<p>
+\[E[X]=\frac{a+b}{2}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgad9b285" class="outline-4">
+<h4 id="orgad9b285"><span class="section-number-4">6.2.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-6-2-3">
+<p>
+\[Var[X]=k^2(\frac{N^2-1}{12})=\frac{(b-a)(b-a+2)}{12}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9e627e5" class="outline-4">
+<h4 id="org9e627e5"><span class="section-number-4">6.2.4</span> CDF</h4>
+<div class="outline-text-4" id="text-6-2-4">
+<p>
+\[CDF_X(x)= \begin{cases}
+0,  & \mbox{if }x < a\\
+\frac{\lfloor x\rfloor -a+k}{b-a+k}, & \mbox{if }a \le x \le b \\
+1, & \mbox{if }x > b \\
+\end{cases}\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c6744b" class="outline-3">
+<h3 id="org5c6744b"><span class="section-number-3">6.3</span> Binomial distribution</h3>
+<div class="outline-text-3" id="text-6-3">
+<ol class="org-ol">
+<li>You’re running a series of <b>independent</b> trials.</li>
+<li>There can be either a success or failure for each trial, and the probability of success is the same for each trial.</li>
+<li>There are a <b>finite</b> number of trials.</li>
+<li>The main thing you’re interested in is <b>the number of successes</b> in the \(n\) independent trials.</li>
+</ol>
+
+<p>
+Let:
+</p>
+<ul class="org-ul">
+<li>\(X\) be the number of successful outcomes out of \(n\) trials</li>
+<li>\(p\) be the probability of success in a trial</li>
+</ul>
+
+<p>
+\[X\sim B(n, p)\]
+</p>
+</div>
+
+<div id="outline-container-org1e0164e" class="outline-4">
+<h4 id="org1e0164e"><span class="section-number-4">6.3.1</span> PMF</h4>
+<div class="outline-text-4" id="text-6-3-1">
+<p>
+\[PMF_X(x)=\dbinom{n}{x} p^x (1-p)^{n-x}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1f5f5db" class="outline-4">
+<h4 id="org1f5f5db"><span class="section-number-4">6.3.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-6-3-2">
+<p>
+\[E[X]=np\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6e40700" class="outline-4">
+<h4 id="org6e40700"><span class="section-number-4">6.3.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-6-3-3">
+<p>
+\[Var[X]=np(1-p)\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3452e53" class="outline-4">
+<h4 id="org3452e53"><span class="section-number-4">6.3.4</span> CDF</h4>
+<div class="outline-text-4" id="text-6-3-4">
+<p>
+\[CDF_X(x)=\sum_{m=0}^{\lfloor x \rfloor}{n \choose m}p^m(1-p)^{n-m}\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7cdca01" class="outline-3">
+<h3 id="org7cdca01"><span class="section-number-3">6.4</span> Geometric distribution</h3>
+<div class="outline-text-3" id="text-6-4">
+<ol class="org-ol">
+<li>You run a series of <b>independent</b> trials.</li>
+<li>There can be either a success or failure for each trial, and the probability of success is the same for each trial.</li>
+<li>The main thing you’re interested in is <b>how many</b> trials are needed in order to get the <b>first</b> successful outcome.</li>
+</ol>
+
+<p>
+Let:
+</p>
+<ul class="org-ul">
+<li>\(X\) be the number of trials needed to get the first successful outcome</li>
+<li>\(p\) be the probability of success in a trial</li>
+</ul>
+
+<p>
+\[X\sim Geo(p)\]
+</p>
+</div>
+<div id="outline-container-orgd058e7f" class="outline-4">
+<h4 id="orgd058e7f"><span class="section-number-4">6.4.1</span> PMF</h4>
+<div class="outline-text-4" id="text-6-4-1">
+<p>
+let X be the number of trials needed to get the first successful outcome.
+To find the probability of \(X\) taking a particular value \(x\), using:
+\[PMF_X(x)=p(1-p)^{x-1}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7a52493" class="outline-4">
+<h4 id="org7a52493"><span class="section-number-4">6.4.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-6-4-2">
+<p>
+\[E[X]=\frac{1}{p}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3e2c617" class="outline-4">
+<h4 id="org3e2c617"><span class="section-number-4">6.4.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-6-4-3">
+<p>
+\[Var[X]=\frac{1-p}{p^2}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6860c08" class="outline-4">
+<h4 id="org6860c08"><span class="section-number-4">6.4.4</span> CDF</h4>
+<div class="outline-text-4" id="text-6-4-4">
+<p>
+\[CDF_X(x)=1-(1-p)^{\lfloor x \rfloor}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org06d4cc7" class="outline-4">
+<h4 id="org06d4cc7"><span class="section-number-4">6.4.5</span> memorylessness</h4>
+</div>
+</div>
+<div id="outline-container-org80a72be" class="outline-3">
+<h3 id="org80a72be"><span class="section-number-3">6.5</span> Pascal distribution</h3>
+<div class="outline-text-3" id="text-6-5">
+<p>
+aslo known as <b>Negative Binomial Distribution</b>
+</p>
+
+<ol class="org-ol">
+<li>You run a series of <b>independent</b> trials.</li>
+<li>There can be either a success or failure for each trial, and the probability of success is the same for each trial.</li>
+<li>The main thing you’re interested in is <b>how many</b> trials are needed in order to get the \(k\) successful outcomes.</li>
+</ol>
+
+<p>
+Let:
+</p>
+<ul class="org-ul">
+<li>\(X\) be the number of trials needed to get the \(k\) successful outcomes</li>
+<li>\(p\) be the probability of success in a trial</li>
+</ul>
+
+<p>
+\[X\sim Pascal(k, p)\]
+</p>
+</div>
+
+<div id="outline-container-orgc961f1b" class="outline-4">
+<h4 id="orgc961f1b"><span class="section-number-4">6.5.1</span> PMF</h4>
+<div class="outline-text-4" id="text-6-5-1">
+<p>
+\[PMF_X(x)=\begin{cases}
+{x-1 \choose k-1}(1-p)^{x-k}p^k,  & x\ge k\\
+0, & otherwise\\
+\end{cases}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org22f062b" class="outline-4">
+<h4 id="org22f062b"><span class="section-number-4">6.5.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-6-5-2">
+<p>
+\[E[X]=\frac{k}{p}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0741766" class="outline-4">
+<h4 id="org0741766"><span class="section-number-4">6.5.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-6-5-3">
+<p>
+\[Var[X]=\frac{k(1-p)}{p^2}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org330219a" class="outline-4">
+<h4 id="org330219a"><span class="section-number-4">6.5.4</span> CDF</h4>
+<div class="outline-text-4" id="text-6-5-4">
+<p>
+\[CDF_X(x)=\begin{cases}
+I_p(k, \lfloor x \rfloor - k + 1),  & x\ge k\\
+0, & otherwise\\
+\end{cases}\]
+\(I_z(a,b)\) is the regularized incomplete beta function
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org123e790"></a>more<br />
+<div class="outline-text-5" id="text-org123e790">
+<p>
+\[\begin{align*}
+CDF_X(x) & =P(X\le x)\\
+& =P(\mbox{the k-th success occurs before the x-th trial})\\
+& =P(\mbox{k success in x trials})\\
+& =P(Y\ge n), Y\sim B(x, p)
+\end{align*}\]
+This is why <b>pascal</b> is aslo called <b>negative binomial</b>.
+</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga633c97" class="outline-3">
+<h3 id="orga633c97"><span class="section-number-3">6.6</span> Poisson distribution</h3>
+<div class="outline-text-3" id="text-6-6">
+<ol class="org-ol">
+<li>Individual events occur at <b>random</b> and <b>independently</b> in a given interval.</li>
+<li>You know the mean number of occurrences in the interval or the rate of occurrences, and it’s finite.</li>
+<li>The purpose is to know the number of occurrences in another particular interval.</li>
+</ol>
+
+<p>
+Let:
+</p>
+<ul class="org-ul">
+<li>\(X\) be the number of occurrences in a particular interval \(T\)</li>
+<li>\(\lambda\) be the rate of occurrences, should be \(uT\), \(u\) is the frequency of occurrences</li>
+</ul>
+
+<p>
+\[X\sim Po(\lambda)\]
+</p>
+</div>
+
+<div id="outline-container-org0f2c7f5" class="outline-4">
+<h4 id="org0f2c7f5"><span class="section-number-4">6.6.1</span> PMF</h4>
+<div class="outline-text-4" id="text-6-6-1">
+<p>
+\[PMF_X(x)=\frac{e^{-\lambda}\lambda^{x}}{x!}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga57b894" class="outline-4">
+<h4 id="orga57b894"><span class="section-number-4">6.6.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-6-6-2">
+<p>
+\[E[X]=\lambda\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8cf691e" class="outline-4">
+<h4 id="org8cf691e"><span class="section-number-4">6.6.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-6-6-3">
+<p>
+\[Var[X]=\lambda\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf16402f" class="outline-4">
+<h4 id="orgf16402f"><span class="section-number-4">6.6.4</span> CDF</h4>
+<div class="outline-text-4" id="text-6-6-4">
+<p>
+\[CDF_X(x)= \begin{cases}
+-\lambda^e\sum_{n=-\infty}^{\lfloor x \rfloor}e^{-\lambda}\cdot \frac{\lambda^n}{n!}, & \mbox{if }x\ge 1 \\
+0, & \mbox{otherwise} \\
+\end{cases}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org838d05d" class="outline-4">
+<h4 id="org838d05d"><span class="section-number-4">6.6.5</span> linear transforms</h4>
+<div class="outline-text-4" id="text-6-6-5">
+<p>
+If \(X\sim Po(\lambda_x)\) and \(Y\sim Po(\lambda_y)\), and \(X\) and \(Y\) are independent,
+\[X+Y\sim Po(\lambda_x + \lambda_y)\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8579633" class="outline-4">
+<h4 id="org8579633"><span class="section-number-4">6.6.6</span> simplify the special Binomial distribution case</h4>
+<div class="outline-text-4" id="text-6-6-6">
+<p>
+If \(X\sim B(n, p)\) where \(n\) is large and \(p\) is small, you can approximate it with \(X \sim Po(np)\).
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0fe0d6b" class="outline-2">
+<h2 id="org0fe0d6b"><span class="section-number-2">7</span> Continuous distributions</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgf3b35b9" class="outline-3">
+<h3 id="orgf3b35b9"><span class="section-number-3">7.1</span> Relationship between PDF &amp; CDF</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+\[\frac{dy}{dx}CDF(x)=\int PDF(x)dx\]
+</p>
+</div>
+</div>
+<div id="outline-container-org6f436cd" class="outline-3">
+<h3 id="org6f436cd"><span class="section-number-3">7.2</span> Uniform distribution</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+A continuous random variable has a uniform distribution if all the values belonging to its support have the same probability density.
+\[X\sim Uniform(a, b)\]
+</p>
+</div>
+<div id="outline-container-org3ddd7b5" class="outline-4">
+<h4 id="org3ddd7b5"><span class="section-number-4">7.2.1</span> PDF</h4>
+<div class="outline-text-4" id="text-7-2-1">
+<p>
+\[PDF_X(x)=\begin{cases}
+\frac{1}{b-a}, & a \le x \le b\\
+0, & \mbox{otherwise}\\
+\end{cases}\]
+</p>
+</div>
+</div>
+<div id="outline-container-org0a2f2a4" class="outline-4">
+<h4 id="org0a2f2a4"><span class="section-number-4">7.2.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-7-2-2">
+<p>
+\[E[X]=\frac{a+b}{2}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf422972" class="outline-4">
+<h4 id="orgf422972"><span class="section-number-4">7.2.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-7-2-3">
+<p>
+\[Var[X]=\frac{(b-a)^2}{12}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdbb5c07" class="outline-4">
+<h4 id="orgdbb5c07"><span class="section-number-4">7.2.4</span> CDF</h4>
+<div class="outline-text-4" id="text-7-2-4">
+<p>
+\[CDF_X(x)=\begin{cases}
+0, & \mbox{if } x < a\\
+\frac{x-a}{b-a}, & \mbox{if } a\le x \le b\\
+1, & \mbox{if } x > b
+\end{cases}\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbe2cb68" class="outline-3">
+<h3 id="orgbe2cb68"><span class="section-number-3">7.3</span> Exponential distribution</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+How long do we need to wait before a customer enters our shop? How long will it take before a call center receives the next phone call?
+All these questions concern the time we need to wait before a given event occurs.
+If this waiting time is unknown, it is often appropriate to think of it as a random variable having an exponential.
+\[X\sim Exponential(\lambda)\]
+</p>
+<ul class="org-ul">
+<li>most commonly used to model waiting times</li>
+<li>\(\lambda\) is called rate parameter</li>
+</ul>
+</div>
+<div id="outline-container-orgea52ec4" class="outline-4">
+<h4 id="orgea52ec4"><span class="section-number-4">7.3.1</span> PDF</h4>
+<div class="outline-text-4" id="text-7-3-1">
+<p>
+\[PDF_X(x)=\begin{cases}
+\lambda e^{-\lambda x}, & \mbox{if } x \ge 0\\
+0, & otherwise
+\end{cases}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda5874f" class="outline-4">
+<h4 id="orgda5874f"><span class="section-number-4">7.3.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-7-3-2">
+<p>
+\[E[X]=\frac{1}{\lambda}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4a40aa8" class="outline-4">
+<h4 id="org4a40aa8"><span class="section-number-4">7.3.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-7-3-3">
+<p>
+\[Var[X]=\frac{1}{\lambda^2}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org94e695c" class="outline-4">
+<h4 id="org94e695c"><span class="section-number-4">7.3.4</span> CDF</h4>
+<div class="outline-text-4" id="text-7-3-4">
+<p>
+\[CDF_X(x)=\begin{cases}
+1-e^{-\lambda x}, & \mbox{if } x \ge 0\\
+0, & otherwise
+\end{cases}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org711c7e4" class="outline-4">
+<h4 id="org711c7e4"><span class="section-number-4">7.3.5</span> memorylessness</h4>
+</div>
+</div>
+<div id="outline-container-orgc498312" class="outline-3">
+<h3 id="orgc498312"><span class="section-number-3">7.4</span> Erlang distribution</h3>
+<div class="outline-text-3" id="text-7-4">
+<p>
+Given a <b>Poisson</b> distribution with a rate of change \(\lambda\),
+We use Erlang distribution to calculate the waiting times until the  \(n\) th Poisson event occurs.
+</p>
+
+<p>
+\[X\sim Erlang(n, \lambda)\]
+</p>
+</div>
+<div id="outline-container-org60a4c68" class="outline-4">
+<h4 id="org60a4c68"><span class="section-number-4">7.4.1</span> PDF</h4>
+<div class="outline-text-4" id="text-7-4-1">
+<p>
+\[PDF_X(x)=\begin{cases}
+\frac{1}{(n-1)!}\lambda^n x^{n-1} e^{-\lambda x}, & x\ge 0\\
+0, & otherwise
+\end{cases}\]
+</p>
+</div>
+</div>
+<div id="outline-container-orgee4a007" class="outline-4">
+<h4 id="orgee4a007"><span class="section-number-4">7.4.2</span> E[X]</h4>
+<div class="outline-text-4" id="text-7-4-2">
+<p>
+\[E[X]=\frac{n}{\lambda}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1cb7590" class="outline-4">
+<h4 id="org1cb7590"><span class="section-number-4">7.4.3</span> Var[X]</h4>
+<div class="outline-text-4" id="text-7-4-3">
+<p>
+\[Var[X]=\frac{n}{\lambda^2}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga7b7f7d" class="outline-4">
+<h4 id="orga7b7f7d"><span class="section-number-4">7.4.4</span> CDF</h4>
+<div class="outline-text-4" id="text-7-4-4">
+<p>
+\[CDF_X(x)=\begin{cases}
+1-\sum_{k=0}^{n-1}\frac{(\lambda x)^k}{k!}e^{-\lambda x}, & x\ge 0\\
+0, & otherwise
+\end{cases}\]
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf1f7f4e" class="outline-3">
+<h3 id="orgf1f7f4e"><span class="section-number-3">7.5</span> Normal distribution</h3>
+<div class="outline-text-3" id="text-7-5">
+<p>
+\[X\sim N(\mu, \sigma^2)\]
+or
+\[X\sim Gaussian(\mu, \sigma)\]
+</p>
+</div>
+<div id="outline-container-org30ebb3a" class="outline-4">
+<h4 id="org30ebb3a"><span class="section-number-4">7.5.1</span> PDF</h4>
+<div class="outline-text-4" id="text-7-5-1">
+<p>
+\[PDF_X(x)=\frac{1}{\sigma\sqrt{2\pi}}\cdot e^{-\frac{(x-\mu)^2}{2\sigma^2}}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd8487c4" class="outline-4">
+<h4 id="orgd8487c4"><span class="section-number-4">7.5.2</span> CDF</h4>
+<div class="outline-text-4" id="text-7-5-2">
+<p>
+\[CDF_X(x) = \int_{-\infty}^{x}PDF_X(x)dx=\frac{1}{\sigma\sqrt{2\pi}}\int_{-\infty}^{x}e^{-\frac{(x-\mu)^2}{2\sigma^2}}dx\]
+</p>
+<ul class="org-ul">
+<li>Use z-table</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf90d129" class="outline-4">
+<h4 id="orgf90d129"><span class="section-number-4">7.5.3</span> approximate Binomial distribution</h4>
+<div class="outline-text-4" id="text-7-5-3">
+<p>
+if \(X\sim B(n, p)\)  and \(np>15\) and \(nq>5\) , use \(X\sim N(np, npq)\) to approximate it.
+</p>
+<ul class="org-ul">
+<li>need to apply a <b>continuity correction</b> (round to discrete value), eg [5.5, 6.5) round to 6</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgce709ae" class="outline-4">
+<h4 id="orgce709ae"><span class="section-number-4">7.5.4</span> approximate Poisson distribution</h4>
+<div class="outline-text-4" id="text-7-5-4">
+<p>
+if \(X\sim Po(\lambda)\) and \(\lambda>15\), use \(X\sim N(\lambda, \lambda)\) to approximate it.
+</p>
+<ul class="org-ul">
+<li>need to apply a <b>continuity correction</b> (round to discrete value)</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge776772" class="outline-2">
+<h2 id="orge776772"><span class="section-number-2">8</span> Binomial Theorem</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+\[(x+y)^n = \sum_{k=0}^{n} \dbinom{n}{k}x^{n-k}y^{k}\]
+</p>
+</div>
+</div>
+<div id="outline-container-org21a5d4d" class="outline-2">
+<h2 id="org21a5d4d"><span class="section-number-2">9</span> Function of Random Variable</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Let \(Y=g(X)\)
+</p>
+</div>
+<div id="outline-container-org03d08f1" class="outline-3">
+<h3 id="org03d08f1"><span class="section-number-3">9.1</span> Discrete</h3>
+<div class="outline-text-3" id="text-9-1">
+<p>
+\[PMF_Y(y)=\sum_{\forall x|g(x)=y}PMF_X(x)\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2bc15c0" class="outline-3">
+<h3 id="org2bc15c0"><span class="section-number-3">9.2</span> Continuous</h3>
+<div class="outline-text-3" id="text-9-2">
+<ol class="org-ol">
+<li>Caculate CDF: \(CDF_Y(y)=P[Y\le y]\)</li>
+<li>Caculate PDF: \(PDF_Y(y)=\frac{d}{dy}CDF_Y(y)\)</li>
+</ol>
+</div>
+<div id="outline-container-org0796b65" class="outline-4">
+<h4 id="org0796b65"><span class="section-number-4">9.2.1</span> Example</h4>
+<div class="outline-text-4" id="text-9-2-1">
+<p>
+\(Y=g(X)=aX+b\), then
+\[CDF_Y(y)=P(X\le \frac{y-b}{a})=CDF_X(\frac{y-b}{a})\]
+\[PDF_Y(y)=\frac{d}{dy}CDF_Y(y)=\frac{1}{|a|}PDF_X(\frac{y-b}{a})\]
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb91c3e8" class="outline-2">
+<h2 id="orgb91c3e8"><span class="section-number-2">10</span> Conditional probability distributions</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-orgbb9aac4" class="outline-3">
+<h3 id="orgbb9aac4"><span class="section-number-3">10.1</span> Discrete</h3>
+<div class="outline-text-3" id="text-10-1">
+</div>
+<div id="outline-container-orgecae265" class="outline-4">
+<h4 id="orgecae265"><span class="section-number-4">10.1.1</span> Conditional PMF</h4>
+<div class="outline-text-4" id="text-10-1-1">
+<p>
+\[PMF_{X,Y}(x, y)=PMF_Y(y)PMF_{X|Y}(x|y)\]
+</p>
+<ul class="org-ul">
+<li>extension
+\[PMF_{X,Y,Z}(x, y, z)=PMF_Y(y)PMF_{Y|Z}(y|z)PMF_{X|Y,Z}(x|y,z)\]</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9c88b80" class="outline-4">
+<h4 id="org9c88b80"><span class="section-number-4">10.1.2</span> Expectation</h4>
+<div class="outline-text-4" id="text-10-1-2">
+<p>
+\[E[X|Y=y]=\sum x\cdot PMF_{X|Y}(x|Y=y)\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga39b698" class="outline-3">
+<h3 id="orga39b698"><span class="section-number-3">10.2</span> Continuous</h3>
+<div class="outline-text-3" id="text-10-2">
+</div>
+<div id="outline-container-org1adf66d" class="outline-4">
+<h4 id="org1adf66d"><span class="section-number-4">10.2.1</span> Conditional PDF</h4>
+<div class="outline-text-4" id="text-10-2-1">
+<p>
+\[PDF_{X,Y}(x, y)=PDF_Y(y)PDF_{X|Y}(x|y)\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd349342" class="outline-4">
+<h4 id="orgd349342"><span class="section-number-4">10.2.2</span> Expectation</h4>
+<div class="outline-text-4" id="text-10-2-2">
+<p>
+\[E[X|Y=y]=\int_{-\infty}^{\infty}x\cdot PDF_{X|Y}(x|Y=y)dx\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org19c5144" class="outline-4">
+<h4 id="org19c5144"><span class="section-number-4">10.2.3</span> Marginal PDF</h4>
+<div class="outline-text-4" id="text-10-2-3">
+<p>
+\[PDF_X(x)=\int PDF_{X,Y}(x, y)dy+\int PDF_{X,Z}(x, z)dz\]
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgde3d444" class="outline-3">
+<h3 id="orgde3d444"><span class="section-number-3">10.3</span> Memoryless</h3>
+<div class="outline-text-3" id="text-10-3">
+<p>
+\[PMF_{X|Y}(x|y) = PMF_{X}{x}\]
+e.g.
+</p>
+<ul class="org-ul">
+<li>Geometric distribution</li>
+<li>Exponential distribution</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org8681648" class="outline-2">
+<h2 id="org8681648"><span class="section-number-2">11</span> Joint probability distributions</h2>
+<div class="outline-text-2" id="text-11">
+</div>
+<div id="outline-container-org499de5c" class="outline-3">
+<h3 id="org499de5c"><span class="section-number-3">11.1</span> PMF/PDF</h3>
+<div class="outline-text-3" id="text-11-1">
+</div>
+<div id="outline-container-orge95fb18" class="outline-4">
+<h4 id="orge95fb18"><span class="section-number-4">11.1.1</span> Discrete</h4>
+<div class="outline-text-4" id="text-11-1-1">
+<p>
+\[PMF_{X,Y}(x, y) = P(X=x\ and\ Y=y)\]
+</p>
+<ul class="org-ul">
+<li>\(0\le PMF_{X,Y}(x, y) \le 1\)</li>
+<li>\(\sum_{x=-\infty}^{\infty}\sum_{y=-\infty}^{\infty}PMF_{X,Y}(x, y)=1\)</li>
+<li>if \(X,Y\) are independent, \(PMF_{X,Y}(x, y)=PMF_X(x)PMF_Y(y)\)</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga88a82e" class="outline-4">
+<h4 id="orga88a82e"><span class="section-number-4">11.1.2</span> Continuous</h4>
+<div class="outline-text-4" id="text-11-1-2">
+<p>
+\[PDF_{X,Y}(x, y) = \frac{d CDF_{X,Y}(x, y)}{dx}\frac{d CDF_{X,Y}(x, y)}{dy}\]
+\[CDF_{X,Y}(x, y) = \int_{-\infty}^{x}\int_{-\infty}^{y}PDF_{X,Y}(u, v)dvdu\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdb37adc" class="outline-3">
+<h3 id="orgdb37adc"><span class="section-number-3">11.2</span> CDF</h3>
+<div class="outline-text-3" id="text-11-2">
+<p>
+\[CDF_{X,Y}(x, y) = P(X\le x\ and\ Y\le y)\]
+</p>
+<ul class="org-ul">
+<li>\(CDF_{X,Y}(x, \infty) = CDF_X(x)\)</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="orge0906b9"></a>\(P(x_1 < X \le x_2, y_1 < Y \le y_2)\)<br />
+<div class="outline-text-5" id="text-orge0906b9">
+<p>
+\[=CDF_{X,Y}(x_2, y_2)-CDF_{X,Y}(x_2, y_1)-CDF_{X,Y}(x_1, y_2)+CDF_{X,Y}(x_1, y_1)\]
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org9f3b41b" class="outline-3">
+<h3 id="org9f3b41b"><span class="section-number-3">11.3</span> E[h(X, Y)]</h3>
+<div class="outline-text-3" id="text-11-3">
+</div>
+<div id="outline-container-org609e6d3" class="outline-4">
+<h4 id="org609e6d3"><span class="section-number-4">11.3.1</span> Discrete</h4>
+<div class="outline-text-4" id="text-11-3-1">
+<p>
+\[E[h(X, Y)]=\sum_{x=-\infty}^{\infty}\sum_{y=-\infty}^{\infty}h(x, y)\cdot PMF_{X,Y}(x, y)\]
+</p>
+</div>
+</div>
+<div id="outline-container-org1475c01" class="outline-4">
+<h4 id="org1475c01"><span class="section-number-4">11.3.2</span> Continuous</h4>
+<div class="outline-text-4" id="text-11-3-2">
+<p>
+\[E[h(X, Y)]=\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}h(x, y)\cdot PDF_{X,Y}(x, y)dxdy\]
+</p>
+</div>
+</div>
+<div id="outline-container-orgba040c6" class="outline-4">
+<h4 id="orgba040c6"><span class="section-number-4">11.3.3</span> Transformation</h4>
+<div class="outline-text-4" id="text-11-3-3">
+<ul class="org-ul">
+<li>\(E[\alpha h_1(X, Y)+\beta h_2(X, Y)=\alpha E[h_1(X, Y)]+\beta E[h_2(X, Y)]\)</li>
+<li>If \(X, Y\) are independent, \(E[g(X)h(Y)]=E[g(X)]\cdot E[h(Y)]\)</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org945b4da" class="outline-3">
+<h3 id="org945b4da"><span class="section-number-3">11.4</span> Var(X+Y)</h3>
+<div class="outline-text-3" id="text-11-4">
+<p>
+\[\begin{align*}
+Var(X+Y) & = E[(X+Y-E[X+Y])^2] \\
+& = E[(X-\mu_X+Y-\mu_Y)^2] \\
+& = E[(X-\mu_X)^2 + (Y-\mu_Y)^2 + 2(X-\mu_X)(Y-\mu_Y)] \\
+& = Var(X) + Var(Y) + 2Cov(X, Y)
+\end{align*}\]
+</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

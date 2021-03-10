@@ -71,16 +71,16 @@
      ;;       …)
      ;;   body…)
      (let ((a 5)
-           (b 6))
+	   (b 6))
        (+ a b))
 
      ;; (flet ((function_name (arguments)
      ;;                       ...function body...))
      ;;   ...body...)
      (flet ((f (n)
-               (+ n 10))
-            (g (n)
-               (- n 3)))
+	       (+ n 10))
+	    (g (n)
+	       (- n 3)))
        (g (f 5)))
    #+END_SRC
 
@@ -164,8 +164,8 @@
    They are not a very efficient way to store and retrieve data.
   #+BEGIN_SRC elisp
     (defvar *dict* '((key1 value1)
-                     (key2 value2)
-                     (key3 value3)))
+		     (key2 value2)
+		     (key3 value3)))
 
     (push '(key1 . value4) *dict*)          ; add new item to the front
     (assoc 'key1 *dict*)                    ; to look up from the front and returns the first one
@@ -196,8 +196,8 @@
    #+BEGIN_SRC elisp
      (defstruct person name age gender)
      (setf john (make-person :name "john"
-                             :age 37
-                             :gender "male"))
+			     :age 37
+			     :gender "male"))
      (person-age john)
      (setf (person-age john) 38)
    #+END_SRC
@@ -230,15 +230,15 @@
 *** Tail Call Optimization
     #+BEGIN_SRC elisp
       (defun my-length (lst)
-        (if lst (1+ (my-length (cdr lst))) 0)) ; inefficient
+	(if lst (1+ (my-length (cdr lst))) 0)) ; inefficient
 
       (my-length '(a b c d))
 
       (defun my-length (lst)
-        (labels ((f (lst acc)
-                    (if lst (f (cdr lst)
-                               (1+ acc)) acc)))
-          (f lst 0)))                         ; tail call optimization
+	(labels ((f (lst acc)
+		    (if lst (f (cdr lst)
+			       (1+ acc)) acc)))
+	  (f lst 0)))                         ; tail call optimization
     #+END_SRC
     When a function in Lisp calls itself as its very last action, we call this action a *tail call*.
     A smart Lisp compiler, when seeing a tail call, can then say to itself, “Hey, since I don’t need
@@ -263,18 +263,18 @@
 *** A Simple Macro
     #+BEGIN_SRC elisp
       (let ((foo (+ 2 3)))
-        (* foo foo))
+	(* foo foo))
 
       (defmacro let1 (var val &rest body)
-        `(let ((,var ,val))
-           ,@body)) ; get rid of the superfluous parentheses
+	`(let ((,var ,val))
+	   ,@body)) ; get rid of the superfluous parentheses
 
       (let1 foo (+ 2 3)
-            (princ "Lisp is awesome!")
-            (* foo foo))
+	    (princ "Lisp is awesome!")
+	    (* foo foo))
 
       (macroexpand '(let1 foo (+ 2 3)
-                          (* foo foo))) ; for debug
+			  (* foo foo))) ; for debug
     #+END_SRC
 
 * Useful Functions & Marcos
@@ -325,9 +325,9 @@
     #+BEGIN_SRC elisp
       (equal 'apple 'apple)                   ; -> T
       (equal (list 1 2 3)
-             (list 1 2 3))                    ; -> T
+	     (list 1 2 3))                    ; -> T
       (eq (list 1 2 3)
-          (list 1 2 3))                       ; -> NIL
+	  (list 1 2 3))                       ; -> NIL
       (eq 3.4 3.4)                            ; -> NIL
       (eql 3.4 3.4)                           ; -> T
       (equalp "Bob Smith" "bob smith")        ; -> T strange!
@@ -347,19 +347,19 @@
      (loop for i below 5 do (print i) sum i) ; do other things
      (loop for i below 10 when (oddp i) sum i) ; do when ...
      (loop for i from 0
-           do (print i)
-           when (= i 5)
-           return 'finished) ; break loop
+	   do (print i)
+	   when (= i 5)
+	   return 'finished) ; break loop
      (loop for i in '(2 3 4 5 6) collect (* i i)) ; return a list
      (loop for x below 10 for y below 10 collect(+ x y)) ; -> (0, 2, 4, 6, ...)
      (loop for x below 10
-           collect (loop for y below 10
-                         collect (+ x y))) ; Cartesian product
+	   collect (loop for y below 10
+			 collect (+ x y))) ; Cartesian product
      (loop for i
-           from 0
-           for day
-           in '(monday tuesday wednesday thursday friday saturday sunday)
-           collect (cons i day)) ; -> ((0 . monday) (1 . tuesday) ...)
+	   from 0
+	   for day
+	   in '(monday tuesday wednesday thursday friday saturday sunday)
+	   collect (cons i day)) ; -> ((0 . monday) (1 . tuesday) ...)
    #+END_SRC
 ** ~format~ function
    #+BEGIN_SRC elisp

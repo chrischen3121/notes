@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+<!-- 2021-03-10 Wed 13:47 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Docker</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<meta name="keywords" content="docker" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Docker</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4654ef5">1. 基本</a>
+<ul>
+<li><a href="#orgf5286a0">1.1. 交互式启动</a></li>
+<li><a href="#org4b3d5a3">1.2. 指定容器名</a></li>
+<li><a href="#org5624724">1.3. 重启动</a></li>
+<li><a href="#org2ccd575">1.4. 运行中交互</a></li>
+<li><a href="#org95c2d52">1.5. 守护进程启动</a></li>
+<li><a href="#org7d9aca2">1.6. logs</a></li>
+<li><a href="#orgb89b916">1.7. stats</a></li>
+<li><a href="#org4ee6339">1.8. exec [command]</a></li>
+<li><a href="#orgb081492">1.9. 自动启动/自动重启</a></li>
+<li><a href="#org85bf222">1.10. docker top, docker ps</a></li>
+<li><a href="#org9e0af56">1.11. 查看镜像/容器详细信息</a></li>
+<li><a href="#orgbdd4b5f">1.12. 端口映射</a></li>
+<li><a href="#orgab97d5d">1.13. 删除全部容器</a></li>
+</ul>
+</li>
+<li><a href="#org6129f6c">2. 镜像</a>
+<ul>
+<li><a href="#org609ed64">2.1. 创建镜像</a></li>
+<li><a href="#org22ccc2f">2.2. Dockerfile 指令集</a></li>
+<li><a href="#org6068955">2.3. 推送镜像</a></li>
+<li><a href="#orga66bfb3">2.4. 删除镜像</a></li>
+<li><a href="#orgfec9046">2.5. 自建 Registry</a></li>
+</ul>
+</li>
+<li><a href="#org429cadd">3. 建立连接</a>
+<ul>
+<li><a href="#org90f9f42">3.1. Docker 内部网络</a></li>
+<li><a href="#orgb3e13d0">3.2. Docker Networking</a></li>
+<li><a href="#org27e13dd">3.3. Docker Link</a></li>
+</ul>
+</li>
+<li><a href="#orgc9ecfe3">4. Docker Machine</a></li>
+<li><a href="#org7be5ca2">5. Docker Compose</a></li>
+<li><a href="#orge061b51">6. Docker Swarm</a>
+<ul>
+<li><a href="#orgaff348e">6.1. Node</a></li>
+<li><a href="#orgc06c158">6.2. Task</a></li>
+<li><a href="#org10fc280">6.3. Service</a></li>
+<li><a href="#org5f3f34c">6.4. work with compose</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org4654ef5" class="outline-2">
+<h2 id="org4654ef5"><span class="section-number-2">1</span> 基本</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgf5286a0" class="outline-3">
+<h3 id="orgf5286a0"><span class="section-number-3">1.1</span> 交互式启动</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+docker run -ti &#x2026;
+</p>
+</div>
+</div>
+<div id="outline-container-org4b3d5a3" class="outline-3">
+<h3 id="org4b3d5a3"><span class="section-number-3">1.2</span> 指定容器名</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+docker run &#x2013;name &#x2026;
+</p>
+</div>
+</div>
+<div id="outline-container-org5624724" class="outline-3">
+<h3 id="org5624724"><span class="section-number-3">1.3</span> 重启动</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+docker start container
+</p>
+</div>
+</div>
+<div id="outline-container-org2ccd575" class="outline-3">
+<h3 id="org2ccd575"><span class="section-number-3">1.4</span> 运行中交互</h3>
+<div class="outline-text-3" id="text-1-4">
+<ul class="org-ul">
+<li>docker attach container</li>
+<li>docker exec -t -i container /bin/bash</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org95c2d52" class="outline-3">
+<h3 id="org95c2d52"><span class="section-number-3">1.5</span> 守护进程启动</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+docker run -d
+</p>
+</div>
+</div>
+<div id="outline-container-org7d9aca2" class="outline-3">
+<h3 id="org7d9aca2"><span class="section-number-3">1.6</span> logs</h3>
+<div class="outline-text-3" id="text-1-6">
+</div>
+<div id="outline-container-orgfb48171" class="outline-4">
+<h4 id="orgfb48171"><span class="section-number-4">1.6.1</span> 跟踪日志</h4>
+<div class="outline-text-4" id="text-1-6-1">
+<p>
+docker logs -f container
+</p>
+</div>
+</div>
+<div id="outline-container-org9a5c8d4" class="outline-4">
+<h4 id="org9a5c8d4"><span class="section-number-4">1.6.2</span> 限制最后 n 条</h4>
+<div class="outline-text-4" id="text-1-6-2">
+<p>
+docker logs &#x2013;tail n -f container
+</p>
+</div>
+</div>
+<div id="outline-container-orga439ca4" class="outline-4">
+<h4 id="orga439ca4"><span class="section-number-4">1.6.3</span> log driver</h4>
+<div class="outline-text-4" id="text-1-6-3">
+<p>
+docker run &#x2013;log-driver="syslog" &#x2026;
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb89b916" class="outline-3">
+<h3 id="orgb89b916"><span class="section-number-3">1.7</span> stats</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+docker stats container1 container2 &#x2026;
+</p>
+</div>
+</div>
+<div id="outline-container-org4ee6339" class="outline-3">
+<h3 id="org4ee6339"><span class="section-number-3">1.8</span> exec [command]</h3>
+<div class="outline-text-3" id="text-1-8">
+<div class="org-src-container">
+<pre class="src src-bash">docker exec -d container <span style="color: #3a81c3;">[</span>command<span style="color: #3a81c3;">]</span>
+docker exec -t -i container /bin/bash
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb081492" class="outline-3">
+<h3 id="orgb081492"><span class="section-number-3">1.9</span> 自动启动/自动重启</h3>
+<div class="outline-text-3" id="text-1-9">
+<div class="org-src-container">
+<pre class="src src-bash">docker run --restart=always --name daemon_dave -d ubuntu /
+&#12288;bin/sh -c <span style="color: #2d9574;">"while true; do echo hello world; sleep 1; done"</span>
+docker container update --restart=always <span style="color: #3a81c3;">[</span>container<span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+<p>
+其他选项，例如：退出代码为非 0 时，Docker 会尝试自动重启，最多重启 5 次：
+&#x2013;restart=on-failure:5
+</p>
+</div>
+</div>
+
+<div id="outline-container-org85bf222" class="outline-3">
+<h3 id="org85bf222"><span class="section-number-3">1.10</span> docker top, docker ps</h3>
+<div class="outline-text-3" id="text-1-10">
+<p>
+docker top 查看容器运行情况
+docker ps -a 可列出所有容器(包括未运行的容器)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9e0af56" class="outline-3">
+<h3 id="org9e0af56"><span class="section-number-3">1.11</span> 查看镜像/容器详细信息</h3>
+<div class="outline-text-3" id="text-1-11">
+<p>
+docker inspect container/image
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbdd4b5f" class="outline-3">
+<h3 id="orgbdd4b5f"><span class="section-number-3">1.12</span> 端口映射</h3>
+<div class="outline-text-3" id="text-1-12">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#32465;&#23450;&#31471;&#21475;</span>
+docker run -p <span style="color: #3a81c3;">[</span>outer_port<span style="color: #3a81c3;">]</span>:<span style="color: #3a81c3;">[</span>inner_port<span style="color: #3a81c3;">]</span>
+docker run -P <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#36981;&#24490; Dockerfile EXPOSE</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#26597;&#30475;&#31471;&#21475;&#26144;&#23556;</span>
+docker ps -l
+docker port container inner_port
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgab97d5d" class="outline-3">
+<h3 id="orgab97d5d"><span class="section-number-3">1.13</span> 删除全部容器</h3>
+<div class="outline-text-3" id="text-1-13">
+<p>
+docker rm `sudo docker ps -a -q`
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6129f6c" class="outline-2">
+<h2 id="org6129f6c"><span class="section-number-2">2</span> 镜像</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>docker pull [user/]repo[:tag]</li>
+<li>docker push [user/]repo[:tag]</li>
+<li>docker images</li>
+<li>docker search</li>
+</ul>
+</div>
+<div id="outline-container-org609ed64" class="outline-3">
+<h3 id="org609ed64"><span class="section-number-3">2.1</span> 创建镜像</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org15af895" class="outline-4">
+<h4 id="org15af895"><span class="section-number-4">2.1.1</span> login</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+docker login
+</p>
+</div>
+</div>
+<div id="outline-container-orgf4cc306" class="outline-4">
+<h4 id="orgf4cc306"><span class="section-number-4">2.1.2</span> commit</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<div class="org-src-container">
+<pre class="src src-bash">docker run -ti image_to_modify /bin/bash
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">modify in container</span>
+docker commit container user/repo -m <span style="color: #2d9574;">"comment"</span> -a <span style="color: #2d9574;">"User Name"</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org7ed0b2d" class="outline-4">
+<h4 id="org7ed0b2d"><span class="section-number-4">2.1.3</span> Dockerfile</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+例子：
+</p>
+<div class="org-src-container">
+<pre class="src src-dockerfile"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Version: 0.0.1&#12288;</span>
+<span style="color: #3a81c3; font-weight: bold;">FROM</span> <span style="color: #ba2f59; font-weight: bold;">ubuntu:14.04&#12288;</span>
+<span style="color: #3a81c3; font-weight: bold;">MAINTAINER</span> XXX <span style="color: #2d9574;">"xxx@xxx.com"</span>
+<span style="color: #3a81c3; font-weight: bold;">ENV</span> REFRESHED_AT 2017-07-01 <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#34920;&#26126;&#35813;&#38236;&#20687;&#27169;&#26495;&#26368;&#21518;&#30340;&#26356;&#26032;&#26102;&#38388;&#65292;Docker &#22312;&#21629;&#20013; ENV &#25351;&#20196;&#26102;&#24320;&#22987;&#37325;&#32622;&#36825;&#20010;&#38236;&#20687;&#32531;&#23384;</span>
+<span style="color: #3a81c3; font-weight: bold;">RUN</span> apt-get update &amp;&amp; apt-get install -y nginx&#12288;
+<span style="color: #3a81c3; font-weight: bold;">RUN</span> echo <span style="color: #2d9574;">'Hi, I am in your container'</span> <span style="color: #2d9574;">\</span>
+&#12288;&#12288; &gt;/usr/share/nginx/html/index.html&#12288;
+<span style="color: #3a81c3; font-weight: bold;">EXPOSE</span> 80 <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#21482;&#26159;&#32473;&#22806;&#30028;&#30475;&#30340;&#65292;&#20855;&#20307;&#20351;&#29992;&#21738;&#20010;&#31471;&#21475;&#22312; run &#26102;&#25351;&#23450;&#65292;&#25110;&#20351;&#29992; docker run &#30340;-P &#36873;&#39033;&#29983;&#25928;</span>
+</pre>
+</div>
+<p>
+RUN 指令默认会在 shell 里使用命令包装器/bin/sh -c 来执行。exec 格式 RUN 指令:
+</p>
+<div class="org-src-container">
+<pre class="src src-dockerfile"><span style="color: #3a81c3; font-weight: bold;">RUN</span> <span style="color: #3a81c3;">[</span> <span style="color: #2d9574;">"apt-get"</span>, <span style="color: #2d9574;">" install"</span>, <span style="color: #2d9574;">"-y"</span>, <span style="color: #2d9574;">"nginx"</span> <span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-shell">docker build -t <span style="color: #3a81c3;">[</span>username<span style="color: #3a81c3;">]</span>/<span style="color: #3a81c3;">[</span>image_name<span style="color: #3a81c3;">]</span>:<span style="color: #3a81c3;">[</span>tag<span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2ddba82" class="outline-4">
+<h4 id="org2ddba82"><span class="section-number-4">2.1.4</span> docker build</h4>
+<div class="outline-text-4" id="text-2-1-4">
+<p>
+docker build -t="user/repo:tag"
+Dockerfile 一般放在项目根目录，指定 Dockerfile 路径使用-f 选项
+.dockerignore 指定忽略文件。
+</p>
+</div>
+</div>
+<div id="outline-container-org74a2eac" class="outline-4">
+<h4 id="org74a2eac"><span class="section-number-4">2.1.5</span> docker history</h4>
+<div class="outline-text-4" id="text-2-1-5">
+<p>
+查看构建过程
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org22ccc2f" class="outline-3">
+<h3 id="org22ccc2f"><span class="section-number-3">2.2</span> Dockerfile 指令集</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-org8a2018b" class="outline-4">
+<h4 id="org8a2018b"><span class="section-number-4">2.2.1</span> CMD</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+指定容器启动时运行的命令，docker run 末尾的命令如果与 CMD 指定的重叠，则 CMD 中的不会运行
+</p>
+</div>
+</div>
+<div id="outline-container-orgb643294" class="outline-4">
+<h4 id="orgb643294"><span class="section-number-4">2.2.2</span> ENTRYPOINT</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+可使与 docker run 末尾的重复命令不生效
+</p>
+</div>
+</div>
+<div id="outline-container-org2419968" class="outline-4">
+<h4 id="org2419968"><span class="section-number-4">2.2.3</span> WORKDIR</h4>
+</div>
+<div id="outline-container-orgbc32a81" class="outline-4">
+<h4 id="orgbc32a81"><span class="section-number-4">2.2.4</span> ENV</h4>
+<div class="outline-text-4" id="text-2-2-4">
+<p>
+ENV 指令用于在容器中永久的建立环境变量
+</p>
+<div class="org-src-container">
+<pre class="src src-dockerfile"><span style="color: #3a81c3; font-weight: bold;">ENV</span> <span style="color: #715ab1;">MYENV1</span>=XXX <span style="color: #715ab1;">MYENV2</span>=XXX <span style="color: #715ab1;">TARGET_DIR</span>=/opt/app
+<span style="color: #3a81c3; font-weight: bold;">WORKDIR</span> $<span style="color: #715ab1;">TARGET_DIR</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org24a3810" class="outline-4">
+<h4 id="org24a3810"><span class="section-number-4">2.2.5</span> USER</h4>
+<div class="outline-text-4" id="text-2-2-5">
+<p>
+指定用户运行镜像
+</p>
+<div class="org-src-container">
+<pre class="src src-dockerfile"><span style="color: #3a81c3; font-weight: bold;">USER</span> user/uid
+<span style="color: #3a81c3; font-weight: bold;">USER</span> <span style="color: #3a81c3;">[</span>user/uid<span style="color: #3a81c3;">]</span>:<span style="color: #3a81c3;">[</span>group/gid<span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org56ca7e7" class="outline-4">
+<h4 id="org56ca7e7"><span class="section-number-4">2.2.6</span> VOLUME</h4>
+<div class="outline-text-4" id="text-2-2-6">
+<p>
+VOLUME 指令用来向基于镜像创建的容器添加卷
+</p>
+<ul class="org-ul">
+<li>卷可以在容器间共享和重用</li>
+<li>一个容器可以不和其他容器共享卷</li>
+<li>对卷的修改是立时生效的</li>
+<li>对卷的修改不会对更新镜像产生影响</li>
+<li>卷会一直存在直到没有任何容器再使用它</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-dockerfile"><span style="color: #3a81c3; font-weight: bold;">VOLUME</span> <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">"/opt/project"</span><span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3; font-weight: bold;">VOLUME</span> <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">"/opt/project"</span>, <span style="color: #2d9574;">"/data"</span> <span style="color: #3a81c3;">]</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf2069a1" class="outline-4">
+<h4 id="orgf2069a1"><span class="section-number-4">2.2.7</span> ADD</h4>
+</div>
+<div id="outline-container-orgcdfaad4" class="outline-4">
+<h4 id="orgcdfaad4"><span class="section-number-4">2.2.8</span> COPY</h4>
+</div>
+<div id="outline-container-orgc6997de" class="outline-4">
+<h4 id="orgc6997de"><span class="section-number-4">2.2.9</span> LABEL</h4>
+</div>
+<div id="outline-container-org860a529" class="outline-4">
+<h4 id="org860a529"><span class="section-number-4">2.2.10</span> STOPSIGNAL</h4>
+</div>
+<div id="outline-container-org177e003" class="outline-4">
+<h4 id="org177e003"><span class="section-number-4">2.2.11</span> ARG</h4>
+</div>
+<div id="outline-container-org40eb424" class="outline-4">
+<h4 id="org40eb424"><span class="section-number-4">2.2.12</span> ONBUILD</h4>
+</div>
+</div>
+<div id="outline-container-org6068955" class="outline-3">
+<h3 id="org6068955"><span class="section-number-3">2.3</span> 推送镜像</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+先登录 docker login，docker push 推送镜像到 docker hub
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orgdf8f1ef"></a>自动推送<br />
+<div class="outline-text-5" id="text-orgdf8f1ef">
+<p>
+为了使用自动构建，我们只需要将 GitHub 或 BitBucket 中含有 Dockerfile 文件的仓库连接到 Docker Hub 即可。
+向这个代码仓库推送代码时，将会触发一次镜像构建活动并创建一个新镜像。
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-orga66bfb3" class="outline-3">
+<h3 id="orga66bfb3"><span class="section-number-3">2.4</span> 删除镜像</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+docker rmi
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org6a8f474"></a>全部删除<br />
+<div class="outline-text-5" id="text-org6a8f474">
+<p>
+docker rmi `docker images -a -q`
+</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-orgfec9046" class="outline-3">
+<h3 id="orgfec9046"><span class="section-number-3">2.5</span> 自建 Registry</h3>
+<div class="outline-text-3" id="text-2-5">
+</div>
+<div id="outline-container-org5d8f327" class="outline-4">
+<h4 id="org5d8f327"><span class="section-number-4">2.5.1</span> 部署</h4>
+<div class="outline-text-4" id="text-2-5-1">
+<div class="org-src-container">
+<pre class="src src-bash">docker run -p 5000:5000 registry
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org2ce1cc5" class="outline-4">
+<h4 id="org2ce1cc5"><span class="section-number-4">2.5.2</span> 上传 image 到 registry</h4>
+<div class="outline-text-4" id="text-2-5-2">
+<div class="org-src-container">
+<pre class="src src-bash">docker tag image_id registry_host:registry_port/user/repo:tag
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org6d88433" class="outline-4">
+<h4 id="org6d88433"><span class="section-number-4">2.5.3</span> 运行 registry 中的镜像</h4>
+<div class="outline-text-4" id="text-2-5-3">
+<div class="org-src-container">
+<pre class="src src-bash">sudo docker run -t -i host:port/user/repo:tag /bin/bash
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org429cadd" class="outline-2">
+<h2 id="org429cadd"><span class="section-number-2">3</span> 建立连接</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org90f9f42" class="outline-3">
+<h3 id="org90f9f42"><span class="section-number-3">3.1</span> Docker 内部网络</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li><code>ip a show docker0</code>: show docker0 interface</li>
+<li>接口 docker0 是一个虚拟的以太网桥,用于连接容器和本地宿主网络</li>
+<li>每个容器都有一个接口，一端连接容器里的 eth0 接口，另一端为在宿主机上的 veth****接口。veth****直接连上 docker0 网桥</li>
+<li><code>sudo iptables -t nat -L -n</code></li>
+<li><code>docker inspect container</code></li>
+</ul>
+
+<p>
+最大的问题在于容器重启会改变 IP
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb3e13d0" class="outline-3">
+<h3 id="orgb3e13d0"><span class="section-number-3">3.2</span> Docker Networking</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-sh">docker network create app <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#21019;&#24314;</span>
+docker network inspect app <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#26597;&#30475;</span>
+
+docker network ls <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">list</span>
+</pre>
+</div>
+<p>
+使用 <code>--network</code> 参数指定容器运行网络
+</p>
+</div>
+<div id="outline-container-orgbb542e7" class="outline-4">
+<h4 id="orgbb542e7"><span class="section-number-4">3.2.1</span> 已有容器网络操作</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<div class="org-src-container">
+<pre class="src src-sh">docker network connect app container1
+docker network disconnect app container1
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org27e13dd" class="outline-3">
+<h3 id="org27e13dd"><span class="section-number-3">3.3</span> Docker Link</h3>
+<div class="outline-text-3" id="text-3-3">
+<ul class="org-ul">
+<li><code>--link targetname:alias</code>: try ping alias in container</li>
+<li>容器内新增环境变量 <code>ALIAS_NAME, ALIAS_PORT</code></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc9ecfe3" class="outline-2">
+<h2 id="orgc9ecfe3"><span class="section-number-2">4</span> Docker Machine</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+快速创建一个虚拟 docker 主机
+</p>
+</div>
+</div>
+<div id="outline-container-org7be5ca2" class="outline-2">
+<h2 id="org7be5ca2"><span class="section-number-2">5</span> Docker Compose</h2>
+</div>
+<div id="outline-container-orge061b51" class="outline-2">
+<h2 id="orge061b51"><span class="section-number-2">6</span> Docker Swarm</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgaff348e" class="outline-3">
+<h3 id="orgaff348e"><span class="section-number-3">6.1</span> Node</h3>
+</div>
+<div id="outline-container-orgc06c158" class="outline-3">
+<h3 id="orgc06c158"><span class="section-number-3">6.2</span> Task</h3>
+</div>
+<div id="outline-container-org10fc280" class="outline-3">
+<h3 id="org10fc280"><span class="section-number-3">6.3</span> Service</h3>
+<div class="outline-text-3" id="text-6-3">
+<div class="org-src-container">
+<pre class="src src-bash">docker service create
+</pre>
+</div>
+<p>
+mode: replicated, global
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5f3f34c" class="outline-3">
+<h3 id="org5f3f34c"><span class="section-number-3">6.4</span> work with compose</h3>
+<div class="outline-text-3" id="text-6-4">
+<p>
+<code>docker stack</code>
+</p>
+<ul class="org-ul">
+<li>show errors before running container: <code>docker service ps --no-trunc {serviceName}</code></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
