@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-03-10 Wed 13:47 -->
+<!-- 2021-03-15 Mon 10:14 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Python Cookbook</title>
@@ -181,7 +181,7 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css">
 </head>
 <body>
 <div id="content">
@@ -190,89 +190,92 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org27be658">1. Data Structures and Algorithms</a></li>
-<li><a href="#org57b3ed3">2. String Manipulation</a></li>
-<li><a href="#org060742d">3. Numbers</a></li>
-<li><a href="#org79b8193">4. Datetime</a></li>
-<li><a href="#orge4ed194">5. Iterator</a></li>
-<li><a href="#org2f40139">6. I/O</a></li>
-<li><a href="#org0926387">7. Encoding</a></li>
-<li><a href="#org5f22c69">8. Functions</a></li>
-<li><a href="#orgad848dd">9. Class</a></li>
-<li><a href="#orgbde7bc2">10. Metaprogramming</a></li>
-<li><a href="#orgc492047">11. Metaclass</a></li>
-<li><a href="#org1858620">12. Packages and Modules</a></li>
-<li><a href="#org2756900">13. Network</a></li>
-<li><a href="#orgdb7f864">14. Concurrency</a></li>
-<li><a href="#org90aa9e4">15. System Utilities</a></li>
-<li><a href="#org270737c">16. Testing</a></li>
-<li><a href="#orged33c9e">17. Debuging</a></li>
+<li><a href="#org0c77e9c">1. Data Structures and Algorithms</a></li>
+<li><a href="#orgf5a7d49">2. String Manipulation</a></li>
+<li><a href="#orgd4e4374">3. Numbers</a></li>
+<li><a href="#orgbbb32ee">4. Datetime</a></li>
+<li><a href="#orgb351146">5. Iterator</a></li>
+<li><a href="#org016fcec">6. I/O</a></li>
+<li><a href="#org57d9c67">7. Encoding</a></li>
+<li><a href="#orga8944a5">8. Functions</a></li>
+<li><a href="#orgf696e00">9. Class</a></li>
+<li><a href="#orgeded7b7">10. Metaprogramming</a></li>
+<li><a href="#orgeebcfaf">11. Metaclass</a></li>
+<li><a href="#org09c2cac">12. Packages and Modules</a></li>
+<li><a href="#org8881e1f">13. Network</a></li>
+<li><a href="#orgd1feb90">14. Concurrency</a></li>
+<li><a href="#org3493c31">15. System Utilities</a></li>
+<li><a href="#orgd67ba7d">16. Testing</a></li>
+<li><a href="#org4c27a0a">17. Debuging</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org27be658" class="outline-2">
-<h2 id="org27be658"><span class="section-number-2">1</span> Data Structures and Algorithms</h2>
+<div id="outline-container-org0c77e9c" class="outline-2">
+<h2 id="org0c77e9c"><span class="section-number-2">1</span> Data Structures and Algorithms</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org4657242" class="outline-3">
-<h3 id="org4657242"><span class="section-number-3">1.1</span> Unpacking from Iterables</h3>
+<div id="outline-container-org06f0feb" class="outline-3">
+<h3 id="org06f0feb"><span class="section-number-3">1.1</span> Quick Summary</h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
-<pre class="src src-python">x, *<span style="color: #715ab1;">middle</span>, <span style="color: #715ab1;">y</span> = <span style="color: #3a81c3;">[</span>1, 2, 3, 4, 5<span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">middle can be replaced by placeholder '_'</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">x =&gt; 1</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">y =&gt; 5</span>
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">unpacking</span>
+<span style="color: #715ab1;">data</span> = <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">"ACME"</span>, 50, 91.1, <span style="color: #6c3163;">(</span>2012, 12, 21<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
+name, *_, <span style="color: #3a81c3;">(</span>year, mon, day<span style="color: #3a81c3;">)</span> = data
 
-<span style="color: #715ab1;">data</span> = <span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'ACME'</span>, 50, 91.1, <span style="color: #6c3163;">(</span>2012, 12, 21<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
-name, shares, price, <span style="color: #3a81c3;">(</span>year, mon, day<span style="color: #3a81c3;">)</span> = data
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">fixed-length queue</span>
+<span style="color: #3a81c3; font-weight: bold;">from</span> collections <span style="color: #3a81c3; font-weight: bold;">import</span> deque
+
+<span style="color: #715ab1;">d</span> = deque<span style="color: #3a81c3;">(</span>maxlen=N<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">heap related</span>
+<span style="color: #3a81c3; font-weight: bold;">import</span> heapq
+
+heapq.nlargest<span style="color: #3a81c3;">(</span>N, items<span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">faster than sorted(items)[:N] if N is small</span>
+heapq.nsmallest<span style="color: #3a81c3;">(</span>N, items, key=<span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">nums</span> = <span style="color: #3a81c3;">[</span>1, 8, 2, 23, 7, -4, 18, 23, 42, 37, 2<span style="color: #3a81c3;">]</span>
+heapq.heapify<span style="color: #3a81c3;">(</span>nums<span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">inplace function</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">agg by values</span>
+<span style="color: #715ab1;">prices</span> = <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">"AAPL"</span>: 612.78, <span style="color: #2d9574;">"IBM"</span>: 205.55, <span style="color: #2d9574;">"FB"</span>: 10.75<span style="color: #3a81c3;">}</span>
+<span style="color: #715ab1;">min_price</span> = <span style="color: #3a81c3;">min</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">zip</span><span style="color: #6c3163;">(</span>prices.values<span style="color: #2d9574;">()</span>, prices.keys<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">zip to ((value, key)) generator</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">key-views support set oparations</span>
+d.keys<span style="color: #3a81c3;">()</span> - d2.keys<span style="color: #3a81c3;">()</span>
+d.keys<span style="color: #3a81c3;">()</span> &amp; d2.keys<span style="color: #3a81c3;">()</span>
+d.keys<span style="color: #3a81c3;">()</span> | d2.keys<span style="color: #3a81c3;">()</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">boolean selectors</span>
+<span style="color: #3a81c3; font-weight: bold;">from</span> itertools <span style="color: #3a81c3; font-weight: bold;">import</span> compress
+<span style="color: #715ab1;">alist</span> = <span style="color: #3a81c3;">list</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span>10<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3;">list</span><span style="color: #3a81c3;">(</span>compress<span style="color: #6c3163;">(</span>alist, <span style="color: #2d9574;">[</span>i % 2 == 0 <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> alist<span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
 </pre>
 </div>
 </div>
+
+<div id="outline-container-orgd33b22b" class="outline-4">
+<h4 id="orgd33b22b"><span class="section-number-4">1.1.1</span> others</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<ul class="org-ul">
+<li>slice, itertools.islice</li>
+<li>collections.Counter</li>
+<li><code>from operator import itemgetter, attrgetter</code></li>
+<li>itertools.groupby</li>
+<li>from collections.ChainMap</li>
+</ul>
+</div>
+</div>
 </div>
 
-<div id="outline-container-orgcf8e4f0" class="outline-3">
-<h3 id="orgcf8e4f0"><span class="section-number-3">1.2</span> Keeping the Last N Items</h3>
+<div id="outline-container-org915b50c" class="outline-3">
+<h3 id="org915b50c"><span class="section-number-3">1.2</span> PriorityQueue Implemention</h3>
 <div class="outline-text-3" id="text-1-2">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> collections <span style="color: #3a81c3; font-weight: bold;">import</span> deque
-<span style="color: #715ab1;">d</span>=deque<span style="color: #3a81c3;">(</span>maxlen=N<span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org459b6f3" class="outline-3">
-<h3 id="org459b6f3"><span class="section-number-3">1.3</span> Finding the Largest N Items</h3>
-<div class="outline-text-3" id="text-1-3">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> heapq
-heapq.nlargest<span style="color: #3a81c3;">(</span>N, items<span style="color: #3a81c3;">)</span>
-heapq.nsmallest<span style="color: #3a81c3;">(</span>N, items<span style="color: #3a81c3;">)</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">heapq.nlargest(N, data, key=lambda function)</span>
-</pre>
-</div>
-<p>
-Underneath the covers, they work by first converting the data into a list
-where items are ordered as a heap.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">nums</span> = <span style="color: #3a81c3;">[</span>1, 8, 2, 23, 7, -4, 18, 23, 42, 37, 2<span style="color: #3a81c3;">]</span>
-heapq.heapify<span style="color: #3a81c3;">(</span>nums<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">inplace function</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">nums =&gt; [-4, 2, 1, 23, 7, 2, 18, 23, 42, 37, 8] heap[0] is the smallest</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgdee357d" class="outline-3">
-<h3 id="orgdee357d"><span class="section-number-3">1.4</span> PriorityQueue Implemention</h3>
-<div class="outline-text-3" id="text-1-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> heapq
 
 <span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">PriorityQueue</span>:
     <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">__init__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
 	<span style="color: #3a81c3; font-weight: bold;">self</span>._queue = <span style="color: #3a81c3;">[]</span>
-	<span style="color: #3a81c3; font-weight: bold;">self</span>._index = 0 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">use index to properly order items with the same priority level</span>
+	<span style="color: #3a81c3; font-weight: bold;">self</span>._index = 0 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">using index to properly order items with the same priority level</span>
 
     <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">push</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, item, priority<span style="color: #3a81c3;">)</span>:
 	heapq.heappush<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>._queue, <span style="color: #6c3163;">(</span>-priority, <span style="color: #3a81c3; font-weight: bold;">self</span>._index, item<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
@@ -284,267 +287,14 @@ heapq.heapify<span style="color: #3a81c3;">(</span>nums<span style="color: #3a81
 </div>
 </div>
 </div>
-
-<div id="outline-container-org8d8fc4b" class="outline-3">
-<h3 id="org8d8fc4b"><span class="section-number-3">1.5</span> defaultdict</h3>
-<div class="outline-text-3" id="text-1-5">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> collections <span style="color: #3a81c3; font-weight: bold;">import</span> defaultdict
-<span style="color: #715ab1;">d</span> = defaultdict<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">list</span><span style="color: #3a81c3;">)</span>
-d<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'a'</span><span style="color: #3a81c3;">]</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; []</span>
-</pre>
-</div>
-<p>
-<b>defaultdict</b> will automatically create dictionary entries for keys accessed later on, alternative:
-</p>
-<div class="org-src-container">
-<pre class="src src-python">d.setdefault<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'a'</span>, <span style="color: #6c3163;">[]</span><span style="color: #3a81c3;">)</span>.append<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-<div id="outline-container-org39c2953" class="outline-4">
-<h4 id="org39c2953"><span class="section-number-4">1.5.1</span> alternative</h4>
-<div class="outline-text-4" id="text-1-5-1">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">d</span> = <span style="color: #3a81c3;">{}</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">A regular dictionary</span>
-d.setdefault<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'a'</span>, <span style="color: #6c3163;">[]</span><span style="color: #3a81c3;">)</span>.append<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-</div>
 </div>
 
-<div id="outline-container-org4b85c79" class="outline-3">
-<h3 id="org4b85c79"><span class="section-number-3">1.6</span> OrderedDict</h3>
-<div class="outline-text-3" id="text-1-6">
-<p>
-An OrderedDict internally maintains a doubly linked list that orders the keys according to insertion order.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgcf92a4b" class="outline-3">
-<h3 id="orgcf92a4b"><span class="section-number-3">1.7</span> sortedcontainers</h3>
-<div class="outline-text-3" id="text-1-7">
-<p>
-SortedList, SortedDict, SortedSet
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgf5564a2" class="outline-3">
-<h3 id="orgf5564a2"><span class="section-number-3">1.8</span> Calculating with Dictionaries</h3>
-<div class="outline-text-3" id="text-1-8">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">prices</span> = <span style="color: #3a81c3;">{</span>
-    <span style="color: #2d9574;">'ACME'</span>: 45.23,
-    <span style="color: #2d9574;">'AAPL'</span>: 612.78,
-    <span style="color: #2d9574;">'IBM'</span>: 205.55,
-    <span style="color: #2d9574;">'HPQ'</span>: 37.20,
-    <span style="color: #2d9574;">'FB'</span>: 10.75
-<span style="color: #3a81c3;">}</span>
-<span style="color: #715ab1;">min_price</span> = <span style="color: #3a81c3;">min</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">zip</span><span style="color: #6c3163;">(</span>prices.values<span style="color: #2d9574;">()</span>, prices.keys<span style="color: #2d9574;">()</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">zip to ((value, key)) generator</span>
-
-<span style="color: #3a81c3;">min</span><span style="color: #3a81c3;">(</span>prices, key=<span style="color: #3a81c3; font-weight: bold;">lambda</span> k: prices<span style="color: #6c3163;">[</span>k<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Returns 'FB'</span>
-<span style="color: #715ab1;">min_value</span> = prices<span style="color: #3a81c3;">[</span><span style="color: #3a81c3;">min</span><span style="color: #6c3163;">(</span>prices, key=<span style="color: #3a81c3; font-weight: bold;">lambda</span> k: prices<span style="color: #2d9574;">[</span>k<span style="color: #2d9574;">]</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">]</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgdd6ada9" class="outline-3">
-<h3 id="orgdd6ada9"><span class="section-number-3">1.9</span> keys-view</h3>
-<div class="outline-text-3" id="text-1-9">
-<div class="org-src-container">
-<pre class="src src-python">a.keys<span style="color: #3a81c3;">()</span> &amp; b.keys<span style="color: #3a81c3;">()</span>
-a.keys<span style="color: #3a81c3;">()</span> - <span style="color: #3a81c3;">{</span><span style="color: #2d9574;">'z'</span>, <span style="color: #2d9574;">'w'</span><span style="color: #3a81c3;">}</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">{'z', 'w'} is a set</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgbc84b69" class="outline-3">
-<h3 id="orgbc84b69"><span class="section-number-3">1.10</span> Naming a Slice</h3>
-<div class="outline-text-3" id="text-1-10">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">a</span> = <span style="color: #3a81c3;">[</span>1,2,3,4,5<span style="color: #3a81c3;">]</span>
-<span style="color: #715ab1;">b</span> = <span style="color: #3a81c3;">slice</span><span style="color: #3a81c3;">(</span>1,2<span style="color: #3a81c3;">)</span>
-
-a<span style="color: #3a81c3;">[</span>b<span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; [2] slower than a[1]</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org276a65f" class="outline-3">
-<h3 id="org276a65f"><span class="section-number-3">1.11</span> Counting</h3>
-<div class="outline-text-3" id="text-1-11">
-<p>
-  @contextmanager
-def list_transaction(orig_list):
-    working = list(orig_list)
-    yield working
-    orig_list[:] = working #+BEGIN_SRC python
-     from collections import Counter
-     word_counts1 = Counter(words1)
-     word_counts2 = Counter(words2)
-     word_counts1 + word_counts2
-   #+END_SRC
-</p>
-</div>
-</div>
-
-<div id="outline-container-org6430479" class="outline-3">
-<h3 id="org6430479"><span class="section-number-3">1.12</span> Sorting a List of Dictionaries</h3>
-<div class="outline-text-3" id="text-1-12">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> operator <span style="color: #3a81c3; font-weight: bold;">import</span> itemgetter
-<span style="color: #715ab1;">rows_by_fname</span> = <span style="color: #3a81c3;">sorted</span><span style="color: #3a81c3;">(</span>rows, key=itemgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'fname'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-<span style="color: #715ab1;">rows_by_lfname</span> = <span style="color: #3a81c3;">sorted</span><span style="color: #3a81c3;">(</span>rows, key=itemgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'lname'</span>,<span style="color: #2d9574;">'fname'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-
-<span style="color: #715ab1;">g</span> = itemgetter<span style="color: #3a81c3;">(</span>2, 5, 3<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">the call g(r) returns (r[2], r[5], r[3])</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org30ab74a" class="outline-3">
-<h3 id="org30ab74a"><span class="section-number-3">1.13</span> Sorting Objects Without Native Comparison</h3>
-<div class="outline-text-3" id="text-1-13">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3;">sorted</span><span style="color: #3a81c3;">(</span>users, key=<span style="color: #3a81c3; font-weight: bold;">lambda</span> u: u.user_id<span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">from</span> operator <span style="color: #3a81c3; font-weight: bold;">import</span> attrgetter
-<span style="color: #3a81c3;">sorted</span><span style="color: #3a81c3;">(</span>users, key=attrgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'user_id'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-<span style="color: #715ab1;">by_name</span> = <span style="color: #3a81c3;">sorted</span><span style="color: #3a81c3;">(</span>users, key=attrgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'last_name'</span>, <span style="color: #2d9574;">'first_name'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgc580bf1" class="outline-3">
-<h3 id="orgc580bf1"><span class="section-number-3">1.14</span> groupby</h3>
-<div class="outline-text-3" id="text-1-14">
-<p>
-Since <code>groupby()</code> only examines consecutive items, should sort the groupby key first.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> itertools <span style="color: #3a81c3; font-weight: bold;">import</span> groupby
-rows.sort<span style="color: #3a81c3;">(</span>key=itemgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'date'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">for</span> date, items <span style="color: #3a81c3; font-weight: bold;">in</span> groupby<span style="color: #3a81c3;">(</span>rows, key=itemgetter<span style="color: #6c3163;">(</span><span style="color: #2d9574;">'date'</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>:
-    <span style="color: #3a81c3; font-weight: bold;">pass</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">alternative if memory is no concern, and faster than sort+groupby</span>
-<span style="color: #715ab1;">rows_by_date</span> = defaultdict<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">list</span><span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">for</span> row <span style="color: #3a81c3; font-weight: bold;">in</span> rows:
-    rows_by_date<span style="color: #3a81c3;">[</span>row<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'date'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>.append<span style="color: #3a81c3;">(</span>row<span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-orgee28f0a" class="outline-3">
-<h3 id="orgee28f0a"><span class="section-number-3">1.15</span> itertools.compress</h3>
-<div class="outline-text-3" id="text-1-15">
-<p>
-Like boolean index in pandas. Takes an iterable and an accompanying Boolean selector sequence as input.
-<code>list(compress(data, mask))</code>
-</p>
-</div>
-</div>
-
-<div id="outline-container-org313e657" class="outline-3">
-<h3 id="org313e657"><span class="section-number-3">1.16</span> namedtuple &amp; namedlist</h3>
-<div class="outline-text-3" id="text-1-16">
-<p>
-optional or missing fields
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">Stock</span> = namedtuple<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Stock'</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">'name'</span>, <span style="color: #2d9574;">'shares'</span>, <span style="color: #2d9574;">'price'</span>, <span style="color: #2d9574;">'date'</span>, <span style="color: #2d9574;">'time'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
-<span style="color: #715ab1;">Stock.__new__.__defaults__</span> = <span style="color: #3a81c3;">(</span><span style="color: #2d9574;">''</span>, 0, 0, <span style="color: #4e3163;">None</span>, <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">or</span>
-<span style="color: #715ab1;">stock_prototype</span> = Stock<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">''</span>, 0, 0.0, <span style="color: #4e3163;">None</span>, <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>
-
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">dict_to_stock</span><span style="color: #3a81c3;">(</span>s<span style="color: #3a81c3;">)</span>:
-    <span style="color: #3a81c3; font-weight: bold;">return</span> stock_prototype._replace<span style="color: #3a81c3;">(</span>**s<span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-<div id="outline-container-orgb94e310" class="outline-4">
-<h4 id="orgb94e310"><span class="section-number-4">1.16.1</span> useful method</h4>
-<div class="outline-text-4" id="text-1-16-1">
-<ul class="org-ul">
-<li><code>_make</code>: Make a new Stock object from a sequence or iterable</li>
-<li><code>_replace</code></li>
-<li><code>_fields</code></li>
-<li><code>_asdict</code></li>
-</ul>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org996f88d" class="outline-3">
-<h3 id="org996f88d"><span class="section-number-3">1.17</span> sum, min,&#x2026;</h3>
-<div class="outline-text-3" id="text-1-17">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">s</span> = <span style="color: #3a81c3;">sum</span><span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>x * x <span style="color: #3a81c3; font-weight: bold;">for</span> x <span style="color: #3a81c3; font-weight: bold;">in</span> nums<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-<span style="color: #715ab1;">s</span> = <span style="color: #3a81c3;">sum</span><span style="color: #3a81c3;">(</span>x * x <span style="color: #3a81c3; font-weight: bold;">for</span> x <span style="color: #3a81c3; font-weight: bold;">in</span> nums<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as above</span>
-
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Original: Returns 20</span>
-<span style="color: #715ab1;">min_shares</span> = <span style="color: #3a81c3;">min</span><span style="color: #3a81c3;">(</span>s<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'shares'</span><span style="color: #6c3163;">]</span> <span style="color: #3a81c3; font-weight: bold;">for</span> s <span style="color: #3a81c3; font-weight: bold;">in</span> portfolio<span style="color: #3a81c3;">)</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Alternative: Returns {'name': 'AOL', 'shares': 20}</span>
-<span style="color: #715ab1;">min_shares</span> = <span style="color: #3a81c3;">min</span><span style="color: #3a81c3;">(</span>portfolio, key=<span style="color: #3a81c3; font-weight: bold;">lambda</span> s: s<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'shares'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org18db344" class="outline-3">
-<h3 id="org18db344"><span class="section-number-3">1.18</span> ChainMap</h3>
-<div class="outline-text-3" id="text-1-18">
-<p>
-A ChainMap takes multiple mappings and makes them logically appear as one. If there are duplicate keys,
-the values from the first mapping get used.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> collections <span style="color: #3a81c3; font-weight: bold;">import</span> ChainMap
-<span style="color: #715ab1;">c</span> = ChainMap<span style="color: #3a81c3;">(</span>a,b<span style="color: #3a81c3;">)</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">alternative</span>
-<span style="color: #715ab1;">c</span> = b
-c.update<span style="color: #3a81c3;">(</span>a<span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-<ul class="org-ul">
-<li>but ChainMap keep the reference of a&amp;b</li>
-</ul>
-</div>
-
-<div id="outline-container-org42ae034" class="outline-4">
-<h4 id="org42ae034"><span class="section-number-4">1.18.1</span> store scoped values</h4>
-<div class="outline-text-4" id="text-1-18-1">
-<p>
-A ChainMap is particularly useful when working with scoped values such as variables in
-a programming language (i.e., globals, locals, etc.)
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #715ab1;">values</span> = ChainMap<span style="color: #3a81c3;">()</span>
-<span style="color: #715ab1;">values</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</span><span style="color: #3a81c3;">]</span> = 1
-<span style="color: #715ab1;">values</span> = values.new_child<span style="color: #3a81c3;">()</span>
-<span style="color: #715ab1;">values</span><span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</span><span style="color: #3a81c3;">]</span> = 2
-values<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</span><span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 2</span>
-<span style="color: #715ab1;">values</span> = values.parents
-values<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</span><span style="color: #3a81c3;">]</span> <span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 1</span>
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-org57b3ed3" class="outline-2">
-<h2 id="org57b3ed3"><span class="section-number-2">2</span> String Manipulation</h2>
+<div id="outline-container-orgf5a7d49" class="outline-2">
+<h2 id="orgf5a7d49"><span class="section-number-2">2</span> String Manipulation</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org46f30a3" class="outline-3">
-<h3 id="org46f30a3"><span class="section-number-3">2.1</span> modules</h3>
+<div id="outline-container-org7b507e0" class="outline-3">
+<h3 id="org7b507e0"><span class="section-number-3">2.1</span> modules</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li><b>fnmatch</b>: Filename matching with shell patterns.</li>
@@ -553,12 +303,12 @@ values<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</s
 </div>
 </div>
 
-<div id="outline-container-org8af425a" class="outline-3">
-<h3 id="org8af425a"><span class="section-number-3">2.2</span> re</h3>
+<div id="outline-container-org55eb2a7" class="outline-3">
+<h3 id="org55eb2a7"><span class="section-number-3">2.2</span> re</h3>
 <div class="outline-text-3" id="text-2-2">
 </div>
-<div id="outline-container-orga17dbc9" class="outline-4">
-<h4 id="orga17dbc9"><span class="section-number-4">2.2.1</span> find</h4>
+<div id="outline-container-org2e2ef7b" class="outline-4">
+<h4 id="org2e2ef7b"><span class="section-number-4">2.2.1</span> find</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <ul class="org-ul">
 <li><code>match()</code></li>
@@ -569,8 +319,8 @@ values<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</s
 </div>
 </div>
 
-<div id="outline-container-org0e75a84" class="outline-4">
-<h4 id="org0e75a84"><span class="section-number-4">2.2.2</span> replace</h4>
+<div id="outline-container-org8deb72a" class="outline-4">
+<h4 id="org8deb72a"><span class="section-number-4">2.2.2</span> replace</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <ul class="org-ul">
 <li><code>sub</code></li>
@@ -578,8 +328,8 @@ values<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</s
 </div>
 </div>
 
-<div id="outline-container-orgdfe8206" class="outline-4">
-<h4 id="orgdfe8206"><span class="section-number-4">2.2.3</span> regex</h4>
+<div id="outline-container-org9945103" class="outline-4">
+<h4 id="org9945103"><span class="section-number-4">2.2.3</span> regex</h4>
 <div class="outline-text-4" id="text-2-2-3">
 <ul class="org-ul">
 <li>named capture group: <code>r'?P&lt;TOKENNAME&gt;[a-zA-Z]+'</code></li>
@@ -588,20 +338,20 @@ values<span style="color: #3a81c3;">[</span><span style="color: #2d9574;">'x'</s
 </div>
 </div>
 
-<div id="outline-container-org4b87047" class="outline-4">
-<h4 id="org4b87047"><span class="section-number-4">2.2.4</span> tokenize</h4>
+<div id="outline-container-org2353b0b" class="outline-4">
+<h4 id="org2353b0b"><span class="section-number-4">2.2.4</span> tokenize</h4>
 <div class="outline-text-4" id="text-2-2-4">
 </div>
 <ul class="org-ul">
-<li><a id="orgd6fcd2f"></a>Problem<br />
-<div class="outline-text-5" id="text-orgd6fcd2f">
+<li><a id="orgc7b8b31"></a>Problem<br />
+<div class="outline-text-5" id="text-orgc7b8b31">
 <p>
 You have a string that you want to parse left to right into a stream of tokens.
 </p>
 </div>
 </li>
-<li><a id="orgee0f2b4"></a>Usage<br />
-<div class="outline-text-5" id="text-orgee0f2b4">
+<li><a id="orgeedda07"></a>Usage<br />
+<div class="outline-text-5" id="text-orgeedda07">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> collections <span style="color: #3a81c3; font-weight: bold;">import</span> namedtuple
 <span style="color: #715ab1;">Token</span> = namedtuple<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'Token'</span>, <span style="color: #6c3163;">[</span><span style="color: #2d9574;">'type'</span>, <span style="color: #2d9574;">'value'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
@@ -634,8 +384,8 @@ supplied text one match at a time
 </ul>
 </div>
 
-<div id="outline-container-org25ebeff" class="outline-4">
-<h4 id="org25ebeff"><span class="section-number-4">2.2.5</span> syntax parser</h4>
+<div id="outline-container-org220431a" class="outline-4">
+<h4 id="org220431a"><span class="section-number-4">2.2.5</span> syntax parser</h4>
 <div class="outline-text-4" id="text-2-2-5">
 <ul class="org-ul">
 <li>PyParsing</li>
@@ -646,12 +396,12 @@ supplied text one match at a time
 </div>
 </div>
 
-<div id="outline-container-orgddc9570" class="outline-3">
-<h3 id="orgddc9570"><span class="section-number-3">2.3</span> format</h3>
+<div id="outline-container-org87a44cc" class="outline-3">
+<h3 id="org87a44cc"><span class="section-number-3">2.3</span> format</h3>
 <div class="outline-text-3" id="text-2-3">
 </div>
-<div id="outline-container-org03f0123" class="outline-4">
-<h4 id="org03f0123"><span class="section-number-4">2.3.1</span> align</h4>
+<div id="outline-container-orgef7b035" class="outline-4">
+<h4 id="orgef7b035"><span class="section-number-4">2.3.1</span> align</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3;">format</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'right'</span>, <span style="color: #2d9574;">'&gt;20'</span><span style="color: #3a81c3;">)</span>
@@ -663,8 +413,8 @@ supplied text one match at a time
 </div>
 </div>
 
-<div id="outline-container-org9586978" class="outline-4">
-<h4 id="org9586978"><span class="section-number-4">2.3.2</span> safesub</h4>
+<div id="outline-container-orgea0eafd" class="outline-4">
+<h4 id="orgea0eafd"><span class="section-number-4">2.3.2</span> safesub</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">safesub</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">dict</span><span style="color: #3a81c3;">)</span>:
@@ -680,8 +430,8 @@ s.format_map<span style="color: #3a81c3;">(</span>safesub<span style="color: #6c
 </div>
 </div>
 <ul class="org-ul">
-<li><a id="org184bacd"></a>frame hack<br />
-<div class="outline-text-5" id="text-org184bacd">
+<li><a id="orgea86356"></a>frame hack<br />
+<div class="outline-text-5" id="text-orgea86356">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">sub</span><span style="color: #3a81c3;">(</span>text<span style="color: #3a81c3;">)</span>:
     <span style="color: #3a81c3; font-weight: bold;">return</span> text.format_map<span style="color: #3a81c3;">(</span>safesub<span style="color: #6c3163;">(</span>sys._getframe<span style="color: #2d9574;">(</span>1<span style="color: #2d9574;">)</span>.f_locals<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
@@ -692,8 +442,8 @@ s.format_map<span style="color: #3a81c3;">(</span>safesub<span style="color: #6c
 </ul>
 </div>
 
-<div id="outline-container-org4bcd655" class="outline-4">
-<h4 id="org4bcd655"><span class="section-number-4">2.3.3</span> textwrap</h4>
+<div id="outline-container-org5f0a584" class="outline-4">
+<h4 id="org5f0a584"><span class="section-number-4">2.3.3</span> textwrap</h4>
 <div class="outline-text-4" id="text-2-3-3">
 <p>
 The textwrap module is a straightforward way to clean up text for printing.
@@ -703,8 +453,8 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-orgfb1e346" class="outline-3">
-<h3 id="orgfb1e346"><span class="section-number-3">2.4</span> join</h3>
+<div id="outline-container-org1c8c658" class="outline-3">
+<h3 id="org1c8c658"><span class="section-number-3">2.4</span> join</h3>
 <div class="outline-text-3" id="text-2-4">
 <ul class="org-ul">
 <li><code>'abc' + ',' + 'def'</code></li>
@@ -716,8 +466,8 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-org0d71cde" class="outline-3">
-<h3 id="org0d71cde"><span class="section-number-3">2.5</span> Combining I/O Write Operation</h3>
+<div id="outline-container-org668aa6d" class="outline-3">
+<h3 id="org668aa6d"><span class="section-number-3">2.5</span> Combining I/O Write Operation</h3>
 <div class="outline-text-3" id="text-2-5">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">combine</span><span style="color: #3a81c3;">(</span>source, maxsize<span style="color: #3a81c3;">)</span>:
@@ -742,8 +492,8 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-org6c34e0d" class="outline-3">
-<h3 id="org6c34e0d"><span class="section-number-3">2.6</span> escape</h3>
+<div id="outline-container-org478da3f" class="outline-3">
+<h3 id="org478da3f"><span class="section-number-3">2.6</span> escape</h3>
 <div class="outline-text-3" id="text-2-6">
 <ul class="org-ul">
 <li><code>html.escape</code></li>
@@ -752,8 +502,8 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-orgce6b251" class="outline-3">
-<h3 id="orgce6b251"><span class="section-number-3">2.7</span> Tokenizing Text</h3>
+<div id="outline-container-org7a1ee5a" class="outline-3">
+<h3 id="org7a1ee5a"><span class="section-number-3">2.7</span> Tokenizing Text</h3>
 <div class="outline-text-3" id="text-2-7">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> re
@@ -794,12 +544,12 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-org060742d" class="outline-2">
-<h2 id="org060742d"><span class="section-number-2">3</span> Numbers</h2>
+<div id="outline-container-orgd4e4374" class="outline-2">
+<h2 id="orgd4e4374"><span class="section-number-2">3</span> Numbers</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org5c71bbf" class="outline-3">
-<h3 id="org5c71bbf"><span class="section-number-3">3.1</span> round</h3>
+<div id="outline-container-orgedf3d4a" class="outline-3">
+<h3 id="orgedf3d4a"><span class="section-number-3">3.1</span> round</h3>
 <div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3;">round</span><span style="color: #3a81c3;">(</span>1.29, 1<span style="color: #3a81c3;">)</span>
@@ -813,8 +563,8 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-org41563b4" class="outline-3">
-<h3 id="org41563b4"><span class="section-number-3">3.2</span> Decimal</h3>
+<div id="outline-container-orga876dc6" class="outline-3">
+<h3 id="orga876dc6"><span class="section-number-3">3.2</span> Decimal</h3>
 <div class="outline-text-3" id="text-3-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> decimal <span style="color: #3a81c3; font-weight: bold;">import</span> Decimal, localcontext
@@ -829,8 +579,8 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-orgf1a6c68" class="outline-3">
-<h3 id="orgf1a6c68"><span class="section-number-3">3.3</span> Formatting</h3>
+<div id="outline-container-orgf26c18b" class="outline-3">
+<h3 id="orgf26c18b"><span class="section-number-3">3.3</span> Formatting</h3>
 <div class="outline-text-3" id="text-3-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">x</span> = 1234.56789
@@ -853,8 +603,8 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-org94cfaca" class="outline-3">
-<h3 id="org94cfaca"><span class="section-number-3">3.4</span> Bin, Oct, Hex Int</h3>
+<div id="outline-container-orgdbd8d79" class="outline-3">
+<h3 id="orgdbd8d79"><span class="section-number-3">3.4</span> Bin, Oct, Hex Int</h3>
 <div class="outline-text-3" id="text-3-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">x</span> = -1234
@@ -875,8 +625,8 @@ The textwrap module is a straightforward way to clean up text for printing.
 </div>
 </div>
 
-<div id="outline-container-orgc237980" class="outline-3">
-<h3 id="orgc237980"><span class="section-number-3">3.5</span> Bytes2Int</h3>
+<div id="outline-container-orgda51172" class="outline-3">
+<h3 id="orgda51172"><span class="section-number-3">3.5</span> Bytes2Int</h3>
 <div class="outline-text-3" id="text-3-5">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">data</span> = b<span style="color: #2d9574;">'\x00\x124V\x00x\x90\xab\x00\xcd\xef\x01\x00#\x004'</span>
@@ -896,8 +646,8 @@ useful in cryptography or networking domains
 </div>
 </div>
 
-<div id="outline-container-org3d81193" class="outline-3">
-<h3 id="org3d81193"><span class="section-number-3">3.6</span> Complex Math</h3>
+<div id="outline-container-orgfa5e32e" class="outline-3">
+<h3 id="orgfa5e32e"><span class="section-number-3">3.6</span> Complex Math</h3>
 <div class="outline-text-3" id="text-3-6">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">a</span> = <span style="color: #3a81c3;">complex</span><span style="color: #3a81c3;">(</span>2, 4<span style="color: #3a81c3;">)</span>
@@ -921,8 +671,8 @@ np.sin<span style="color: #3a81c3;">(</span>a<span style="color: #3a81c3;">)</sp
 </div>
 </div>
 
-<div id="outline-container-org79cf082" class="outline-3">
-<h3 id="org79cf082"><span class="section-number-3">3.7</span> random</h3>
+<div id="outline-container-org052bf23" class="outline-3">
+<h3 id="org052bf23"><span class="section-number-3">3.7</span> random</h3>
 <div class="outline-text-3" id="text-3-7">
 <ul class="org-ul">
 <li><code>random.choice</code></li>
@@ -933,8 +683,8 @@ np.sin<span style="color: #3a81c3;">(</span>a<span style="color: #3a81c3;">)</sp
 <li><code>random.getrandbits</code></li>
 </ul>
 </div>
-<div id="outline-container-org144c89b" class="outline-4">
-<h4 id="org144c89b"><span class="section-number-4">3.7.1</span> seed</h4>
+<div id="outline-container-orga480db8" class="outline-4">
+<h4 id="orga480db8"><span class="section-number-4">3.7.1</span> seed</h4>
 <div class="outline-text-4" id="text-3-7-1">
 <div class="org-src-container">
 <pre class="src src-python">random.seed<span style="color: #3a81c3;">()</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Seed based on system time or os.urandom()</span>
@@ -945,8 +695,8 @@ random.seed<span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">
 </div>
 </div>
 
-<div id="outline-container-org0a351e5" class="outline-4">
-<h4 id="org0a351e5"><span class="section-number-4">3.7.2</span> distribution</h4>
+<div id="outline-container-orgbaa2995" class="outline-4">
+<h4 id="orgbaa2995"><span class="section-number-4">3.7.2</span> distribution</h4>
 <div class="outline-text-4" id="text-3-7-2">
 <ul class="org-ul">
 <li><code>random.uniform</code></li>
@@ -956,8 +706,8 @@ random.seed<span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">
 </div>
 </div>
 
-<div id="outline-container-orgd43031c" class="outline-3">
-<h3 id="orgd43031c"><span class="section-number-3">3.8</span> math.f***</h3>
+<div id="outline-container-orgc424a1b" class="outline-3">
+<h3 id="orgc424a1b"><span class="section-number-3">3.8</span> math.f***</h3>
 <div class="outline-text-3" id="text-3-8">
 <ul class="org-ul">
 <li><code>math.fsum</code></li>
@@ -968,12 +718,12 @@ random.seed<span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">
 </div>
 </div>
 
-<div id="outline-container-org79b8193" class="outline-2">
-<h2 id="org79b8193"><span class="section-number-2">4</span> Datetime</h2>
+<div id="outline-container-orgbbb32ee" class="outline-2">
+<h2 id="orgbbb32ee"><span class="section-number-2">4</span> Datetime</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org9438575" class="outline-3">
-<h3 id="org9438575"><span class="section-number-3">4.1</span> Finding Last Friday</h3>
+<div id="outline-container-orgc3acc70" class="outline-3">
+<h3 id="orgc3acc70"><span class="section-number-3">4.1</span> Finding Last Friday</h3>
 <div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> dateutil.relativedelta <span style="color: #3a81c3; font-weight: bold;">import</span> relativedelta
@@ -985,8 +735,8 @@ random.seed<span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">
 </div>
 </div>
 
-<div id="outline-container-org5281b2b" class="outline-3">
-<h3 id="org5281b2b"><span class="section-number-3">4.2</span> Timezone</h3>
+<div id="outline-container-org4685028" class="outline-3">
+<h3 id="org4685028"><span class="section-number-3">4.2</span> Timezone</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> pytz
@@ -1014,12 +764,12 @@ random.seed<span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">
 </div>
 </div>
 
-<div id="outline-container-orge4ed194" class="outline-2">
-<h2 id="orge4ed194"><span class="section-number-2">5</span> Iterator</h2>
+<div id="outline-container-orgb351146" class="outline-2">
+<h2 id="orgb351146"><span class="section-number-2">5</span> Iterator</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org7c3dff2" class="outline-3">
-<h3 id="org7c3dff2"><span class="section-number-3">5.1</span> Manually Consuming an Iterator</h3>
+<div id="outline-container-org0ca0381" class="outline-3">
+<h3 id="org0ca0381"><span class="section-number-3">5.1</span> Manually Consuming an Iterator</h3>
 <div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">iterable</span> = <span style="color: #3a81c3;">iter</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span>5<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Invokes range.__iter__()</span>
@@ -1043,8 +793,8 @@ random.seed<span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">
 </ul>
 </div>
 </div>
-<div id="outline-container-org7a69320" class="outline-3">
-<h3 id="org7a69320"><span class="section-number-3">5.2</span> Iterating Over Multi Sequences</h3>
+<div id="outline-container-org449825b" class="outline-3">
+<h3 id="org449825b"><span class="section-number-3">5.2</span> Iterating Over Multi Sequences</h3>
 <div class="outline-text-3" id="text-5-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">a</span> = <span style="color: #3a81c3;">[</span>1, 2, 3<span style="color: #3a81c3;">]</span>
@@ -1063,8 +813,8 @@ random.seed<span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">
 </div>
 </div>
 
-<div id="outline-container-org676c45a" class="outline-3">
-<h3 id="org676c45a"><span class="section-number-3">5.3</span> <code>dropwhile</code></h3>
+<div id="outline-container-orgceeada3" class="outline-3">
+<h3 id="orgceeada3"><span class="section-number-3">5.3</span> <code>dropwhile</code></h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 Drop all of the initial comment lines.
@@ -1072,8 +822,8 @@ Drop all of the initial comment lines.
 </div>
 </div>
 
-<div id="outline-container-org2a87ecd" class="outline-3">
-<h3 id="org2a87ecd"><span class="section-number-3">5.4</span> Permutation &amp; Combination</h3>
+<div id="outline-container-orgfc5e3ae" class="outline-3">
+<h3 id="orgfc5e3ae"><span class="section-number-3">5.4</span> Permutation &amp; Combination</h3>
 <div class="outline-text-3" id="text-5-4">
 <ul class="org-ul">
 <li><code>combinations</code>, <code>permutations</code>, <code>combinations_with_replacement</code></li>
@@ -1081,19 +831,19 @@ Drop all of the initial comment lines.
 </div>
 </div>
 
-<div id="outline-container-org1c24420" class="outline-3">
-<h3 id="org1c24420"><span class="section-number-3">5.5</span> <code>itertools.chain</code></h3>
+<div id="outline-container-orga985a46" class="outline-3">
+<h3 id="orga985a46"><span class="section-number-3">5.5</span> <code>itertools.chain</code></h3>
 <div class="outline-text-3" id="text-5-5">
 <p>
 Concatenate two iterables(copy-free)
 </p>
 </div>
 </div>
-<div id="outline-container-orgb813eb0" class="outline-3">
-<h3 id="orgb813eb0"><span class="section-number-3">5.6</span> Data Processing Pipelines</h3>
+<div id="outline-container-org55cf76b" class="outline-3">
+<h3 id="org55cf76b"><span class="section-number-3">5.6</span> Data Processing Pipelines</h3>
 </div>
-<div id="outline-container-orgb0ab4fa" class="outline-3">
-<h3 id="orgb0ab4fa"><span class="section-number-3">5.7</span> Flattening a Nested Sequence</h3>
+<div id="outline-container-org4e267db" class="outline-3">
+<h3 id="org4e267db"><span class="section-number-3">5.7</span> Flattening a Nested Sequence</h3>
 <div class="outline-text-3" id="text-5-7">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> collections <span style="color: #3a81c3; font-weight: bold;">import</span> Iterable
@@ -1113,8 +863,8 @@ Concatenate two iterables(copy-free)
 </div>
 </div>
 </div>
-<div id="outline-container-orga1fcf83" class="outline-3">
-<h3 id="orga1fcf83"><span class="section-number-3">5.8</span> Merge Two Sorted Iterables</h3>
+<div id="outline-container-org91e5859" class="outline-3">
+<h3 id="org91e5859"><span class="section-number-3">5.8</span> Merge Two Sorted Iterables</h3>
 <div class="outline-text-3" id="text-5-8">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> heapq
@@ -1126,11 +876,11 @@ Concatenate two iterables(copy-free)
 </div>
 </div>
 </div>
-<div id="outline-container-org30744f2" class="outline-3">
-<h3 id="org30744f2"><span class="section-number-3">5.9</span> <code>iter()</code></h3>
+<div id="outline-container-org2348305" class="outline-3">
+<h3 id="org2348305"><span class="section-number-3">5.9</span> <code>iter()</code></h3>
 <div class="outline-text-3" id="text-5-9">
 <p>
-<a id="org4cb2508"></a>
+<a id="org4221d85"></a>
 <code>iter()</code> optionally accepts a zero-argument <b>callable</b> and <b>sentinel</b> (terminating) value as inputs.
 </p>
 <div class="org-src-container">
@@ -1141,12 +891,12 @@ Concatenate two iterables(copy-free)
 </div>
 </div>
 </div>
-<div id="outline-container-org2f40139" class="outline-2">
-<h2 id="org2f40139"><span class="section-number-2">6</span> I/O</h2>
+<div id="outline-container-org016fcec" class="outline-2">
+<h2 id="org016fcec"><span class="section-number-2">6</span> I/O</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-org4d97f5e" class="outline-3">
-<h3 id="org4d97f5e"><span class="section-number-3">6.1</span> Encoding</h3>
+<div id="outline-container-orgdec9a41" class="outline-3">
+<h3 id="orgdec9a41"><span class="section-number-3">6.1</span> Encoding</h3>
 <div class="outline-text-3" id="text-6-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">with</span> <span style="color: #3a81c3;">open</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'somefile.txt'</span>, <span style="color: #2d9574;">'rt'</span>, encoding=<span style="color: #2d9574;">'latin-1'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> f:
@@ -1166,8 +916,8 @@ Concatenate two iterables(copy-free)
 </div>
 </div>
 </div>
-<div id="outline-container-orgab8d2a5" class="outline-3">
-<h3 id="orgab8d2a5"><span class="section-number-3">6.2</span> <code>readinto</code></h3>
+<div id="outline-container-org4f913c4" class="outline-3">
+<h3 id="org4f913c4"><span class="section-number-3">6.2</span> <code>readinto</code></h3>
 <div class="outline-text-3" id="text-6-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> array
@@ -1184,14 +934,14 @@ Concatenate two iterables(copy-free)
 </ul>
 </div>
 </div>
-<div id="outline-container-org38eeb43" class="outline-3">
-<h3 id="org38eeb43"><span class="section-number-3">6.3</span> <code>io.StringIO</code>, <code>io.BytesIO</code></h3>
+<div id="outline-container-orge709abc" class="outline-3">
+<h3 id="orge709abc"><span class="section-number-3">6.3</span> <code>io.StringIO</code>, <code>io.BytesIO</code></h3>
 </div>
-<div id="outline-container-org578a9b2" class="outline-3">
-<h3 id="org578a9b2"><span class="section-number-3">6.4</span> <code>gzip.open</code>, <code>bz2.open</code></h3>
+<div id="outline-container-org2da33ef" class="outline-3">
+<h3 id="org2da33ef"><span class="section-number-3">6.4</span> <code>gzip.open</code>, <code>bz2.open</code></h3>
 </div>
-<div id="outline-container-orgf553ea1" class="outline-3">
-<h3 id="orgf553ea1"><span class="section-number-3">6.5</span> Iterating Over Fixed-Sized Records</h3>
+<div id="outline-container-org7896607" class="outline-3">
+<h3 id="org7896607"><span class="section-number-3">6.5</span> Iterating Over Fixed-Sized Records</h3>
 <div class="outline-text-3" id="text-6-5">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> functools <span style="color: #3a81c3; font-weight: bold;">import</span> partial
@@ -1205,17 +955,17 @@ Concatenate two iterables(copy-free)
 </pre>
 </div>
 <ul class="org-ul">
-<li><a href="#org4cb2508">5.9</a></li>
+<li><a href="#org4221d85">5.9</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9bebf19" class="outline-3">
-<h3 id="org9bebf19"><span class="section-number-3">6.6</span> In-memory Modification</h3>
+<div id="outline-container-orgac7ae97" class="outline-3">
+<h3 id="orgac7ae97"><span class="section-number-3">6.6</span> In-memory Modification</h3>
 <div class="outline-text-3" id="text-6-6">
 </div>
-<div id="outline-container-orge4e67aa" class="outline-4">
-<h4 id="orge4e67aa"><span class="section-number-4">6.6.1</span> <code>nmap</code></h4>
+<div id="outline-container-org8f25749" class="outline-4">
+<h4 id="org8f25749"><span class="section-number-4">6.6.1</span> <code>nmap</code></h4>
 <div class="outline-text-4" id="text-6-6-1">
 <p>
 Use the <code>mmap</code> module to memory map files for random access to its contents or to make in-place modifications.
@@ -1226,8 +976,8 @@ Use the <code>mmap</code> module to memory map files for random access to its co
 </div>
 </div>
 
-<div id="outline-container-orge8bc057" class="outline-4">
-<h4 id="orge8bc057"><span class="section-number-4">6.6.2</span> <code>memoryview</code></h4>
+<div id="outline-container-orgd0df4b3" class="outline-4">
+<h4 id="orgd0df4b3"><span class="section-number-4">6.6.2</span> <code>memoryview</code></h4>
 <div class="outline-text-4" id="text-6-6-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">buf</span> = <span style="color: #3a81c3;">bytearray</span><span style="color: #3a81c3;">(</span>b<span style="color: #2d9574;">'Hello World'</span><span style="color: #3a81c3;">)</span>
@@ -1242,8 +992,8 @@ Use the <code>mmap</code> module to memory map files for random access to its co
 </div>
 </div>
 
-<div id="outline-container-orgf650b36" class="outline-3">
-<h3 id="orgf650b36"><span class="section-number-3">6.7</span> <code>os.path</code></h3>
+<div id="outline-container-org6619111" class="outline-3">
+<h3 id="org6619111"><span class="section-number-3">6.7</span> <code>os.path</code></h3>
 <div class="outline-text-3" id="text-6-7">
 <div class="org-src-container">
 <pre class="src src-python">os.path.basename<span style="color: #3a81c3;">(</span>path<span style="color: #3a81c3;">)</span>
@@ -1262,8 +1012,8 @@ os.listdir<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">di
 </ul>
 </div>
 </div>
-<div id="outline-container-org990f2e0" class="outline-3">
-<h3 id="org990f2e0"><span class="section-number-3">6.8</span> Changing Encoding of a File</h3>
+<div id="outline-container-org56ab31f" class="outline-3">
+<h3 id="org56ab31f"><span class="section-number-3">6.8</span> Changing Encoding of a File</h3>
 <div class="outline-text-3" id="text-6-8">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> io
@@ -1302,8 +1052,8 @@ f.<span style="color: #3a81c3;">buffer</span>.raw <span style="color: #2aa1ae; b
 </div>
 </div>
 
-<div id="outline-container-org114453b" class="outline-3">
-<h3 id="org114453b"><span class="section-number-3">6.9</span> File Descriptor</h3>
+<div id="outline-container-org9490464" class="outline-3">
+<h3 id="org9490464"><span class="section-number-3">6.9</span> File Descriptor</h3>
 <div class="outline-text-3" id="text-6-9">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Create a file object, but don't close underlying fd when done</span>
@@ -1328,8 +1078,8 @@ f.<span style="color: #3a81c3;">buffer</span>.raw <span style="color: #2aa1ae; b
 </div>
 </div>
 </div>
-<div id="outline-container-org6343c21" class="outline-3">
-<h3 id="org6343c21"><span class="section-number-3">6.10</span> Temporary Files</h3>
+<div id="outline-container-org7051201" class="outline-3">
+<h3 id="org7051201"><span class="section-number-3">6.10</span> Temporary Files</h3>
 <div class="outline-text-3" id="text-6-10">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> tempfile <span style="color: #3a81c3; font-weight: bold;">import</span> TemporaryFile, NamedTemporaryFile, TemporaryDirectory
@@ -1347,15 +1097,15 @@ f.<span style="color: #3a81c3;">buffer</span>.raw <span style="color: #2aa1ae; b
 </div>
 </div>
 
-<div id="outline-container-orgc8d8794" class="outline-3">
-<h3 id="orgc8d8794"><span class="section-number-3">6.11</span> Serializing Python Objects</h3>
+<div id="outline-container-org746815f" class="outline-3">
+<h3 id="org746815f"><span class="section-number-3">6.11</span> Serializing Python Objects</h3>
 <div class="outline-text-3" id="text-6-11">
 <p>
 <code>pickle</code> is a Python-specific self-describing data encoding
 </p>
 </div>
-<div id="outline-container-orga0e07c1" class="outline-4">
-<h4 id="orga0e07c1"><span class="section-number-4">6.11.1</span> Dealing with Multiple Objects</h4>
+<div id="outline-container-org18c2653" class="outline-4">
+<h4 id="org18c2653"><span class="section-number-4">6.11.1</span> Dealing with Multiple Objects</h4>
 <div class="outline-text-4" id="text-6-11-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> pickle
@@ -1371,8 +1121,8 @@ f.<span style="color: #3a81c3;">buffer</span>.raw <span style="color: #2aa1ae; b
 </div>
 </div>
 
-<div id="outline-container-org406fea8" class="outline-4">
-<h4 id="org406fea8"><span class="section-number-4">6.11.2</span> Safety</h4>
+<div id="outline-container-orgf5bc1bd" class="outline-4">
+<h4 id="orgf5bc1bd"><span class="section-number-4">6.11.2</span> Safety</h4>
 <div class="outline-text-4" id="text-6-11-2">
 <p>
 <code>pickle.load()</code> should never be used on untrusted data
@@ -1380,8 +1130,8 @@ f.<span style="color: #3a81c3;">buffer</span>.raw <span style="color: #2aa1ae; b
 </div>
 </div>
 
-<div id="outline-container-org56353f9" class="outline-4">
-<h4 id="org56353f9"><span class="section-number-4">6.11.3</span> User-defined Classes</h4>
+<div id="outline-container-org6996432" class="outline-4">
+<h4 id="org6996432"><span class="section-number-4">6.11.3</span> User-defined Classes</h4>
 <div class="outline-text-4" id="text-6-11-3">
 <p>
 Certain kinds of objects can’t be pickled. These are typically objects that involve some sort of external system state, such as open files,
@@ -1396,16 +1146,16 @@ by providing <code>__getstate__()</code> and <code>__setstate__()</code> methods
 </div>
 </div>
 
-<div id="outline-container-org0926387" class="outline-2">
-<h2 id="org0926387"><span class="section-number-2">7</span> Encoding</h2>
+<div id="outline-container-org57d9c67" class="outline-2">
+<h2 id="org57d9c67"><span class="section-number-2">7</span> Encoding</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-org9f70d54" class="outline-3">
-<h3 id="org9f70d54"><span class="section-number-3">7.1</span> csv</h3>
+<div id="outline-container-org395d5da" class="outline-3">
+<h3 id="org395d5da"><span class="section-number-3">7.1</span> csv</h3>
 <div class="outline-text-3" id="text-7-1">
 </div>
-<div id="outline-container-org0379a54" class="outline-4">
-<h4 id="org0379a54"><span class="section-number-4">7.1.1</span> <code>reader</code></h4>
+<div id="outline-container-orgdbc3766" class="outline-4">
+<h4 id="orgdbc3766"><span class="section-number-4">7.1.1</span> <code>reader</code></h4>
 <div class="outline-text-4" id="text-7-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> collections <span style="color: #3a81c3; font-weight: bold;">import</span> namedtuple
@@ -1423,8 +1173,8 @@ by providing <code>__getstate__()</code> and <code>__setstate__()</code> methods
 </div>
 </div>
 
-<div id="outline-container-org94f4571" class="outline-4">
-<h4 id="org94f4571"><span class="section-number-4">7.1.2</span> <code>DictReader</code></h4>
+<div id="outline-container-orgd39c3e5" class="outline-4">
+<h4 id="orgd39c3e5"><span class="section-number-4">7.1.2</span> <code>DictReader</code></h4>
 <div class="outline-text-4" id="text-7-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> csv
@@ -1438,8 +1188,8 @@ by providing <code>__getstate__()</code> and <code>__setstate__()</code> methods
 </div>
 </div>
 
-<div id="outline-container-org4a786d1" class="outline-4">
-<h4 id="org4a786d1"><span class="section-number-4">7.1.3</span> <code>writer</code></h4>
+<div id="outline-container-org391cbcc" class="outline-4">
+<h4 id="org391cbcc"><span class="section-number-4">7.1.3</span> <code>writer</code></h4>
 <div class="outline-text-4" id="text-7-1-3">
 <ul class="org-ul">
 <li><code>writer.writerow</code> and <code>writer.writerows</code></li>
@@ -1447,8 +1197,8 @@ by providing <code>__getstate__()</code> and <code>__setstate__()</code> methods
 </div>
 </div>
 
-<div id="outline-container-orgeebd5b6" class="outline-4">
-<h4 id="orgeebd5b6"><span class="section-number-4">7.1.4</span> <code>DictWriter</code></h4>
+<div id="outline-container-orgda22753" class="outline-4">
+<h4 id="orgda22753"><span class="section-number-4">7.1.4</span> <code>DictWriter</code></h4>
 <div class="outline-text-4" id="text-7-1-4">
 <ul class="org-ul">
 <li><code>writer.writeheader</code> and <code>writer.writerows</code></li>
@@ -1456,8 +1206,8 @@ by providing <code>__getstate__()</code> and <code>__setstate__()</code> methods
 </div>
 </div>
 </div>
-<div id="outline-container-org0540bfa" class="outline-3">
-<h3 id="org0540bfa"><span class="section-number-3">7.2</span> json2object</h3>
+<div id="outline-container-orgdbc4915" class="outline-3">
+<h3 id="orgdbc4915"><span class="section-number-3">7.2</span> json2object</h3>
 <div class="outline-text-3" id="text-7-2">
 <ul class="org-ul">
 <li>use <code>object_pairs_hook</code> and <code>object_hook</code> options</li>
@@ -1488,8 +1238,8 @@ json.dumps<span style="color: #3a81c3;">(</span>obj, default=<span style="color:
 </div>
 </div>
 
-<div id="outline-container-org6e82f81" class="outline-3">
-<h3 id="org6e82f81"><span class="section-number-3">7.3</span> xml</h3>
+<div id="outline-container-org1c526e2" class="outline-3">
+<h3 id="org1c526e2"><span class="section-number-3">7.3</span> xml</h3>
 <div class="outline-text-3" id="text-7-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> xml.etree.ElementTree <span style="color: #3a81c3; font-weight: bold;">import</span> parse
@@ -1504,8 +1254,8 @@ json.dumps<span style="color: #3a81c3;">(</span>obj, default=<span style="color:
 </div>
 </div>
 
-<div id="outline-container-org1265f27" class="outline-3">
-<h3 id="org1265f27"><span class="section-number-3">7.4</span> hex encoding</h3>
+<div id="outline-container-org7a835a2" class="outline-3">
+<h3 id="org7a835a2"><span class="section-number-3">7.4</span> hex encoding</h3>
 <div class="outline-text-3" id="text-7-4">
 <ul class="org-ul">
 <li><code>binascii</code></li>
@@ -1531,8 +1281,8 @@ json.dumps<span style="color: #3a81c3;">(</span>obj, default=<span style="color:
 </div>
 </div>
 
-<div id="outline-container-org5723ce1" class="outline-3">
-<h3 id="org5723ce1"><span class="section-number-3">7.5</span> base64</h3>
+<div id="outline-container-org604728d" class="outline-3">
+<h3 id="org604728d"><span class="section-number-3">7.5</span> base64</h3>
 <div class="outline-text-3" id="text-7-5">
 <ul class="org-ul">
 <li><code>base64.b64encode</code></li>
@@ -1541,8 +1291,8 @@ json.dumps<span style="color: #3a81c3;">(</span>obj, default=<span style="color:
 </div>
 </div>
 
-<div id="outline-container-org67bb827" class="outline-3">
-<h3 id="org67bb827"><span class="section-number-3">7.6</span> struct</h3>
+<div id="outline-container-org8875cc3" class="outline-3">
+<h3 id="org8875cc3"><span class="section-number-3">7.6</span> struct</h3>
 <div class="outline-text-3" id="text-7-6">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> struct <span style="color: #3a81c3; font-weight: bold;">import</span> Struct
@@ -1566,12 +1316,12 @@ json.dumps<span style="color: #3a81c3;">(</span>obj, default=<span style="color:
 </div>
 </div>
 
-<div id="outline-container-org5f22c69" class="outline-2">
-<h2 id="org5f22c69"><span class="section-number-2">8</span> Functions</h2>
+<div id="outline-container-orga8944a5" class="outline-2">
+<h2 id="orga8944a5"><span class="section-number-2">8</span> Functions</h2>
 <div class="outline-text-2" id="text-8">
 </div>
-<div id="outline-container-org442404a" class="outline-3">
-<h3 id="org442404a"><span class="section-number-3">8.1</span> Keyword-only Arguments</h3>
+<div id="outline-container-org81731bb" class="outline-3">
+<h3 id="org81731bb"><span class="section-number-3">8.1</span> Keyword-only Arguments</h3>
 <div class="outline-text-3" id="text-8-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">recv</span><span style="color: #3a81c3;">(</span>maxsize, *, block<span style="color: #3a81c3;">)</span>:
@@ -1584,8 +1334,8 @@ recv<span style="color: #3a81c3;">(</span>1024, block=<span style="color: #4e316
 </div>
 </div>
 
-<div id="outline-container-org867dbca" class="outline-3">
-<h3 id="org867dbca"><span class="section-number-3">8.2</span> Capture Variables</h3>
+<div id="outline-container-orgbe3f066" class="outline-3">
+<h3 id="orgbe3f066"><span class="section-number-3">8.2</span> Capture Variables</h3>
 <div class="outline-text-3" id="text-8-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">x</span> = 10
@@ -1597,12 +1347,12 @@ a<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span> <
 </div>
 </div>
 
-<div id="outline-container-org0ffa3fe" class="outline-3">
-<h3 id="org0ffa3fe"><span class="section-number-3">8.3</span> Replace Single-method Classes with Closures</h3>
+<div id="outline-container-orgb82176d" class="outline-3">
+<h3 id="orgb82176d"><span class="section-number-3">8.3</span> Replace Single-method Classes with Closures</h3>
 </div>
 
-<div id="outline-container-org2ecb434" class="outline-3">
-<h3 id="org2ecb434"><span class="section-number-3">8.4</span> Callback Shared State</h3>
+<div id="outline-container-org3bf3676" class="outline-3">
+<h3 id="org3bf3676"><span class="section-number-3">8.4</span> Callback Shared State</h3>
 <div class="outline-text-3" id="text-8-4">
 <p>
 <code>Recipe 7.10</code> four ways:
@@ -1616,12 +1366,12 @@ a<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span> <
 </div>
 </div>
 </div>
-<div id="outline-container-orgad848dd" class="outline-2">
-<h2 id="orgad848dd"><span class="section-number-2">9</span> Class</h2>
+<div id="outline-container-orgf696e00" class="outline-2">
+<h2 id="orgf696e00"><span class="section-number-2">9</span> Class</h2>
 <div class="outline-text-2" id="text-9">
 </div>
-<div id="outline-container-orga998ef6" class="outline-3">
-<h3 id="orga998ef6"><span class="section-number-3">9.1</span> String Representation</h3>
+<div id="outline-container-org6d728f8" class="outline-3">
+<h3 id="org6d728f8"><span class="section-number-3">9.1</span> String Representation</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li><code>__repr__</code>: returns the code representation of an instance, and is usually the text you would type to recreate the instance. <code>eval(repr(x)) == x</code></li>
@@ -1630,8 +1380,8 @@ a<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span> <
 </div>
 </div>
 
-<div id="outline-container-orgc609442" class="outline-3">
-<h3 id="orgc609442"><span class="section-number-3">9.2</span> <code>__format__</code></h3>
+<div id="outline-container-org5eeca5d" class="outline-3">
+<h3 id="org5eeca5d"><span class="section-number-3">9.2</span> <code>__format__</code></h3>
 <div class="outline-text-3" id="text-9-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">_formats</span> = <span style="color: #3a81c3;">{</span>
@@ -1648,8 +1398,8 @@ a<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span> <
 </div>
 </div>
 
-<div id="outline-container-org6fe8796" class="outline-3">
-<h3 id="org6fe8796"><span class="section-number-3">9.3</span> Context Management</h3>
+<div id="outline-container-org3536550" class="outline-3">
+<h3 id="org3536550"><span class="section-number-3">9.3</span> Context Management</h3>
 <div class="outline-text-3" id="text-9-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Connection</span>:
@@ -1665,8 +1415,8 @@ a<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span> <
 </div>
 </div>
 
-<div id="outline-container-orge6fa849" class="outline-3">
-<h3 id="orge6fa849"><span class="section-number-3">9.4</span> Saving Memory <code>__slots__</code></h3>
+<div id="outline-container-org3921c0c" class="outline-3">
+<h3 id="org3921c0c"><span class="section-number-3">9.4</span> Saving Memory <code>__slots__</code></h3>
 <div class="outline-text-3" id="text-9-4">
 <ul class="org-ul">
 <li>Instances are built around a small fixed-sized array instead of a dictionary.</li>
@@ -1684,8 +1434,8 @@ a<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span> <
 </div>
 </div>
 
-<div id="outline-container-org7dec963" class="outline-3">
-<h3 id="org7dec963"><span class="section-number-3">9.5</span> Properties</h3>
+<div id="outline-container-orgf0552c2" class="outline-3">
+<h3 id="orgf0552c2"><span class="section-number-3">9.5</span> Properties</h3>
 <div class="outline-text-3" id="text-9-5">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Object</span>:
@@ -1704,8 +1454,8 @@ a<span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span> <
 </pre>
 </div>
 </div>
-<div id="outline-container-org59ec443" class="outline-4">
-<h4 id="org59ec443"><span class="section-number-4">9.5.1</span> Extending a Property</h4>
+<div id="outline-container-org84bea7e" class="outline-4">
+<h4 id="org84bea7e"><span class="section-number-4">9.5.1</span> Extending a Property</h4>
 <div class="outline-text-4" id="text-9-5-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">SubPerson</span><span style="color: #3a81c3;">(</span>Person<span style="color: #3a81c3;">)</span>:
@@ -1743,8 +1493,8 @@ Extending only <code>getter</code> method
 </div>
 </div>
 
-<div id="outline-container-org2f6bccf" class="outline-3">
-<h3 id="org2f6bccf"><span class="section-number-3">9.6</span> <code>super()</code></h3>
+<div id="outline-container-org1905735" class="outline-3">
+<h3 id="org1905735"><span class="section-number-3">9.6</span> <code>super()</code></h3>
 <div class="outline-text-3" id="text-9-6">
 <ul class="org-ul">
 <li>To avoid double-invocation when involving multiple inheritance.</li>
@@ -1752,8 +1502,8 @@ Extending only <code>getter</code> method
 </ul>
 </div>
 
-<div id="outline-container-org9adad0f" class="outline-4">
-<h4 id="org9adad0f"><span class="section-number-4">9.6.1</span> MRO</h4>
+<div id="outline-container-org8d5efdb" class="outline-4">
+<h4 id="org8d5efdb"><span class="section-number-4">9.6.1</span> MRO</h4>
 <div class="outline-text-4" id="text-9-6-1">
 <p>
 The actual determination of the MRO list itself is made using a technique known as C3 Linearization.
@@ -1772,8 +1522,8 @@ When you use the <code>super()</code> function, Python continues its search star
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc128841" class="outline-4">
-<h4 id="orgc128841"><span class="section-number-4">9.6.2</span> Multiple Inheritance with Different Arguments to Constructors</h4>
+<div id="outline-container-orgd882e93" class="outline-4">
+<h4 id="orgd882e93"><span class="section-number-4">9.6.2</span> Multiple Inheritance with Different Arguments to Constructors</h4>
 <div class="outline-text-4" id="text-9-6-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">A</span>:
@@ -1810,8 +1560,8 @@ or
 </div>
 </div>
 
-<div id="outline-container-org87d89dd" class="outline-3">
-<h3 id="org87d89dd"><span class="section-number-3">9.7</span> <b>Descriptor</b></h3>
+<div id="outline-container-org07e81e7" class="outline-3">
+<h3 id="org07e81e7"><span class="section-number-3">9.7</span> <b>Descriptor</b></h3>
 <div class="outline-text-3" id="text-9-7">
 <p>
 Use Descriptor to create a new kind of instance attribute with some extra functionality, such as type checking.
@@ -1849,8 +1599,8 @@ Descriptors provide the underlying magic for most of Python’s class features, 
 </pre>
 </div>
 </div>
-<div id="outline-container-orge0849ec" class="outline-4">
-<h4 id="orge0849ec"><span class="section-number-4">9.7.1</span> Advanced Usage</h4>
+<div id="outline-container-org6654827" class="outline-4">
+<h4 id="org6654827"><span class="section-number-4">9.7.1</span> Advanced Usage</h4>
 <div class="outline-text-4" id="text-9-7-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Descriptor for a type-checked attribute</span>
@@ -1897,8 +1647,8 @@ Descriptors provide the underlying magic for most of Python’s class features, 
 </div>
 </div>
 
-<div id="outline-container-orgb4a3fb8" class="outline-4">
-<h4 id="orgb4a3fb8"><span class="section-number-4">9.7.2</span> Lazy Properties</h4>
+<div id="outline-container-orge4c9b1a" class="outline-4">
+<h4 id="orge4c9b1a"><span class="section-number-4">9.7.2</span> Lazy Properties</h4>
 <div class="outline-text-4" id="text-9-7-2">
 <p>
 Define a read-only attribute as a property that only gets computed on access.
@@ -1930,8 +1680,8 @@ Define a read-only attribute as a property that only gets computed on access.
 </div>
 </div>
 
-<div id="outline-container-org6ab0070" class="outline-4">
-<h4 id="org6ab0070"><span class="section-number-4">9.7.3</span> Data Model</h4>
+<div id="outline-container-orgf760147" class="outline-4">
+<h4 id="orgf760147"><span class="section-number-4">9.7.3</span> Data Model</h4>
 <div class="outline-text-4" id="text-9-7-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Base class. Uses a descriptor to set a value</span>
@@ -1974,8 +1724,8 @@ Define a read-only attribute as a property that only gets computed on access.
 </div>
 
 <ul class="org-ul">
-<li><a id="org7911d06"></a>Simplify the Specification by Class Decorator<br />
-<div class="outline-text-5" id="text-org7911d06">
+<li><a id="orga016735"></a>Simplify the Specification by Class Decorator<br />
+<div class="outline-text-5" id="text-orga016735">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Class decorator to apply constraints</span>
 <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">check_attributes</span><span style="color: #3a81c3;">(</span>**kwargs<span style="color: #3a81c3;">)</span>:
@@ -2003,8 +1753,8 @@ Define a read-only attribute as a property that only gets computed on access.
 </div>
 </li>
 
-<li><a id="org7bc4e5b"></a>Simplify the Specification by Metaclass<br />
-<div class="outline-text-5" id="text-org7bc4e5b">
+<li><a id="org5e4278a"></a>Simplify the Specification by Metaclass<br />
+<div class="outline-text-5" id="text-org5e4278a">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">A metaclass that applies checking</span>
 <span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">checkedmeta</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">type</span><span style="color: #3a81c3;">)</span>:
@@ -2031,8 +1781,8 @@ Define a read-only attribute as a property that only gets computed on access.
 </div>
 </li>
 
-<li><a id="org390b1f6"></a>Decorator Version(Preferred Approach)<br />
-<div class="outline-text-5" id="text-org390b1f6">
+<li><a id="org2a7551e"></a>Decorator Version(Preferred Approach)<br />
+<div class="outline-text-5" id="text-org2a7551e">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Base class. Uses a descriptor to set a value</span>
 <span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Descriptor</span>:
@@ -2072,8 +1822,8 @@ Define a read-only attribute as a property that only gets computed on access.
 </div>
 </div>
 
-<div id="outline-container-org3b9cd73" class="outline-3">
-<h3 id="org3b9cd73"><span class="section-number-3">9.8</span> Simplifying Initialization</h3>
+<div id="outline-container-orgde22753" class="outline-3">
+<h3 id="orgde22753"><span class="section-number-3">9.8</span> Simplifying Initialization</h3>
 <div class="outline-text-3" id="text-9-8">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Structure</span>:
@@ -2099,8 +1849,8 @@ Define a read-only attribute as a property that only gets computed on access.
 </div>
 </div>
 
-<div id="outline-container-org9f3042c" class="outline-3">
-<h3 id="org9f3042c"><span class="section-number-3">9.9</span> Abstract Base Class</h3>
+<div id="outline-container-org0b86425" class="outline-3">
+<h3 id="org0b86425"><span class="section-number-3">9.9</span> Abstract Base Class</h3>
 <div class="outline-text-3" id="text-9-9">
 <ul class="org-ul">
 <li>Define an abc class: <code>class AbstractBase(metaclass=abc.ABCMeta)</code></li>
@@ -2110,8 +1860,8 @@ Define a read-only attribute as a property that only gets computed on access.
 </div>
 </div>
 
-<div id="outline-container-org7a5f37d" class="outline-3">
-<h3 id="org7a5f37d"><span class="section-number-3">9.10</span> Implementing Custom Containers</h3>
+<div id="outline-container-org389c282" class="outline-3">
+<h3 id="org389c282"><span class="section-number-3">9.10</span> Implementing Custom Containers</h3>
 <div class="outline-text-3" id="text-9-10">
 <ul class="org-ul">
 <li><code>Container</code>: <code>__contains__</code></li>
@@ -2123,8 +1873,8 @@ Define a read-only attribute as a property that only gets computed on access.
 </div>
 </div>
 
-<div id="outline-container-org7056eb7" class="outline-3">
-<h3 id="org7056eb7"><span class="section-number-3">9.11</span> Proxy Class</h3>
+<div id="outline-container-org1c6d0e0" class="outline-3">
+<h3 id="org1c6d0e0"><span class="section-number-3">9.11</span> Proxy Class</h3>
 <div class="outline-text-3" id="text-9-11">
 <p>
 Implement <code>__getattr__</code>, <code>__setattr__</code>, <code>__delattr__</code>
@@ -2135,8 +1885,8 @@ Implement <code>__getattr__</code>, <code>__setattr__</code>, <code>__delattr__<
 </div>
 </div>
 
-<div id="outline-container-orgf6a6e8b" class="outline-3">
-<h3 id="orgf6a6e8b"><span class="section-number-3">9.12</span> Multiple Constructors</h3>
+<div id="outline-container-org0e220a1" class="outline-3">
+<h3 id="org0e220a1"><span class="section-number-3">9.12</span> Multiple Constructors</h3>
 <div class="outline-text-3" id="text-9-12">
 <ul class="org-ul">
 <li>Use <code>@classmethod</code>, example: <code>Date.today</code></li>
@@ -2145,8 +1895,8 @@ Implement <code>__getattr__</code>, <code>__setattr__</code>, <code>__delattr__<
 </div>
 </div>
 
-<div id="outline-container-org0d8e305" class="outline-3">
-<h3 id="org0d8e305"><span class="section-number-3">9.13</span> Mixin Class</h3>
+<div id="outline-container-org5af7e56" class="outline-3">
+<h3 id="org5af7e56"><span class="section-number-3">9.13</span> Mixin Class</h3>
 <div class="outline-text-3" id="text-9-13">
 <ul class="org-ul">
 <li>To enhance the functionality of existing classes with optional features.</li>
@@ -2159,8 +1909,8 @@ Implement <code>__getattr__</code>, <code>__setattr__</code>, <code>__delattr__<
 </div>
 </div>
 
-<div id="outline-container-orgfa83712" class="outline-3">
-<h3 id="orgfa83712"><span class="section-number-3">9.14</span> State Machine</h3>
+<div id="outline-container-org352784d" class="outline-3">
+<h3 id="org352784d"><span class="section-number-3">9.14</span> State Machine</h3>
 <div class="outline-text-3" id="text-9-14">
 <p>
 Based on state design pattern. See Recipe 8.19, should use <code>__class__</code>
@@ -2168,8 +1918,8 @@ Based on state design pattern. See Recipe 8.19, should use <code>__class__</code
 </div>
 </div>
 
-<div id="outline-container-orgd3fb773" class="outline-3">
-<h3 id="orgd3fb773"><span class="section-number-3">9.15</span> Calling a Method by Name</h3>
+<div id="outline-container-org3adda9e" class="outline-3">
+<h3 id="org3adda9e"><span class="section-number-3">9.15</span> Calling a Method by Name</h3>
 <div class="outline-text-3" id="text-9-15">
 <ul class="org-ul">
 <li><code>getattr</code></li>
@@ -2178,15 +1928,15 @@ Based on state design pattern. See Recipe 8.19, should use <code>__class__</code
 </div>
 </div>
 
-<div id="outline-container-orgb7c4ec6" class="outline-3">
-<h3 id="orgb7c4ec6"><span class="section-number-3">9.16</span> Visitor Pattern</h3>
+<div id="outline-container-org8f1fcc5" class="outline-3">
+<h3 id="org8f1fcc5"><span class="section-number-3">9.16</span> Visitor Pattern</h3>
 <div class="outline-text-3" id="text-9-16">
 <p>
 <b>Recipe 8.21</b>
 </p>
 </div>
-<div id="outline-container-org41525fd" class="outline-4">
-<h4 id="org41525fd"><span class="section-number-4">9.16.1</span> <b>Without Recursion</b></h4>
+<div id="outline-container-orgd796b84" class="outline-4">
+<h4 id="orgd796b84"><span class="section-number-4">9.16.1</span> <b>Without Recursion</b></h4>
 <div class="outline-text-4" id="text-9-16-1">
 <p>
 <b>Recipe 8.22</b>
@@ -2237,8 +1987,8 @@ Based on state design pattern. See Recipe 8.19, should use <code>__class__</code
 </div>
 </div>
 
-<div id="outline-container-org250ae89" class="outline-3">
-<h3 id="org250ae89"><span class="section-number-3">9.17</span> Comparison</h3>
+<div id="outline-container-org01c1880" class="outline-3">
+<h3 id="org01c1880"><span class="section-number-3">9.17</span> Comparison</h3>
 <div class="outline-text-3" id="text-9-17">
 <p>
 <code>__le__</code>, <code>__ge__</code>, <code>__lt__</code>, <code>__gt__</code>, <code>__eq__</code>
@@ -2246,12 +1996,12 @@ Based on state design pattern. See Recipe 8.19, should use <code>__class__</code
 </div>
 </div>
 
-<div id="outline-container-orge9413d8" class="outline-3">
-<h3 id="orge9413d8"><span class="section-number-3">9.18</span> <code>weakref</code></h3>
+<div id="outline-container-orge9034fa" class="outline-3">
+<h3 id="orge9034fa"><span class="section-number-3">9.18</span> <code>weakref</code></h3>
 <div class="outline-text-3" id="text-9-18">
 </div>
-<div id="outline-container-orgcd84fd1" class="outline-4">
-<h4 id="orgcd84fd1"><span class="section-number-4">9.18.1</span> Avoid Cyclic Reference</h4>
+<div id="outline-container-orgbd46bfa" class="outline-4">
+<h4 id="orgbd46bfa"><span class="section-number-4">9.18.1</span> Avoid Cyclic Reference</h4>
 <div class="outline-text-4" id="text-9-18-1">
 <p>
 <code>weakref.ref</code>
@@ -2259,8 +2009,8 @@ Based on state design pattern. See Recipe 8.19, should use <code>__class__</code
 </div>
 </div>
 
-<div id="outline-container-org86dff33" class="outline-4">
-<h4 id="org86dff33"><span class="section-number-4">9.18.2</span> Cache Instances(like <code>logging.getLogger</code>)</h4>
+<div id="outline-container-org6ba4cd4" class="outline-4">
+<h4 id="org6ba4cd4"><span class="section-number-4">9.18.2</span> Cache Instances(like <code>logging.getLogger</code>)</h4>
 <div class="outline-text-4" id="text-9-18-2">
 <p>
 Use <code>weakref.WeakValueDictionary</code> to store instances as weak reference
@@ -2270,12 +2020,12 @@ Use <code>weakref.WeakValueDictionary</code> to store instances as weak referenc
 </div>
 </div>
 
-<div id="outline-container-orgbde7bc2" class="outline-2">
-<h2 id="orgbde7bc2"><span class="section-number-2">10</span> Metaprogramming</h2>
+<div id="outline-container-orgeded7b7" class="outline-2">
+<h2 id="orgeded7b7"><span class="section-number-2">10</span> Metaprogramming</h2>
 <div class="outline-text-2" id="text-10">
 </div>
-<div id="outline-container-org2601886" class="outline-3">
-<h3 id="org2601886"><span class="section-number-3">10.1</span> <code>functools.wrap</code></h3>
+<div id="outline-container-orgc6d364e" class="outline-3">
+<h3 id="orgc6d364e"><span class="section-number-3">10.1</span> <code>functools.wrap</code></h3>
 <div class="outline-text-3" id="text-10-1">
 <ul class="org-ul">
 <li>Preserving function metadata, <code>__name__</code>, <code>__doc__</code>, <code>__annotations__</code>.</li>
@@ -2284,8 +2034,8 @@ Use <code>weakref.WeakValueDictionary</code> to store instances as weak referenc
 </div>
 </div>
 
-<div id="outline-container-orge1e9f22" class="outline-3">
-<h3 id="orge1e9f22"><span class="section-number-3">10.2</span> Decorator with get/set</h3>
+<div id="outline-container-orgca4dffe" class="outline-3">
+<h3 id="orgca4dffe"><span class="section-number-3">10.2</span> Decorator with get/set</h3>
 <div class="outline-text-3" id="text-10-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">attach_wrapper</span><span style="color: #3a81c3;">(</span>obj, func=<span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>:
@@ -2298,8 +2048,8 @@ Use <code>weakref.WeakValueDictionary</code> to store instances as weak referenc
 </div>
 </div>
 
-<div id="outline-container-org00f1eec" class="outline-3">
-<h3 id="org00f1eec"><span class="section-number-3">10.3</span> Decorator with Optional Arguments</h3>
+<div id="outline-container-orgb17b2d7" class="outline-3">
+<h3 id="orgb17b2d7"><span class="section-number-3">10.3</span> Decorator with Optional Arguments</h3>
 <div class="outline-text-3" id="text-10-3">
 <p>
 example:
@@ -2327,8 +2077,8 @@ example:
 </div>
 </div>
 
-<div id="outline-container-org1951e13" class="outline-3">
-<h3 id="org1951e13"><span class="section-number-3">10.4</span> Type Checking Decorator</h3>
+<div id="outline-container-orga9bb691" class="outline-3">
+<h3 id="orga9bb691"><span class="section-number-3">10.4</span> Type Checking Decorator</h3>
 <div class="outline-text-3" id="text-10-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> inspect <span style="color: #3a81c3; font-weight: bold;">import</span> signature
@@ -2366,8 +2116,8 @@ example:
 </div>
 </div>
 
-<div id="outline-container-org5d36cc3" class="outline-3">
-<h3 id="org5d36cc3"><span class="section-number-3">10.5</span> Decorator as Functional Class</h3>
+<div id="outline-container-org22c69da" class="outline-3">
+<h3 id="org22c69da"><span class="section-number-3">10.5</span> Decorator as Functional Class</h3>
 <div class="outline-text-3" id="text-10-5">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> types
@@ -2401,8 +2151,8 @@ add<span style="color: #3a81c3;">(</span>4, 5<span style="color: #3a81c3;">)</sp
 </div>
 </div>
 </div>
-<div id="outline-container-org32e1bd2" class="outline-3">
-<h3 id="org32e1bd2"><span class="section-number-3">10.6</span> <code>inspect</code></h3>
+<div id="outline-container-org26496d3" class="outline-3">
+<h3 id="org26496d3"><span class="section-number-3">10.6</span> <code>inspect</code></h3>
 <div class="outline-text-3" id="text-10-6">
 <ul class="org-ul">
 <li>signature</li>
@@ -2412,8 +2162,8 @@ add<span style="color: #3a81c3;">(</span>4, 5<span style="color: #3a81c3;">)</sp
 </div>
 </div>
 
-<div id="outline-container-org23b4725" class="outline-3">
-<h3 id="org23b4725"><span class="section-number-3">10.7</span> Using Decorators to Patch Class Definitions</h3>
+<div id="outline-container-orgff6bd61" class="outline-3">
+<h3 id="orgff6bd61"><span class="section-number-3">10.7</span> Using Decorators to Patch Class Definitions</h3>
 <div class="outline-text-3" id="text-10-7">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">patch</span><span style="color: #3a81c3;">(</span>cls<span style="color: #3a81c3;">)</span>:
@@ -2427,12 +2177,12 @@ add<span style="color: #3a81c3;">(</span>4, 5<span style="color: #3a81c3;">)</sp
 </div>
 </div>
 </div>
-<div id="outline-container-org361a07f" class="outline-3">
-<h3 id="org361a07f"><span class="section-number-3">10.8</span> Enforcing an Argument Signature on *args and **kwargs</h3>
+<div id="outline-container-orgddc8ac9" class="outline-3">
+<h3 id="orgddc8ac9"><span class="section-number-3">10.8</span> Enforcing an Argument Signature on *args and **kwargs</h3>
 <div class="outline-text-3" id="text-10-8">
 </div>
-<div id="outline-container-orga126859" class="outline-4">
-<h4 id="orga126859"><span class="section-number-4">10.8.1</span> Creating a Function Signature</h4>
+<div id="outline-container-orgabacdbd" class="outline-4">
+<h4 id="orgabacdbd"><span class="section-number-4">10.8.1</span> Creating a Function Signature</h4>
 <div class="outline-text-4" id="text-10-8-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> inspect <span style="color: #3a81c3; font-weight: bold;">import</span> Signature, Parameter
@@ -2454,8 +2204,8 @@ add<span style="color: #3a81c3;">(</span>4, 5<span style="color: #3a81c3;">)</sp
 </div>
 </div>
 
-<div id="outline-container-orgf89217f" class="outline-4">
-<h4 id="orgf89217f"><span class="section-number-4">10.8.2</span> <b>Enforcing Function Signatures</b></h4>
+<div id="outline-container-org1d9c3f3" class="outline-4">
+<h4 id="org1d9c3f3"><span class="section-number-4">10.8.2</span> <b>Enforcing Function Signatures</b></h4>
 <div class="outline-text-4" id="text-10-8-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> inspect <span style="color: #3a81c3; font-weight: bold;">import</span> Signature, Parameter
@@ -2480,8 +2230,8 @@ add<span style="color: #3a81c3;">(</span>4, 5<span style="color: #3a81c3;">)</sp
 </div>
 </div>
 
-<div id="outline-container-org3474997" class="outline-4">
-<h4 id="org3474997"><span class="section-number-4">10.8.3</span> Metaclass Approach</h4>
+<div id="outline-container-orgb09a3e0" class="outline-4">
+<h4 id="orgb09a3e0"><span class="section-number-4">10.8.3</span> Metaclass Approach</h4>
 <div class="outline-text-4" id="text-10-8-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> inspect <span style="color: #3a81c3; font-weight: bold;">import</span> Signature, Parameter
@@ -2512,15 +2262,15 @@ add<span style="color: #3a81c3;">(</span>4, 5<span style="color: #3a81c3;">)</sp
 </div>
 </div>
 </div>
-<div id="outline-container-orgb5d6d53" class="outline-3">
-<h3 id="orgb5d6d53"><span class="section-number-3">10.9</span> Parsing and Analyzing Python Source</h3>
+<div id="outline-container-org93cd825" class="outline-3">
+<h3 id="org93cd825"><span class="section-number-3">10.9</span> Parsing and Analyzing Python Source</h3>
 <div class="outline-text-3" id="text-10-9">
 <ul class="org-ul">
 <li><code>eval('2 + 3*4 + x')</code></li>
 </ul>
 </div>
-<div id="outline-container-org7b79f70" class="outline-4">
-<h4 id="org7b79f70"><span class="section-number-4">10.9.1</span> <code>exec</code></h4>
+<div id="outline-container-org3f8efc9" class="outline-4">
+<h4 id="org3f8efc9"><span class="section-number-4">10.9.1</span> <code>exec</code></h4>
 <div class="outline-text-4" id="text-10-9-1">
 <ul class="org-ul">
 <li><code>exec('for i in range(10): print(i)')</code></li>
@@ -2542,8 +2292,8 @@ add<span style="color: #3a81c3;">(</span>4, 5<span style="color: #3a81c3;">)</sp
 </div>
 </div>
 
-<div id="outline-container-org3643133" class="outline-4">
-<h4 id="org3643133"><span class="section-number-4">10.9.2</span> <code>ast</code></h4>
+<div id="outline-container-org6d93d94" class="outline-4">
+<h4 id="org6d93d94"><span class="section-number-4">10.9.2</span> <code>ast</code></h4>
 <div class="outline-text-4" id="text-10-9-2">
 <p>
 compile Python source code into an abstract syntax tree(AST)
@@ -2558,8 +2308,8 @@ ast.dump<span style="color: #3a81c3;">(</span>ex<span style="color: #3a81c3;">)<
 </div>
 </div>
 
-<div id="outline-container-orga4e1070" class="outline-4">
-<h4 id="orga4e1070"><span class="section-number-4">10.9.3</span> Rewriting AST to Achieve Performance Improvement</h4>
+<div id="outline-container-org53165b7" class="outline-4">
+<h4 id="org53165b7"><span class="section-number-4">10.9.3</span> Rewriting AST to Achieve Performance Improvement</h4>
 <div class="outline-text-4" id="text-10-9-3">
 <ul class="org-ul">
 <li>see 9.24</li>
@@ -2568,8 +2318,8 @@ ast.dump<span style="color: #3a81c3;">(</span>ex<span style="color: #3a81c3;">)<
 </div>
 </div>
 
-<div id="outline-container-org3a658f2" class="outline-3">
-<h3 id="org3a658f2"><span class="section-number-3">10.10</span> <code>dis</code></h3>
+<div id="outline-container-org302dae4" class="outline-3">
+<h3 id="org302dae4"><span class="section-number-3">10.10</span> <code>dis</code></h3>
 <div class="outline-text-3" id="text-10-10">
 <ul class="org-ul">
 <li><code>dis.dis</code></li>
@@ -2578,8 +2328,8 @@ ast.dump<span style="color: #3a81c3;">(</span>ex<span style="color: #3a81c3;">)<
 </div>
 </div>
 
-<div id="outline-container-orgdbd2068" class="outline-3">
-<h3 id="orgdbd2068"><span class="section-number-3">10.11</span> Simple namedtuple</h3>
+<div id="outline-container-org327d5a9" class="outline-3">
+<h3 id="org327d5a9"><span class="section-number-3">10.11</span> Simple namedtuple</h3>
 <div class="outline-text-3" id="text-10-11">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> operator
@@ -2607,11 +2357,11 @@ ast.dump<span style="color: #3a81c3;">(</span>ex<span style="color: #3a81c3;">)<
 </div>
 </div>
 </div>
-<div id="outline-container-org2a0d1d6" class="outline-3">
-<h3 id="org2a0d1d6"><span class="section-number-3">10.12</span> Multimethod 9.20</h3>
+<div id="outline-container-org2f0c719" class="outline-3">
+<h3 id="org2f0c719"><span class="section-number-3">10.12</span> Multimethod 9.20</h3>
 </div>
-<div id="outline-container-orgf7949b0" class="outline-3">
-<h3 id="orgf7949b0"><span class="section-number-3">10.13</span> Avoiding Repetitive Property</h3>
+<div id="outline-container-org53f957e" class="outline-3">
+<h3 id="org53f957e"><span class="section-number-3">10.13</span> Avoiding Repetitive Property</h3>
 <div class="outline-text-3" id="text-10-13">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">typed_property</span><span style="color: #3a81c3;">(</span>name, expected_type<span style="color: #3a81c3;">)</span>:
@@ -2645,8 +2395,8 @@ ast.dump<span style="color: #3a81c3;">(</span>ex<span style="color: #3a81c3;">)<
 </div>
 </div>
 
-<div id="outline-container-org0ba9c7a" class="outline-3">
-<h3 id="org0ba9c7a"><span class="section-number-3">10.14</span> Defining Context Manager the Easy Way</h3>
+<div id="outline-container-orge0a079a" class="outline-3">
+<h3 id="orge0a079a"><span class="section-number-3">10.14</span> Defining Context Manager the Easy Way</h3>
 <div class="outline-text-3" id="text-10-14">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> time
@@ -2676,12 +2426,12 @@ ast.dump<span style="color: #3a81c3;">(</span>ex<span style="color: #3a81c3;">)<
 </div>
 </div>
 
-<div id="outline-container-orgc492047" class="outline-2">
-<h2 id="orgc492047"><span class="section-number-2">11</span> Metaclass</h2>
+<div id="outline-container-orgeebcfaf" class="outline-2">
+<h2 id="orgeebcfaf"><span class="section-number-2">11</span> Metaclass</h2>
 <div class="outline-text-2" id="text-11">
 </div>
-<div id="outline-container-orga0a437a" class="outline-3">
-<h3 id="orga0a437a"><span class="section-number-3">11.1</span> Basic</h3>
+<div id="outline-container-orgb7aab39" class="outline-3">
+<h3 id="orgb7aab39"><span class="section-number-3">11.1</span> Basic</h3>
 <div class="outline-text-3" id="text-11-1">
 <p>
 When writing metaclasses, it is somewhat common to only define a <code>__new__()</code> or <code>__init__()</code> method, <b>but not both</b>.
@@ -2713,8 +2463,8 @@ or
 </div>
 </div>
 
-<div id="outline-container-org6040440" class="outline-3">
-<h3 id="org6040440"><span class="section-number-3">11.2</span> NoInstances</h3>
+<div id="outline-container-org0f8dd5e" class="outline-3">
+<h3 id="org0f8dd5e"><span class="section-number-3">11.2</span> NoInstances</h3>
 <div class="outline-text-3" id="text-11-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">NoInstances</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">type</span><span style="color: #3a81c3;">)</span>:
@@ -2731,8 +2481,8 @@ or
 </div>
 </div>
 
-<div id="outline-container-org3af0847" class="outline-3">
-<h3 id="org3af0847"><span class="section-number-3">11.3</span> Singleton</h3>
+<div id="outline-container-orgdb0e80a" class="outline-3">
+<h3 id="orgdb0e80a"><span class="section-number-3">11.3</span> Singleton</h3>
 <div class="outline-text-3" id="text-11-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Singleton</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">type</span><span style="color: #3a81c3;">)</span>:
@@ -2751,8 +2501,8 @@ or
 </div>
 </div>
 
-<div id="outline-container-org8dd7ff7" class="outline-3">
-<h3 id="org8dd7ff7"><span class="section-number-3">11.4</span> Cached Instances</h3>
+<div id="outline-container-org8d225fc" class="outline-3">
+<h3 id="org8d225fc"><span class="section-number-3">11.4</span> Cached Instances</h3>
 <div class="outline-text-3" id="text-11-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> weakref
@@ -2773,8 +2523,8 @@ or
 </div>
 </div>
 </div>
-<div id="outline-container-orgd45359b" class="outline-3">
-<h3 id="orgd45359b"><span class="section-number-3">11.5</span> OrderedDict for Class Body</h3>
+<div id="outline-container-org64d2065" class="outline-3">
+<h3 id="org64d2065"><span class="section-number-3">11.5</span> OrderedDict for Class Body</h3>
 <div class="outline-text-3" id="text-11-5">
 <p>
 This method is invoked immediately at the start of a class definition with the class name and base classes. It must then return a mapping object to use when processing the class body.
@@ -2800,8 +2550,8 @@ This method is invoked immediately at the start of a class definition with the c
 </div>
 </div>
 
-<div id="outline-container-org61c0ec3" class="outline-3">
-<h3 id="org61c0ec3"><span class="section-number-3">11.6</span> Optional Arguments on Class Definitions</h3>
+<div id="outline-container-orgba68c4c" class="outline-3">
+<h3 id="orgba68c4c"><span class="section-number-3">11.6</span> Optional Arguments on Class Definitions</h3>
 <div class="outline-text-3" id="text-11-6">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Spam</span><span style="color: #3a81c3;">(</span>metaclass=MyMeta, debug=<span style="color: #4e3163;">True</span>, synchronize=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>:
@@ -2838,12 +2588,12 @@ To support such keyword arguments in a metaclass, make sure you define them on t
 </div>
 </div>
 
-<div id="outline-container-org1858620" class="outline-2">
-<h2 id="org1858620"><span class="section-number-2">12</span> Packages and Modules</h2>
+<div id="outline-container-org09c2cac" class="outline-2">
+<h2 id="org09c2cac"><span class="section-number-2">12</span> Packages and Modules</h2>
 <div class="outline-text-2" id="text-12">
 </div>
-<div id="outline-container-org5ea616b" class="outline-3">
-<h3 id="org5ea616b"><span class="section-number-3">12.1</span> Lazy Import</h3>
+<div id="outline-container-orgdbb1892" class="outline-3">
+<h3 id="orgdbb1892"><span class="section-number-3">12.1</span> Lazy Import</h3>
 <div class="outline-text-3" id="text-12-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">__init__.py</span>
@@ -2855,8 +2605,8 @@ To support such keyword arguments in a metaclass, make sure you define them on t
 </div>
 </div>
 
-<div id="outline-container-org5e9e297" class="outline-3">
-<h3 id="org5e9e297"><span class="section-number-3">12.2</span> Organize Add-on Packages into a Common Package</h3>
+<div id="outline-container-org90f36c7" class="outline-3">
+<h3 id="org90f36c7"><span class="section-number-3">12.2</span> Organize Add-on Packages into a Common Package</h3>
 <div class="outline-text-3" id="text-12-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">foo-package/</span>
@@ -2873,8 +2623,8 @@ sys.path.extend<span style="color: #3a81c3;">(</span><span style="color: #6c3163
 </div>
 </div>
 </div>
-<div id="outline-container-org97b93ad" class="outline-3">
-<h3 id="org97b93ad"><span class="section-number-3">12.3</span> Read Data File</h3>
+<div id="outline-container-org1a3ce35" class="outline-3">
+<h3 id="org1a3ce35"><span class="section-number-3">12.3</span> Read Data File</h3>
 <div class="outline-text-3" id="text-12-3">
 <ul class="org-ul">
 <li><code>pkgutil.get_data</code></li>
@@ -2882,8 +2632,8 @@ sys.path.extend<span style="color: #3a81c3;">(</span><span style="color: #6c3163
 </div>
 </div>
 
-<div id="outline-container-orgcd2c58f" class="outline-3">
-<h3 id="orgcd2c58f"><span class="section-number-3">12.4</span> Import Hooks</h3>
+<div id="outline-container-orgcb57693" class="outline-3">
+<h3 id="orgcb57693"><span class="section-number-3">12.4</span> Import Hooks</h3>
 <div class="outline-text-3" id="text-12-4">
 <ul class="org-ul">
 <li>See <code>10.11</code>, <code>10.12</code></li>
@@ -2891,15 +2641,15 @@ sys.path.extend<span style="color: #3a81c3;">(</span><span style="color: #6c3163
 </div>
 </div>
 </div>
-<div id="outline-container-org2756900" class="outline-2">
-<h2 id="org2756900"><span class="section-number-2">13</span> Network</h2>
+<div id="outline-container-org8881e1f" class="outline-2">
+<h2 id="org8881e1f"><span class="section-number-2">13</span> Network</h2>
 <div class="outline-text-2" id="text-13">
 </div>
-<div id="outline-container-org42d2bca" class="outline-3">
-<h3 id="org42d2bca"><span class="section-number-3">13.1</span> <code>socketserver</code></h3>
+<div id="outline-container-orgaec447b" class="outline-3">
+<h3 id="orgaec447b"><span class="section-number-3">13.1</span> <code>socketserver</code></h3>
 </div>
-<div id="outline-container-orgc9b8b5d" class="outline-3">
-<h3 id="orgc9b8b5d"><span class="section-number-3">13.2</span> CIDR network address</h3>
+<div id="outline-container-org9e061b6" class="outline-3">
+<h3 id="org9e061b6"><span class="section-number-3">13.2</span> CIDR network address</h3>
 <div class="outline-text-3" id="text-13-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> ipaddress
@@ -2914,8 +2664,8 @@ inet.ip
 </div>
 </div>
 </div>
-<div id="outline-container-org76a3f8e" class="outline-3">
-<h3 id="org76a3f8e"><span class="section-number-3">13.3</span> Simple WSGI</h3>
+<div id="outline-container-org7dc9af9" class="outline-3">
+<h3 id="org7dc9af9"><span class="section-number-3">13.3</span> Simple WSGI</h3>
 <div class="outline-text-3" id="text-13-3">
 <p>
 WSGI: Web Server Gateway Interface. Same code for different web framework.
@@ -2938,8 +2688,8 @@ httpd.serve_forever<span style="color: #3a81c3;">()</span>
 </ul>
 </div>
 
-<div id="outline-container-org8d869df" class="outline-4">
-<h4 id="org8d869df"><span class="section-number-4">13.3.1</span> PathDispatcher</h4>
+<div id="outline-container-orgd85dd26" class="outline-4">
+<h4 id="orgd85dd26"><span class="section-number-4">13.3.1</span> PathDispatcher</h4>
 <div class="outline-text-4" id="text-13-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> cgi
@@ -2985,8 +2735,8 @@ httpd.serve_forever<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 </div>
-<div id="outline-container-org80d4a4e" class="outline-3">
-<h3 id="org80d4a4e"><span class="section-number-3">13.4</span> XMLRPC</h3>
+<div id="outline-container-org88e61ef" class="outline-3">
+<h3 id="org88e61ef"><span class="section-number-3">13.4</span> XMLRPC</h3>
 <div class="outline-text-3" id="text-13-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> xmlrpc.server <span style="color: #3a81c3; font-weight: bold;">import</span> SimpleXMLRPCServer
@@ -3026,8 +2776,8 @@ s.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'foo'</
 </div>
 </div>
 
-<div id="outline-container-orgb66a9d7" class="outline-3">
-<h3 id="orgb66a9d7"><span class="section-number-3">13.5</span> Communicating Between Interpreters</h3>
+<div id="outline-container-org152bd66" class="outline-3">
+<h3 id="org152bd66"><span class="section-number-3">13.5</span> Communicating Between Interpreters</h3>
 <div class="outline-text-3" id="text-13-5">
 <ul class="org-ul">
 <li><code>multiprocessing.connection</code>: support UNIX domain sockets</li>
@@ -3035,8 +2785,8 @@ s.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'foo'</
 </div>
 </div>
 
-<div id="outline-container-orgf7657a0" class="outline-3">
-<h3 id="orgf7657a0"><span class="section-number-3">13.6</span> Simple Auth</h3>
+<div id="outline-container-org77b38d8" class="outline-3">
+<h3 id="org77b38d8"><span class="section-number-3">13.6</span> Simple Auth</h3>
 <div class="outline-text-3" id="text-13-6">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> hmac
@@ -3069,8 +2819,8 @@ s.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'foo'</
 </div>
 </div>
 
-<div id="outline-container-orge710970" class="outline-3">
-<h3 id="orge710970"><span class="section-number-3">13.7</span> SSL Wrapper</h3>
+<div id="outline-container-org9e381e9" class="outline-3">
+<h3 id="org9e381e9"><span class="section-number-3">13.7</span> SSL Wrapper</h3>
 <div class="outline-text-3" id="text-13-7">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> ssl
@@ -3083,8 +2833,8 @@ s.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'foo'</
 </div>
 </div>
 
-<div id="outline-container-org079f1e1" class="outline-3">
-<h3 id="org079f1e1"><span class="section-number-3">13.8</span> select</h3>
+<div id="outline-container-orgd069957" class="outline-3">
+<h3 id="orgd069957"><span class="section-number-3">13.8</span> select</h3>
 <div class="outline-text-3" id="text-13-8">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> select
@@ -3103,8 +2853,8 @@ s.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'foo'</
 </div>
 </div>
 
-<div id="outline-container-org066293c" class="outline-3">
-<h3 id="org066293c"><span class="section-number-3">13.9</span> Sending Large Arrays</h3>
+<div id="outline-container-org0da7074" class="outline-3">
+<h3 id="org0da7074"><span class="section-number-3">13.9</span> Sending Large Arrays</h3>
 <div class="outline-text-3" id="text-13-9">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">zero copy with memoryview</span>
@@ -3125,20 +2875,20 @@ s.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'foo'</
 </div>
 </div>
 </div>
-<div id="outline-container-orgdb7f864" class="outline-2">
-<h2 id="orgdb7f864"><span class="section-number-2">14</span> Concurrency</h2>
+<div id="outline-container-orgd1feb90" class="outline-2">
+<h2 id="orgd1feb90"><span class="section-number-2">14</span> Concurrency</h2>
 <div class="outline-text-2" id="text-14">
 </div>
-<div id="outline-container-orga0af2ee" class="outline-3">
-<h3 id="orga0af2ee"><span class="section-number-3">14.1</span> Threading</h3>
+<div id="outline-container-org7659526" class="outline-3">
+<h3 id="org7659526"><span class="section-number-3">14.1</span> Threading</h3>
 <div class="outline-text-3" id="text-14-1">
 <ul class="org-ul">
 <li><code>Thread</code> methods: <code>start</code>, <code>is_alive</code>, <code>join</code>, <code>terminate</code></li>
 <li><code>Thread</code> interface: <code>run</code></li>
 </ul>
 </div>
-<div id="outline-container-orgba41649" class="outline-4">
-<h4 id="orgba41649"><span class="section-number-4">14.1.1</span> Daemonic Thread</h4>
+<div id="outline-container-org124e63b" class="outline-4">
+<h4 id="org124e63b"><span class="section-number-4">14.1.1</span> Daemonic Thread</h4>
 <div class="outline-text-4" id="text-14-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">t</span> = Thread<span style="color: #3a81c3;">(</span>target=countdown, args=<span style="color: #6c3163;">(</span>10,<span style="color: #6c3163;">)</span>, daemon=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
@@ -3148,8 +2898,8 @@ t.start<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 
-<div id="outline-container-orgda0042a" class="outline-4">
-<h4 id="orgda0042a"><span class="section-number-4">14.1.2</span> Storing Thread-Specific State</h4>
+<div id="outline-container-orgbee6819" class="outline-4">
+<h4 id="orgbee6819"><span class="section-number-4">14.1.2</span> Storing Thread-Specific State</h4>
 <div class="outline-text-4" id="text-14-1-2">
 <ul class="org-ul">
 <li><code>threading.local()</code> : create a thread-local storage object</li>
@@ -3157,8 +2907,8 @@ t.start<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 
-<div id="outline-container-orga3ae1a6" class="outline-4">
-<h4 id="orga3ae1a6"><span class="section-number-4">14.1.3</span> Threading Pool</h4>
+<div id="outline-container-org50793b6" class="outline-4">
+<h4 id="org50793b6"><span class="section-number-4">14.1.3</span> Threading Pool</h4>
 <div class="outline-text-4" id="text-14-1-3">
 <ul class="org-ul">
 <li><code>from concurrent.futures import ThreadPoolExecutor</code></li>
@@ -3167,12 +2917,12 @@ t.start<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 
-<div id="outline-container-orge73097b" class="outline-3">
-<h3 id="orge73097b"><span class="section-number-3">14.2</span> Synchronization Primitives</h3>
+<div id="outline-container-org94a6cd9" class="outline-3">
+<h3 id="org94a6cd9"><span class="section-number-3">14.2</span> Synchronization Primitives</h3>
 <div class="outline-text-3" id="text-14-2">
 </div>
-<div id="outline-container-orga89f1d4" class="outline-4">
-<h4 id="orga89f1d4"><span class="section-number-4">14.2.1</span> Event</h4>
+<div id="outline-container-orgfa6e543" class="outline-4">
+<h4 id="orgfa6e543"><span class="section-number-4">14.2.1</span> Event</h4>
 <div class="outline-text-4" id="text-14-2-1">
 <p>
 Event instances are similar to a "sticky" flag that allows threads to wait for something to happan.
@@ -3180,8 +2930,8 @@ Event instances are similar to a "sticky" flag that allows threads to wait for s
 </div>
 </div>
 
-<div id="outline-container-orgde661f7" class="outline-4">
-<h4 id="orgde661f7"><span class="section-number-4">14.2.2</span> Avoid Deadlock</h4>
+<div id="outline-container-org4b357ba" class="outline-4">
+<h4 id="org4b357ba"><span class="section-number-4">14.2.2</span> Avoid Deadlock</h4>
 <div class="outline-text-4" id="text-14-2-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> threading
@@ -3234,16 +2984,16 @@ Event instances are similar to a "sticky" flag that allows threads to wait for s
 </div>
 </div>
 
-<div id="outline-container-orgf300050" class="outline-3">
-<h3 id="orgf300050"><span class="section-number-3">14.3</span> Message Queue</h3>
+<div id="outline-container-org7d0903e" class="outline-3">
+<h3 id="org7d0903e"><span class="section-number-3">14.3</span> Message Queue</h3>
 <div class="outline-text-3" id="text-14-3">
 <ul class="org-ul">
 <li>ZeroMQ</li>
 <li>Celery</li>
 </ul>
 </div>
-<div id="outline-container-org0ce66f6" class="outline-4">
-<h4 id="org0ce66f6"><span class="section-number-4">14.3.1</span> Actor Model</h4>
+<div id="outline-container-org6dada24" class="outline-4">
+<h4 id="org6dada24"><span class="section-number-4">14.3.1</span> Actor Model</h4>
 <div class="outline-text-4" id="text-14-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> queue <span style="color: #3a81c3; font-weight: bold;">import</span> Queue
@@ -3313,16 +3063,16 @@ Event instances are similar to a "sticky" flag that allows threads to wait for s
 </div>
 </div>
 
-<div id="outline-container-org90aa9e4" class="outline-2">
-<h2 id="org90aa9e4"><span class="section-number-2">15</span> System Utilities</h2>
+<div id="outline-container-org3493c31" class="outline-2">
+<h2 id="org3493c31"><span class="section-number-2">15</span> System Utilities</h2>
 <div class="outline-text-2" id="text-15">
 <ul class="org-ul">
 <li><code>getpass</code>: prompting for a password</li>
 </ul>
 </div>
 
-<div id="outline-container-orgb9eebb6" class="outline-3">
-<h3 id="orgb9eebb6"><span class="section-number-3">15.1</span> Subprocess</h3>
+<div id="outline-container-orgad21e2b" class="outline-3">
+<h3 id="orgad21e2b"><span class="section-number-3">15.1</span> Subprocess</h3>
 <div class="outline-text-3" id="text-15-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> subprocess
@@ -3333,16 +3083,16 @@ Event instances are similar to a "sticky" flag that allows threads to wait for s
 </div>
 </div>
 
-<div id="outline-container-orgdf568ac" class="outline-3">
-<h3 id="orgdf568ac"><span class="section-number-3">15.2</span> Performance Counter</h3>
+<div id="outline-container-org0bcfa33" class="outline-3">
+<h3 id="org0bcfa33"><span class="section-number-3">15.2</span> Performance Counter</h3>
 <div class="outline-text-3" id="text-15-2">
 <p>
 use <code>time.perf_counter</code> for wall-time, <code>time.process_time</code> for CPU time
 </p>
 </div>
 </div>
-<div id="outline-container-org7440337" class="outline-3">
-<h3 id="org7440337"><span class="section-number-3">15.3</span> CPU&amp;memory Limits</h3>
+<div id="outline-container-org8e418e0" class="outline-3">
+<h3 id="org8e418e0"><span class="section-number-3">15.3</span> CPU&amp;memory Limits</h3>
 <div class="outline-text-3" id="text-15-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> signal
@@ -3369,8 +3119,8 @@ use <code>time.perf_counter</code> for wall-time, <code>time.process_time</code>
 </div>
 </div>
 
-<div id="outline-container-org42fdb72" class="outline-3">
-<h3 id="org42fdb72"><span class="section-number-3">15.4</span> webbrowser</h3>
+<div id="outline-container-org6c642c8" class="outline-3">
+<h3 id="org6c642c8"><span class="section-number-3">15.4</span> webbrowser</h3>
 <div class="outline-text-3" id="text-15-4">
 <p>
 <code>get</code>, <code>open</code>, <code>open_new</code>, <code>open_new_tab</code>
@@ -3379,12 +3129,12 @@ use <code>time.perf_counter</code> for wall-time, <code>time.process_time</code>
 </div>
 </div>
 
-<div id="outline-container-org270737c" class="outline-2">
-<h2 id="org270737c"><span class="section-number-2">16</span> Testing</h2>
+<div id="outline-container-orgd67ba7d" class="outline-2">
+<h2 id="orgd67ba7d"><span class="section-number-2">16</span> Testing</h2>
 <div class="outline-text-2" id="text-16">
 </div>
-<div id="outline-container-org11e0836" class="outline-3">
-<h3 id="org11e0836"><span class="section-number-3">16.1</span> Mock</h3>
+<div id="outline-container-org91b7662" class="outline-3">
+<h3 id="org91b7662"><span class="section-number-3">16.1</span> Mock</h3>
 <div class="outline-text-3" id="text-16-1">
 <ul class="org-ul">
 <li><code>unittest.mock.patch</code></li>
@@ -3394,8 +3144,8 @@ use <code>time.perf_counter</code> for wall-time, <code>time.process_time</code>
 </div>
 </div>
 
-<div id="outline-container-org4d81c33" class="outline-3">
-<h3 id="org4d81c33"><span class="section-number-3">16.2</span> Assert Regex</h3>
+<div id="outline-container-org5e5cd96" class="outline-3">
+<h3 id="org5e5cd96"><span class="section-number-3">16.2</span> Assert Regex</h3>
 <div class="outline-text-3" id="text-16-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">with</span> <span style="color: #3a81c3; font-weight: bold;">self</span>.assertRaisesRegex<span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">ValueError</span>, <span style="color: #2d9574;">'error*'</span><span style="color: #3a81c3;">)</span>:
@@ -3405,8 +3155,8 @@ use <code>time.perf_counter</code> for wall-time, <code>time.process_time</code>
 </div>
 </div>
 
-<div id="outline-container-orgc25c098" class="outline-3">
-<h3 id="orgc25c098"><span class="section-number-3">16.3</span> Raise from another exception</h3>
+<div id="outline-container-org424d225" class="outline-3">
+<h3 id="org424d225"><span class="section-number-3">16.3</span> Raise from another exception</h3>
 <div class="outline-text-3" id="text-16-3">
 <ul class="org-ul">
 <li><code>raise ... from e</code></li>
@@ -3414,8 +3164,8 @@ use <code>time.perf_counter</code> for wall-time, <code>time.process_time</code>
 </div>
 </div>
 
-<div id="outline-container-orgd670a37" class="outline-3">
-<h3 id="orgd670a37"><span class="section-number-3">16.4</span> Warnings</h3>
+<div id="outline-container-org972359e" class="outline-3">
+<h3 id="org972359e"><span class="section-number-3">16.4</span> Warnings</h3>
 <div class="outline-text-3" id="text-16-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> warnings
@@ -3426,15 +3176,15 @@ warnings.warn<span style="color: #3a81c3;">(</span><span style="color: #2d9574;"
 </div>
 </div>
 
-<div id="outline-container-orged33c9e" class="outline-2">
-<h2 id="orged33c9e"><span class="section-number-2">17</span> Debuging</h2>
+<div id="outline-container-org4c27a0a" class="outline-2">
+<h2 id="org4c27a0a"><span class="section-number-2">17</span> Debuging</h2>
 <div class="outline-text-2" id="text-17">
 <ul class="org-ul">
 <li><code>python3 -i</code>: starts an shell as soon as a program terminates, then uses <code>pdb</code></li>
 </ul>
 </div>
-<div id="outline-container-orgb2ff6b7" class="outline-3">
-<h3 id="orgb2ff6b7"><span class="section-number-3">17.1</span> Traceback</h3>
+<div id="outline-container-orgee35786" class="outline-3">
+<h3 id="orgee35786"><span class="section-number-3">17.1</span> Traceback</h3>
 <div class="outline-text-3" id="text-17-1">
 <ul class="org-ul">
 <li><code>traceback.print_exc(file=sys.stderr)</code></li>
@@ -3443,15 +3193,15 @@ warnings.warn<span style="color: #3a81c3;">(</span><span style="color: #2d9574;"
 </div>
 </div>
 
-<div id="outline-container-org6b68694" class="outline-3">
-<h3 id="org6b68694"><span class="section-number-3">17.2</span> Profiling</h3>
+<div id="outline-container-orgb06cc33" class="outline-3">
+<h3 id="orgb06cc33"><span class="section-number-3">17.2</span> Profiling</h3>
 <div class="outline-text-3" id="text-17-2">
 <p>
 The first rule of optimization might be  to "not do it" the second rule is almost certainly "don't optimize the unimportant"
 </p>
 </div>
-<div id="outline-container-orgb17088a" class="outline-4">
-<h4 id="orgb17088a"><span class="section-number-4">17.2.1</span> Decorator Version</h4>
+<div id="outline-container-org6ec7b8e" class="outline-4">
+<h4 id="org6ec7b8e"><span class="section-number-4">17.2.1</span> Decorator Version</h4>
 <div class="outline-text-4" id="text-17-2-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> time
@@ -3471,8 +3221,8 @@ The first rule of optimization might be  to "not do it" the second rule is almos
 </div>
 </div>
 
-<div id="outline-container-orgf64272c" class="outline-4">
-<h4 id="orgf64272c"><span class="section-number-4">17.2.2</span> Contextmanager Version</h4>
+<div id="outline-container-orgf410803" class="outline-4">
+<h4 id="orgf410803"><span class="section-number-4">17.2.2</span> Contextmanager Version</h4>
 <div class="outline-text-4" id="text-17-2-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> time
@@ -3491,11 +3241,11 @@ The first rule of optimization might be  to "not do it" the second rule is almos
 </div>
 </div>
 
-<div id="outline-container-org481e706" class="outline-4">
-<h4 id="org481e706"><span class="section-number-4">17.2.3</span> <code>time.process_time()</code></h4>
+<div id="outline-container-orge214093" class="outline-4">
+<h4 id="orge214093"><span class="section-number-4">17.2.3</span> <code>time.process_time()</code></h4>
 </div>
-<div id="outline-container-orgc414c25" class="outline-4">
-<h4 id="orgc414c25"><span class="section-number-4">17.2.4</span> Tools</h4>
+<div id="outline-container-org27af2ba" class="outline-4">
+<h4 id="org27af2ba"><span class="section-number-4">17.2.4</span> Tools</h4>
 <div class="outline-text-4" id="text-17-2-4">
 <ul class="org-ul">
 <li>pypy</li>

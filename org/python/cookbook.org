@@ -4,39 +4,48 @@
 #+LANGUAGE: en-US
 #+AUTHOR: chrischen
 #+EMAIL: chrischen3121@gmail.com
-
 #+STARTUP: inlineimages
 * Data Structures and Algorithms
-** Unpacking from Iterables
+** Quick Summary
    #+BEGIN_SRC python
-     x, *middle, y = [1, 2, 3, 4, 5] # middle can be replaced by placeholder '_'
-     # x => 1
-     # y => 5
+     # unpacking
+     data = ["ACME", 50, 91.1, (2012, 12, 21)]
+     name, *_, (year, mon, day) = data
 
-     data = ['ACME', 50, 91.1, (2012, 12, 21)]
-     name, shares, price, (year, mon, day) = data
-   #+END_SRC
-
-** Keeping the Last N Items
-   #+BEGIN_SRC python
+     # fixed-length queue
      from collections import deque
-     d=deque(maxlen=N)
+
+     d = deque(maxlen=N)
+
+     # heap related
+     import heapq
+
+     heapq.nlargest(N, items)  # faster than sorted(items)[:N] if N is small
+     heapq.nsmallest(N, items, key=None)
+     nums = [1, 8, 2, 23, 7, -4, 18, 23, 42, 37, 2]
+     heapq.heapify(nums)  # inplace function
+
+     # agg by values
+     prices = {"AAPL": 612.78, "IBM": 205.55, "FB": 10.75}
+     min_price = min(zip(prices.values(), prices.keys()))  # zip to ((value, key)) generator
+
+     # key-views support set oparations
+     d.keys() - d2.keys()
+     d.keys() & d2.keys()
+     d.keys() | d2.keys()
+
+     # boolean selectors
+     from itertools import compress
+     alist = list(range(10))
+     list(compress(alist, [i % 2 == 0 for i in alist]))
    #+END_SRC
 
-** Finding the Largest N Items
-   #+BEGIN_SRC python
-     import heapq
-     heapq.nlargest(N, items)
-     heapq.nsmallest(N, items)
-     # heapq.nlargest(N, data, key=lambda function)
-   #+END_SRC
-   Underneath the covers, they work by first converting the data into a list
-   where items are ordered as a heap.
-   #+BEGIN_SRC python
-     nums = [1, 8, 2, 23, 7, -4, 18, 23, 42, 37, 2]
-     heapq.heapify(nums) # inplace function
-     # nums => [-4, 2, 1, 23, 7, 2, 18, 23, 42, 37, 8] heap[0] is the smallest
-   #+END_SRC
+*** others
+    - slice, itertools.islice
+    - collections.Counter
+    - ~from operator import itemgetter, attrgetter~
+    - itertools.groupby
+    - from collections.ChainMap
 
 ** PriorityQueue Implemention
    #+BEGIN_SRC python
@@ -45,7 +54,7 @@
      class PriorityQueue:
 	 def __init__(self):
 	     self._queue = []
-	     self._index = 0 # use index to properly order items with the same priority level
+	     self._index = 0 # using index to properly order items with the same priority level
 
 	 def push(self, item, priority):
 	     heapq.heappush(self._queue, (-priority, self._index, item))
@@ -55,156 +64,6 @@
 	     return heapq.heappop(self._queue)[-1]
    #+END_SRC
 
-** defaultdict
-   #+BEGIN_SRC python
-     from collections import defaultdict
-     d = defaultdict(list)
-     d['a']
-     #=> []
-   #+END_SRC
-   *defaultdict* will automatically create dictionary entries for keys accessed later on, alternative:
-   #+BEGIN_SRC python
-     d.setdefault('a', []).append(1)
-   #+END_SRC
-*** alternative
-    #+BEGIN_SRC python
-      d = {}
-      # A regular dictionary
-      d.setdefault('a', []).append(1)
-    #+END_SRC
-
-** OrderedDict
-   An OrderedDict internally maintains a doubly linked list that orders the keys according to insertion order.
-
-** sortedcontainers
-   SortedList, SortedDict, SortedSet
-
-** Calculating with Dictionaries
-   #+BEGIN_SRC python
-     prices = {
-	 'ACME': 45.23,
-	 'AAPL': 612.78,
-	 'IBM': 205.55,
-	 'HPQ': 37.20,
-	 'FB': 10.75
-     }
-     min_price = min(zip(prices.values(), prices.keys())) # zip to ((value, key)) generator
-
-     min(prices, key=lambda k: prices[k]) # Returns 'FB'
-     min_value = prices[min(prices, key=lambda k: prices[k])]
-   #+END_SRC
-
-** keys-view
-   #+BEGIN_SRC python
-     a.keys() & b.keys()
-     a.keys() - {'z', 'w'} # {'z', 'w'} is a set
-   #+END_SRC
-
-** Naming a Slice
-   #+BEGIN_SRC python
-     a = [1,2,3,4,5]
-     b = slice(1,2)
-
-     a[b] #=> [2] slower than a[1]
-   #+END_SRC
-
-** Counting
-  @contextmanager
-def list_transaction(orig_list):
-    working = list(orig_list)
-    yield working
-    orig_list[:] = working #+BEGIN_SRC python
-     from collections import Counter
-     word_counts1 = Counter(words1)
-     word_counts2 = Counter(words2)
-     word_counts1 + word_counts2
-   #+END_SRC
-
-** Sorting a List of Dictionaries
-   #+BEGIN_SRC python
-     from operator import itemgetter
-     rows_by_fname = sorted(rows, key=itemgetter('fname'))
-     rows_by_lfname = sorted(rows, key=itemgetter('lname','fname'))
-
-     g = itemgetter(2, 5, 3) # the call g(r) returns (r[2], r[5], r[3])
-   #+END_SRC
-
-** Sorting Objects Without Native Comparison
-   #+BEGIN_SRC python
-     sorted(users, key=lambda u: u.user_id)
-     from operator import attrgetter
-     sorted(users, key=attrgetter('user_id'))
-     by_name = sorted(users, key=attrgetter('last_name', 'first_name'))
-   #+END_SRC
-
-** groupby
-   Since =groupby()= only examines consecutive items, should sort the groupby key first.
-   #+BEGIN_SRC python
-     from itertools import groupby
-     rows.sort(key=itemgetter('date'))
-     for date, items in groupby(rows, key=itemgetter('date')):
-	 pass
-     # alternative if memory is no concern, and faster than sort+groupby
-     rows_by_date = defaultdict(list)
-     for row in rows:
-	 rows_by_date[row['date']].append(row)
-   #+END_SRC
-** itertools.compress
-   Like boolean index in pandas. Takes an iterable and an accompanying Boolean selector sequence as input.
-   =list(compress(data, mask))=
-
-** namedtuple & namedlist
-   optional or missing fields
-   #+BEGIN_SRC python
-     Stock = namedtuple('Stock', ['name', 'shares', 'price', 'date', 'time'])
-     Stock.__new__.__defaults__ = ('', 0, 0, None, None)
-     # or
-     stock_prototype = Stock('', 0, 0.0, None, None)
-
-     def dict_to_stock(s):
-	 return stock_prototype._replace(**s)
-   #+END_SRC
-*** useful method
-    - ~_make~: Make a new Stock object from a sequence or iterable
-    - ~_replace~
-    - ~_fields~
-    - ~_asdict~
-
-** sum, min,...
-   #+BEGIN_SRC python
-     s = sum((x * x for x in nums))
-     s = sum(x * x for x in nums) # same as above
-
-     # Original: Returns 20
-     min_shares = min(s['shares'] for s in portfolio)
-     # Alternative: Returns {'name': 'AOL', 'shares': 20}
-     min_shares = min(portfolio, key=lambda s: s['shares'])
-   #+END_SRC
-
-** ChainMap
-   A ChainMap takes multiple mappings and makes them logically appear as one. If there are duplicate keys,
-   the values from the first mapping get used.
-   #+BEGIN_SRC python
-     from collections import ChainMap
-     c = ChainMap(a,b)
-     # alternative
-     c = b
-     c.update(a)
-   #+END_SRC
-   - but ChainMap keep the reference of a&b
-
-*** store scoped values
-   A ChainMap is particularly useful when working with scoped values such as variables in
-   a programming language (i.e., globals, locals, etc.)
-   #+BEGIN_SRC python
-     values = ChainMap()
-     values['x'] = 1
-     values = values.new_child()
-     values['x'] = 2
-     values['x'] #=> 2
-     values = values.parents
-     values['x'] #=> 1
-   #+END_SRC
 * String Manipulation
 ** modules
    - *fnmatch*: Filename matching with shell patterns.
