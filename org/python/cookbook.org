@@ -64,157 +64,86 @@
 	     return heapq.heappop(self._queue)[-1]
    #+END_SRC
 
+
 * String Manipulation
-** modules
-   - *fnmatch*: Filename matching with shell patterns.
-   - *glob*: Filename globbing utility.
-
-** re
-*** find
-    - =match()=
-    - =findall()=
-    - =finditer()=
-    - =scaner()=
-
-*** replace
-    - =sub=
-
-*** regex
-    - named capture group: =r'?P<TOKENNAME>[a-zA-Z]+'=
-    - noncapture
-
-*** tokenize
-**** Problem
-     You have a string that you want to parse left to right into a stream of tokens.
-**** Usage
-    #+BEGIN_SRC python
-      from collections import namedtuple
-      Token = namedtuple('Token', ['type', 'value'])
-
-
-      def generate_tokens(pat, text):
-	  scanner = pat.scanner(text)
-	  for m in iter(scanner.match, None):
-	      yield Token(m.lastgroup, m.group())
-
-
-      # Example use
-      for tok in generate_tokens(master_pat, 'foo = 42'):
-	  print(tok)
-
-      # Produces output
-      # Token(type='NAME', value='foo')
-      # Token(type='WS', value=' ')
-      # Token(type='EQ', value='=')
-      # Token(type='WS', value=' ')
-      # Token(type='NUM', value='42')
-    #+END_SRC
-    =scanner()= method of pattern objects. This method creates a scanner object in which repeated calls to match() step through the
-    supplied text one match at a time
-
-*** syntax parser
-    - PyParsing
-    - PLY
-    - Recipe: 2.19
-
-** format
-*** align
-    #+BEGIN_SRC python
-      format('right', '>20')
-      # '               right'
-      format('right', '=>20')
-      # '===============right'
-    #+END_SRC
-
-*** safesub
-    #+BEGIN_SRC python
-      class safesub(dict):
-	  def __missing__(self, key):
-	      return '{' + key + '}'
-
-      name = 'ABC'
-      n = 5
-      s = '{name} has {n} messages.'
-      s.format_map(safesub(vars()))
-      # 'ABC has 5 messages.'
-    #+END_SRC
-**** frame hack
-     #+BEGIN_SRC python
-       def sub(text):
-	   return text.format_map(safesub(sys._getframe(1).f_locals))
-     #+END_SRC
-
-*** textwrap
-    The textwrap module is a straightforward way to clean up text for printing.
-    =textwrap.fill()= reformat text for output.
-
-** join
-   - ='abc' + ',' + 'def'=
-   - ='abc' ',' 'def'=
-   - =','.join(('abc', 'def'))=
-   - ='{},{}'.format('abc', 'def')=
-   - print('abc', 'def', sep=',')
-
-** Combining I/O Write Operation
-   #+BEGIN_SRC python
-     def combine(source, maxsize):
-	 parts = []
-	 size = 0
-	 for part in source:
-	     parts.append(part)
-	     size += len(part)
-	     if size > maxsize:
-		 yield ''.join(parts)
-		 parts = []
-		 size = 0
-	 yield ''.join(parts)
-
-     for part in combine(sample(), 32768):
-	 f.write(part)
-   #+END_SRC
-   - Example: write to socket send buffer
-
-** escape
-   - =html.escape=
-   - =xml.escape=
-
-** Tokenizing Text
+** Quick Summary
    #+BEGIN_SRC python
      import re
-     from collections import namedtuple
 
-     NAME = r'(?P<NAME>[a-zA-Z_][a-zA-Z_0-9]*)'
-     NUM = r'(?P<NUM>\d+)'
-     PLUS = r'(?P<PLUS>\+)'
-     TIMES = r'(?P<TIMES>\*)'
-     EQ = r'(?P<EQ>=)'
-     WS = r'(?P<WS>\s+)'
+     re.split(r"[./]", "btc.usd/coinbase")
+     # => ['btc', 'usd', 'coinbase'] slower than split("/").split(".")
 
-     master_pat = re.compile('|'.join([NAME, NUM, PLUS, TIMES, EQ, WS]))
+     # shell-like matching
+     fnmatch("foo.txt", "*.txt")
 
-     Token = namedtuple('Token', ['type', 'value'])
-
-
-     def generate_tokens(pat, text):
-	 # scanner method creates a scanner object in which repeated calls to match()
-	 # step through the supplied text one match at a time
-	 scanner = pat.scanner(text)
-	 for m in iter(scanner.match, None):
-	     yield Token(m.lastgroup, m.group())
+     # searching & replacing
+     # str.find, str.findall, re.match
+     # str.replace, re.sub
+     # Case-Insensitive Option: flags=re.IGNORECASE
 
 
-     tokens = (tok for tok in generate_tokens(master_pat, 'foo = 42')
-	       if tok.type != 'WS')
-     for tok in tokens:
-	 print(tok)
+     # For the Shortest Match
+     str_pat = re.compile(r"\"(.*)\"")  # default: greedy regular expression
+     text = 'Computer says "no." Phone says "yes."'
+     str_pat.findall(text)
+     # => ['no." Phone says "yes.']
 
-     # Produces output
-     # Token(type='NAME', value='foo')
-     # Token(type='EQ', value='=')
-     # Token(type='NUM', value='42')
+     str_pat = re.compile(r"\"(.*?)\"")  # nongreedy and produces the shortest match instead.
+     str_pat.findall(text)
+     # => ['no.', 'yes.']
+
+     # Aligning
+     # str.ljust, str.rjust, str.center
+     # f"{text:<20}", f"{text:>20}", f"{text:^20}"
+     text = "Hello World"
+     ftext = f"{text:=>20}"  # => "=========Hello World"
+     ftext = f"{text:*^20}"  # => "****Hello World*****"
+
+     # Byte Strings
+     bstr = b"Hello World"
+     barray = bytearray(b"Hello World")
+     bstr.decode("ascii") # => "Hello World"
    #+END_SRC
 
-* Numbers
+*** others
+    - The ~textwrap~ module is a straightforward way to clean up text for printing. ~textwrap.fill(s, 70, initial_indent="    ")~
+
+** Tokenizing Text
+   Tokenizing is often the first step for more advanced kinds of text parsing and handling.
+   [[https://docs.python.org/3/library/re.html#writing-a-tokenizer]]
+   #+BEGIN_SRC python
+     text = "foo = 23 + 42 * 10"
+
+     # expected results
+     tokens = [
+	 ("NAME", "foo"),
+	 ("EQ", "="),
+	 ("NUM", "23"),
+	 ("PLUS", "+"),
+	 ("NUM", "42"),
+	 ("TIMES", "*"),
+	 ("NUM", "10"),
+     ]
+
+     import re
+
+     NAME = r"(?P<NAME>[a-zA-Z_][a-zA-Z_0-9]*)"
+     NUM = r"(?P<NUM>\d+)"
+     PLUS = r"(?P<PLUS>\+)"
+     TIMES = r"(?P<TIMES>\*)"
+     EQ = r"(?P<EQ>=)"
+     WS = r"(?P<WS>\s+)"
+     # the ?P<TOKENNAME> convention is used to assign a name to the pattern
+     master_pat = re.compile("|".join([NAME, NUM, PLUS, TIMES, EQ, WS]))
+
+     for mo in re.finditer(master_pat, "foo = 42"):
+	 print(mo.lastgroup, mo.group())  # NAME foo, WS , EQ =, ...
+   #+END_SRC
+   - Syntax Parser: Recipe 2.19
+   - For more complicated grammer: use [[https://github.com/pyparsing/pyparsing][pyparsing]], [[https://github.com/dabeaz/ply][PLY]]
+
+
+* TODO Numbers
 ** round
    #+BEGIN_SRC python
      round(1.29, 1)
