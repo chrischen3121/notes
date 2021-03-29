@@ -7,7 +7,58 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 
+* Hardware Resources
+** Computing Unit
+   The main properties of interest in a computing unit are the number of operations
+   it can do in one cycle and the number of cycles it can do in one second. The first
+   value is measured by its instructions per cycle(IPC), while the latter value is
+   measured by its clock speed.
+   - *SIMD*: Single instruction, multiple data. Efficient with high IPC. (CPU vectorization instruction)
+   - *Hyperthreading* presents a virtual second CPU to the host OS, and clever hardware logic tries
+   to interleave two threads of instructions into the execution units on a single CPU. When successful,
+   gains of up to 30% over a single thread can be achieved.
+
+** Memory Unit
+   When trying to optimize the memory patterns of a program, we are simply optimizing
+   which data is placed where, how it is laid out (in order to increase the number of
+   sequential reads), and how many times it is moved among the various locations.
+
+** Communications Layers
+   - The /frontside/ bus is the connection between the RAM and the L1/L2 cache
+   - Two main properties of a bus:
+     - how much data can be moved in one transfer (bus width)
+     - how many transfers the bus can do per second (bus frequency).
+
+** GPU
+   - Drawbacks: Communicates through the PCI bus, which is much slower than the frontside bus
+
+** Performance Issues of Python
+   - Memory Fragmentation: due to garbage-collected
+   - Dynamic Types: Using Cython to mitigate this problem
+   - GIL: Using Cython or foreign functions
+
+
 * Profiling
+** ~timefn~ decorator
+   #+BEGIN_SRC python
+     def timefn(fn):
+	 @wraps(fn)
+	 def measure_time(*args, **kwargs):
+	     t1 = time.time()
+	     result = fn(*args, **kwargs)
+	     t2 = time.time()
+	     print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
+	     return result
+	 return measure_time
+   #+END_SRC
+
+** bulit-in ~timeit~ module
+   - [[https://docs.python.org/3/library/timeit.html][Documentation]]
+   - The ~timeit~ module temporarily disables the garbage collector.
+   - More useful approach: IPython magic ~%timeit~
+
+
+* TODO Profiling
 ** CPU
 *** simple /time/ module
   #+BEGIN_SRC python
