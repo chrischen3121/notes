@@ -37,7 +37,6 @@
    - Dynamic Types: Using Cython to mitigate this problem
    - GIL: Using Cython or foreign functions
 
-
 * Profiling
 ** ~timefn~ decorator
    #+BEGIN_SRC python
@@ -57,6 +56,19 @@
    - The ~timeit~ module temporarily disables the garbage collector.
    - More useful approach: IPython magic ~%timeit~
 
+** CProfile
+   #+BEGIN_SRC sh
+     python -m cProfile -s cumulative test.py
+     python -m cProfile -o profile.stats test.py
+   #+END_SRC
+   #+BEGIN_SRC python
+     import pstats
+     p = pstats.Stats("profile.stats")
+     p.sort_stats("cumulative")
+     p.print_stats()
+     p.print_callers()
+     p.print_callees()
+   #+END_SRC
 
 * TODO Profiling
 ** CPU
