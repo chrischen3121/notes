@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-02 Fri 09:12 -->
+<!-- 2021-04-04 Sun 16:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -229,6 +229,7 @@
 <li><a href="#org3b58e09">2.4. <code>line_profiler</code></a></li>
 <li><a href="#org8bdb3ef">2.5. <code>memory_profiler</code></a></li>
 <li><a href="#org1f4666d">2.6. No-op @profile</a></li>
+<li><a href="#org5ba95b6">2.7. Introspecting an Existing Process with <code>PySpy</code></a></li>
 </ul>
 </li>
 <li><a href="#orgbbed6c3">3. Lists and tuples</a>
@@ -240,7 +241,7 @@
 <li><a href="#orgf9d99f1">4. set &amp; dict</a>
 <ul>
 <li><a href="#org2cf903f">4.1. hashable key</a></li>
-<li><a href="#orgc429d75">4.2. resizing</a></li>
+<li><a href="#orgc7bd867">4.2. resizing</a></li>
 <li><a href="#org51db53d">4.3. extra</a></li>
 </ul>
 </li>
@@ -391,8 +392,20 @@ p.print_callees<span style="color: #3a81c3;">()</span>
 <li><code>pip install psutil</code> (recommended)</li>
 <li><code>pip install memory_profiler</code></li>
 <li>Use <code>@profile</code> to mark the chosen function</li>
-<li><code>python -m memory_profiler test.py</code></li>
+<li><code>python -m memory_profiler test.py</code> or <code>mprof run test.py</code></li>
 </ol>
+
+<p>
+Other Hints:
+</p>
+<ul class="org-ul">
+<li>using <code>with profile.timestamp("scope1")</code> to add label</li>
+<li><code>memory_profiler</code> offers an interesting aid to debugging a large process via the <code>--pdb-mmem=XXX</code> flag</li>
+</ul>
+</div>
+
+<div id="outline-container-org16cd267" class="outline-4">
+<h4 id="org16cd267"><span class="section-number-4">2.5.1</span> ipython magic <code>%memit</code></h4>
 </div>
 </div>
 
@@ -410,9 +423,11 @@ Add it to the start of our module while unit testing
 </div>
 </div>
 </div>
+
+<div id="outline-container-org5ba95b6" class="outline-3">
+<h3 id="org5ba95b6"><span class="section-number-3">2.7</span> Introspecting an Existing Process with <code>PySpy</code></h3>
 </div>
-
-
+</div>
 <div id="outline-container-orgbbed6c3" class="outline-2">
 <h2 id="orgbbed6c3"><span class="section-number-2">3</span> Lists and tuples</h2>
 <div class="outline-text-2" id="text-3">
@@ -466,8 +481,8 @@ dynamic arrays, mutable and allow for resizing.
 </div>
 
 <ul class="org-ul">
-<li><a id="orgcb9638e"></a>resizing<br />
-<div class="outline-text-5" id="text-orgcb9638e">
+<li><a id="org3602656"></a>resizing<br />
+<div class="outline-text-5" id="text-org3602656">
 <p>
 The growth pattern is:
 </p>
@@ -620,8 +635,8 @@ the dictionary will be helps in making a good selection.
 </div>
 </div>
 
-<div id="outline-container-orgc429d75" class="outline-3">
-<h3 id="orgc429d75"><span class="section-number-3">4.2</span> resizing</h3>
+<div id="outline-container-orgc7bd867" class="outline-3">
+<h3 id="orgc7bd867"><span class="section-number-3">4.2</span> resizing</h3>
 <div class="outline-text-3" id="text-4-2">
 </div>
 <ul class="org-ul">
