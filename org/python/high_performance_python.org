@@ -6,7 +6,6 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-
 * Hardware Resources
 ** Computing Unit
    The main properties of interest in a computing unit are the number of operations
@@ -38,7 +37,8 @@
    - GIL: Using Cython or foreign functions
 
 * Profiling
-** ~timefn~ decorator
+** Tools
+*** ~timefn~ decorator
    #+BEGIN_SRC python
      def timefn(fn):
 	 @wraps(fn)
@@ -51,12 +51,12 @@
 	 return measure_time
    #+END_SRC
 
-** bulit-in ~timeit~ module
+*** bulit-in ~timeit~ module
    - [[https://docs.python.org/3/library/timeit.html][Documentation]]
    - The ~timeit~ module temporarily disables the garbage collector.
    - More useful approach: IPython magic ~%timeit~
 
-** CProfile
+*** CProfile
    #+BEGIN_SRC sh
      python -m cProfile -s cumulative test.py
      python -m cProfile -o profile.stats test.py
@@ -71,11 +71,11 @@
    #+END_SRC
    - ~snakeviz~ for visualization
 
-** ~line_profiler~
+*** ~line_profiler~
    1. ~pip install ~line_profiler~~
    1. Use ~@profile~ to mark the chosen function
    1. ~kernprof -l -v test.py~
-** ~memory_profiler~
+*** ~memory_profiler~
    1. ~pip install psutil~ (recommended)
    1. ~pip install memory_profiler~
    1. Use ~@profile~ to mark the chosen function
@@ -87,7 +87,7 @@
 
 *** ipython magic ~%memit~
 
-** No-op @profile
+*** No-op @profile
    Add it to the start of our module while unit testing
    #+BEGIN_SRC python
      if 'line_profiler' not in dir() and 'profile' not in dir():
@@ -95,13 +95,29 @@
 	     return func
    #+END_SRC
 
-** Introspecting an Existing Process with ~PySpy~
+*** Introspecting an Existing Process with ~PySpy~
    - ~pip install py-spy~
    - ~sudo py-spy top --pid 2046~: top-like view.
    - ~py-spy record -o profile.svg python test.py~
 
-** Bytecode: ~dis~ module
-   ~dis.dis(func)~
+*** Bytecode: ~dis~ module
+    ~dis.dis(func)~
+*** For Web Servers
+    - ~dowser~
+    - ~dozer~
+
+** Practical Points
+   - Disable Turbo Boost in the BIOS.
+   - Disable the operating system’s ability to override the SpeedStep(in BIOS).
+   - Use only AC power (never battery power).
+   - Disable background tools like backups and Dropbox while running experiments.
+   - Run the experiments many times to obtain a stable measurement.
+   - Possibly drop to run level 1 (Unix) so that no other tasks are running.
+   - Reboot and rerun the experiments to double-confirm the results.
+   - Unit testing a complicated section of code that generates a large numerical output may be
+   difficult. Do not be afraid to output a text file of results to run through ~diff~ or to use
+   a pickled object.
+
 * Lists and tuples
 ** Sort algorithm
 *** Tim sort
