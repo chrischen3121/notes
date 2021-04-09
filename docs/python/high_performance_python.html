@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-04 Sun 16:05 -->
+<!-- 2021-04-09 Fri 15:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -212,49 +212,43 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org11fad56">1. Hardware Resources</a>
+<li><a href="#org5392558">1. Hardware Resources</a>
 <ul>
-<li><a href="#orgae43743">1.1. Computing Unit</a></li>
-<li><a href="#org3369d57">1.2. Memory Unit</a></li>
-<li><a href="#org1cce73d">1.3. Communications Layers</a></li>
-<li><a href="#org4097bc8">1.4. GPU</a></li>
-<li><a href="#orgd27f24d">1.5. Performance Issues of Python</a></li>
+<li><a href="#org2aa7c0b">1.1. Computing Unit</a></li>
+<li><a href="#org173eae7">1.2. Memory Unit</a></li>
+<li><a href="#orga557b09">1.3. Communications Layers</a></li>
+<li><a href="#orge3ba622">1.4. GPU</a></li>
+<li><a href="#org2e52313">1.5. Performance Issues of Python</a></li>
 </ul>
 </li>
-<li><a href="#orgb54233d">2. Profiling</a>
+<li><a href="#org2fecdba">2. Profiling</a>
 <ul>
-<li><a href="#orgc133f7a">2.1. <code>timefn</code> decorator</a></li>
-<li><a href="#orgf4c1e94">2.2. bulit-in <code>timeit</code> module</a></li>
-<li><a href="#org0921827">2.3. CProfile</a></li>
-<li><a href="#org3b58e09">2.4. <code>line_profiler</code></a></li>
-<li><a href="#org8bdb3ef">2.5. <code>memory_profiler</code></a></li>
-<li><a href="#org1f4666d">2.6. No-op @profile</a></li>
-<li><a href="#org5ba95b6">2.7. Introspecting an Existing Process with <code>PySpy</code></a></li>
+<li><a href="#orgf85aa16">2.1. Tools</a></li>
+<li><a href="#orgecee3e0">2.2. Practical Points</a></li>
 </ul>
 </li>
-<li><a href="#orgbbed6c3">3. Lists and tuples</a>
+<li><a href="#orgef284c6">3. Lists and Tuples</a>
 <ul>
-<li><a href="#org68f77c0">3.1. Sort algorithm</a></li>
-<li><a href="#org00fc171">3.2. list vs. tuple</a></li>
+<li><a href="#org144986f">3.1. Lists</a></li>
+<li><a href="#org15010ea">3.2. Tuples</a></li>
 </ul>
 </li>
-<li><a href="#orgf9d99f1">4. set &amp; dict</a>
+<li><a href="#orgbf88063">4. Dictionaries and Sets</a>
 <ul>
-<li><a href="#org2cf903f">4.1. hashable key</a></li>
-<li><a href="#orgc7bd867">4.2. resizing</a></li>
-<li><a href="#org51db53d">4.3. extra</a></li>
+<li><a href="#orgef15e16">4.1. Hashable Type</a></li>
+<li><a href="#org296677b">4.2. Key to Array Index</a></li>
+<li><a href="#org7b2f393">4.3. Dictionary</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org11fad56" class="outline-2">
-<h2 id="org11fad56"><span class="section-number-2">1</span> Hardware Resources</h2>
+<div id="outline-container-org5392558" class="outline-2">
+<h2 id="org5392558"><span class="section-number-2">1</span> Hardware Resources</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgae43743" class="outline-3">
-<h3 id="orgae43743"><span class="section-number-3">1.1</span> Computing Unit</h3>
+<div id="outline-container-org2aa7c0b" class="outline-3">
+<h3 id="org2aa7c0b"><span class="section-number-3">1.1</span> Computing Unit</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 The main properties of interest in a computing unit are the number of operations
@@ -273,8 +267,8 @@ gains of up to 30% over a single thread can be achieved.
 </div>
 </div>
 
-<div id="outline-container-org3369d57" class="outline-3">
-<h3 id="org3369d57"><span class="section-number-3">1.2</span> Memory Unit</h3>
+<div id="outline-container-org173eae7" class="outline-3">
+<h3 id="org173eae7"><span class="section-number-3">1.2</span> Memory Unit</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 When trying to optimize the memory patterns of a program, we are simply optimizing
@@ -284,8 +278,8 @@ sequential reads), and how many times it is moved among the various locations.
 </div>
 </div>
 
-<div id="outline-container-org1cce73d" class="outline-3">
-<h3 id="org1cce73d"><span class="section-number-3">1.3</span> Communications Layers</h3>
+<div id="outline-container-orga557b09" class="outline-3">
+<h3 id="orga557b09"><span class="section-number-3">1.3</span> Communications Layers</h3>
 <div class="outline-text-3" id="text-1-3">
 <ul class="org-ul">
 <li>The <i>frontside</i> bus is the connection between the RAM and the L1/L2 cache</li>
@@ -298,8 +292,8 @@ sequential reads), and how many times it is moved among the various locations.
 </div>
 </div>
 
-<div id="outline-container-org4097bc8" class="outline-3">
-<h3 id="org4097bc8"><span class="section-number-3">1.4</span> GPU</h3>
+<div id="outline-container-orge3ba622" class="outline-3">
+<h3 id="orge3ba622"><span class="section-number-3">1.4</span> GPU</h3>
 <div class="outline-text-3" id="text-1-4">
 <ul class="org-ul">
 <li>Drawbacks: Communicates through the PCI bus, which is much slower than the frontside bus</li>
@@ -307,8 +301,8 @@ sequential reads), and how many times it is moved among the various locations.
 </div>
 </div>
 
-<div id="outline-container-orgd27f24d" class="outline-3">
-<h3 id="orgd27f24d"><span class="section-number-3">1.5</span> Performance Issues of Python</h3>
+<div id="outline-container-org2e52313" class="outline-3">
+<h3 id="org2e52313"><span class="section-number-3">1.5</span> Performance Issues of Python</h3>
 <div class="outline-text-3" id="text-1-5">
 <ul class="org-ul">
 <li>Memory Fragmentation: due to garbage-collected</li>
@@ -319,13 +313,26 @@ sequential reads), and how many times it is moved among the various locations.
 </div>
 </div>
 
-<div id="outline-container-orgb54233d" class="outline-2">
-<h2 id="orgb54233d"><span class="section-number-2">2</span> Profiling</h2>
+<div id="outline-container-org2fecdba" class="outline-2">
+<h2 id="org2fecdba"><span class="section-number-2">2</span> Profiling</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgc133f7a" class="outline-3">
-<h3 id="orgc133f7a"><span class="section-number-3">2.1</span> <code>timefn</code> decorator</h3>
+<div id="outline-container-orgf85aa16" class="outline-3">
+<h3 id="orgf85aa16"><span class="section-number-3">2.1</span> Tools</h3>
 <div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org4ba26e3" class="outline-4">
+<h4 id="org4ba26e3"><span class="section-number-4">2.1.1</span> <code>/usr/bin/time</code></h4>
+<div class="outline-text-4" id="text-2-1-1">
+<ul class="org-ul">
+<li>Using <code>--verbose</code> flag to get more details.</li>
+<li>Most useful indicator is <code>Major (requiring I/O) page faults</code>, as it indicates cache misses.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgcb495e9" class="outline-4">
+<h4 id="orgcb495e9"><span class="section-number-4">2.1.2</span> <code>timefn</code> decorator</h4>
+<div class="outline-text-4" id="text-2-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">timefn</span><span style="color: #3a81c3;">(</span>fn<span style="color: #3a81c3;">)</span>:
     <span style="color: #ba2f59; font-weight: bold;">@wraps</span><span style="color: #3a81c3;">(</span>fn<span style="color: #3a81c3;">)</span>
@@ -341,9 +348,9 @@ sequential reads), and how many times it is moved among the various locations.
 </div>
 </div>
 
-<div id="outline-container-orgf4c1e94" class="outline-3">
-<h3 id="orgf4c1e94"><span class="section-number-3">2.2</span> bulit-in <code>timeit</code> module</h3>
-<div class="outline-text-3" id="text-2-2">
+<div id="outline-container-org477c8fe" class="outline-4">
+<h4 id="org477c8fe"><span class="section-number-4">2.1.3</span> bulit-in <code>timeit</code> module</h4>
+<div class="outline-text-4" id="text-2-1-3">
 <ul class="org-ul">
 <li><a href="https://docs.python.org/3/library/timeit.html">Documentation</a></li>
 <li>The <code>timeit</code> module temporarily disables the garbage collector.</li>
@@ -352,9 +359,9 @@ sequential reads), and how many times it is moved among the various locations.
 </div>
 </div>
 
-<div id="outline-container-org0921827" class="outline-3">
-<h3 id="org0921827"><span class="section-number-3">2.3</span> CProfile</h3>
-<div class="outline-text-3" id="text-2-3">
+<div id="outline-container-org8749aaf" class="outline-4">
+<h4 id="org8749aaf"><span class="section-number-4">2.1.4</span> CProfile</h4>
+<div class="outline-text-4" id="text-2-1-4">
 <div class="org-src-container">
 <pre class="src src-sh">python -m cProfile -s cumulative test.py
 python -m cProfile -o profile.stats test.py
@@ -375,19 +382,21 @@ p.print_callees<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 
-<div id="outline-container-org3b58e09" class="outline-3">
-<h3 id="org3b58e09"><span class="section-number-3">2.4</span> <code>line_profiler</code></h3>
-<div class="outline-text-3" id="text-2-4">
+<div id="outline-container-org3d248d6" class="outline-4">
+<h4 id="org3d248d6"><span class="section-number-4">2.1.5</span> <code>line_profiler</code></h4>
+<div class="outline-text-4" id="text-2-1-5">
 <ol class="org-ol">
 <li><code>pip install ~line_profiler~</code></li>
 <li>Use <code>@profile</code> to mark the chosen function</li>
 <li><code>kernprof -l -v test.py</code></li>
+<li>See report: <code>python -m line_profiler test.py.lprof</code></li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org8bdb3ef" class="outline-3">
-<h3 id="org8bdb3ef"><span class="section-number-3">2.5</span> <code>memory_profiler</code></h3>
-<div class="outline-text-3" id="text-2-5">
+
+<div id="outline-container-org9357c8f" class="outline-4">
+<h4 id="org9357c8f"><span class="section-number-4">2.1.6</span> <code>memory_profiler</code></h4>
+<div class="outline-text-4" id="text-2-1-6">
 <ol class="org-ol">
 <li><code>pip install psutil</code> (recommended)</li>
 <li><code>pip install memory_profiler</code></li>
@@ -403,15 +412,15 @@ Other Hints:
 <li><code>memory_profiler</code> offers an interesting aid to debugging a large process via the <code>--pdb-mmem=XXX</code> flag</li>
 </ul>
 </div>
-
-<div id="outline-container-org16cd267" class="outline-4">
-<h4 id="org16cd267"><span class="section-number-4">2.5.1</span> ipython magic <code>%memit</code></h4>
-</div>
 </div>
 
-<div id="outline-container-org1f4666d" class="outline-3">
-<h3 id="org1f4666d"><span class="section-number-3">2.6</span> No-op @profile</h3>
-<div class="outline-text-3" id="text-2-6">
+<div id="outline-container-org1845549" class="outline-4">
+<h4 id="org1845549"><span class="section-number-4">2.1.7</span> ipython magic <code>%memit</code></h4>
+</div>
+
+<div id="outline-container-org76da794" class="outline-4">
+<h4 id="org76da794"><span class="section-number-4">2.1.8</span> No-op @profile</h4>
+<div class="outline-text-4" id="text-2-1-8">
 <p>
 Add it to the start of our module while unit testing
 </p>
@@ -424,291 +433,219 @@ Add it to the start of our module while unit testing
 </div>
 </div>
 
-<div id="outline-container-org5ba95b6" class="outline-3">
-<h3 id="org5ba95b6"><span class="section-number-3">2.7</span> Introspecting an Existing Process with <code>PySpy</code></h3>
+<div id="outline-container-org83aad13" class="outline-4">
+<h4 id="org83aad13"><span class="section-number-4">2.1.9</span> Introspecting an Existing Process with <code>PySpy</code></h4>
+<div class="outline-text-4" id="text-2-1-9">
+<ul class="org-ul">
+<li><code>pip install py-spy</code></li>
+<li><code>sudo py-spy top --pid 2046</code>: top-like view.</li>
+<li><code>py-spy record -o profile.svg python test.py</code></li>
+</ul>
 </div>
 </div>
-<div id="outline-container-orgbbed6c3" class="outline-2">
-<h2 id="orgbbed6c3"><span class="section-number-2">3</span> Lists and tuples</h2>
+
+<div id="outline-container-org38d52cd" class="outline-4">
+<h4 id="org38d52cd"><span class="section-number-4">2.1.10</span> Bytecode: <code>dis</code> module</h4>
+<div class="outline-text-4" id="text-2-1-10">
+<p>
+<code>dis.dis(func)</code>
+</p>
+</div>
+</div>
+<div id="outline-container-org60677d5" class="outline-4">
+<h4 id="org60677d5"><span class="section-number-4">2.1.11</span> For Web Servers</h4>
+<div class="outline-text-4" id="text-2-1-11">
+<ul class="org-ul">
+<li><code>dowser</code></li>
+<li><code>dozer</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgecee3e0" class="outline-3">
+<h3 id="orgecee3e0"><span class="section-number-3">2.2</span> Practical Points</h3>
+<div class="outline-text-3" id="text-2-2">
+<ul class="org-ul">
+<li>Disable Turbo Boost in the BIOS.</li>
+<li>Disable the operating system’s ability to override the SpeedStep(in BIOS).</li>
+<li>Use only AC power (never battery power).</li>
+<li>Disable background tools like backups and Dropbox while running experiments.</li>
+<li>Run the experiments many times to obtain a stable measurement.</li>
+<li>Possibly drop to run level 1 (Unix) so that no other tasks are running.</li>
+<li>Reboot and rerun the experiments to double-confirm the results.</li>
+<li>Unit testing a complicated section of code that generates a large numerical output may be</li>
+</ul>
+<p>
+difficult. Do not be afraid to output a text file of results to run through <code>diff</code> or to use
+a pickled object.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgef284c6" class="outline-2">
+<h2 id="orgef284c6"><span class="section-number-2">3</span> Lists and Tuples</h2>
 <div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>Python array stores data in buckets by reference, opposed to numpy arrays.</li>
+</ul>
 </div>
-<div id="outline-container-org68f77c0" class="outline-3">
-<h3 id="org68f77c0"><span class="section-number-3">3.1</span> Sort algorithm</h3>
+
+<div id="outline-container-org144986f" class="outline-3">
+<h3 id="org144986f"><span class="section-number-3">3.1</span> Lists</h3>
 <div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li>lists also store how large they are, so of the six allocated blocks, only five are usable.</li>
+<li><code>bisect</code> gives easy methods to add elements into a list while maintaining its sorting</li>
+<li>List pre-allocation equation in Python 3.7: <code>M = (N &gt;&gt; 3) + (3 if N &lt; 9 else 6)</code></li>
+</ul>
 </div>
-<div id="outline-container-org5b73c53" class="outline-4">
-<h4 id="org5b73c53"><span class="section-number-4">3.1.1</span> Tim sort</h4>
+
+<div id="outline-container-orgb244948" class="outline-4">
+<h4 id="orgb244948"><span class="section-number-4">3.1.1</span> Bulit-in Tim Sort</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
-built-in sort algorithm
-(it hybridizes insertion and merge sort algorithms).
+Python lists have a built-in sorting algorithm that uses <b>Tim sort</b>.
+O(n) in the best case, <code>O(n log n)</code> in the worst case. It hybridizes
+insertion and merge sort algorithms.
 </p>
-</div>
-</div>
-
-<div id="outline-container-orgfa76599" class="outline-4">
-<h4 id="orgfa76599"><span class="section-number-4">3.1.2</span> bisect</h4>
-<div class="outline-text-4" id="text-3-1-2">
-<p>
-<b>bisect</b> provides support for maintaining a list in
-sorted order without having to sort the list after each insertion.
-</p>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> bisect
-<span style="color: #715ab1;">alist</span>=<span style="color: #3a81c3;">[]</span>
-bisect.insort<span style="color: #3a81c3;">(</span>alist, 5<span style="color: #3a81c3;">)</span>
-bisect.insort<span style="color: #3a81c3;">(</span>alist, 3<span style="color: #3a81c3;">)</span>
-bisect.insort<span style="color: #3a81c3;">(</span>alist, 20<span style="color: #3a81c3;">)</span>
-bisect.insort<span style="color: #3a81c3;">(</span>alist, 17<span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">print</span> alist
-<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; [3, 5, 17, 20]</span>
-</pre>
-</div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org00fc171" class="outline-3">
-<h3 id="org00fc171"><span class="section-number-3">3.2</span> list vs. tuple</h3>
+<div id="outline-container-org15010ea" class="outline-3">
+<h3 id="org15010ea"><span class="section-number-3">3.2</span> Tuples</h3>
 <div class="outline-text-3" id="text-3-2">
-</div>
-<div id="outline-container-org35c5f55" class="outline-4">
-<h4 id="org35c5f55"><span class="section-number-4">3.2.1</span> list</h4>
-<div class="outline-text-4" id="text-3-2-1">
 <p>
-dynamic arrays, mutable and allow for resizing.
+Python process will have some extra memory overhead for resource caching.
+For tuples of sizes 1–20, however, when they are no longer in use, the space isn't
+immediately given back to the system, which reduced system calls for memory allocation.
 </p>
-</div>
-
-<ul class="org-ul">
-<li><a id="org3602656"></a>resizing<br />
-<div class="outline-text-5" id="text-org3602656">
-<p>
-The growth pattern is:
-</p>
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-left">new size</td>
-<td class="org-right">0</td>
-<td class="org-right">1</td>
-<td class="org-right">5</td>
-<td class="org-right">9</td>
-<td class="org-right">17</td>
-<td class="org-right">26</td>
-<td class="org-right">36</td>
-<td class="org-right">47</td>
-<td class="org-left">&#x2026;</td>
-</tr>
-
-<tr>
-<td class="org-left">new allocated</td>
-<td class="org-right">0</td>
-<td class="org-right">4</td>
-<td class="org-right">8</td>
-<td class="org-right">16</td>
-<td class="org-right">25</td>
-<td class="org-right">35</td>
-<td class="org-right">46</td>
-<td class="org-right">58</td>
-<td class="org-left">&#x2026;</td>
-</tr>
-</tbody>
-</table>
 <div class="org-src-container">
-<pre class="src src-c">new_allocated = <span style="color: #3a81c3;">(</span>newsize &gt;&gt; 3<span style="color: #3a81c3;">)</span> + <span style="color: #3a81c3;">(</span>newsize &lt; 9 ? 3 : 6<span style="color: #3a81c3;">)</span>;
-new_allocated += newsize;
+<pre class="src src-text">In [1]: %timeit l = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+62 ns &#177; 0.714 ns per loop (mean &#177; std. dev. of 7 runs, 10000000 loops each)
+
+In [2]: %timeit t = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+9.41 ns &#177; 0.113 ns per loop (mean &#177; std. dev. of 7 runs, 100000000 loops each)
 </pre>
 </div>
 </div>
-</li>
-
-<li><a id="org0824064"></a>dereference<br />
-<div class="outline-text-5" id="text-org0824064">
-<p>
-List objects (for background, see Chapter 3) have an overhead for each dereference, as
-the objects they reference can occur anywhere in memory.
-</p>
-</div>
-</li>
-</ul>
-</div>
-
-<div id="outline-container-orgdfc3774" class="outline-4">
-<h4 id="orgdfc3774"><span class="section-number-4">3.2.2</span> tuple</h4>
-<div class="outline-text-4" id="text-3-2-2">
-<p>
-static arrays, immutable
-</p>
-<ul class="org-ul">
-<li>instantiating a list can be 5.1x slower than instantiating a tuple</li>
-<li>tuple is a hashable type</li>
-</ul>
-</div>
-</div>
 </div>
 </div>
 
-<div id="outline-container-orgf9d99f1" class="outline-2">
-<h2 id="orgf9d99f1"><span class="section-number-2">4</span> set &amp; dict</h2>
+<div id="outline-container-orgbf88063" class="outline-2">
+<h2 id="orgbf88063"><span class="section-number-2">4</span> Dictionaries and Sets</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org2cf903f" class="outline-3">
-<h3 id="org2cf903f"><span class="section-number-3">4.1</span> hashable key</h3>
+<div id="outline-container-orgef15e16" class="outline-3">
+<h3 id="orgef15e16"><span class="section-number-3">4.1</span> Hashable Type</h3>
 <div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>should implement <code>__hash__</code>, <code>__eq__</code>, <code>__cmp_-</code></li>
+<li>User-defined classes have default hash and comparison functions</li>
+</ul>
 <p>
-The type should implements both the <span class="underline"><span class="underline">hash</span></span> magic function and either <span class="underline"><span class="underline">eq</span></span> or <span class="underline"><span class="underline">cmp</span></span> .
+using the object's placement in memory.(given by <code>id</code> function)
 </p>
 </div>
-<div id="outline-container-orgf3350ae" class="outline-4">
-<h4 id="orgf3350ae"><span class="section-number-4">4.1.1</span> probing function</h4>
-<div class="outline-text-4" id="text-4-1-1">
+</div>
+
+<div id="outline-container-org296677b" class="outline-3">
+<h3 id="org296677b"><span class="section-number-3">4.2</span> Key to Array Index</h3>
+<div class="outline-text-3" id="text-4-2">
+<ol class="org-ol">
+<li><b>hashing</b>: turn key into an integer number</li>
+<li><b>masking</b>: fits the allocated number of buckets</li>
+<li>Using <b>probing</b> to find a new place if collision happens</li>
+</ol>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pseudocode</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">mask is always equal to bin(hashtable_size - 1)</span>
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pseudocode of finding index</span>
 <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">index_sequence</span><span style="color: #3a81c3;">(</span>key, mask=0b111, PERTURB_SHIFT=5<span style="color: #3a81c3;">)</span>:
-    <span style="color: #715ab1;">perturb</span> = <span style="color: #3a81c3;">hash</span><span style="color: #3a81c3;">(</span>key<span style="color: #3a81c3;">)</span>
-    <span style="color: #715ab1;">i</span> = perturb &amp; mask
+    <span style="color: #715ab1;">perturb</span> = <span style="color: #3a81c3;">hash</span><span style="color: #3a81c3;">(</span>key<span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">hashing</span>
+    <span style="color: #715ab1;">i</span> = perturb &amp; mask  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">masking</span>
     <span style="color: #3a81c3; font-weight: bold;">yield</span> i
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">probing</span>
     <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
-	<span style="color: #715ab1;">i</span> = <span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>i &lt;&lt; 2<span style="color: #6c3163;">)</span> + i + perturb + 1<span style="color: #3a81c3;">)</span>
-	<span style="color: #715ab1;">perturb</span> &gt;&gt;= PERTURB_SHIFT
-	<span style="color: #3a81c3; font-weight: bold;">yield</span> i &amp; mask
+	<span style="color: #715ab1;">perturb</span> &gt;&gt;= PERTURB_SHIFT  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">use high-order bits</span>
+	<span style="color: #715ab1;">i</span> = <span style="color: #3a81c3;">(</span>i * 5 + perturb + 1<span style="color: #3a81c3;">)</span> &amp; mask  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">simple linear function and masking again</span>
+	<span style="color: #3a81c3; font-weight: bold;">yield</span> i
 </pre>
 </div>
 </div>
-</div>
-<div id="outline-container-org0de2564" class="outline-4">
-<h4 id="org0de2564"><span class="section-number-4">4.1.2</span> User-defined classes</h4>
-<div class="outline-text-4" id="text-4-1-2">
+
+<div id="outline-container-orgcfea5ff" class="outline-4">
+<h4 id="orgcfea5ff"><span class="section-number-4">4.2.1</span> Finding a Element</h4>
+<div class="outline-text-4" id="text-4-2-1">
 <p>
-User-defined classes have default hash and comparison functions.
-The default <span class="underline"><span class="underline">hash</span></span> function simply returns the object’s placement
-in memory as given by the built-in id function. Similarly,
-the <span class="underline"><span class="underline">cmp</span></span> operator compares the numerical value of the object’s
-placement in memory.
+If we hit an empty bucket, we can conclude that the data does not exist in the table.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org665569b" class="outline-4">
-<h4 id="org665569b"><span class="section-number-4">4.1.3</span> entropy</h4>
-<div class="outline-text-4" id="text-4-1-3">
+<div id="outline-container-org6834a69" class="outline-4">
+<h4 id="org6834a69"><span class="section-number-4">4.2.2</span> Deleting a Element</h4>
+<div class="outline-text-4" id="text-4-2-2">
 <p>
-“how well distributed my hash function is” is called the <b>entropy</b>
-of the hash function:
-\[S = - \sum_i p(i)\cdot\log(p(i))\]
-</p>
-
-<p>
-where p(i) is the probability that the hash function gives hash i.
-</p>
-
-<p>
-knowing up front what range of values will be used and how large
-the dictionary will be helps in making a good selection.
+We will write a special value that signifies that the bucket is empty, but there still
+may be values after it to consider when resolving a hash collision. These empty slots can
+be written to in the future and are removed when the hash table is resized.
 </p>
 </div>
 </div>
-</div>
 
-<div id="outline-container-orgc7bd867" class="outline-3">
-<h3 id="orgc7bd867"><span class="section-number-3">4.2</span> resizing</h3>
-<div class="outline-text-3" id="text-4-2">
-</div>
+<div id="outline-container-orgee1a520" class="outline-4">
+<h4 id="orgee1a520"><span class="section-number-4">4.2.3</span> Entropy of a Hash Function</h4>
+<div class="outline-text-4" id="text-4-2-3">
+<p>
+\[S = -\sum_i p(i)\cdot\log(p(i))\]
+</p>
 <ul class="org-ul">
-<li><a id="orgbf9977a"></a>The growth pattern is:<br />
-<div class="outline-text-5" id="text-orgbf9977a">
-<p>
-8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, &#x2026;
-the number of bucket increases by 4x until we reach 50,000
-elements, after which the size is increased by 2x.
-</p>
-
-<p>
-resizing requires recomputing indices
-</p>
-</div>
-</li>
+<li>\(p(i)\) is the probability that the hash function gives hash i</li>
+<li>It is maximized when every hash value has equal probability of being chosen</li>
 </ul>
-</div>
-<div id="outline-container-org51db53d" class="outline-3">
-<h3 id="org51db53d"><span class="section-number-3">4.3</span> extra</h3>
-<div class="outline-text-3" id="text-4-3">
-</div>
-<div id="outline-container-orgce18b4d" class="outline-4">
-<h4 id="orgce18b4d"><span class="section-number-4">4.3.1</span> Namespace lookups</h4>
-<div class="outline-text-4" id="text-4-3-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> math
-<span style="color: #3a81c3; font-weight: bold;">from</span> math <span style="color: #3a81c3; font-weight: bold;">import</span> sin
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test1</span><span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>:
-    <span style="color: #da8b55;">"""</span>
-<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit test1(123456)</span>
-<span style="color: #da8b55;">    1000000 loops, best of 3: 381 ns per loop</span>
-<span style="color: #da8b55;">    """</span>
-    <span style="color: #3a81c3; font-weight: bold;">return</span> math.sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">p1</span> = <span style="color: #3a81c3;">[</span>0.25, 0.25, 0.25, 0.25<span style="color: #3a81c3;">]</span>
+-<span style="color: #3a81c3;">sum</span><span style="color: #3a81c3;">(</span>i * math.log<span style="color: #6c3163;">(</span>i<span style="color: #6c3163;">)</span> <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> p1<span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 1.3862943611198906</span>
 
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test2</span><span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>:
-    <span style="color: #da8b55;">"""</span>
-<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit test2(123456)</span>
-<span style="color: #da8b55;">    1000000 loops, best of 3: 311 ns per loop</span>
-<span style="color: #da8b55;">    """</span>
-    <span style="color: #3a81c3; font-weight: bold;">return</span> sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
-
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test3</span><span style="color: #3a81c3;">(</span>x, sin=math.sin<span style="color: #3a81c3;">)</span>:
-    <span style="color: #da8b55;">"""</span>
-<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit test3(123456)</span>
-<span style="color: #da8b55;">    1000000 loops, best of 3: 306 ns per loop</span>
-<span style="color: #da8b55;">    """</span>
-    <span style="color: #3a81c3; font-weight: bold;">return</span> sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">p2</span> = <span style="color: #3a81c3;">[</span>0.1, 0.3, 0.5, 0.1<span style="color: #3a81c3;">]</span>
+-<span style="color: #3a81c3;">sum</span><span style="color: #3a81c3;">(</span>i * math.log<span style="color: #6c3163;">(</span>i<span style="color: #6c3163;">)</span> <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> p2<span style="color: #3a81c3;">)</span>  <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 1.1682824501765625</span>
 </pre>
 </div>
-<div class="org-src-container">
-<pre class="src src-python">dis.dis<span style="color: #3a81c3;">(</span>test1<span style="color: #3a81c3;">)</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_GLOBAL      0 (math)  # Dictionary lookup</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_ATTR        1 (sin)   # Dictionary lookup</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 LOAD_FAST        0 (x)     # Local lookup</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">9 CALL_FUNCTION    1</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">12 RETURN_VALUE</span>
-
-dis.dis<span style="color: #3a81c3;">(</span>test2<span style="color: #3a81c3;">)</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_GLOBAL      0 (sin)   # Dictionary lookup</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_FAST        0 (x)     # Local lookup</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 CALL_FUNCTION    1</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">9 RETURN_VALUE</span>
-
-dis.dis<span style="color: #3a81c3;">(</span>test3<span style="color: #3a81c3;">)</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">0 LOAD_FAST        1 (sin)   # Local lookup</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">3 LOAD_FAST        0 (x)     # Local lookup</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">6 CALL_FUNCTION    1</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">9 RETURN_VALUE</span>
-</pre>
+<ul class="org-ul">
+<li>Knowing up front <b>what range of values will be used</b> and <b>how large the dictionary will be</b></li>
+</ul>
+<p>
+helps in making a good selection
+</p>
 </div>
 </div>
+</div>
+
+<div id="outline-container-org7b2f393" class="outline-3">
+<h3 id="org7b2f393"><span class="section-number-3">4.3</span> Dictionary</h3>
+<div class="outline-text-3" id="text-4-3">
+<ul class="org-ul">
+<li>Optimization: Python first appends the key/value data into a standard array and</li>
+</ul>
+<p>
+then stores only the index into this array in the hash table. The array also helps
+keep the insertion order of items.
+</p>
+<ul class="org-ul">
+<li>How well distributed the data is throughout the hash table is called the</li>
+</ul>
+<p>
+<b>load factor</b> and is related to the <b>entropy</b> of the hash function
+</p>
+<ul class="org-ul">
+<li>By default, the smallest size of a dictionary or set is 8, and it will resize by 3×</li>
+</ul>
+<p>
+if the dictionary is more than two-thirds full. (possible sizes: 8-&gt;18-&gt;39-&gt;81-&gt;165-&gt;&#x2026;)
+</p>
 </div>
 </div>
 </div>

@@ -38,6 +38,9 @@
 
 * Profiling
 ** Tools
+*** ~/usr/bin/time~
+    - Using ~--verbose~ flag to get more details.
+    - Most useful indicator is ~Major (requiring I/O) page faults~, as it indicates cache misses.
 *** ~timefn~ decorator
    #+BEGIN_SRC python
      def timefn(fn):
@@ -108,6 +111,7 @@
     - ~dowser~
     - ~dozer~
 
+
 ** Practical Points
    - Disable Turbo Boost in the BIOS.
    - Disable the operating system’s ability to override the SpeedStep(in BIOS).
@@ -126,139 +130,76 @@
 ** Lists
    - lists also store how large they are, so of the six allocated blocks, only five are usable.
    - ~bisect~ gives easy methods to add elements into a list while maintaining its sorting
+   - List pre-allocation equation in Python 3.7: ~M = (N >> 3) + (3 if N < 9 else 6)~
 
 *** Bulit-in Tim Sort
    Python lists have a built-in sorting algorithm that uses *Tim sort*.
-   O(n) in the best case, O(n log n) in the worst case. It hybridizes
+   O(n) in the best case, ~O(n log n)~ in the worst case. It hybridizes
    insertion and merge sort algorithms.
 
-* Lists and tuples
-** Sort algorithm
-*** Tim sort
-built-in sort algorithm
-(it hybridizes insertion and merge sort algorithms).
+** Tuples
+   Python process will have some extra memory overhead for resource caching.
+   For tuples of sizes 1–20, however, when they are no longer in use, the space isn't
+   immediately given back to the system, which reduced system calls for memory allocation.
+   #+BEGIN_SRC text
+     In [1]: %timeit l = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+     62 ns ± 0.714 ns per loop (mean ± std. dev. of 7 runs, 10000000 loops each)
 
-*** bisect
-    *bisect* provides support for maintaining a list in
-    sorted order without having to sort the list after each insertion.
+     In [2]: %timeit t = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+     9.41 ns ± 0.113 ns per loop (mean ± std. dev. of 7 runs, 100000000 loops each)
+   #+END_SRC
+
+* Dictionaries and Sets
+** Hashable Type
+   - should implement ~__hash__~, ~__eq__~, ~__cmp_-~
+   - User-defined classes have default hash and comparison functions
+   using the object's placement in memory.(given by ~id~ function)
+
+** Key to Array Index
+   1. *hashing*: turn key into an integer number
+   1. *masking*: fits the allocated number of buckets
+   1. Using *probing* to find a new place if collision happens
+   #+BEGIN_SRC python
+     # pseudocode of finding index
+     def index_sequence(key, mask=0b111, PERTURB_SHIFT=5):
+	 perturb = hash(key)  # hashing
+	 i = perturb & mask  # masking
+	 yield i
+	 # probing
+	 while True:
+	     perturb >>= PERTURB_SHIFT  # use high-order bits
+	     i = (i * 5 + perturb + 1) & mask  # simple linear function and masking again
+	     yield i
+   #+END_SRC
+
+*** Finding a Element
+    If we hit an empty bucket, we can conclude that the data does not exist in the table.
+
+*** Deleting a Element
+    We will write a special value that signifies that the bucket is empty, but there still
+    may be values after it to consider when resolving a hash collision. These empty slots can
+    be written to in the future and are removed when the hash table is resized.
+
+*** Entropy of a Hash Function
+    $$S = -\sum_i p(i)\cdot\log(p(i))$$
+    - $p(i)$ is the probability that the hash function gives hash i
+    - It is maximized when every hash value has equal probability of being chosen
     #+BEGIN_SRC python
-      import bisect
-      alist=[]
-      bisect.insort(alist, 5)
-      bisect.insort(alist, 3)
-      bisect.insort(alist, 20)
-      bisect.insort(alist, 17)
-      print alist
-      #=> [3, 5, 17, 20]
+      import math
+      p1 = [0.25, 0.25, 0.25, 0.25]
+      -sum(i * math.log(i) for i in p1)  # => 1.3862943611198906
+
+      p2 = [0.1, 0.3, 0.5, 0.1]
+      -sum(i * math.log(i) for i in p2)  # => 1.1682824501765625
     #+END_SRC
+    - Knowing up front *what range of values will be used* and *how large the dictionary will be*
+    helps in making a good selection
 
-** list vs. tuple
-*** list
-dynamic arrays, mutable and allow for resizing.
-
-**** resizing
-     The growth pattern is:
-     | new size      | 0 | 1 | 5 |  9 | 17 | 26 | 36 | 47 | ... |
-     | new allocated | 0 | 4 | 8 | 16 | 25 | 35 | 46 | 58 | ... |
-  #+BEGIN_SRC c
-    new_allocated = (newsize >> 3) + (newsize < 9 ? 3 : 6);
-    new_allocated += newsize;
-  #+END_SRC
-
-**** dereference
-     List objects (for background, see Chapter 3) have an overhead for each dereference, as
-     the objects they reference can occur anywhere in memory.
-
-*** tuple
-    static arrays, immutable
-- instantiating a list can be 5.1x slower than instantiating a tuple
-- tuple is a hashable type
-
-* set & dict
-** hashable key
-   The type should implements both the __hash__ magic function and either __eq__ or __cmp__ .
-*** probing function
-    #+BEGIN_SRC python
-      # pseudocode
-      # mask is always equal to bin(hashtable_size - 1)
-      def index_sequence(key, mask=0b111, PERTURB_SHIFT=5):
-	  perturb = hash(key)
-	  i = perturb & mask
-	  yield i
-	  while True:
-	      i = ((i << 2) + i + perturb + 1)
-	      perturb >>= PERTURB_SHIFT
-	      yield i & mask
-    #+END_SRC
-*** User-defined classes
-    User-defined classes have default hash and comparison functions.
-    The default __hash__ function simply returns the object’s placement
-    in memory as given by the built-in id function. Similarly,
-    the __cmp__ operator compares the numerical value of the object’s
-    placement in memory.
-
-*** entropy
-    “how well distributed my hash function is” is called the *entropy*
-    of the hash function:
-    $$S = - \sum_i p(i)\cdot\log(p(i))$$
-
-    where p(i) is the probability that the hash function gives hash i.
-
-    knowing up front what range of values will be used and how large
-    the dictionary will be helps in making a good selection.
-
-** resizing
-
-**** The growth pattern is:
-
-     8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144, ...
-     the number of bucket increases by 4x until we reach 50,000
-     elements, after which the size is increased by 2x.
-
-     resizing requires recomputing indices
-** extra
-*** Namespace lookups
-  #+BEGIN_SRC python
-    import math
-    from math import sin
-    def test1(x):
-	"""
-	>>> %timeit test1(123456)
-	1000000 loops, best of 3: 381 ns per loop
-	"""
-	return math.sin(x)
-
-    def test2(x):
-	"""
-	>>> %timeit test2(123456)
-	1000000 loops, best of 3: 311 ns per loop
-	"""
-	return sin(x)
-
-    def test3(x, sin=math.sin):
-	"""
-	>>> %timeit test3(123456)
-	1000000 loops, best of 3: 306 ns per loop
-	"""
-	return sin(x)
-  #+END_SRC
-  #+BEGIN_SRC python
-    dis.dis(test1)
-    # 0 LOAD_GLOBAL      0 (math)  # Dictionary lookup
-    # 3 LOAD_ATTR        1 (sin)   # Dictionary lookup
-    # 6 LOAD_FAST        0 (x)     # Local lookup
-    # 9 CALL_FUNCTION    1
-    # 12 RETURN_VALUE
-
-    dis.dis(test2)
-    # 0 LOAD_GLOBAL      0 (sin)   # Dictionary lookup
-    # 3 LOAD_FAST        0 (x)     # Local lookup
-    # 6 CALL_FUNCTION    1
-    # 9 RETURN_VALUE
-
-    dis.dis(test3)
-    # 0 LOAD_FAST        1 (sin)   # Local lookup
-    # 3 LOAD_FAST        0 (x)     # Local lookup
-    # 6 CALL_FUNCTION    1
-    # 9 RETURN_VALUE
-  #+END_SRC
+** Dictionary
+   - Optimization: Python first appends the key/value data into a standard array and
+   then stores only the index into this array in the hash table. The array also helps
+   keep the insertion order of items.
+   - How well distributed the data is throughout the hash table is called the
+   *load factor* and is related to the *entropy* of the hash function
+   - By default, the smallest size of a dictionary or set is 8, and it will resize by 3×
+   if the dictionary is more than two-thirds full. (possible sizes: 8->18->39->81->165->...)
