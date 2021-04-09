@@ -152,8 +152,7 @@
 * Dictionaries and Sets
 ** Hashable Type
    - should implement ~__hash__~, ~__eq__~, ~__cmp_-~
-   - User-defined classes have default hash and comparison functions
-   using the object's placement in memory.(given by ~id~ function)
+   - User-defined classes have default hash and comparison functions using the object's placement in memory.(given by ~id~ function)
 
 ** Key to Array Index
    1. *hashing*: turn key into an integer number
@@ -192,14 +191,59 @@
       p2 = [0.1, 0.3, 0.5, 0.1]
       -sum(i * math.log(i) for i in p2)  # => 1.1682824501765625
     #+END_SRC
-    - Knowing up front *what range of values will be used* and *how large the dictionary will be*
-    helps in making a good selection
+    - Knowing up front *what range of values will be used* and *how large the dictionary will be* helps in making a good selection
 
 ** Dictionary
    - Optimization: Python first appends the key/value data into a standard array and
    then stores only the index into this array in the hash table. The array also helps
    keep the insertion order of items.
-   - How well distributed the data is throughout the hash table is called the
-   *load factor* and is related to the *entropy* of the hash function
-   - By default, the smallest size of a dictionary or set is 8, and it will resize by 3×
-   if the dictionary is more than two-thirds full. (possible sizes: 8->18->39->81->165->...)
+   - How well distributed the data is throughout the hash table is called the *load factor* and is related to the *entropy* of the hash function
+   - By default, the smallest size of a dictionary or set is 8, and it will resize by 3x if the dictionary is more than two-thirds full. (possible sizes: 8->18->39->81->165->...)
+
+
+** Namespace Management
+   - *Namespace Management* heavily uses dictionaries to do its lookups.
+
+   The steps to look for a variable/function/module
+
+   1. Searching ~locals()~: which has entries for all local variables, and this is the only part of the chain that doesn't require a dictionary lookup
+   2. Searching ~globals()~
+   3. Searching ~__builtin__~ objects: ~__builtin__~ is technically a module object
+   #+BEGIN_SRC python
+     import math
+
+
+     def test1(x):
+	 """
+	 >>> %timeit test1(123456)
+	 94 µs ± 387 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+
+	 18 LOAD_GLOBAL              1 (math)
+	 20 LOAD_METHOD              2 (sin)
+	 22 LOAD_FAST                0 (x)
+	 24 CALL_METHOD              1
+
+	 """
+	 res = 1
+	 for _ in range(1000):
+	     res += math.sin(x)
+	 return res
+
+
+     def test2(x):
+	 """
+	 >>> %timeit test2(123456)
+	 72.5 µs ± 2.66 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+
+	 22 LOAD_FAST                2 (res)
+	 24 LOAD_FAST                1 (sin)
+	 26 LOAD_FAST                0 (x)
+	 28 CALL_FUNCTION            1
+
+	 """
+	 sin = math.sin
+	 res = 1
+	 for _ in range(1000):
+	     res += sin(x)
+	 return res
+   #+END_SRC

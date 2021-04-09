@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-09 Fri 15:53 -->
+<!-- 2021-04-09 Fri 17:33 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -238,6 +238,7 @@
 <li><a href="#orgef15e16">4.1. Hashable Type</a></li>
 <li><a href="#org296677b">4.2. Key to Array Index</a></li>
 <li><a href="#org7b2f393">4.3. Dictionary</a></li>
+<li><a href="#org551615d">4.4. Namespace Management</a></li>
 </ul>
 </li>
 </ul>
@@ -544,11 +545,8 @@ In [2]: %timeit t = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 <div class="outline-text-3" id="text-4-1">
 <ul class="org-ul">
 <li>should implement <code>__hash__</code>, <code>__eq__</code>, <code>__cmp_-</code></li>
-<li>User-defined classes have default hash and comparison functions</li>
+<li>User-defined classes have default hash and comparison functions using the object's placement in memory.(given by <code>id</code> function)</li>
 </ul>
-<p>
-using the object's placement in memory.(given by <code>id</code> function)
-</p>
 </div>
 </div>
 
@@ -615,11 +613,8 @@ be written to in the future and are removed when the hash table is resized.
 </pre>
 </div>
 <ul class="org-ul">
-<li>Knowing up front <b>what range of values will be used</b> and <b>how large the dictionary will be</b></li>
+<li>Knowing up front <b>what range of values will be used</b> and <b>how large the dictionary will be</b> helps in making a good selection</li>
 </ul>
-<p>
-helps in making a good selection
-</p>
 </div>
 </div>
 </div>
@@ -635,17 +630,68 @@ then stores only the index into this array in the hash table. The array also hel
 keep the insertion order of items.
 </p>
 <ul class="org-ul">
-<li>How well distributed the data is throughout the hash table is called the</li>
+<li>How well distributed the data is throughout the hash table is called the <b>load factor</b> and is related to the <b>entropy</b> of the hash function</li>
+<li>By default, the smallest size of a dictionary or set is 8, and it will resize by 3x if the dictionary is more than two-thirds full. (possible sizes: 8-&gt;18-&gt;39-&gt;81-&gt;165-&gt;&#x2026;)</li>
 </ul>
-<p>
-<b>load factor</b> and is related to the <b>entropy</b> of the hash function
-</p>
+</div>
+</div>
+
+
+<div id="outline-container-org551615d" class="outline-3">
+<h3 id="org551615d"><span class="section-number-3">4.4</span> Namespace Management</h3>
+<div class="outline-text-3" id="text-4-4">
 <ul class="org-ul">
-<li>By default, the smallest size of a dictionary or set is 8, and it will resize by 3×</li>
+<li><b>Namespace Management</b> heavily uses dictionaries to do its lookups.</li>
 </ul>
+
 <p>
-if the dictionary is more than two-thirds full. (possible sizes: 8-&gt;18-&gt;39-&gt;81-&gt;165-&gt;&#x2026;)
+The steps to look for a variable/function/module
 </p>
+
+<ol class="org-ol">
+<li>Searching <code>locals()</code>: which has entries for all local variables, and this is the only part of the chain that doesn't require a dictionary lookup</li>
+<li>Searching <code>globals()</code></li>
+<li>Searching <code>__builtin__</code> objects: <code>__builtin__</code> is technically a module object</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> math
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test1</span><span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit test1(123456)</span>
+<span style="color: #da8b55;">    94 &#181;s &#177; 387 ns per loop (mean &#177; std. dev. of 7 runs, 10000 loops each)</span>
+
+<span style="color: #da8b55;">    18 LOAD_GLOBAL              1 (math)</span>
+<span style="color: #da8b55;">    20 LOAD_METHOD              2 (sin)</span>
+<span style="color: #da8b55;">    22 LOAD_FAST                0 (x)</span>
+<span style="color: #da8b55;">    24 CALL_METHOD              1</span>
+
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #715ab1;">res</span> = 1
+    <span style="color: #3a81c3; font-weight: bold;">for</span> _ <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">range</span><span style="color: #3a81c3;">(</span>1000<span style="color: #3a81c3;">)</span>:
+	<span style="color: #715ab1;">res</span> += math.sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> res
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">test2</span><span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit test2(123456)</span>
+<span style="color: #da8b55;">    72.5 &#181;s &#177; 2.66 &#181;s per loop (mean &#177; std. dev. of 7 runs, 10000 loops each)</span>
+
+<span style="color: #da8b55;">    22 LOAD_FAST                2 (res)</span>
+<span style="color: #da8b55;">    24 LOAD_FAST                1 (sin)</span>
+<span style="color: #da8b55;">    26 LOAD_FAST                0 (x)</span>
+<span style="color: #da8b55;">    28 CALL_FUNCTION            1</span>
+
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #715ab1;">sin</span> = math.sin
+    <span style="color: #715ab1;">res</span> = 1
+    <span style="color: #3a81c3; font-weight: bold;">for</span> _ <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">range</span><span style="color: #3a81c3;">(</span>1000<span style="color: #3a81c3;">)</span>:
+	<span style="color: #715ab1;">res</span> += sin<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> res
+</pre>
+</div>
 </div>
 </div>
 </div>
