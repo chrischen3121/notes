@@ -91,6 +91,7 @@
    - ~memory_profiler~ offers an interesting aid to debugging a large process via the ~--pdb-mmem=XXX~ flag
 
 *** ipython magic ~%memit~
+    - ~%load_ext memory_profiler~
 
 *** No-op @profile
    Add it to the start of our module while unit testing
@@ -246,4 +247,23 @@
 	 for _ in range(1000):
 	     res += sin(x)
 	 return res
+   #+END_SRC
+* Iterators and Generators
+** Iterator
+   1. first, get an iterator through ~iter(iterable)~
+   2. call ~iterator.next()~ to get new values until a ~StopIteration~ is raised.
+   #+BEGIN_SRC python
+     # The Python loop
+     for i in object:
+	 do_work(i)
+
+     # Is equivalent to
+     object_iterator = iter(object)
+     while True:
+	 try:
+	     i = next(object_iterator)
+	 except StopIteration:
+	     break
+	 else:
+	     do_work(i)
    #+END_SRC
