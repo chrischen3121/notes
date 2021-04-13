@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-09 Fri 17:33 -->
+<!-- 2021-04-13 Tue 16:01 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -241,6 +241,13 @@
 <li><a href="#org551615d">4.4. Namespace Management</a></li>
 </ul>
 </li>
+<li><a href="#orgc3bf9f0">5. Iterators and Generators</a>
+<ul>
+<li><a href="#orgcda3df8">5.1. Iterator</a></li>
+<li><a href="#org701da4f">5.2. Lazy Generator Evaluation</a></li>
+<li><a href="#org40a0400">5.3. Useful Itertools</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -417,6 +424,11 @@ Other Hints:
 
 <div id="outline-container-org1845549" class="outline-4">
 <h4 id="org1845549"><span class="section-number-4">2.1.7</span> ipython magic <code>%memit</code></h4>
+<div class="outline-text-4" id="text-2-1-7">
+<ul class="org-ul">
+<li><code>%load_ext memory_profiler</code></li>
+</ul>
+</div>
 </div>
 
 <div id="outline-container-org76da794" class="outline-4">
@@ -692,6 +704,113 @@ The steps to look for a variable/function/module
     <span style="color: #3a81c3; font-weight: bold;">return</span> res
 </pre>
 </div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc3bf9f0" class="outline-2">
+<h2 id="orgc3bf9f0"><span class="section-number-2">5</span> Iterators and Generators</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgcda3df8" class="outline-3">
+<h3 id="orgcda3df8"><span class="section-number-3">5.1</span> Iterator</h3>
+<div class="outline-text-3" id="text-5-1">
+<ol class="org-ol">
+<li>first, get an iterator through <code>iter(iterable)</code></li>
+<li>call <code>iterator.next()</code> to get new values until a <code>StopIteration</code> is raised.</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">The Python loop</span>
+<span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">object</span>:
+    do_work<span style="color: #3a81c3;">(</span>i<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Is equivalent to</span>
+<span style="color: #715ab1;">object_iterator</span> = <span style="color: #3a81c3;">iter</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">object</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
+    <span style="color: #3a81c3; font-weight: bold;">try</span>:
+	<span style="color: #715ab1;">i</span> = <span style="color: #3a81c3;">next</span><span style="color: #3a81c3;">(</span>object_iterator<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">except</span> <span style="color: #ba2f59; font-weight: bold;">StopIteration</span>:
+	<span style="color: #3a81c3; font-weight: bold;">break</span>
+    <span style="color: #3a81c3; font-weight: bold;">else</span>:
+	do_work<span style="color: #3a81c3;">(</span>i<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org701da4f" class="outline-3">
+<h3 id="org701da4f"><span class="section-number-3">5.2</span> Lazy Generator Evaluation</h3>
+<div class="outline-text-3" id="text-5-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> datetime <span style="color: #3a81c3; font-weight: bold;">import</span> datetime
+<span style="color: #3a81c3; font-weight: bold;">from</span> itertools <span style="color: #3a81c3; font-weight: bold;">import</span> count, filterfalse, groupby, islice
+<span style="color: #3a81c3; font-weight: bold;">from</span> random <span style="color: #3a81c3; font-weight: bold;">import</span> normalvariate, randint
+<span style="color: #3a81c3; font-weight: bold;">from</span> typing <span style="color: #3a81c3; font-weight: bold;">import</span> Generator, Iterable, List, Tuple
+
+<span style="color: #3a81c3; font-weight: bold;">from</span> scipy.stats <span style="color: #3a81c3; font-weight: bold;">import</span> normaltest
+
+<span style="color: #715ab1;">_ENTRY_TYPE</span> = Tuple<span style="color: #3a81c3;">[</span>datetime, <span style="color: #3a81c3;">int</span><span style="color: #3a81c3;">]</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">read_fake_data</span><span style="color: #3a81c3;">(</span>filename: <span style="color: #3a81c3;">str</span> = <span style="color: #2d9574;">"fake"</span><span style="color: #3a81c3;">)</span> -&gt; Generator<span style="color: #3a81c3;">[</span>_ENTRY_TYPE, <span style="color: #4e3163;">None</span>, <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">]</span>:
+    <span style="color: #3a81c3; font-weight: bold;">for</span> timestamp <span style="color: #3a81c3; font-weight: bold;">in</span> count<span style="color: #3a81c3;">()</span>:
+	<span style="color: #3a81c3; font-weight: bold;">if</span> randint<span style="color: #3a81c3;">(</span>0, 7 * 60 * 60 * 24 - 1<span style="color: #3a81c3;">)</span> == 1:
+	    <span style="color: #715ab1;">value</span> = normalvariate<span style="color: #3a81c3;">(</span>0, 1<span style="color: #3a81c3;">)</span>
+	<span style="color: #3a81c3; font-weight: bold;">else</span>:
+	    <span style="color: #715ab1;">value</span> = 100
+	    <span style="color: #3a81c3; font-weight: bold;">yield</span> datetime.fromtimestamp<span style="color: #3a81c3;">(</span>timestamp<span style="color: #3a81c3;">)</span>, value
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">groupby_day</span><span style="color: #3a81c3;">(</span>iterable: Iterable<span style="color: #6c3163;">[</span>_ENTRY_TYPE<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> -&gt; Generator<span style="color: #3a81c3;">[</span>List<span style="color: #6c3163;">[</span>_ENTRY_TYPE<span style="color: #6c3163;">]</span>, <span style="color: #4e3163;">None</span>, <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">]</span>:
+    <span style="color: #3a81c3; font-weight: bold;">for</span> day, data_group <span style="color: #3a81c3; font-weight: bold;">in</span> groupby<span style="color: #3a81c3;">(</span>iterable, <span style="color: #3a81c3; font-weight: bold;">lambda</span> row: row<span style="color: #6c3163;">[</span>0<span style="color: #6c3163;">]</span>.day<span style="color: #3a81c3;">)</span>:
+	<span style="color: #3a81c3; font-weight: bold;">yield</span> <span style="color: #3a81c3;">list</span><span style="color: #3a81c3;">(</span>data_group<span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">is_normal</span><span style="color: #3a81c3;">(</span>data: List<span style="color: #6c3163;">[</span>_ENTRY_TYPE<span style="color: #6c3163;">]</span>, threshold: <span style="color: #3a81c3;">float</span> = 1e-3<span style="color: #3a81c3;">)</span> -&gt; <span style="color: #3a81c3;">bool</span>:
+    <span style="color: #715ab1;">_</span>, <span style="color: #715ab1;">values</span> = <span style="color: #3a81c3;">zip</span><span style="color: #3a81c3;">(</span>*data<span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">k2</span>, <span style="color: #715ab1;">p_value</span> = normaltest<span style="color: #3a81c3;">(</span>values<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">if</span> p_value &lt; threshold:
+	<span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">False</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #4e3163;">True</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">filter_anomalous_groups</span><span style="color: #3a81c3;">(</span>
+    data: Iterable<span style="color: #6c3163;">[</span>_ENTRY_TYPE<span style="color: #6c3163;">]</span>,
+<span style="color: #3a81c3;">)</span> -&gt; Generator<span style="color: #3a81c3;">[</span>List<span style="color: #6c3163;">[</span>_ENTRY_TYPE<span style="color: #6c3163;">]</span>, <span style="color: #4e3163;">None</span>, <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">]</span>:
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> <span style="color: #3a81c3; font-weight: bold;">from</span> filterfalse<span style="color: #3a81c3;">(</span>is_normal, data<span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">filter_anomalous_data</span><span style="color: #3a81c3;">(</span>data: Iterable<span style="color: #6c3163;">[</span>_ENTRY_TYPE<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> -&gt; Generator<span style="color: #3a81c3;">[</span>List<span style="color: #6c3163;">[</span>_ENTRY_TYPE<span style="color: #6c3163;">]</span>, <span style="color: #4e3163;">None</span>, <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">]</span>:
+    <span style="color: #715ab1;">data_group</span> = groupby_day<span style="color: #3a81c3;">(</span>data<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> <span style="color: #3a81c3; font-weight: bold;">from</span> filter_anomalous_groups<span style="color: #3a81c3;">(</span>data_group<span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">"__main__"</span>:
+    <span style="color: #715ab1;">data</span> = read_fake_data<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"fake"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">anomaly_generator</span> = filter_anomalous_data<span style="color: #3a81c3;">(</span>data<span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">first_five_anomalies</span> = islice<span style="color: #3a81c3;">(</span>anomaly_generator, 5<span style="color: #3a81c3;">)</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">for</span> data_anomaly <span style="color: #3a81c3; font-weight: bold;">in</span> first_five_anomalies:
+	<span style="color: #715ab1;">start_date</span> = data_anomaly<span style="color: #3a81c3;">[</span>0<span style="color: #3a81c3;">][</span>0<span style="color: #3a81c3;">]</span>
+	<span style="color: #715ab1;">end_date</span> = data_anomaly<span style="color: #3a81c3;">[</span>-1<span style="color: #3a81c3;">][</span>0<span style="color: #3a81c3;">]</span>
+	<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"Anomaly from {start_date} - {end_date}"</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org40a0400" class="outline-3">
+<h3 id="org40a0400"><span class="section-number-3">5.3</span> Useful Itertools</h3>
+<div class="outline-text-3" id="text-5-3">
+<ul class="org-ul">
+<li><code>cycle</code>, <code>repeat</code>, <code>chain</code>, <code>groupby</code>, <code>islice</code></li>
+<li><code>compress</code>: like boolean-index in pandas</li>
+<li><code>accumulate</code>: reduce though summation</li>
+<li><code>takewhile</code>, <code>dropwhile</code>: add a condition that will end a generator.</li>
+<li><code>starmap</code>: Used instead of <code>map()</code> when argument parameters are already grouped in tuples from a single iterable</li>
+<li><code>tee(iterable, n)</code>: Return n independent iterators from a single iterable. Useful for splitting one generator into n generators.</li>
+<li><code>zip_longest</code>: <code>zip_longest('ABCD', 'xy', fillvalue='-') --&gt; Ax By C- D-</code></li>
+<li>Combinatoric iterators: <code>product</code> (cartesian product), <code>permutations</code>, <code>combinations</code></li>
+</ul>
 </div>
 </div>
 </div>

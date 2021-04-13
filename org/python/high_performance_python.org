@@ -267,3 +267,69 @@
 	 else:
 	     do_work(i)
    #+END_SRC
+
+** Lazy Generator Evaluation
+   #+BEGIN_SRC python
+     from datetime import datetime
+     from itertools import count, filterfalse, groupby, islice
+     from random import normalvariate, randint
+     from typing import Generator, Iterable, List, Tuple
+
+     from scipy.stats import normaltest
+
+     _ENTRY_TYPE = Tuple[datetime, int]
+
+
+     def read_fake_data(filename: str = "fake") -> Generator[_ENTRY_TYPE, None, None]:
+	 for timestamp in count():
+	     if randint(0, 7 * 60 * 60 * 24 - 1) == 1:
+		 value = normalvariate(0, 1)
+	     else:
+		 value = 100
+		 yield datetime.fromtimestamp(timestamp), value
+
+
+     def groupby_day(iterable: Iterable[_ENTRY_TYPE]) -> Generator[List[_ENTRY_TYPE], None, None]:
+	 for day, data_group in groupby(iterable, lambda row: row[0].day):
+	     yield list(data_group)
+
+
+     def is_normal(data: List[_ENTRY_TYPE], threshold: float = 1e-3) -> bool:
+	 _, values = zip(*data)
+	 k2, p_value = normaltest(values)
+	 if p_value < threshold:
+	     return False
+	 return True
+
+
+     def filter_anomalous_groups(
+	 data: Iterable[_ENTRY_TYPE],
+     ) -> Generator[List[_ENTRY_TYPE], None, None]:
+	 yield from filterfalse(is_normal, data)
+
+
+     def filter_anomalous_data(data: Iterable[_ENTRY_TYPE]) -> Generator[List[_ENTRY_TYPE], None, None]:
+	 data_group = groupby_day(data)
+	 yield from filter_anomalous_groups(data_group)
+
+
+     if __name__ == "__main__":
+	 data = read_fake_data("fake")
+	 anomaly_generator = filter_anomalous_data(data)
+	 first_five_anomalies = islice(anomaly_generator, 5)
+
+	 for data_anomaly in first_five_anomalies:
+	     start_date = data_anomaly[0][0]
+	     end_date = data_anomaly[-1][0]
+	     print(f"Anomaly from {start_date} - {end_date}")
+   #+END_SRC
+
+** Useful Itertools
+   - ~cycle~, ~repeat~, ~chain~, ~groupby~, ~islice~
+   - ~compress~: like boolean-index in pandas
+   - ~accumulate~: reduce though summation
+   - ~takewhile~, ~dropwhile~: add a condition that will end a generator.
+   - ~starmap~: Used instead of ~map()~ when argument parameters are already grouped in tuples from a single iterable
+   - ~tee(iterable, n)~: Return n independent iterators from a single iterable. Useful for splitting one generator into n generators.
+   - ~zip_longest~: ~zip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-~
+   - Combinatoric iterators: ~product~ (cartesian product), ~permutations~, ~combinations~
