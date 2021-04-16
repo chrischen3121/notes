@@ -90,6 +90,30 @@
    - using ~with profile.timestamp("scope1")~ to add label
    - ~memory_profiler~ offers an interesting aid to debugging a large process via the ~--pdb-mmem=XXX~ flag
 
+*** ~perf~
+    1. ~sudo apt install linux-tools-generic~
+    1. Tweeking ~/proc/sys/kernel/perf_event_paranoid~ to -1
+    1. ~perf stat -e cycles,instructions,cache-references,cache-misses,... python test.py~
+
+    Performance Counter Descriptions:
+    - =task-clock= tells us how many clock cycles our task. (all CPUs)
+    - The difference between =instructions= and =cycles= gives us an indication of how well our code is vectorizing and pipelining.
+    - =cs=: context switches
+    - =migrations=: tell us about how the program is halted in order to wait for a kernel operation to finish (such as I/O).
+    - =migrations= happen when the program is halted and resumed on a different CPU than the one it was on before
+    - =faults=: page-fault.
+    - =cache-references= increases whenever we reference data that is in our cache(L1/L2/L3). If we do not already have this data in the cache and need to fetch it from RAM, this counts as a =cache-miss=
+    - A =branch= is a time in the code where the execution flow changes.
+    - =branch-misses=: the CPU tries to guess which direction the branch will take and preload the relevant instructions.
+    - =instructions per cycle= tells us the total speed boost from pipelining, out-of-order execution, and hyperthreading.
+    - run ~perf list~ to get the list of currently supported metrics on your system
+
+    Terms:
+
+    - *Pipelining* :: With pipelining, the CPU is able to run the current operation while fetching and preparing the next one. When memory is allocated, the kernel doesn’t do much except give the program a reference to memory.
+    - *Minor Page Fault Interrupt* :: When memory is allocated, the kernel doesn’t do much except give the program a reference to memory. Later, however, when the memory is first used, the operating system throws a minor page fault interrupt, which pauses the program that is being run and properly allocates the memory. This is called a /lazy allocation system/.
+    - *Major Page Fault* :: which happens when the program requests data from a device (disk, network, etc.) that hasn’t been read yet.
+
 *** ipython magic ~%memit~
     - ~%load_ext memory_profiler~
 
@@ -111,8 +135,6 @@
 *** For Web Servers
     - ~dowser~
     - ~dozer~
-
-
 ** Practical Points
    - Disable Turbo Boost in the BIOS.
    - Disable the operating system’s ability to override the SpeedStep(in BIOS).
@@ -200,7 +222,6 @@
    keep the insertion order of items.
    - How well distributed the data is throughout the hash table is called the *load factor* and is related to the *entropy* of the hash function
    - By default, the smallest size of a dictionary or set is 8, and it will resize by 3x if the dictionary is more than two-thirds full. (possible sizes: 8->18->39->81->165->...)
-
 
 ** Namespace Management
    - *Namespace Management* heavily uses dictionaries to do its lookups.
@@ -333,3 +354,82 @@
    - ~tee(iterable, n)~: Return n independent iterators from a single iterable. Useful for splitting one generator into n generators.
    - ~zip_longest~: ~zip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-~
    - Combinatoric iterators: ~product~ (cartesian product), ~permutations~, ~combinations~
+* Vectorization
+  Vectorization is the process of converting an algorithm from operating on a single value at a time to
+  operating on a set of values at one time. Vectorization of computations can occur only if we can fill
+  the CPU cache with all the relevant data. Modern CPUs provide direct support for vector operations where
+  a single instruction is applied to multiple data(SIMD). Python doesn't natively support vectorization for
+  two reasons:
+  - Python lists store pointers to the actual data.
+  - Python bytecode is not optimized for vectorization. (raw machine code uses nonvectorized operations)
+
+** ~array~ module
+   Objects in array are sequentially in memory. Using the array type when creating lists of
+   data that must be iterated on is actually slower than simply creating a list. This is because
+   the array object stores a very low-level representation of the numbers it stores, and this must
+   be converted into a Python-compatible version before being returned to the user. This extra
+   overhead happens every time you index an array type. That implementation decision has made
+   the array object less suitable for math and more suitable for storing fixed-type data more
+   efficiently in memory.
+
+** ~numpy~
+   - ~numpy~ gives us memory locality and vectorized operations.
+
+*** Comparison with Built-in Module
+   #+BEGIN_SRC python
+     from array import array
+     import numpy
+
+     def norm_square_list(vector):
+	 """
+	 >>> vector = list(range(1_000_000))
+	 >>> %timeit norm_square_list(vector)
+	 85.5 ms ± 1.65 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+	 """
+	 norm = 0
+	 for v in vector:
+	     norm += v * v
+	 return norm
+
+     def norm_square_list_comprehension(vector):
+	 """
+	 >>> vector = list(range(1_000_000))
+	 >>> %timeit norm_square_list_comprehension(vector)
+	 80.3 ms ± 1.37 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+	 """
+	 return sum([v * v for v in vector])
+
+     def norm_square_array(vector):
+	 """
+	 >>> vector_array = array('l', range(1_000_000))
+	 >>> %timeit norm_square_array(vector_array)
+	 101 ms ± 4.69 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+	 """
+	 norm = 0
+	 for v in vector:
+	     norm += v * v
+	 return norm
+
+     def norm_square_numpy(vector):
+	 """
+	 >>> vector_np = numpy.arange(1_000_000)
+	 >>> %timeit norm_square_numpy(vector_np)
+	 3.22 ms ± 136 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+	 """
+	 return numpy.sum(vector * vector)
+
+     def norm_square_numpy_dot(vector):
+	 """
+	 >>> vector_np = numpy.arange(1_000_000)
+	 >>> %timeit norm_square_numpy_dot(vector_np)
+	 960 µs ± 41.1 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+	 """
+	 # we don’t need to store the intermediate value of vector * vector as in norm_square_numpy
+	 return numpy.dot(vector, vector)
+   #+END_SRC
+
+* Compiling to C
+** All Routes
+   - C-based compiling: Cython
+   - LLVM-based compiling: Numba
+   - just-in-time compiler: PyPy

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-13 Tue 16:01 -->
+<!-- 2021-04-16 Fri 14:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -248,6 +248,12 @@
 <li><a href="#org40a0400">5.3. Useful Itertools</a></li>
 </ul>
 </li>
+<li><a href="#org83a7d8c">6. Vectorization</a></li>
+<li><a href="#orgd871692">7. Compiling to C</a>
+<ul>
+<li><a href="#orgfee8f60">7.1. All Routes</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -422,9 +428,41 @@ Other Hints:
 </div>
 </div>
 
-<div id="outline-container-org1845549" class="outline-4">
-<h4 id="org1845549"><span class="section-number-4">2.1.7</span> ipython magic <code>%memit</code></h4>
+<div id="outline-container-orgbd76a32" class="outline-4">
+<h4 id="orgbd76a32"><span class="section-number-4">2.1.7</span> <code>perf</code></h4>
 <div class="outline-text-4" id="text-2-1-7">
+<ol class="org-ol">
+<li><code>sudo apt install linux-tools-generic</code></li>
+<li>Tweeking <code>/proc/sys/kernel/perf_event_paranoid</code> to -1</li>
+<li><code>perf stat -e cycles,instructions,cache-references,cache-misses,... python test.py</code></li>
+</ol>
+
+<p>
+Performance Counter Descriptions:
+</p>
+<ul class="org-ul">
+<li><code>task-clock</code> tells us how many clock cycles our task. (all CPUs)</li>
+<li>The difference between <code>instructions</code> and <code>cycles</code> gives us an indication of how well our code is vectorizing and pipelining.</li>
+<li><code>cs</code>: context switches</li>
+<li><code>migrations</code>: tell us about how the program is halted in order to wait for a kernel operation to finish (such as I/O).</li>
+<li><code>migrations</code> happen when the program is halted and resumed on a different CPU than the one it was on before</li>
+<li><code>faults</code>: page-fault.</li>
+</ul>
+
+<p>
+Terms:
+</p>
+
+<dl class="org-dl">
+<dt><b>Pipelining</b></dt><dd>With pipelining, the CPU is able to run the current operation while fetching and preparing the next one. When memory is allocated, the kernel doesn’t do much except give the program a reference to memory.</dd>
+<dt><b>minor page fault interrupt</b></dt><dd>When memory is allocated, the kernel doesn’t do much except give the program a reference to memory. Later, however, when the memory is first used, the operating system throws a minor page fault interrupt, which pauses the program that is being run and properly allocates the memory.</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org1845549" class="outline-4">
+<h4 id="org1845549"><span class="section-number-4">2.1.8</span> ipython magic <code>%memit</code></h4>
+<div class="outline-text-4" id="text-2-1-8">
 <ul class="org-ul">
 <li><code>%load_ext memory_profiler</code></li>
 </ul>
@@ -432,8 +470,8 @@ Other Hints:
 </div>
 
 <div id="outline-container-org76da794" class="outline-4">
-<h4 id="org76da794"><span class="section-number-4">2.1.8</span> No-op @profile</h4>
-<div class="outline-text-4" id="text-2-1-8">
+<h4 id="org76da794"><span class="section-number-4">2.1.9</span> No-op @profile</h4>
+<div class="outline-text-4" id="text-2-1-9">
 <p>
 Add it to the start of our module while unit testing
 </p>
@@ -447,8 +485,8 @@ Add it to the start of our module while unit testing
 </div>
 
 <div id="outline-container-org83aad13" class="outline-4">
-<h4 id="org83aad13"><span class="section-number-4">2.1.9</span> Introspecting an Existing Process with <code>PySpy</code></h4>
-<div class="outline-text-4" id="text-2-1-9">
+<h4 id="org83aad13"><span class="section-number-4">2.1.10</span> Introspecting an Existing Process with <code>PySpy</code></h4>
+<div class="outline-text-4" id="text-2-1-10">
 <ul class="org-ul">
 <li><code>pip install py-spy</code></li>
 <li><code>sudo py-spy top --pid 2046</code>: top-like view.</li>
@@ -458,16 +496,16 @@ Add it to the start of our module while unit testing
 </div>
 
 <div id="outline-container-org38d52cd" class="outline-4">
-<h4 id="org38d52cd"><span class="section-number-4">2.1.10</span> Bytecode: <code>dis</code> module</h4>
-<div class="outline-text-4" id="text-2-1-10">
+<h4 id="org38d52cd"><span class="section-number-4">2.1.11</span> Bytecode: <code>dis</code> module</h4>
+<div class="outline-text-4" id="text-2-1-11">
 <p>
 <code>dis.dis(func)</code>
 </p>
 </div>
 </div>
 <div id="outline-container-org60677d5" class="outline-4">
-<h4 id="org60677d5"><span class="section-number-4">2.1.11</span> For Web Servers</h4>
-<div class="outline-text-4" id="text-2-1-11">
+<h4 id="org60677d5"><span class="section-number-4">2.1.12</span> For Web Servers</h4>
+<div class="outline-text-4" id="text-2-1-12">
 <ul class="org-ul">
 <li><code>dowser</code></li>
 <li><code>dozer</code></li>
@@ -475,8 +513,6 @@ Add it to the start of our module while unit testing
 </div>
 </div>
 </div>
-
-
 <div id="outline-container-orgecee3e0" class="outline-3">
 <h3 id="orgecee3e0"><span class="section-number-3">2.2</span> Practical Points</h3>
 <div class="outline-text-3" id="text-2-2">
@@ -648,7 +684,6 @@ keep the insertion order of items.
 </div>
 </div>
 
-
 <div id="outline-container-org551615d" class="outline-3">
 <h3 id="org551615d"><span class="section-number-3">4.4</span> Namespace Management</h3>
 <div class="outline-text-3" id="text-4-4">
@@ -810,6 +845,37 @@ The steps to look for a variable/function/module
 <li><code>tee(iterable, n)</code>: Return n independent iterators from a single iterable. Useful for splitting one generator into n generators.</li>
 <li><code>zip_longest</code>: <code>zip_longest('ABCD', 'xy', fillvalue='-') --&gt; Ax By C- D-</code></li>
 <li>Combinatoric iterators: <code>product</code> (cartesian product), <code>permutations</code>, <code>combinations</code></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org83a7d8c" class="outline-2">
+<h2 id="org83a7d8c"><span class="section-number-2">6</span> Vectorization</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Vectorization is the process of converting an algorithm from operating on a single value at a time to
+operating on a set of values at one time. Modern CPUs provide direct support for vector operations where
+a single instruction is applied to multiple data(SIMD). Python doesn't natively support vectorization for
+two reasons:
+</p>
+<ul class="org-ul">
+<li>Python lists store pointers to the actual data.</li>
+<li>Python bytecode is not optimized for vectorization.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd871692" class="outline-2">
+<h2 id="orgd871692"><span class="section-number-2">7</span> Compiling to C</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgfee8f60" class="outline-3">
+<h3 id="orgfee8f60"><span class="section-number-3">7.1</span> All Routes</h3>
+<div class="outline-text-3" id="text-7-1">
+<ul class="org-ul">
+<li>C-based compiling: Cython</li>
+<li>LLVM-based compiling: Numba</li>
+<li>just-in-time compiler: PyPy</li>
 </ul>
 </div>
 </div>
