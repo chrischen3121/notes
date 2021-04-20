@@ -116,6 +116,12 @@
 
 *** ipython magic ~%memit~
     - ~%load_ext memory_profiler~
+*** ipython ~%%timeit~
+    Allows us to specify code to set up the experiment that doesn't get timed.
+    #+BEGIN_SRC python
+      %%timeit array1, array2 = np.random.random((2, 100, 100))
+      array1 = array1 + array2
+    #+END_SRC
 
 *** No-op @profile
    Add it to the start of our module while unit testing
@@ -428,8 +434,75 @@
 	 return numpy.dot(vector, vector)
    #+END_SRC
 
+*** In-Place Operations
+    Using in-place operations can help avoid the memory allocations. It is important to note that this effect
+    happens only when the array sizes are bigger than the CPU cache! When the arrays are smaller and the two
+    inputs and the output can all fit into cache, the out-of-place operation is faster because it can benefit
+    from vectorization.
+
+** ~numexpr~
+   One downfall of numpy's optimization of vector operations is that it occurs on only one
+   operation at a time. ~numexpr~ can help take an entire vector expression and compile it into
+   very efficient code that is optimized to minimize cache misses and temporary space used. In
+   addition, the expressions can utilize multiple CPU cores(with OpenMP).
+
+*** How to Use ~numpexpr~
+    Simply rewrite the expressions as strings with references to local variables. The expressions
+    are compiled behind the scenes and run using optimized code.
+    #+BEGIN_SRC python
+      import numpy as np
+      from numexpr import evaluate
+
+      data = np.array(range(1000000))
+      %timeit data + data * 5 + 4
+      # 1.95 ms ± 123 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+
+      %timeit evaluate("data + data * 5 + 4")
+      # 787 µs ± 28.1 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+    #+END_SRC
+
+** ~pandas~
+   - Operations on columns often generate temporary intermediate arrays, which consume RAM.
+   - Make ~pandas~ parallel and scalable with ~dask~ module.
+   - Columns of the same dtype are grouped together by a BlockManager.
+   # TODO:
+
+** Summary
+   Two main routes:
+   - reducing the time taken to get data to the CPU.
+   - reducing the amount of work that the CPU had to do.
+
 * Compiling to C
 ** All Routes
    - C-based compiling: Cython
    - LLVM-based compiling: Numba
    - just-in-time compiler: PyPy
+
+** Cython
+   #+BEGIN_SRC python
+     # In setup.py
+     from distutils.core import setup
+
+     from Cython.Build import cythonize
+
+     setup(ext_modules=cythonize("cythonfn.pyx", compiler_directives={"language_level": "3"}))
+   #+END_SRC
+   When we run ~python setup.py build_ext --inplace~, Cython will look for =cythonfn.pyx=
+   and build =cythonfn[…].so=.
+
+*** ~pyximport~
+    Simplifing build system, no need to use setup.py.
+    #+BEGIN_SRC python
+      # In client_code.py
+      import pyximport
+
+      pyximport.install(language_level=3)
+      import cythonfn
+
+      # followed by the usual code
+    #+END_SRC
+
+*** To Analyze a Block of Code(C code)
+    ~cython -a cythonfn.pyx~ -> =cythonfn.html=
+    - More yellow means "more calls into the Python virtual machine"
+    - More white means "more non-Python C code"
