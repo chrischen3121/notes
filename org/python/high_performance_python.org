@@ -449,6 +449,53 @@
     inputs and the output can all fit into cache, the out-of-place operation is faster because it can benefit
     from vectorization.
 
+*** *Numba*
+    Numba is a just-in-time compiler that specializes in numpy code, which it compiles via the LLVM compiler
+    at runtime. The beauty is that you provide a decorator telling it which functions to focus on and then
+    you let Numba take over. It can automatically generate code for GPUs.
+    #+BEGIN_SRC python
+      import numpy as np
+      from numba import jit, prange
+
+      input_array = np.array(range(100000))
+      output_array = np.zeros(len(input_array))
+
+      def double_all(array, output):
+	  for idx, value in enumerate(array):
+	      output[idx] = value * 2
+
+      # %timeit double_all(input_array, output_array)
+      # 25.3 ms ± 774 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+
+      double_all_numba = jit(double_all, nopython=True)
+      # %timeit double_all_numba(input_array, output_array)
+      # 43.8 µs ± 481 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+
+      @jit()
+      def double_all_jit(array, output):
+	  for idx, value in enumerate(array):
+	      output[idx] = value * 2
+
+      # %timeit double_all_jit(input_array, output_array)
+      # 44.2 µs ± 299 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+
+
+      # The nopython specifier means that if Numba cannot compile all of the code, it will fail.
+      # Adding parallel enables support for prange
+      @jit(nopython=True, parallel=True, nogil=True)
+      def double_all_jit_in_parallel(array, output):
+	  len_array = len(array)
+	  for idx in prange(len_array):
+	      output[idx] = array[idx] * 2
+
+      # %timeit double_all_jit_in_parallel(input_array, output_array)
+      # 14.4 µs ± 238 ns per loop (mean ± std. dev. of 7 runs, 100000 loops each)
+    #+END_SRC
+
+    - Debuging with Numba: using ~double_all_jit.inspect_types()~
+    - Try to make your code compile in *nopython* mode.
+    - Your best approach will be to break your current code into small(<10 line) and to tackle these one at a time.
+
 ** ~numexpr~
    One downfall of numpy's optimization of vector operations is that it occurs on only one
    operation at a time. ~numexpr~ can help take an entire vector expression and compile it into
@@ -513,8 +560,7 @@
 
      setup(ext_modules=cythonize("cythonfn.pyx", compiler_directives={"language_level": "3"}))
    #+END_SRC
-   When we run ~python setup.py build_ext --inplace~, Cython will look for =cythonfn.pyx=
-   and build =cythonfn[…].so=.
+   When we run ~python setup.py build_ext --inplace~, Cython will look for =cythonfn.pyx= and build =cythonfn[…].so=.
 
 *** ~pyximport~
     Simplifing build system, no need to use setup.py.
@@ -528,7 +574,77 @@
       # followed by the usual code
     #+END_SRC
 
-*** To Analyze a Block of Code(C code)
+*** Analyzing Generated C Code
     ~cython -a cythonfn.pyx~ -> =cythonfn.html=
     - More yellow means "more calls into the Python virtual machine"
     - More white means "more non-Python C code"
+
+*** Type Annotation
+    #+BEGIN_SRC python
+      def add(int x, int y):
+	  cdef unsigned int x, y
+	  return x + y
+    #+END_SRC
+
+*** Cython Flags
+    #+BEGIN_SRC python
+      #cython: boundscheck=False
+      def test(...):
+	  ...
+    #+END_SRC
+
+*** Parallelizing on One Machine
+    With Cython, OpenMP can be added by using the ~prange~ (parallel range) operator and adding the ~-fopenmp~
+    compiler directive to setup.py. Work in a prange loop can be performed in parallel because we disable the GIL.
+*** Example
+    #+BEGIN_SRC python
+      # cythonfn.pyx
+      #cython: boundscheck=False # disable boundscheck on arrays
+      from cython.parallel import prange
+      import numpy as np
+      cimport numpy as np
+
+      def calculate_z(int maxiter, double complex[:] zs, double complex[:] cs):
+	  """Calculate output list using Julia update rule"""
+	  # using [] to annotate the buffer protocol, single colon indicates one-dimensional data
+	  cdef unsigned int i, length
+	  cdef double complex z, c
+	  cdef int[:] output = np.empty(len(zs), dtype=np.int32) # annotate output
+	  length = len(zs)
+
+	  with nogil: # disable GIL
+	      for i in prange(length, schedule="guided"): # guided scheduling
+		  # parallelizing in prange block
+		  z = zs[i]
+		  c = cs[i]
+		  output[i] = 0
+		  while output[i] < maxiter and (z.real * z.real + z.imag * z.imag) < 4:
+		      z = z * z + c
+		      output[i] += 1
+	  return output
+    #+END_SRC
+    In setup.py
+    #+BEGIN_SRC python
+      # setup.py
+      from distutils.core import setup
+      from distutils.extension import Extension
+
+      import numpy as np
+      from Cython.Build import cythonize
+
+      ext_modules = [
+	  Extension(
+	      "cythonfn", ["cythonfn.pyx"], extra_compile_args=["-fopenmp"], extra_link_args=["-fopenmp"]
+	  )  # Adding the OpenMP compiler flags and linker flags to setup.py for Cython
+      ]
+
+
+      setup(
+	  ext_modules=cythonize(
+	      ext_modules,
+	      compiler_directives={"language_level": "3"},
+	  ),
+	  include_dirs=[np.get_include()],
+      )
+    #+END_SRC
+    - Choosing scheduling approaches: ~static~, ~dynamic~, ~guided~
