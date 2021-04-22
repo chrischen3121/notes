@@ -80,6 +80,15 @@
    1. ~kernprof -l -v test.py~
    1. See report: ~python -m line_profiler test.py.lprof~
 
+**** Object Interface
+     #+BEGIN_SRC python
+       from line_profiler import LineProfiler
+
+       lp = LineProfiler(some_func)
+       lp.run("some_func(args)")
+       lp.print_stats()
+     #+END_SRC
+
 *** ~memory_profiler~
    1. ~pip install psutil~ (recommended)
    1. ~pip install memory_profiler~
@@ -465,7 +474,24 @@
    - Operations on columns often generate temporary intermediate arrays, which consume RAM.
    - Make ~pandas~ parallel and scalable with ~dask~ module.
    - Columns of the same dtype are grouped together by a BlockManager.
-   # TODO:
+   - ~df.apply(..., raw=True)~ stops the creation of an intermediate Series object, uses raw numpy array instead.
+   - Install the optional dependencies ~numexpr~ and ~bottleneck~ for additional performance improvements
+   - Use ~bulwark~ to check the schema of dataframes up front.
+   - Converting the Series to a Category dtype when dealing with low cardinality data. ~df["col"].astype("category")~
+
+*** ~Modin~
+    Parallelizing with dask/ray.
+    1. ~pip install modin[dask]~ or ~pip install modin[ray]~
+    1. ~export MODIN_ENGINE=dask~ or ~os.environ["MODIN_ENGINE"] = "dask"~
+    1. ~import modin.pandas as pd~
+
+*** ~cuDF~
+    GPU DataFrame Library
+
+*** ~vaex~
+    - Vaex specializes in both larger datasets and string-heavy operations
+    - Vaex offers a slew of built-in visualization functions.
+
 
 ** Summary
    Two main routes:

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-16 Fri 14:50 -->
+<!-- 2021-04-22 Thu 16:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -248,10 +248,19 @@
 <li><a href="#org40a0400">5.3. Useful Itertools</a></li>
 </ul>
 </li>
-<li><a href="#org83a7d8c">6. Vectorization</a></li>
+<li><a href="#org83a7d8c">6. Vectorization</a>
+<ul>
+<li><a href="#org32fdf5a">6.1. <code>array</code> module</a></li>
+<li><a href="#org8211241">6.2. <code>numpy</code></a></li>
+<li><a href="#orgad9bb64">6.3. <code>numexpr</code></a></li>
+<li><a href="#orgd8ff14d">6.4. <code>pandas</code></a></li>
+<li><a href="#org47de320">6.5. Summary</a></li>
+</ul>
+</li>
 <li><a href="#orgd871692">7. Compiling to C</a>
 <ul>
 <li><a href="#orgfee8f60">7.1. All Routes</a></li>
+<li><a href="#orgf3ab71c">7.2. Cython</a></li>
 </ul>
 </li>
 </ul>
@@ -406,6 +415,21 @@ p.print_callees<span style="color: #3a81c3;">()</span>
 <li>See report: <code>python -m line_profiler test.py.lprof</code></li>
 </ol>
 </div>
+
+<ul class="org-ul">
+<li><a id="orgff405b0"></a>Object Interface<br />
+<div class="outline-text-5" id="text-orgff405b0">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> line_profiler <span style="color: #3a81c3; font-weight: bold;">import</span> LineProfiler
+
+<span style="color: #715ab1;">lp</span> = LineProfiler<span style="color: #3a81c3;">(</span>some_func<span style="color: #3a81c3;">)</span>
+lp.run<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"some_func(args)"</span><span style="color: #3a81c3;">)</span>
+lp.print_stats<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
 </div>
 
 <div id="outline-container-org9357c8f" class="outline-4">
@@ -447,6 +471,11 @@ Performance Counter Descriptions:
 <li><code>migrations</code>: tell us about how the program is halted in order to wait for a kernel operation to finish (such as I/O).</li>
 <li><code>migrations</code> happen when the program is halted and resumed on a different CPU than the one it was on before</li>
 <li><code>faults</code>: page-fault.</li>
+<li><code>cache-references</code> increases whenever we reference data that is in our cache(L1/L2/L3). If we do not already have this data in the cache and need to fetch it from RAM, this counts as a <code>cache-miss</code></li>
+<li>A <code>branch</code> is a time in the code where the execution flow changes.</li>
+<li><code>branch-misses</code>: the CPU tries to guess which direction the branch will take and preload the relevant instructions.</li>
+<li><code>instructions per cycle</code> tells us the total speed boost from pipelining, out-of-order execution, and hyperthreading.</li>
+<li>run <code>perf list</code> to get the list of currently supported metrics on your system</li>
 </ul>
 
 <p>
@@ -455,7 +484,8 @@ Terms:
 
 <dl class="org-dl">
 <dt><b>Pipelining</b></dt><dd>With pipelining, the CPU is able to run the current operation while fetching and preparing the next one. When memory is allocated, the kernel doesn’t do much except give the program a reference to memory.</dd>
-<dt><b>minor page fault interrupt</b></dt><dd>When memory is allocated, the kernel doesn’t do much except give the program a reference to memory. Later, however, when the memory is first used, the operating system throws a minor page fault interrupt, which pauses the program that is being run and properly allocates the memory.</dd>
+<dt><b>Minor Page Fault Interrupt</b></dt><dd>When memory is allocated, the kernel doesn’t do much except give the program a reference to memory. Later, however, when the memory is first used, the operating system throws a minor page fault interrupt, which pauses the program that is being run and properly allocates the memory. This is called a <i>lazy allocation system</i>.</dd>
+<dt><b>Major Page Fault</b></dt><dd>which happens when the program requests data from a device (disk, network, etc.) that hasn’t been read yet.</dd>
 </dl>
 </div>
 </div>
@@ -468,10 +498,23 @@ Terms:
 </ul>
 </div>
 </div>
+<div id="outline-container-org8c0bfe4" class="outline-4">
+<h4 id="org8c0bfe4"><span class="section-number-4">2.1.9</span> ipython <code>%%timeit</code></h4>
+<div class="outline-text-4" id="text-2-1-9">
+<p>
+Allows us to specify code to set up the experiment that doesn't get timed.
+</p>
+<div class="org-src-container">
+<pre class="src src-python">%%timeit <span style="color: #715ab1;">array1</span>, <span style="color: #715ab1;">array2</span> = np.random.random<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>2, 100, 100<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">array1</span> = array1 + array2
+</pre>
+</div>
+</div>
+</div>
 
 <div id="outline-container-org76da794" class="outline-4">
-<h4 id="org76da794"><span class="section-number-4">2.1.9</span> No-op @profile</h4>
-<div class="outline-text-4" id="text-2-1-9">
+<h4 id="org76da794"><span class="section-number-4">2.1.10</span> No-op @profile</h4>
+<div class="outline-text-4" id="text-2-1-10">
 <p>
 Add it to the start of our module while unit testing
 </p>
@@ -485,8 +528,8 @@ Add it to the start of our module while unit testing
 </div>
 
 <div id="outline-container-org83aad13" class="outline-4">
-<h4 id="org83aad13"><span class="section-number-4">2.1.10</span> Introspecting an Existing Process with <code>PySpy</code></h4>
-<div class="outline-text-4" id="text-2-1-10">
+<h4 id="org83aad13"><span class="section-number-4">2.1.11</span> Introspecting an Existing Process with <code>PySpy</code></h4>
+<div class="outline-text-4" id="text-2-1-11">
 <ul class="org-ul">
 <li><code>pip install py-spy</code></li>
 <li><code>sudo py-spy top --pid 2046</code>: top-like view.</li>
@@ -496,16 +539,16 @@ Add it to the start of our module while unit testing
 </div>
 
 <div id="outline-container-org38d52cd" class="outline-4">
-<h4 id="org38d52cd"><span class="section-number-4">2.1.11</span> Bytecode: <code>dis</code> module</h4>
-<div class="outline-text-4" id="text-2-1-11">
+<h4 id="org38d52cd"><span class="section-number-4">2.1.12</span> Bytecode: <code>dis</code> module</h4>
+<div class="outline-text-4" id="text-2-1-12">
 <p>
 <code>dis.dis(func)</code>
 </p>
 </div>
 </div>
 <div id="outline-container-org60677d5" class="outline-4">
-<h4 id="org60677d5"><span class="section-number-4">2.1.12</span> For Web Servers</h4>
-<div class="outline-text-4" id="text-2-1-12">
+<h4 id="org60677d5"><span class="section-number-4">2.1.13</span> For Web Servers</h4>
+<div class="outline-text-4" id="text-2-1-13">
 <ul class="org-ul">
 <li><code>dowser</code></li>
 <li><code>dozer</code></li>
@@ -854,14 +897,205 @@ The steps to look for a variable/function/module
 <div class="outline-text-2" id="text-6">
 <p>
 Vectorization is the process of converting an algorithm from operating on a single value at a time to
-operating on a set of values at one time. Modern CPUs provide direct support for vector operations where
+operating on a set of values at one time. Vectorization of computations can occur only if we can fill
+the CPU cache with all the relevant data. Modern CPUs provide direct support for vector operations where
 a single instruction is applied to multiple data(SIMD). Python doesn't natively support vectorization for
 two reasons:
 </p>
 <ul class="org-ul">
 <li>Python lists store pointers to the actual data.</li>
-<li>Python bytecode is not optimized for vectorization.</li>
+<li>Python bytecode is not optimized for vectorization. (raw machine code uses nonvectorized operations)</li>
 </ul>
+</div>
+
+<div id="outline-container-org32fdf5a" class="outline-3">
+<h3 id="org32fdf5a"><span class="section-number-3">6.1</span> <code>array</code> module</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Objects in array are sequentially in memory. Using the array type when creating lists of
+data that must be iterated on is actually slower than simply creating a list. This is because
+the array object stores a very low-level representation of the numbers it stores, and this must
+be converted into a Python-compatible version before being returned to the user. This extra
+overhead happens every time you index an array type. That implementation decision has made
+the array object less suitable for math and more suitable for storing fixed-type data more
+efficiently in memory.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8211241" class="outline-3">
+<h3 id="org8211241"><span class="section-number-3">6.2</span> <code>numpy</code></h3>
+<div class="outline-text-3" id="text-6-2">
+<ul class="org-ul">
+<li><code>numpy</code> gives us memory locality and vectorized operations.</li>
+</ul>
+</div>
+
+<div id="outline-container-orgb55fd07" class="outline-4">
+<h4 id="orgb55fd07"><span class="section-number-4">6.2.1</span> Comparison with Built-in Module</h4>
+<div class="outline-text-4" id="text-6-2-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> array <span style="color: #3a81c3; font-weight: bold;">import</span> array
+<span style="color: #3a81c3; font-weight: bold;">import</span> numpy
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">norm_square_list</span><span style="color: #3a81c3;">(</span>vector<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; vector = list(range(1_000_000))</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit norm_square_list(vector)</span>
+<span style="color: #da8b55;">    85.5 ms &#177; 1.65 ms per loop (mean &#177; std. dev. of 7 runs, 10 loops each)</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #715ab1;">norm</span> = 0
+    <span style="color: #3a81c3; font-weight: bold;">for</span> v <span style="color: #3a81c3; font-weight: bold;">in</span> vector:
+	<span style="color: #715ab1;">norm</span> += v * v
+    <span style="color: #3a81c3; font-weight: bold;">return</span> norm
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">norm_square_list_comprehension</span><span style="color: #3a81c3;">(</span>vector<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; vector = list(range(1_000_000))</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit norm_square_list_comprehension(vector)</span>
+<span style="color: #da8b55;">    80.3 ms &#177; 1.37 ms per loop (mean &#177; std. dev. of 7 runs, 10 loops each)</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3;">sum</span><span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>v * v <span style="color: #3a81c3; font-weight: bold;">for</span> v <span style="color: #3a81c3; font-weight: bold;">in</span> vector<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">norm_square_array</span><span style="color: #3a81c3;">(</span>vector<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; vector_array = array('l', range(1_000_000))</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit norm_square_array(vector_array)</span>
+<span style="color: #da8b55;">    101 ms &#177; 4.69 ms per loop (mean &#177; std. dev. of 7 runs, 10 loops each)</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #715ab1;">norm</span> = 0
+    <span style="color: #3a81c3; font-weight: bold;">for</span> v <span style="color: #3a81c3; font-weight: bold;">in</span> vector:
+	<span style="color: #715ab1;">norm</span> += v * v
+    <span style="color: #3a81c3; font-weight: bold;">return</span> norm
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">norm_square_numpy</span><span style="color: #3a81c3;">(</span>vector<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; vector_np = numpy.arange(1_000_000)</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit norm_square_numpy(vector_np)</span>
+<span style="color: #da8b55;">    3.22 ms &#177; 136 &#181;s per loop (mean &#177; std. dev. of 7 runs, 100 loops each)</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> numpy.<span style="color: #3a81c3;">sum</span><span style="color: #3a81c3;">(</span>vector * vector<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">norm_square_numpy_dot</span><span style="color: #3a81c3;">(</span>vector<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">"""</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; vector_np = numpy.arange(1_000_000)</span>
+<span style="color: #da8b55;">    &gt;&gt;&gt; %timeit norm_square_numpy_dot(vector_np)</span>
+<span style="color: #da8b55;">    960 &#181;s &#177; 41.1 &#181;s per loop (mean &#177; std. dev. of 7 runs, 1000 loops each)</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">we don&#8217;t need to store the intermediate value of vector * vector as in norm_square_numpy</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> numpy.dot<span style="color: #3a81c3;">(</span>vector, vector<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org66ed8cc" class="outline-4">
+<h4 id="org66ed8cc"><span class="section-number-4">6.2.2</span> In-Place Operations</h4>
+<div class="outline-text-4" id="text-6-2-2">
+<p>
+Using in-place operations can help avoid the memory allocations. It is important to note that this effect
+happens only when the array sizes are bigger than the CPU cache! When the arrays are smaller and the two
+inputs and the output can all fit into cache, the out-of-place operation is faster because it can benefit
+from vectorization.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgad9bb64" class="outline-3">
+<h3 id="orgad9bb64"><span class="section-number-3">6.3</span> <code>numexpr</code></h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+One downfall of numpy's optimization of vector operations is that it occurs on only one
+operation at a time. <code>numexpr</code> can help take an entire vector expression and compile it into
+very efficient code that is optimized to minimize cache misses and temporary space used. In
+addition, the expressions can utilize multiple CPU cores(with OpenMP).
+</p>
+</div>
+
+<div id="outline-container-org6c07f22" class="outline-4">
+<h4 id="org6c07f22"><span class="section-number-4">6.3.1</span> How to Use <code>numpexpr</code></h4>
+<div class="outline-text-4" id="text-6-3-1">
+<p>
+Simply rewrite the expressions as strings with references to local variables. The expressions
+are compiled behind the scenes and run using optimized code.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+<span style="color: #3a81c3; font-weight: bold;">from</span> numexpr <span style="color: #3a81c3; font-weight: bold;">import</span> evaluate
+
+<span style="color: #715ab1;">data</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">range</span><span style="color: #6c3163;">(</span>1000000<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+%timeit data + data * 5 + 4
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">1.95 ms &#177; 123 &#181;s per loop (mean &#177; std. dev. of 7 runs, 1000 loops each)</span>
+
+%timeit evaluate<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"data + data * 5 + 4"</span><span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">787 &#181;s &#177; 28.1 &#181;s per loop (mean &#177; std. dev. of 7 runs, 1000 loops each)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd8ff14d" class="outline-3">
+<h3 id="orgd8ff14d"><span class="section-number-3">6.4</span> <code>pandas</code></h3>
+<div class="outline-text-3" id="text-6-4">
+<ul class="org-ul">
+<li>Operations on columns often generate temporary intermediate arrays, which consume RAM.</li>
+<li>Make <code>pandas</code> parallel and scalable with <code>dask</code> module.</li>
+<li>Columns of the same dtype are grouped together by a BlockManager.</li>
+<li><code>df.apply(..., raw=True)</code> stops the creation of an intermediate Series object, uses raw numpy array instead.</li>
+<li>Install the optional dependencies <code>numexpr</code> and <code>bottleneck</code> for additional performance improvements</li>
+<li>Use <code>bulwark</code> to check the schema of dataframes up front.</li>
+<li>Converting the Series to a Category dtype when dealing with low cardinality data. <code>df["col"].astype("category")</code></li>
+</ul>
+</div>
+
+<div id="outline-container-org7f239f9" class="outline-4">
+<h4 id="org7f239f9"><span class="section-number-4">6.4.1</span> <code>Modin</code></h4>
+<div class="outline-text-4" id="text-6-4-1">
+<p>
+Parallelizing with dask/ray.
+</p>
+<ol class="org-ol">
+<li><code>pip install modin[dask]</code> or <code>pip install modin[ray]</code></li>
+<li><code>export MODIN_ENGINE=dask</code> or <code>os.environ["MODIN_ENGINE"] = "dask"</code></li>
+<li><code>import modin.pandas as pd</code></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgf029a4d" class="outline-4">
+<h4 id="orgf029a4d"><span class="section-number-4">6.4.2</span> <code>cuDF</code></h4>
+<div class="outline-text-4" id="text-6-4-2">
+<p>
+GPU DataFrame Library
+</p>
+</div>
+</div>
+
+<div id="outline-container-org050977b" class="outline-4">
+<h4 id="org050977b"><span class="section-number-4">6.4.3</span> <code>vaex</code></h4>
+<div class="outline-text-4" id="text-6-4-3">
+<ul class="org-ul">
+<li>Vaex specializes in both larger datasets and string-heavy operations</li>
+<li>Vaex offers a slew of built-in visualization functions.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org47de320" class="outline-3">
+<h3 id="org47de320"><span class="section-number-3">6.5</span> Summary</h3>
+<div class="outline-text-3" id="text-6-5">
+<p>
+Two main routes:
+</p>
+<ul class="org-ul">
+<li>reducing the time taken to get data to the CPU.</li>
+<li>reducing the amount of work that the CPU had to do.</li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -877,6 +1111,57 @@ two reasons:
 <li>LLVM-based compiling: Numba</li>
 <li>just-in-time compiler: PyPy</li>
 </ul>
+</div>
+</div>
+
+<div id="outline-container-orgf3ab71c" class="outline-3">
+<h3 id="orgf3ab71c"><span class="section-number-3">7.2</span> Cython</h3>
+<div class="outline-text-3" id="text-7-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">In setup.py</span>
+<span style="color: #3a81c3; font-weight: bold;">from</span> distutils.core <span style="color: #3a81c3; font-weight: bold;">import</span> setup
+
+<span style="color: #3a81c3; font-weight: bold;">from</span> Cython.Build <span style="color: #3a81c3; font-weight: bold;">import</span> cythonize
+
+setup<span style="color: #3a81c3;">(</span>ext_modules=cythonize<span style="color: #6c3163;">(</span><span style="color: #2d9574;">"cythonfn.pyx"</span>, compiler_directives=<span style="color: #2d9574;">{</span><span style="color: #2d9574;">"language_level"</span>: <span style="color: #2d9574;">"3"</span><span style="color: #2d9574;">}</span><span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+When we run <code>python setup.py build_ext --inplace</code>, Cython will look for <code>cythonfn.pyx</code>
+and build <code>cythonfn[…].so</code>.
+</p>
+</div>
+
+<div id="outline-container-orgded4f05" class="outline-4">
+<h4 id="orgded4f05"><span class="section-number-4">7.2.1</span> <code>pyximport</code></h4>
+<div class="outline-text-4" id="text-7-2-1">
+<p>
+Simplifing build system, no need to use setup.py.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">In client_code.py</span>
+<span style="color: #3a81c3; font-weight: bold;">import</span> pyximport
+
+pyximport.install<span style="color: #3a81c3;">(</span>language_level=3<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">import</span> cythonfn
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">followed by the usual code</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c8c5bd" class="outline-4">
+<h4 id="org5c8c5bd"><span class="section-number-4">7.2.2</span> To Analyze a Block of Code(C code)</h4>
+<div class="outline-text-4" id="text-7-2-2">
+<p>
+<code>cython -a cythonfn.pyx</code> -&gt; <code>cythonfn.html</code>
+</p>
+<ul class="org-ul">
+<li>More yellow means "more calls into the Python virtual machine"</li>
+<li>More white means "more non-Python C code"</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
