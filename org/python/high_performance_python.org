@@ -147,6 +147,18 @@
 
 *** Bytecode: ~dis~ module
     ~dis.dis(func)~
+*** ~vmperf~
+    vmperf is a lightweight sampling profiler supports a web-based user interface.
+    1. ~sudo apt install libunwind-dev~
+    1. ~pip install vmprof~
+    1. ~python -m vmprof <your program> <your program args>~
+*** GPU profiling
+    - ~nvidia-smi~
+    - ~gpustat~
+
+*** Pytorch profiling
+    ~python -m torch.utils.bottleneck test.py~
+
 *** For Web Servers
     - ~dowser~
     - ~dozer~
@@ -545,7 +557,7 @@
    - reducing the time taken to get data to the CPU.
    - reducing the amount of work that the CPU had to do.
 
-* Compiling to C
+* Compiling to Bytecode
 ** All Routes
    - C-based compiling: Cython
    - LLVM-based compiling: Numba
@@ -648,3 +660,17 @@
       )
     #+END_SRC
     - Choosing scheduling approaches: ~static~, ~dynamic~, ~guided~
+** PyPy
+   - Different GC strategy(mark-and-sweep) than CPython(reference counting)
+   - PyPy supports projects like numpy that require C bindings through the CPython extension compatibility layer *cpyext*, but it has an overhead of 4–6×, which generally makes numpy too slow.
+   - May use more RAM than CPython.
+
+** Transonic
+   Transonic attempts to unify Cython, Pythran, and Numba, and potentially other compilers, behind one
+   interface to enable quick evaluation of multiple compilers without having to rewrite code.
+
+** CuPy
+   [[https://cupy.dev/][A NumPy-compatible array library accelerated by CUDA]]
+
+** Other Tools
+   See [[http://compilers.pydata.org/]]

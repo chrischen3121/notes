@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-22 Thu 18:15 -->
+<!-- 2021-04-23 Fri 17:34 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -257,10 +257,14 @@
 <li><a href="#org47de320">6.5. Summary</a></li>
 </ul>
 </li>
-<li><a href="#orgd871692">7. Compiling to C</a>
+<li><a href="#org6b640e6">7. Compiling to Bytecode</a>
 <ul>
 <li><a href="#orgfee8f60">7.1. All Routes</a></li>
 <li><a href="#orgf3ab71c">7.2. Cython</a></li>
+<li><a href="#orgd4d7e75">7.3. PyPy</a></li>
+<li><a href="#org04b2808">7.4. Transonic</a></li>
+<li><a href="#org74e7660">7.5. CuPy</a></li>
+<li><a href="#orgef9374b">7.6. Other Tools</a></li>
 </ul>
 </li>
 </ul>
@@ -546,9 +550,41 @@ Add it to the start of our module while unit testing
 </p>
 </div>
 </div>
-<div id="outline-container-org60677d5" class="outline-4">
-<h4 id="org60677d5"><span class="section-number-4">2.1.13</span> For Web Servers</h4>
+<div id="outline-container-org553cd06" class="outline-4">
+<h4 id="org553cd06"><span class="section-number-4">2.1.13</span> <code>vmperf</code></h4>
 <div class="outline-text-4" id="text-2-1-13">
+<p>
+vmperf is a lightweight sampling profiler supports a web-based user interface.
+</p>
+<ol class="org-ol">
+<li><code>sudo apt install libunwind-dev</code></li>
+<li><code>pip install vmprof</code></li>
+<li><code>python -m vmprof &lt;your program&gt; &lt;your program args&gt;</code></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orge09dc1a" class="outline-4">
+<h4 id="orge09dc1a"><span class="section-number-4">2.1.14</span> GPU profiling</h4>
+<div class="outline-text-4" id="text-2-1-14">
+<ul class="org-ul">
+<li><code>nvidia-smi</code></li>
+<li><code>gpustat</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4060e12" class="outline-4">
+<h4 id="org4060e12"><span class="section-number-4">2.1.15</span> Pytorch profiling</h4>
+<div class="outline-text-4" id="text-2-1-15">
+<p>
+<code>python -m torch.utils.bottleneck test.py</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org60677d5" class="outline-4">
+<h4 id="org60677d5"><span class="section-number-4">2.1.16</span> For Web Servers</h4>
+<div class="outline-text-4" id="text-2-1-16">
 <ul class="org-ul">
 <li><code>dowser</code></li>
 <li><code>dozer</code></li>
@@ -1155,8 +1191,8 @@ Two main routes:
 </div>
 </div>
 
-<div id="outline-container-orgd871692" class="outline-2">
-<h2 id="orgd871692"><span class="section-number-2">7</span> Compiling to C</h2>
+<div id="outline-container-org6b640e6" class="outline-2">
+<h2 id="org6b640e6"><span class="section-number-2">7</span> Compiling to Bytecode</h2>
 <div class="outline-text-2" id="text-7">
 </div>
 <div id="outline-container-orgfee8f60" class="outline-3">
@@ -1313,6 +1349,44 @@ setup<span style="color: #3a81c3;">(</span>
 <li>Choosing scheduling approaches: <code>static</code>, <code>dynamic</code>, <code>guided</code></li>
 </ul>
 </div>
+</div>
+</div>
+<div id="outline-container-orgd4d7e75" class="outline-3">
+<h3 id="orgd4d7e75"><span class="section-number-3">7.3</span> PyPy</h3>
+<div class="outline-text-3" id="text-7-3">
+<ul class="org-ul">
+<li>Different GC strategy(mark-and-sweep) than CPython(reference counting)</li>
+<li>PyPy supports projects like numpy that require C bindings through the CPython extension compatibility layer <b>cpyext</b>, but it has an overhead of 4–6×, which generally makes numpy too slow.</li>
+<li>May use more RAM than CPython.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org04b2808" class="outline-3">
+<h3 id="org04b2808"><span class="section-number-3">7.4</span> Transonic</h3>
+<div class="outline-text-3" id="text-7-4">
+<p>
+Transonic attempts to unify Cython, Pythran, and Numba, and potentially other compilers, behind one
+interface to enable quick evaluation of multiple compilers without having to rewrite code.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org74e7660" class="outline-3">
+<h3 id="org74e7660"><span class="section-number-3">7.5</span> CuPy</h3>
+<div class="outline-text-3" id="text-7-5">
+<p>
+<a href="https://cupy.dev/">A NumPy-compatible array library accelerated by CUDA</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgef9374b" class="outline-3">
+<h3 id="orgef9374b"><span class="section-number-3">7.6</span> Other Tools</h3>
+<div class="outline-text-3" id="text-7-6">
+<p>
+See <a href="http://compilers.pydata.org/">http://compilers.pydata.org/</a>
+</p>
 </div>
 </div>
 </div>
