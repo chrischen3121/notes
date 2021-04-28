@@ -1,13 +1,12 @@
 #+TITLE: Algorithmic Trading
 #+KEYWORDS: algo, trading
-#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+OPTIONS: H:3 toc:2 num:2 ^:nil
 #+LaTeX: t
 #+LANGUAGE: en-US
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-
 * Motivations
   - execute throughout the day
   - target a benchmark price
@@ -22,21 +21,29 @@
    - quantitative trading (black-box): tracking indicators, monitoring the overall portfolio risk.
    - high frequency trading
    - statistical arbitrage
-* Overview
-  | Algorithms               | Type          | Focus        | Dynamic | Pre-determine | Price     | Volume    |
-  |--------------------------+---------------+--------------+---------+---------------+-----------+-----------|
-  | TWAP                     | Impact-driven | Time         | Y       |               |           |           |
-  | VWAP                     | Impact-driven | Volume       | Y       |               |           |           |
-  | Percentage Of Volume     | Impact-driven | Volume       |         | Y             |           | often     |
-  | Minimal impact           | Impact-driven | Impact       | Y       |               | sometimes | sometimes |
-  | Implementation Shortfall | Cost-driven   | Price/Risk   |         | Y             | sometimes | sometimes |
-  | Adaptive Shortfall       | Cost-driven   | Price/Risk   |         | Y             | often     | sometimes |
-  | Market On Close          | Cost-driven   | Price/Risk   | Y       |               | sometimes | sometimes |
-  | Price Inline             | Opportunistic | Price        |         | Y             | often     | sometimes |
-  | Liquidity-driven         | Opportunistic | Liquidity    |         | Y             | sometimes | sometimes |
-  | Pair/Spread trading      | Opportunistic | Ratio/Spread |         | Y             | often     |           |
 
-  At the macro level use a more schedule-driven algorithms, while at the micro level they focus on balancing the trade-off between cost and risk
+* Algorithms Overview
+  | Algorithms               | Type          | Focus        | Dynamic | Pre-determine | Price     | Volume    | Key driver                      |
+  |--------------------------+---------------+--------------+---------+---------------+-----------+-----------+---------------------------------|
+  | TWAP                     | Impact-driven | Time         | Y       |               |           |           | Schedule(Time)                  |
+  | VWAP                     | Impact-driven | Volume       | Y       |               |           |           | Schedule(Volume)                |
+  | Percentage Of Volume     | Impact-driven | Volume       |         | Y             |           | often     | Predetermined benchmark(Volume) |
+  | Minimal impact           | Impact-driven | Impact       | Y       |               | sometimes | sometimes |                                 |
+  | Implementation Shortfall | Cost-driven   | Price/Risk   |         | Y             | sometimes | sometimes | Predetermined benchmark(Price)  |
+  | Adaptive Shortfall       | Cost-driven   | Price/Risk   |         | Y             | often     | sometimes |                                 |
+  | Market On Close          | Cost-driven   | Price/Risk   | Y       |               | sometimes | sometimes | Dynamic benchmark(Price)        |
+  | Price Inline             | Opportunistic | Price        |         | Y             | often     | sometimes | Dynamic benchmark(Price)        |
+  | Liquidity-driven         | Opportunistic | Liquidity    |         | Y             | sometimes | sometimes | Liquidity                       |
+  | Pair/Spread trading      | Opportunistic | Ratio/Spread |         | Y             | often     |           | Predetermined benchmark(Ratio)  |
+
+** History
+   - First generation 1.0: Starting with TWAP and progressing on to VWAP. VWAP reigned supreme for a long time.
+   - 1.5: POV bases its execution in response to the *live* market volume.
+   - 2.0: Second generation were created in response to the transaction cost analysis(TCA). Some factors: *market impact*, *timing risk*, *opportunity cost*.
+     - The difference between the market price when the investment decision was made and the actual executed price. VWAP began to be replaced by decision price as a benchmark.
+     - 2.0 Algorithms were more *price-* and *cost-centric*: Implementation Shortfall(IS) based algorithms. Algorithms started incorporating complex models to estimate potential transaction costs.
+     - Term *Implementation Shortfall* represents the actual costs of trading.
+   - 3.0 Liquidity-based Algorithms: These constantly examine the order books of differet venues to decide where best to place orders.
 
 ** categories
   - Schedule-driven: follow a strictly defined trading trajectory, created statically from historical data
