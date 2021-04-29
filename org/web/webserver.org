@@ -1,0 +1,71 @@
+#+TITLE: Web Servers(Udacity)
+#+OPTIONS: H:3 toc:2 num:2 ^:nil
+#+LaTeX: t
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+* Toolkits
+** ~ncat~
+   In Nmap network testing toolkit.
+   1. ~sudo apt-get install nmap~
+   1. ~ncat -l 9999~: start a server
+   1. ~ncat localhost 9999~: start a client
+
+** ~host~
+   DNS lookup utility. ~host www.google.com~
+   - alternative: ~nslookup~, ~dig~
+
+* Basic
+** URL
+   - a URL is a URI for a resource on the network
+   - URL parts: ~https://en.wikipedia.org/wiki/Fish~
+     - ~https~ is the scheme
+     - ~en.wikipedia.org~ is the hostname
+     - ~/wiki/Fish~ is the path. A single slash ~/~ is a path, called the *root*.
+     - The part of the URI after the ~#~ sign is called a *fragment*. In HTML pages it links to an element by *id*.
+     - ~?q=fish~ is a *query* part of the URI.
+     - Ports
+
+** HTTP
+   A simple HTTP request
+   #+BEGIN_SRC text
+     GET / HTTP/1.1
+     Host: localhost
+   #+END_SRC
+   response example
+   #+BEGIN_SRC text
+     HTTP/1.0 200 OK
+     Server: SimpleHTTP/0.6 Python/3.8.8
+     Date: Thu, 29 Apr 2021 06:23:14 GMT
+     Content-type: text/html; charset=utf-8
+     Content-Length: 514
+
+     body...
+   #+END_SRC
+
+*** Response
+    is made up of three parts:
+    - status line: [[https://en.wikipedia.org/wiki/List_of_HTTP_status_codes][status codes descriptions]]
+    - headers
+      - Headers are a sort of metadata for the response.
+      - the names of HTTP headers are *case-insensitive*
+      - *cookies* are a web feature using headers. The server sends the *Set-Cookie* header. The client send the cookie data back in a *Cookie* header.
+    - response body
+
+* Python Utilities
+** ~urllib~
+   #+BEGIN_SRC python
+     from urllib.parse import parse_qs, quote, urlparse
+
+     parts = urlparse("https://www.google.com/search?q=gray+squirrel&tbm=isch")
+     # => ParseResult(scheme='https', netloc='www.google.com', path='/search', params='', query='q=gray+squirrel&tbm=isch', fragment='')
+
+     parse_qs(parts.query)
+     # => {'q': ['gray squirrel'], 'tbm': ['isch']}
+
+     quote("gray squirrel")
+     # => 'gray%20squirrel'
+   #+END_SRC
