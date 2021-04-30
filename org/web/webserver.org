@@ -60,7 +60,10 @@
 
    Imagine if a user did this. They write a message and press the submit button and the message text shows up in their URL bar. If they press reload, it sends the message again.
 
-
+** Post-Redirect-Get Pattern
+   There's a very common design pattern for interactive HTTP applications and APIs, called the *PRG(Post-Redirect-Get)*.
+   A client =POST= s to a server to create or update a resource; on success, the server replies not with a =200 OK= but with
+   a =303= redirect. The redirect causes the client to GET the created or updated resource.
 
 * Python Utilities
 ** ~urllib~
@@ -76,3 +79,13 @@
      quote("gray squirrel")
      # => 'gray%20squirrel'
    #+END_SRC
+* Deployment
+** heroku
+   1. Check your server code into a new local Git repository.
+   1. Sign up for a free Heroku account.
+   1. Download the Heroku [[https://devcenter.heroku.com/articles/heroku-cli][command-line interface]] (CLI).
+   1. Authenticate the Heroku CLI with your account: =heroku login=
+   1. Create configuration files =Procfile=, =requirements.txt=, and =runtime.txt= and check them into your Git repository.
+   1. Modify your server to listen on a configurable port.
+   1. Create your Heroku app: ~heroku create your-app-name~
+   1. Push your code to Heroku with Git: ~git push heroku master~
