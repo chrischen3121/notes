@@ -28,13 +28,17 @@
      - how much data can be moved in one transfer (bus width)
      - how many transfers the bus can do per second (bus frequency).
 
-** GPU
-   - Drawbacks: Communicates through the PCI bus, which is much slower than the frontside bus
-
 ** Performance Issues of Python
    - Memory Fragmentation: due to garbage-collected
    - Dynamic Types: Using Cython to mitigate this problem
    - GIL: Using Cython or foreign functions
+** GPU
+   - When to use: The task requires mainly linear algebra and matrix manipulations.
+     1. Ensure that the memory use of the problem will fit within the GPU.
+     1. Evaluate whether the algorithm requires a lot of branching conditions.(GPU's memory is limited)
+     1. Evaluate how much data needs to be moved between the GPU and the CPU.
+   - Drawbacks: Communicates through the PCI bus, which is much slower than the frontside bus
+
 
 * Profiling
 ** Tools
@@ -672,6 +676,49 @@
 
 ** CuPy
    [[https://cupy.dev/][A NumPy-compatible array library accelerated by CUDA]]
+
+** Foreign Function Interfaces
+*** C =.so=
+    #+BEGIN_SRC c
+      int add_two(int a, int b) {
+	return a + b;
+      }
+    #+END_SRC
+    1. ~gcc -O3 -std=gnu11 -c libtest.c~
+    1. ~gcc -shared -o libtest.so libtest.o~
+    1. Put =libtest.so= in =/usr/lib= or =/usr/local/lib= or somewhere is accessible to python code.
+*** ctypes
+    The most basic foreign function interface in CPython is through the ~ctypes~ module.
+    #+BEGIN_SRC python
+      import ctypes
+
+      _libtest = ctypes.CDLL("libtest.so")
+
+      # Create references to the C types that we will need to simplify future code
+      TYPE_INT = ctypes.c_int
+
+      # Initialize the signature of the evolve function to:
+      # int add_two(int, int)
+      _libtest.add_two.argtypes = [TYPE_INT, TYPE_INT]
+      _libtest.add_two.restype = TYPE_INT
+
+
+      def add_two_in_python(a: int, b: int) -> int:
+	  # First we convert the Python types into the relevant C types
+	  a = TYPE_INT(a)
+	  b = TYPE_INT(b)
+	  res = _libtest.add_two(a, b)
+	  return int(res) # TODO: to confirm
+    #+END_SRC
+    - C structure
+      #+BEGIN_SRC python
+	from ctypes import Structure, c_int
+
+	class cPoint(Structure):
+	    _fields_ = ("x", c_int), ("y", c_int)
+
+	point = cPoint(10, 5)
+      #+END_SRC
 
 ** Other Tools
    See [[http://compilers.pydata.org/]]
