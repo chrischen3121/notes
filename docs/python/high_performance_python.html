@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-23 Fri 17:34 -->
+<!-- 2021-05-11 Tue 14:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance Python</title>
@@ -217,8 +217,8 @@
 <li><a href="#org2aa7c0b">1.1. Computing Unit</a></li>
 <li><a href="#org173eae7">1.2. Memory Unit</a></li>
 <li><a href="#orga557b09">1.3. Communications Layers</a></li>
-<li><a href="#orge3ba622">1.4. GPU</a></li>
-<li><a href="#org2e52313">1.5. Performance Issues of Python</a></li>
+<li><a href="#org2e52313">1.4. Performance Issues of Python</a></li>
+<li><a href="#orge3ba622">1.5. GPU</a></li>
 </ul>
 </li>
 <li><a href="#org2fecdba">2. Profiling</a>
@@ -264,7 +264,8 @@
 <li><a href="#orgd4d7e75">7.3. PyPy</a></li>
 <li><a href="#org04b2808">7.4. Transonic</a></li>
 <li><a href="#org74e7660">7.5. CuPy</a></li>
-<li><a href="#orgef9374b">7.6. Other Tools</a></li>
+<li><a href="#org5a9402b">7.6. Foreign Function Interfaces</a></li>
+<li><a href="#orgef9374b">7.7. Other Tools</a></li>
 </ul>
 </li>
 </ul>
@@ -319,22 +320,27 @@ sequential reads), and how many times it is moved among the various locations.
 </div>
 </div>
 
-<div id="outline-container-orge3ba622" class="outline-3">
-<h3 id="orge3ba622"><span class="section-number-3">1.4</span> GPU</h3>
-<div class="outline-text-3" id="text-1-4">
-<ul class="org-ul">
-<li>Drawbacks: Communicates through the PCI bus, which is much slower than the frontside bus</li>
-</ul>
-</div>
-</div>
-
 <div id="outline-container-org2e52313" class="outline-3">
-<h3 id="org2e52313"><span class="section-number-3">1.5</span> Performance Issues of Python</h3>
-<div class="outline-text-3" id="text-1-5">
+<h3 id="org2e52313"><span class="section-number-3">1.4</span> Performance Issues of Python</h3>
+<div class="outline-text-3" id="text-1-4">
 <ul class="org-ul">
 <li>Memory Fragmentation: due to garbage-collected</li>
 <li>Dynamic Types: Using Cython to mitigate this problem</li>
 <li>GIL: Using Cython or foreign functions</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge3ba622" class="outline-3">
+<h3 id="orge3ba622"><span class="section-number-3">1.5</span> GPU</h3>
+<div class="outline-text-3" id="text-1-5">
+<ul class="org-ul">
+<li>When to use: The task requires mainly linear algebra and matrix manipulations.
+<ol class="org-ol">
+<li>Ensure that the memory use of the problem will fit within the GPU.</li>
+<li>Evaluate whether the algorithm requires a lot of branching conditions.(GPU's memory is limited)</li>
+<li>Evaluate how much data needs to be moved between the GPU and the CPU.</li>
+</ol></li>
+<li>Drawbacks: Communicates through the PCI bus, which is much slower than the frontside bus</li>
 </ul>
 </div>
 </div>
@@ -405,6 +411,7 @@ p.print_callees<span style="color: #3a81c3;">()</span>
 </div>
 <ul class="org-ul">
 <li><code>snakeviz</code> for visualization</li>
+<li>alternative <code>pyinstrument</code>: lower overhead and less trivial information</li>
 </ul>
 </div>
 </div>
@@ -413,7 +420,7 @@ p.print_callees<span style="color: #3a81c3;">()</span>
 <h4 id="org3d248d6"><span class="section-number-4">2.1.5</span> <code>line_profiler</code></h4>
 <div class="outline-text-4" id="text-2-1-5">
 <ol class="org-ol">
-<li><code>pip install ~line_profiler~</code></li>
+<li><code>pip install line_profiler</code></li>
 <li>Use <code>@profile</code> to mark the chosen function</li>
 <li><code>kernprof -l -v test.py</code></li>
 <li>See report: <code>python -m line_profiler test.py.lprof</code></li>
@@ -1381,9 +1388,75 @@ interface to enable quick evaluation of multiple compilers without having to rew
 </div>
 </div>
 
-<div id="outline-container-orgef9374b" class="outline-3">
-<h3 id="orgef9374b"><span class="section-number-3">7.6</span> Other Tools</h3>
+<div id="outline-container-org5a9402b" class="outline-3">
+<h3 id="org5a9402b"><span class="section-number-3">7.6</span> Foreign Function Interfaces</h3>
 <div class="outline-text-3" id="text-7-6">
+</div>
+<div id="outline-container-org514d7a3" class="outline-4">
+<h4 id="org514d7a3"><span class="section-number-4">7.6.1</span> C <code>.so</code></h4>
+<div class="outline-text-4" id="text-7-6-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #6c3163; font-weight: bold;">add_two</span><span style="color: #3a81c3;">(</span><span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">a</span>, <span style="color: #ba2f59; font-weight: bold;">int</span> <span style="color: #715ab1;">b</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
+  <span style="color: #3a81c3; font-weight: bold;">return</span> a + b;
+<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+<ol class="org-ol">
+<li><code>gcc -O3 -std=gnu11 -c libtest.c</code></li>
+<li><code>gcc -shared -o libtest.so libtest.o</code></li>
+<li>Put <code>libtest.so</code> in <code>/usr/lib</code> or <code>/usr/local/lib</code> or somewhere is accessible to python code.</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org3277c7d" class="outline-4">
+<h4 id="org3277c7d"><span class="section-number-4">7.6.2</span> ctypes</h4>
+<div class="outline-text-4" id="text-7-6-2">
+<p>
+The most basic foreign function interface in CPython is through the <code>ctypes</code> module.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> ctypes
+
+<span style="color: #715ab1;">_libtest</span> = ctypes.CDLL<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"libtest.so"</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Create references to the C types that we will need to simplify future code</span>
+<span style="color: #715ab1;">TYPE_INT</span> = ctypes.c_int
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Initialize the signature of the evolve function to:</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">int add_two(int, int)</span>
+<span style="color: #715ab1;">_libtest.add_two.argtypes</span> = <span style="color: #3a81c3;">[</span>TYPE_INT, TYPE_INT<span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">_libtest.add_two.restype</span> = TYPE_INT
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">add_two_in_python</span><span style="color: #3a81c3;">(</span>a: <span style="color: #3a81c3;">int</span>, b: <span style="color: #3a81c3;">int</span><span style="color: #3a81c3;">)</span> -&gt; <span style="color: #3a81c3;">int</span>:
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">First we convert the Python types into the relevant C types</span>
+    <span style="color: #715ab1;">a</span> = TYPE_INT<span style="color: #3a81c3;">(</span>a<span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">b</span> = TYPE_INT<span style="color: #3a81c3;">(</span>b<span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">res</span> = _libtest.add_two<span style="color: #3a81c3;">(</span>a, b<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> res
+</pre>
+</div>
+<ul class="org-ul">
+<li><p>
+C structure
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> ctypes <span style="color: #3a81c3; font-weight: bold;">import</span> Structure, c_int
+
+<span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">cPoint</span><span style="color: #3a81c3;">(</span>Structure<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">_fields_</span> = <span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"x"</span>, c_int<span style="color: #3a81c3;">)</span>, <span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"y"</span>, c_int<span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">point</span> = cPoint<span style="color: #3a81c3;">(</span>10, 5<span style="color: #3a81c3;">)</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgef9374b" class="outline-3">
+<h3 id="orgef9374b"><span class="section-number-3">7.7</span> Other Tools</h3>
+<div class="outline-text-3" id="text-7-7">
 <p>
 See <a href="http://compilers.pydata.org/">http://compilers.pydata.org/</a>
 </p>
