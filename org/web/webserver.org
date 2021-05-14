@@ -6,7 +6,6 @@
 #+EMAIL: ChrisChen3121@gmail.com
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
-
 * Toolkits
 ** ~ncat~
    In Nmap network testing toolkit.
@@ -85,7 +84,43 @@
    1. Sign up for a free Heroku account.
    1. Download the Heroku [[https://devcenter.heroku.com/articles/heroku-cli][command-line interface]] (CLI).
    1. Authenticate the Heroku CLI with your account: =heroku login=
-   1. Create configuration files =Procfile=, =requirements.txt=, and =runtime.txt= and check them into your Git repository.
+   1. *Create configuration files* =Procfile=, =requirements.txt=, and =runtime.txt= and check them into your Git repository.
    1. Modify your server to listen on a configurable port.
-   1. Create your Heroku app: ~heroku create your-app-name~
+   1. *Create your Heroku app*: ~heroku create your-app-name~
    1. Push your code to Heroku with Git: ~git push heroku master~
+
+** Routing and Load Balancing
+   One thing a specialized web server can do is dispatch requests to the particular backend servers
+   that need to handle each request. There are a lot of names for this, including /request routing/
+   and /reverse proxying/.
+
+   Splitting requests up among several servers is called /load balancing/.
+
+** Caching
+   The server can set HTTP headers indicating that a particular resource is not intended to change
+   quickly, and can safely be cached.
+
+   There are a few places that caching usually can happen.
+   - Browser Cache :: Browser maintains a browser cache of cacheable resources — such as images from recently-viewed web pages.
+   - Web Proxy :: Perform caching on behalf of many users.
+   - Reverse Proxy :: Server-side caching.
+
+   All HTTP caching is supposed to be governed by cache control headers set by the server.
+
+** Cookies
+   Cookies are a way that a server can ask a browser to retain a piece of information, and send it
+   back to the server when the browser makes subsequent requests.
+
+*** What are cookies for?
+   - If the server sends each client a unique cookie value, it can use these to tell clients apart. (/sessions/ and /login/)
+   - Cookies are used by analytics and advertising systems to track user activity from site to site.
+   - Cookies are also sometimes used to store user preferences for a site.
+
+*** How cookies happen
+   The first time the client makes a request to the server, the server sends back the response with a Set-Cookie header.
+   This header contains three things: a /cookie name/, a /value/, and some /attributes/. The server can update cookies,
+   or ask the browser to expire them.
+
+*** cookie fields
+    See [[https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies][here]]
+    - /Domain/ and /Path/, describe the scope of the cookie - that is to say, which queries will include it.
