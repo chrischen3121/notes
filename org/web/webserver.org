@@ -64,6 +64,16 @@
    A client =POST= s to a server to create or update a resource; on success, the server replies not with a =200 OK= but with
    a =303= redirect. The redirect causes the client to GET the created or updated resource.
 
+** Other Http Methods
+  - *PUT/DELETE* for creating/deleting things
+  - *PATCH* for making changes
+  - *HEAD/OPTIONS/TRACE* for debugging
+    - HEAD works just like GET, except the server doesn't return any content — just headers.
+    - OPTIONS can be used to find out what features the server supports.
+    - TRACE echoes back what the server received from the client — but is often disabled for security reasons.
+
+  details: [[https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html][HTTP standards documents]]
+
 * Python Utilities
 ** ~urllib~
    #+BEGIN_SRC python
@@ -124,3 +134,23 @@
 *** cookie fields
     See [[https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies][here]]
     - /Domain/ and /Path/, describe the scope of the cookie - that is to say, which queries will include it.
+* Https(Http with TLS)
+   TLS provides some important *guarantees* for web security:
+   - *privacy*: keeps the connection private by encrypting everything sent over it.
+   - *authenticity*: lets the browser authenticate the server.
+   - *integrity*: helps protect the integrity of the data sent over that connection.
+
+** Keys and certificates
+    The server-side configuration for TLS includes two important pieces of data: a *private key* and a public *certificate*.
+    - The private key is secret; it's held on the server and never leaves there.
+    - The certificate is sent to every browser that connects to that server via TLS.
+
+** CA
+    The server's certificate is issued by an organization called a *certificate authority* (CA).
+    The certificate authority's job is to make sure that the server really is who it says it is.
+    The role of a certificate authority is kind of like getting a document notarized.
+* Http/2
+  Improvements:
+  - *Multiplexing*: multiplexs requests and responses over a single connection
+  - *Server push*: allows the server to say, effectively, "If you're asking for index.html, I know you're going to ask for style.css too, so I'm going to send it along as well."
+  - *Encryption*: Most of browsers will only attempt HTTP/2 with a site that is using TLS encryption.
