@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-04-30 Fri 17:35 -->
+<!-- 2021-05-17 Mon 17:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Web Servers(Udacity)</title>
@@ -201,6 +201,7 @@
 <li><a href="#org4bffdf5">2.2. HTTP</a></li>
 <li><a href="#orgb0d6f22">2.3. GET vs. Post</a></li>
 <li><a href="#orge80ca2b">2.4. Post-Redirect-Get Pattern</a></li>
+<li><a href="#orgc248436">2.5. Other Http Methods</a></li>
 </ul>
 </li>
 <li><a href="#org0df4e7a">3. Python Utilities</a>
@@ -211,12 +212,21 @@
 <li><a href="#org9e00ce3">4. Deployment</a>
 <ul>
 <li><a href="#org3c9f2fe">4.1. heroku</a></li>
+<li><a href="#orge67bbc8">4.2. Routing and Load Balancing</a></li>
+<li><a href="#orgd136cf8">4.3. Caching</a></li>
+<li><a href="#org9141ee0">4.4. Cookies</a></li>
 </ul>
 </li>
+<li><a href="#orgaf2164c">5. Https(Http with TLS)</a>
+<ul>
+<li><a href="#orgd0aa965">5.1. Keys and certificates</a></li>
+<li><a href="#org2baaeb5">5.2. CA</a></li>
+</ul>
+</li>
+<li><a href="#org0a2dd04">6. Http/2</a></li>
 </ul>
 </div>
 </div>
-
 <div id="outline-container-org6de0d33" class="outline-2">
 <h2 id="org6de0d33"><span class="section-number-2">1</span> Toolkits</h2>
 <div class="outline-text-2" id="text-1">
@@ -339,6 +349,26 @@ a <code>303</code> redirect. The redirect causes the client to GET the created o
 </p>
 </div>
 </div>
+
+<div id="outline-container-orgc248436" class="outline-3">
+<h3 id="orgc248436"><span class="section-number-3">2.5</span> Other Http Methods</h3>
+<div class="outline-text-3" id="text-2-5">
+<ul class="org-ul">
+<li><b>PUT/DELETE</b> for creating/deleting things</li>
+<li><b>PATCH</b> for making changes</li>
+<li><b>HEAD/OPTIONS/TRACE</b> for debugging
+<ul class="org-ul">
+<li>HEAD works just like GET, except the server doesn't return any content — just headers.</li>
+<li>OPTIONS can be used to find out what features the server supports.</li>
+<li>TRACE echoes back what the server received from the client — but is often disabled for security reasons.</li>
+</ul></li>
+</ul>
+
+<p>
+details: <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">HTTP standards documents</a>
+</p>
+</div>
+</div>
 </div>
 
 <div id="outline-container-org0df4e7a" class="outline-2">
@@ -376,12 +406,144 @@ quote<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"gray s
 <li>Sign up for a free Heroku account.</li>
 <li>Download the Heroku <a href="https://devcenter.heroku.com/articles/heroku-cli">command-line interface</a> (CLI).</li>
 <li>Authenticate the Heroku CLI with your account: <code>heroku login</code></li>
-<li>Create configuration files <code>Procfile</code>, <code>requirements.txt</code>, and <code>runtime.txt</code> and check them into your Git repository.</li>
+<li><b>Create configuration files</b> <code>Procfile</code>, <code>requirements.txt</code>, and <code>runtime.txt</code> and check them into your Git repository.</li>
 <li>Modify your server to listen on a configurable port.</li>
-<li>Create your Heroku app: <code>heroku create your-app-name</code></li>
+<li><b>Create your Heroku app</b>: <code>heroku create your-app-name</code></li>
 <li>Push your code to Heroku with Git: <code>git push heroku master</code></li>
 </ol>
 </div>
+</div>
+
+<div id="outline-container-orge67bbc8" class="outline-3">
+<h3 id="orge67bbc8"><span class="section-number-3">4.2</span> Routing and Load Balancing</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+One thing a specialized web server can do is dispatch requests to the particular backend servers
+that need to handle each request. There are a lot of names for this, including <i>request routing</i>
+and <i>reverse proxying</i>.
+</p>
+
+<p>
+Splitting requests up among several servers is called <i>load balancing</i>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd136cf8" class="outline-3">
+<h3 id="orgd136cf8"><span class="section-number-3">4.3</span> Caching</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+The server can set HTTP headers indicating that a particular resource is not intended to change
+quickly, and can safely be cached.
+</p>
+
+<p>
+There are a few places that caching usually can happen.
+</p>
+<dl class="org-dl">
+<dt>Browser Cache</dt><dd>Browser maintains a browser cache of cacheable resources — such as images from recently-viewed web pages.</dd>
+<dt>Web Proxy</dt><dd>Perform caching on behalf of many users.</dd>
+<dt>Reverse Proxy</dt><dd>Server-side caching.</dd>
+</dl>
+
+<p>
+All HTTP caching is supposed to be governed by cache control headers set by the server.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9141ee0" class="outline-3">
+<h3 id="org9141ee0"><span class="section-number-3">4.4</span> Cookies</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+Cookies are a way that a server can ask a browser to retain a piece of information, and send it
+back to the server when the browser makes subsequent requests.
+</p>
+</div>
+
+<div id="outline-container-org8526620" class="outline-4">
+<h4 id="org8526620">What are cookies for?</h4>
+<div class="outline-text-4" id="text-org8526620">
+<ul class="org-ul">
+<li>If the server sends each client a unique cookie value, it can use these to tell clients apart. (<i>sessions</i> and <i>login</i>)</li>
+<li>Cookies are used by analytics and advertising systems to track user activity from site to site.</li>
+<li>Cookies are also sometimes used to store user preferences for a site.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1f3f0ec" class="outline-4">
+<h4 id="org1f3f0ec">How cookies happen</h4>
+<div class="outline-text-4" id="text-org1f3f0ec">
+<p>
+The first time the client makes a request to the server, the server sends back the response with a Set-Cookie header.
+This header contains three things: a <i>cookie name</i>, a <i>value</i>, and some <i>attributes</i>. The server can update cookies,
+or ask the browser to expire them.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb681d4d" class="outline-4">
+<h4 id="orgb681d4d">cookie fields</h4>
+<div class="outline-text-4" id="text-orgb681d4d">
+<p>
+See <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies">here</a>
+</p>
+<ul class="org-ul">
+<li><i>Domain</i> and <i>Path</i>, describe the scope of the cookie - that is to say, which queries will include it.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaf2164c" class="outline-2">
+<h2 id="orgaf2164c"><span class="section-number-2">5</span> Https(Http with TLS)</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+TLS provides some important <b>guarantees</b> for web security:
+</p>
+<ul class="org-ul">
+<li><b>privacy</b>: keeps the connection private by encrypting everything sent over it.</li>
+<li><b>authenticity</b>: lets the browser authenticate the server.</li>
+<li><b>integrity</b>: helps protect the integrity of the data sent over that connection.</li>
+</ul>
+</div>
+
+<div id="outline-container-orgd0aa965" class="outline-3">
+<h3 id="orgd0aa965"><span class="section-number-3">5.1</span> Keys and certificates</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+The server-side configuration for TLS includes two important pieces of data: a <b>private key</b> and a public <b>certificate</b>.
+</p>
+<ul class="org-ul">
+<li>The private key is secret; it's held on the server and never leaves there.</li>
+<li>The certificate is sent to every browser that connects to that server via TLS.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2baaeb5" class="outline-3">
+<h3 id="org2baaeb5"><span class="section-number-3">5.2</span> CA</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+The server's certificate is issued by an organization called a <b>certificate authority</b> (CA).
+The certificate authority's job is to make sure that the server really is who it says it is.
+The role of a certificate authority is kind of like getting a document notarized.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org0a2dd04" class="outline-2">
+<h2 id="org0a2dd04"><span class="section-number-2">6</span> Http/2</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Improvements:
+</p>
+<ul class="org-ul">
+<li><b>Multiplexing</b>: multiplexs requests and responses over a single connection</li>
+<li><b>Server push</b>: allows the server to say, effectively, "If you're asking for index.html, I know you're going to ask for style.css too, so I'm going to send it along as well."</li>
+<li><b>Encryption</b>: Most of browsers will only attempt HTTP/2 with a site that is using TLS encryption.</li>
+</ul>
 </div>
 </div>
 </div>
