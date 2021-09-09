@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-05-11 Tue 14:46 -->
+<!-- 2021-09-09 Thu 22:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>High Performance MySQL</title>
@@ -41,7 +41,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -53,7 +53,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -190,61 +203,61 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1eb8ef1">1. Special SQL</a>
+<li><a href="#orgb794081">1. Special SQL</a>
 <ul>
-<li><a href="#org56c6fef">1.1. AUTOCOMMIT</a></li>
-<li><a href="#org8cf1647">1.2. Set isolation level</a></li>
+<li><a href="#org7477f88">1.1. AUTOCOMMIT</a></li>
+<li><a href="#orga0ba7cd">1.2. Set isolation level</a></li>
 </ul>
 </li>
-<li><a href="#org9fe82a4">2. Storage Engine</a>
+<li><a href="#org11c763f">2. Storage Engine</a>
 <ul>
-<li><a href="#org5811d9c">2.1. Change engine</a></li>
+<li><a href="#org04617b1">2.1. Change engine</a></li>
 </ul>
 </li>
-<li><a href="#org5f2c167">3. Benchmark</a>
+<li><a href="#orgb54dc36">3. Benchmark</a>
 <ul>
-<li><a href="#orgf768529">3.1. What to Measure</a></li>
-<li><a href="#org4567f6b">3.2. Gathering Data on MySQL</a></li>
-<li><a href="#orga1813ea">3.3. Analyzing Results</a></li>
-<li><a href="#orgf73fa2a">3.4. Tools</a></li>
+<li><a href="#org1cc28f2">3.1. What to Measure</a></li>
+<li><a href="#org789c343">3.2. Gathering Data on MySQL</a></li>
+<li><a href="#org1203525">3.3. Analyzing Results</a></li>
+<li><a href="#orge070408">3.4. Tools</a></li>
 </ul>
 </li>
-<li><a href="#org573589d">4. Profiling</a>
+<li><a href="#orgeb85608">4. Profiling</a>
 <ul>
-<li><a href="#org300018e">4.1. slow query log</a></li>
-<li><a href="#org953666b">4.2. Single Query Profiling</a></li>
-<li><a href="#orgd423508">4.3. Server-Wide Problem Detection</a></li>
-<li><a href="#org7cafb0e">4.4. Tools</a></li>
+<li><a href="#orgaa07f79">4.1. slow query log</a></li>
+<li><a href="#orgb98a98b">4.2. Single Query Profiling</a></li>
+<li><a href="#orgf0484d8">4.3. Server-Wide Problem Detection</a></li>
+<li><a href="#org0732e36">4.4. Tools</a></li>
 </ul>
 </li>
-<li><a href="#org48c413e">5. Schema</a>
+<li><a href="#org5b2aae9">5. Schema</a>
 <ul>
-<li><a href="#org59e4cdc">5.1. Data Type</a></li>
-<li><a href="#org1f88fac">5.2. Normalization and Denormalization</a></li>
-<li><a href="#org80d2673">5.3. Summary Table &amp; Cache Table</a></li>
-<li><a href="#orgc188f67">5.4. Speeding Up ALTER TABLE</a></li>
-<li><a href="#org09759f0">5.5. Indexing Methods</a></li>
-<li><a href="#orge285a89">5.6. Indexing Strategies</a></li>
-<li><a href="#org19969c2">5.7. Clustered Indexes</a></li>
-<li><a href="#org7355946">5.8. Covering Indexes</a></li>
-<li><a href="#org83683d1">5.9. Using Index for Sorts</a></li>
+<li><a href="#org0ead39b">5.1. Data Type</a></li>
+<li><a href="#org1bfef29">5.2. Normalization and Denormalization</a></li>
+<li><a href="#org8b04dd6">5.3. Summary Table &amp; Cache Table</a></li>
+<li><a href="#orgc5df809">5.4. Speeding Up ALTER TABLE</a></li>
+<li><a href="#org4f0f4ea">5.5. Indexing Methods</a></li>
+<li><a href="#orgb73a612">5.6. Indexing Strategies</a></li>
+<li><a href="#orgf6cbd9f">5.7. Clustered Indexes</a></li>
+<li><a href="#org70154a5">5.8. Covering Indexes</a></li>
+<li><a href="#org7b384f7">5.9. Using Index for Sorts</a></li>
 </ul>
 </li>
-<li><a href="#orgb2f26fb">6. Query Optimization</a>
+<li><a href="#org156f6e1">6. Query Optimization</a>
 <ul>
-<li><a href="#orga34b487">6.1. Isolating the Column</a></li>
+<li><a href="#org2d052da">6.1. Isolating the Column</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1eb8ef1" class="outline-2">
-<h2 id="org1eb8ef1"><span class="section-number-2">1</span> Special SQL</h2>
+<div id="outline-container-orgb794081" class="outline-2">
+<h2 id="orgb794081"><span class="section-number-2">1</span> Special SQL</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org56c6fef" class="outline-3">
-<h3 id="org56c6fef"><span class="section-number-3">1.1</span> AUTOCOMMIT</h3>
+<div id="outline-container-org7477f88" class="outline-3">
+<h3 id="org7477f88"><span class="section-number-3">1.1</span> AUTOCOMMIT</h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-sql">SHOW VARIABLES <span style="color: #3a81c3; font-weight: bold;">LIKE</span> <span style="color: #2d9574;">'AUTOCOMMIT'</span>;
@@ -253,8 +266,8 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org8cf1647" class="outline-3">
-<h3 id="org8cf1647"><span class="section-number-3">1.2</span> Set isolation level</h3>
+<div id="outline-container-orga0ba7cd" class="outline-3">
+<h3 id="orga0ba7cd"><span class="section-number-3">1.2</span> Set isolation level</h3>
 <div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SET</span> <span style="color: #3a81c3; font-weight: bold;">SESSION</span> <span style="color: #3a81c3; font-weight: bold;">TRANSACTION</span> <span style="color: #3a81c3; font-weight: bold;">ISOLATION</span> <span style="color: #3a81c3; font-weight: bold;">LEVEL</span> <span style="color: #3a81c3; font-weight: bold;">READ</span> <span style="color: #3a81c3; font-weight: bold;">COMMITTED</span>;
@@ -263,8 +276,8 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org9fe82a4" class="outline-2">
-<h2 id="org9fe82a4"><span class="section-number-2">2</span> Storage Engine</h2>
+<div id="outline-container-org11c763f" class="outline-2">
+<h2 id="org11c763f"><span class="section-number-2">2</span> Storage Engine</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>InnoDB</li>
@@ -277,12 +290,12 @@
 </ul>
 </div>
 
-<div id="outline-container-org5811d9c" class="outline-3">
-<h3 id="org5811d9c"><span class="section-number-3">2.1</span> Change engine</h3>
+<div id="outline-container-org04617b1" class="outline-3">
+<h3 id="org04617b1"><span class="section-number-3">2.1</span> Change engine</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-orgbef5c76" class="outline-4">
-<h4 id="orgbef5c76"><span class="section-number-4">2.1.1</span> ALTER TABLE</h4>
+<div id="outline-container-org52cdfca" class="outline-4">
+<h4 id="org52cdfca"><span class="section-number-4">2.1.1</span> ALTER TABLE</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">ALTER</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #6c3163; font-weight: bold;">mytable</span> ENGINE = InnoDB;
@@ -294,8 +307,8 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-orgb4d6a68" class="outline-4">
-<h4 id="orgb4d6a68"><span class="section-number-4">2.1.2</span> Dump and import</h4>
+<div id="outline-container-orgc7dd6ff" class="outline-4">
+<h4 id="orgc7dd6ff"><span class="section-number-4">2.1.2</span> Dump and import</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 Use <b>mysqldump</b>
@@ -307,8 +320,8 @@ Use <b>mysqldump</b>
 </ol>
 </div>
 </div>
-<div id="outline-container-org4b47b00" class="outline-4">
-<h4 id="org4b47b00"><span class="section-number-4">2.1.3</span> CREATE and SELECT</h4>
+<div id="outline-container-orgea68378" class="outline-4">
+<h4 id="orgea68378"><span class="section-number-4">2.1.3</span> CREATE and SELECT</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">CREATE</span> <span style="color: #3a81c3; font-weight: bold;">TABLE</span> <span style="color: #6c3163; font-weight: bold;">innodb_table</span> <span style="color: #3a81c3; font-weight: bold;">LIKE</span> myisam_table;
@@ -327,8 +340,8 @@ For large volume data:
 </div>
 </div>
 </div>
-<div id="outline-container-org40deeec" class="outline-4">
-<h4 id="org40deeec"><span class="section-number-4">2.1.4</span> Online schema change</h4>
+<div id="outline-container-org2d8e941" class="outline-4">
+<h4 id="org2d8e941"><span class="section-number-4">2.1.4</span> Online schema change</h4>
 <div class="outline-text-4" id="text-2-1-4">
 <p>
 <i>pt-online-schema-change</i> (based on Facebook’s online schema change technique)
@@ -337,16 +350,16 @@ For large volume data:
 </div>
 </div>
 </div>
-<div id="outline-container-org5f2c167" class="outline-2">
-<h2 id="org5f2c167"><span class="section-number-2">3</span> Benchmark</h2>
+<div id="outline-container-orgb54dc36" class="outline-2">
+<h2 id="orgb54dc36"><span class="section-number-2">3</span> Benchmark</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgf768529" class="outline-3">
-<h3 id="orgf768529"><span class="section-number-3">3.1</span> What to Measure</h3>
+<div id="outline-container-org1cc28f2" class="outline-3">
+<h3 id="org1cc28f2"><span class="section-number-3">3.1</span> What to Measure</h3>
 <div class="outline-text-3" id="text-3-1">
 </div>
-<div id="outline-container-orgadbdfda" class="outline-4">
-<h4 id="orgadbdfda"><span class="section-number-4">3.1.1</span> Throughput</h4>
+<div id="outline-container-orga2660b7" class="outline-4">
+<h4 id="orga2660b7"><span class="section-number-4">3.1.1</span> Throughput</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 Throughput is defined as the number of transactions per unit of time. The usual unit of measurement is
@@ -355,8 +368,8 @@ transactions per second(TPS), although it is sometimes transactions per minute(T
 </div>
 </div>
 
-<div id="outline-container-orgead9d77" class="outline-4">
-<h4 id="orgead9d77"><span class="section-number-4">3.1.2</span> Response time or latency</h4>
+<div id="outline-container-org49db99b" class="outline-4">
+<h4 id="org49db99b"><span class="section-number-4">3.1.2</span> Response time or latency</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 This measures the total time a task requires.
@@ -364,8 +377,8 @@ This measures the total time a task requires.
 </div>
 </div>
 
-<div id="outline-container-org8088db6" class="outline-4">
-<h4 id="org8088db6"><span class="section-number-4">3.1.3</span> Concurrency</h4>
+<div id="outline-container-org7eebfa8" class="outline-4">
+<h4 id="org7eebfa8"><span class="section-number-4">3.1.3</span> Concurrency</h4>
 <div class="outline-text-4" id="text-3-1-3">
 <p>
 Concurrency is an important but frequently misused and misunderstood metric. Concurrency benchmark shoud be
@@ -374,13 +387,13 @@ the number of threads or connections doing work simultaneously.
 </div>
 </div>
 
-<div id="outline-container-org7aea16a" class="outline-4">
-<h4 id="org7aea16a"><span class="section-number-4">3.1.4</span> Scalability</h4>
+<div id="outline-container-org6cbeadb" class="outline-4">
+<h4 id="org6cbeadb"><span class="section-number-4">3.1.4</span> Scalability</h4>
 </div>
 </div>
 
-<div id="outline-container-org4567f6b" class="outline-3">
-<h3 id="org4567f6b"><span class="section-number-3">3.2</span> Gathering Data on MySQL</h3>
+<div id="outline-container-org789c343" class="outline-3">
+<h3 id="org789c343"><span class="section-number-3">3.2</span> Gathering Data on MySQL</h3>
 <div class="outline-text-3" id="text-3-2">
 <ul class="org-ul">
 <li>specify user to execute <b>mysql</b> command
@@ -414,8 +427,8 @@ mysql -e <span style="color: #2d9574;">'SHOW GLOBAL VARIABLES'</span> &gt;&gt; m
 </div>
 </div>
 
-<div id="outline-container-orga1813ea" class="outline-3">
-<h3 id="orga1813ea"><span class="section-number-3">3.3</span> Analyzing Results</h3>
+<div id="outline-container-org1203525" class="outline-3">
+<h3 id="org1203525"><span class="section-number-3">3.3</span> Analyzing Results</h3>
 <div class="outline-text-3" id="text-3-3">
 <div class="org-src-container">
 <pre class="src src-awk"><span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">!/bin/sh</span>
@@ -439,8 +452,8 @@ awk '
 </pre>
 </div>
 </div>
-<div id="outline-container-org1faa6ef" class="outline-4">
-<h4 id="org1faa6ef"><span class="section-number-4">3.3.1</span> plot</h4>
+<div id="outline-container-org17cc35f" class="outline-4">
+<h4 id="org17cc35f"><span class="section-number-4">3.3.1</span> plot</h4>
 <div class="outline-text-4" id="text-3-3-1">
 <div class="org-src-container">
 <pre class="src src-sh">gnuplot&gt; plot <span style="color: #2d9574;">"filename"</span> using 5 w lines title <span style="color: #2d9574;">"QPS"</span>
@@ -450,28 +463,28 @@ awk '
 </div>
 </div>
 
-<div id="outline-container-orgf73fa2a" class="outline-3">
-<h3 id="orgf73fa2a"><span class="section-number-3">3.4</span> Tools</h3>
+<div id="outline-container-orge070408" class="outline-3">
+<h3 id="orge070408"><span class="section-number-3">3.4</span> Tools</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
-<div id="outline-container-org5f79b22" class="outline-4">
-<h4 id="org5f79b22"><span class="section-number-4">3.4.1</span> http_load</h4>
+<div id="outline-container-org651c1ab" class="outline-4">
+<h4 id="org651c1ab"><span class="section-number-4">3.4.1</span> http_load</h4>
 </div>
-<div id="outline-container-org9cf4424" class="outline-4">
-<h4 id="org9cf4424"><span class="section-number-4">3.4.2</span> MySQL Benchmark Suite</h4>
+<div id="outline-container-org0376f1b" class="outline-4">
+<h4 id="org0376f1b"><span class="section-number-4">3.4.2</span> MySQL Benchmark Suite</h4>
 <div class="outline-text-4" id="text-3-4-2">
 <p>
 <code>mysqltest</code>
 </p>
 </div>
 </div>
-<div id="outline-container-org94a9627" class="outline-4">
-<h4 id="org94a9627"><span class="section-number-4">3.4.3</span> <b>sysbench</b></h4>
+<div id="outline-container-org31bbd42" class="outline-4">
+<h4 id="org31bbd42"><span class="section-number-4">3.4.3</span> <b>sysbench</b></h4>
 <div class="outline-text-4" id="text-3-4-3">
 </div>
 <ul class="org-ul">
-<li><a id="orga36559e"></a>cpu<br />
-<div class="outline-text-5" id="text-orga36559e">
+<li><a id="orgeb28b62"></a>cpu<br />
+<div class="outline-text-5" id="text-orgeb28b62">
 <div class="org-src-container">
 <pre class="src src-sh">sysbench cpu --cpu-max-prime=20000 --threads=4 run
 </pre>
@@ -479,8 +492,8 @@ awk '
 </div>
 </li>
 
-<li><a id="org958bc8d"></a>fileio<br />
-<div class="outline-text-5" id="text-org958bc8d">
+<li><a id="org92fa90e"></a>fileio<br />
+<div class="outline-text-5" id="text-org92fa90e">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -536,8 +549,8 @@ sysbench fileio --file-total-size=21G --file-test-mode=rndrw <span style="color:
 </div>
 </li>
 
-<li><a id="orgd53555a"></a>oltp<br />
-<div class="outline-text-5" id="text-orgd53555a">
+<li><a id="orgb058275"></a>oltp<br />
+<div class="outline-text-5" id="text-orgb058275">
 <div class="org-src-container">
 <pre class="src src-sh">sysbench --db-driver=mysql --mysql-host=127.0.0.1 --mysql-user=sbtest --mysql-password=test1234 <span style="color: #2d9574;">\</span>
 	 --mysql-db=test --table-size=100000 /usr/local/share/sysbench/oltp_common.lua prepare
@@ -551,30 +564,30 @@ sysbench --db-driver=mysql --mysql-host=127.0.0.1 --mysql-user=sbtest --mysql-pa
 </ul>
 </div>
 
-<div id="outline-container-orgbddc48b" class="outline-4">
-<h4 id="orgbddc48b"><span class="section-number-4">3.4.4</span> TPC-C</h4>
+<div id="outline-container-org47b8ae1" class="outline-4">
+<h4 id="org47b8ae1"><span class="section-number-4">3.4.4</span> TPC-C</h4>
 <div class="outline-text-4" id="text-3-4-4">
 <p>
 TPC-C is a specification published by the TPC organization that emulates a complex online transaction-processing load.
 </p>
 </div>
 <ul class="org-ul">
-<li><a id="orgba7dcd8"></a>dbt2<br /></li>
-<li><a id="org1f07cfe"></a>TPPC-MySQL<br /></li>
+<li><a id="orgcbe875f"></a>dbt2<br /></li>
+<li><a id="org9087e94"></a>TPPC-MySQL<br /></li>
 </ul>
 </div>
 </div>
 </div>
-<div id="outline-container-org573589d" class="outline-2">
-<h2 id="org573589d"><span class="section-number-2">4</span> Profiling</h2>
+<div id="outline-container-orgeb85608" class="outline-2">
+<h2 id="orgeb85608"><span class="section-number-2">4</span> Profiling</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li>execution-time profiling</li>
 <li>wait analysis</li>
 </ul>
 </div>
-<div id="outline-container-org300018e" class="outline-3">
-<h3 id="org300018e"><span class="section-number-3">4.1</span> slow query log</h3>
+<div id="outline-container-orgaa07f79" class="outline-3">
+<h3 id="orgaa07f79"><span class="section-number-3">4.1</span> slow query log</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 related variables: <code>slow_query_log</code>, <code>long_query_time</code>
@@ -585,8 +598,8 @@ related variables: <code>slow_query_log</code>, <code>long_query_time</code>
 </ul>
 </div>
 
-<div id="outline-container-orgfd4313c" class="outline-4">
-<h4 id="orgfd4313c"><span class="section-number-4">4.1.1</span> pt-query-digest</h4>
+<div id="outline-container-orgfbc2024" class="outline-4">
+<h4 id="orgfbc2024"><span class="section-number-4">4.1.1</span> pt-query-digest</h4>
 <div class="outline-text-4" id="text-4-1-1">
 <p>
 Analyze MySQL queries from logs, processlist, and tcpdump.
@@ -595,8 +608,8 @@ Analyze MySQL queries from logs, processlist, and tcpdump.
 </div>
 </div>
 
-<div id="outline-container-orgca8f575" class="outline-4">
-<h4 id="orgca8f575"><span class="section-number-4">4.1.2</span> tcpdump</h4>
+<div id="outline-container-orgead7c85" class="outline-4">
+<h4 id="orgead7c85"><span class="section-number-4">4.1.2</span> tcpdump</h4>
 <div class="outline-text-4" id="text-4-1-2">
 <p>
 Use <code>tcpdump</code> to capture TCP network traffic and inspecting it, then
@@ -608,12 +621,12 @@ Use <code>tcpdump</code> to capture TCP network traffic and inspecting it, then
 </div>
 </div>
 
-<div id="outline-container-org953666b" class="outline-3">
-<h3 id="org953666b"><span class="section-number-3">4.2</span> Single Query Profiling</h3>
+<div id="outline-container-orgb98a98b" class="outline-3">
+<h3 id="orgb98a98b"><span class="section-number-3">4.2</span> Single Query Profiling</h3>
 <div class="outline-text-3" id="text-4-2">
 </div>
-<div id="outline-container-org1cfd804" class="outline-4">
-<h4 id="org1cfd804"><span class="section-number-4">4.2.1</span> performance_schema</h4>
+<div id="outline-container-org19fc1e4" class="outline-4">
+<h4 id="org19fc1e4"><span class="section-number-4">4.2.1</span> performance_schema</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">UPDATE</span> performance_schema.setup_instruments <span style="color: #3a81c3; font-weight: bold;">SET</span> ENABLED = <span style="color: #2d9574;">'YES'</span>, TIMED = <span style="color: #2d9574;">'YES'</span> <span style="color: #3a81c3; font-weight: bold;">WHERE</span> <span style="color: #3a81c3; font-weight: bold;">NAME</span> <span style="color: #3a81c3; font-weight: bold;">LIKE</span> <span style="color: #2d9574;">'%statement/%'</span>;
@@ -623,11 +636,11 @@ Use <code>tcpdump</code> to capture TCP network traffic and inspecting it, then
 
 <span style="color: #3a81c3; font-weight: bold;">SELECT</span> EVENT_ID, TRUNCATE<span style="color: #3a81c3;">(</span>TIMER_WAIT/1000000000000,6<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> Duration, SQL_TEXT
 <span style="color: #3a81c3; font-weight: bold;">FROM</span> performance_schema.events_statements_history_long
-<span style="color: #3a81c3; font-weight: bold;">WHERE</span> ... <span style="color: #2aa1ae; background-color: #ecf3ec;">/*</span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as SHOW PROFILES*/</span>
+<span style="color: #3a81c3; font-weight: bold;">WHERE</span> ... <span style="color: #2aa1ae; background-color: #ecf3ec;">/*same as SHOW PROFILES*/</span>
 
 <span style="color: #3a81c3; font-weight: bold;">SELECT</span> event_name <span style="color: #3a81c3; font-weight: bold;">AS</span> Stage, TRUNCATE<span style="color: #3a81c3;">(</span>TIMER_WAIT/1000000000000,6<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">AS</span> Duration
 <span style="color: #3a81c3; font-weight: bold;">FROM</span> performance_schema.events_stages_history_long
-<span style="color: #3a81c3; font-weight: bold;">WHERE</span> NESTING_EVENT_ID=... <span style="color: #2aa1ae; background-color: #ecf3ec;">/*</span><span style="color: #2aa1ae; background-color: #ecf3ec;">same as SHOW PROFILE FOR QUERY*/</span>
+<span style="color: #3a81c3; font-weight: bold;">WHERE</span> NESTING_EVENT_ID=... <span style="color: #2aa1ae; background-color: #ecf3ec;">/*same as SHOW PROFILE FOR QUERY*/</span>
 </pre>
 </div>
 <p>
@@ -636,8 +649,8 @@ results in <code>performance_schema.events_statements_history_long</code>
 </div>
 </div>
 
-<div id="outline-container-org194809d" class="outline-4">
-<h4 id="org194809d"><span class="section-number-4">4.2.2</span> SHOW PROFILE[deprecated]</h4>
+<div id="outline-container-org2e3ae36" class="outline-4">
+<h4 id="org2e3ae36"><span class="section-number-4">4.2.2</span> SHOW PROFILE[deprecated]</h4>
 <div class="outline-text-4" id="text-4-2-2">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #3a81c3; font-weight: bold;">SET</span> profiling=1;
@@ -649,8 +662,8 @@ SHOW PROFILE <span style="color: #3a81c3; font-weight: bold;">FOR</span> QUERY <
 </div>
 </div>
 
-<div id="outline-container-org249640a" class="outline-4">
-<h4 id="org249640a"><span class="section-number-4">4.2.3</span> SHOW STATUS</h4>
+<div id="outline-container-orge7b28f5" class="outline-4">
+<h4 id="orge7b28f5"><span class="section-number-4">4.2.3</span> SHOW STATUS</h4>
 <div class="outline-text-4" id="text-4-2-3">
 <div class="org-src-container">
 <pre class="src src-sql">FLUSH STATUS;
@@ -659,8 +672,8 @@ SHOW STATUS <span style="color: #3a81c3; font-weight: bold;">WHERE</span> Variab
 </div>
 </div>
 </div>
-<div id="outline-container-org20f0697" class="outline-4">
-<h4 id="org20f0697"><span class="section-number-4">4.2.4</span> EXPLAIN</h4>
+<div id="outline-container-org6117537" class="outline-4">
+<h4 id="org6117537"><span class="section-number-4">4.2.4</span> EXPLAIN</h4>
 <div class="outline-text-4" id="text-4-2-4">
 <div class="org-src-container">
 <pre class="src src-sql">EXPLAIN <span style="color: #3a81c3;">[</span>SQL_QUERY<span style="color: #3a81c3;">]</span>
@@ -670,20 +683,20 @@ SHOW STATUS <span style="color: #3a81c3; font-weight: bold;">WHERE</span> Variab
 </div>
 </div>
 
-<div id="outline-container-orgd423508" class="outline-3">
-<h3 id="orgd423508"><span class="section-number-3">4.3</span> Server-Wide Problem Detection</h3>
+<div id="outline-container-orgf0484d8" class="outline-3">
+<h3 id="orgf0484d8"><span class="section-number-3">4.3</span> Server-Wide Problem Detection</h3>
 <div class="outline-text-3" id="text-4-3">
 </div>
-<div id="outline-container-org65b6e1f" class="outline-4">
-<h4 id="org65b6e1f"><span class="section-number-4">4.3.1</span> sysstat</h4>
+<div id="outline-container-orgf3a96c8" class="outline-4">
+<h4 id="orgf3a96c8"><span class="section-number-4">4.3.1</span> sysstat</h4>
 <div class="outline-text-4" id="text-4-3-1">
 <ul class="org-ul">
 <li>iostat, vmstat</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org44c84dc" class="outline-4">
-<h4 id="org44c84dc"><span class="section-number-4">4.3.2</span> SHOW GLOBAL STATUS</h4>
+<div id="outline-container-orgeee3e3a" class="outline-4">
+<h4 id="orgeee3e3a"><span class="section-number-4">4.3.2</span> SHOW GLOBAL STATUS</h4>
 <div class="outline-text-4" id="text-4-3-2">
 <p>
 Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Threads_connected, Questions, and Queries.
@@ -697,8 +710,8 @@ Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Thread
 </div>
 </div>
 </div>
-<div id="outline-container-orgef19454" class="outline-4">
-<h4 id="orgef19454"><span class="section-number-4">4.3.3</span> SHOW PROCESSLIST</h4>
+<div id="outline-container-org81cea78" class="outline-4">
+<h4 id="org81cea78"><span class="section-number-4">4.3.3</span> SHOW PROCESSLIST</h4>
 <div class="outline-text-4" id="text-4-3-3">
 <div class="org-src-container">
 <pre class="src src-sh">mysql -e <span style="color: #2d9574;">'SHOW PROCESSLIST\G'</span> -p | grep State: | sort | uniq -c | sort -rn
@@ -706,8 +719,8 @@ Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Thread
 </div>
 </div>
 <ul class="org-ul">
-<li><a id="orgd148115"></a>other approaches<br />
-<div class="outline-text-5" id="text-orgd148115">
+<li><a id="org8dfa42e"></a>other approaches<br />
+<div class="outline-text-5" id="text-org8dfa42e">
 <ul class="org-ul">
 <li>PROCESSLIST table</li>
 </ul>
@@ -722,11 +735,11 @@ Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Thread
 </li>
 </ul>
 </div>
-<div id="outline-container-org0a368bb" class="outline-4">
-<h4 id="org0a368bb"><span class="section-number-4">4.3.4</span> SHOW INNODB STATUS</h4>
+<div id="outline-container-org899383d" class="outline-4">
+<h4 id="org899383d"><span class="section-number-4">4.3.4</span> SHOW INNODB STATUS</h4>
 </div>
-<div id="outline-container-org703d69f" class="outline-4">
-<h4 id="org703d69f"><span class="section-number-4">4.3.5</span> analyze slow log</h4>
+<div id="outline-container-org1187e93" class="outline-4">
+<h4 id="org1187e93"><span class="section-number-4">4.3.5</span> analyze slow log</h4>
 <div class="outline-text-4" id="text-4-3-5">
 <div class="org-src-container">
 <pre class="src src-sh">awk <span style="color: #2d9574;">'/^# Time:/{print $3, $4, c;c=0}/^# User/{c++}'</span> slow-query.log
@@ -735,8 +748,8 @@ Run <code>SHOW GLOBAL STATUS</code> periodically, gather Threads_running, Thread
 </div>
 </div>
 
-<div id="outline-container-org0c28ba9" class="outline-4">
-<h4 id="org0c28ba9"><span class="section-number-4">4.3.6</span> <b>oprofile</b></h4>
+<div id="outline-container-org2274023" class="outline-4">
+<h4 id="org2274023"><span class="section-number-4">4.3.6</span> <b>oprofile</b></h4>
 <div class="outline-text-4" id="text-4-3-6">
 <p>
 primary Linux system profiling tool
@@ -744,8 +757,8 @@ primary Linux system profiling tool
 </div>
 </div>
 
-<div id="outline-container-org6c8e907" class="outline-4">
-<h4 id="org6c8e907"><span class="section-number-4">4.3.7</span> <b>pt-stalk</b></h4>
+<div id="outline-container-org178eabb" class="outline-4">
+<h4 id="org178eabb"><span class="section-number-4">4.3.7</span> <b>pt-stalk</b></h4>
 <div class="outline-text-4" id="text-4-3-7">
 <p>
 Collect forensic data about MySQL when problems occur.
@@ -756,11 +769,11 @@ Collect forensic data about MySQL when problems occur.
 </div>
 </div>
 
-<div id="outline-container-org3cad1df" class="outline-4">
-<h4 id="org3cad1df"><span class="section-number-4">4.3.8</span> <code>pt-mysql-summary</code> &amp; <code>pt-summary</code></h4>
+<div id="outline-container-org8fddbcc" class="outline-4">
+<h4 id="org8fddbcc"><span class="section-number-4">4.3.8</span> <code>pt-mysql-summary</code> &amp; <code>pt-summary</code></h4>
 </div>
-<div id="outline-container-org73d703d" class="outline-4">
-<h4 id="org73d703d"><span class="section-number-4">4.3.9</span> <b>pt-pmp</b></h4>
+<div id="outline-container-org1ceceaf" class="outline-4">
+<h4 id="org1ceceaf"><span class="section-number-4">4.3.9</span> <b>pt-pmp</b></h4>
 <div class="outline-text-4" id="text-4-3-9">
 <p>
 Aggregate GDB stack traces for a selected program
@@ -769,20 +782,20 @@ Aggregate GDB stack traces for a selected program
 </div>
 </div>
 
-<div id="outline-container-org7cafb0e" class="outline-3">
-<h3 id="org7cafb0e"><span class="section-number-3">4.4</span> Tools</h3>
+<div id="outline-container-org0732e36" class="outline-3">
+<h3 id="org0732e36"><span class="section-number-3">4.4</span> Tools</h3>
 <div class="outline-text-3" id="text-4-4">
 </div>
-<div id="outline-container-orgd57c407" class="outline-4">
-<h4 id="orgd57c407"><span class="section-number-4">4.4.1</span> USER_STATISTICS</h4>
+<div id="outline-container-orgc77e303" class="outline-4">
+<h4 id="orgc77e303"><span class="section-number-4">4.4.1</span> USER_STATISTICS</h4>
 <div class="outline-text-4" id="text-4-4-1">
 <p>
 <code>SHOW TABLES FROM INFORMATION_SCHEMA LIKE '%_STATISTICS';</code> in MariaDB
 </p>
 </div>
 </div>
-<div id="outline-container-orga902944" class="outline-4">
-<h4 id="orga902944"><span class="section-number-4">4.4.2</span> strace</h4>
+<div id="outline-container-orgb3d80c6" class="outline-4">
+<h4 id="orgb3d80c6"><span class="section-number-4">4.4.2</span> strace</h4>
 <div class="outline-text-4" id="text-4-4-2">
 <p>
 Use <code>strace</code> to intercepts system calls
@@ -795,16 +808,16 @@ Use <code>strace</code> to intercepts system calls
 </div>
 </div>
 </div>
-<div id="outline-container-org48c413e" class="outline-2">
-<h2 id="org48c413e"><span class="section-number-2">5</span> Schema</h2>
+<div id="outline-container-org5b2aae9" class="outline-2">
+<h2 id="org5b2aae9"><span class="section-number-2">5</span> Schema</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org59e4cdc" class="outline-3">
-<h3 id="org59e4cdc"><span class="section-number-3">5.1</span> Data Type</h3>
+<div id="outline-container-org0ead39b" class="outline-3">
+<h3 id="org0ead39b"><span class="section-number-3">5.1</span> Data Type</h3>
 <div class="outline-text-3" id="text-5-1">
 </div>
-<div id="outline-container-orgcea8024" class="outline-4">
-<h4 id="orgcea8024"><span class="section-number-4">5.1.1</span> Priciples</h4>
+<div id="outline-container-org83317b7" class="outline-4">
+<h4 id="org83317b7"><span class="section-number-4">5.1.1</span> Priciples</h4>
 <div class="outline-text-4" id="text-5-1-1">
 <ul class="org-ul">
 <li>Smaller is usually better</li>
@@ -814,8 +827,8 @@ Use <code>strace</code> to intercepts system calls
 </div>
 </div>
 
-<div id="outline-container-orgc863f67" class="outline-4">
-<h4 id="orgc863f67"><span class="section-number-4">5.1.2</span> SET</h4>
+<div id="outline-container-org45c5f55" class="outline-4">
+<h4 id="org45c5f55"><span class="section-number-4">5.1.2</span> SET</h4>
 <div class="outline-text-4" id="text-5-1-2">
 <p>
 stores bits. useful for ACL(Access Control List)
@@ -834,8 +847,8 @@ stores bits. useful for ACL(Access Control List)
 </div>
 </div>
 
-<div id="outline-container-org04912aa" class="outline-4">
-<h4 id="org04912aa"><span class="section-number-4">5.1.3</span> UUID</h4>
+<div id="outline-container-orgc6398ef" class="outline-4">
+<h4 id="orgc6398ef"><span class="section-number-4">5.1.3</span> UUID</h4>
 <div class="outline-text-4" id="text-5-1-3">
 <ul class="org-ul">
 <li>recommend using <b>BINARY(16)</b> type</li>
@@ -843,12 +856,12 @@ stores bits. useful for ACL(Access Control List)
 </div>
 </div>
 </div>
-<div id="outline-container-org1f88fac" class="outline-3">
-<h3 id="org1f88fac"><span class="section-number-3">5.2</span> Normalization and Denormalization</h3>
+<div id="outline-container-org1bfef29" class="outline-3">
+<h3 id="org1bfef29"><span class="section-number-3">5.2</span> Normalization and Denormalization</h3>
 <div class="outline-text-3" id="text-5-2">
 </div>
-<div id="outline-container-org4413f6a" class="outline-4">
-<h4 id="org4413f6a"><span class="section-number-4">5.2.1</span> Normalization</h4>
+<div id="outline-container-org9951422" class="outline-4">
+<h4 id="org9951422"><span class="section-number-4">5.2.1</span> Normalization</h4>
 <div class="outline-text-4" id="text-5-2-1">
 <p>
 Benefits:
@@ -868,8 +881,8 @@ Drawbacks:
 </div>
 </div>
 
-<div id="outline-container-org1c2cb96" class="outline-4">
-<h4 id="org1c2cb96"><span class="section-number-4">5.2.2</span> Denormalization</h4>
+<div id="outline-container-org822bce9" class="outline-4">
+<h4 id="org822bce9"><span class="section-number-4">5.2.2</span> Denormalization</h4>
 <div class="outline-text-4" id="text-5-2-2">
 <p>
 Benefits:
@@ -881,16 +894,16 @@ Benefits:
 </div>
 </div>
 </div>
-<div id="outline-container-org80d2673" class="outline-3">
-<h3 id="org80d2673"><span class="section-number-3">5.3</span> Summary Table &amp; Cache Table</h3>
+<div id="outline-container-org8b04dd6" class="outline-3">
+<h3 id="org8b04dd6"><span class="section-number-3">5.3</span> Summary Table &amp; Cache Table</h3>
 <div class="outline-text-3" id="text-5-3">
 <ul class="org-ul">
 <li>summary tables: hold aggregated data from GROUP BY queries</li>
 <li>cache tables: contain data that can be easily retrieved from the schema(i.e., data that is logically redundant).</li>
 </ul>
 </div>
-<div id="outline-container-org36c5b94" class="outline-4">
-<h4 id="org36c5b94"><span class="section-number-4">5.3.1</span> Flexviews</h4>
+<div id="outline-container-orga310f9b" class="outline-4">
+<h4 id="orga310f9b"><span class="section-number-4">5.3.1</span> Flexviews</h4>
 <div class="outline-text-4" id="text-5-3-1">
 <ul class="org-ul">
 <li>offer materialized views</li>
@@ -898,12 +911,12 @@ Benefits:
 </div>
 </div>
 </div>
-<div id="outline-container-orgc188f67" class="outline-3">
-<h3 id="orgc188f67"><span class="section-number-3">5.4</span> Speeding Up ALTER TABLE</h3>
+<div id="outline-container-orgc5df809" class="outline-3">
+<h3 id="orgc5df809"><span class="section-number-3">5.4</span> Speeding Up ALTER TABLE</h3>
 <div class="outline-text-3" id="text-5-4">
 </div>
-<div id="outline-container-orgd11d8b5" class="outline-4">
-<h4 id="orgd11d8b5"><span class="section-number-4">5.4.1</span> Default</h4>
+<div id="outline-container-orgbcb4483" class="outline-4">
+<h4 id="orgbcb4483"><span class="section-number-4">5.4.1</span> Default</h4>
 <div class="outline-text-4" id="text-5-4-1">
 <p>
 MySQL performs most alterations by making an empty table with the desired new
@@ -911,8 +924,8 @@ structure, inserting all the data from the old table into the new one, and delet
 </p>
 </div>
 </div>
-<div id="outline-container-org492859a" class="outline-4">
-<h4 id="org492859a"><span class="section-number-4">5.4.2</span> Alternatives</h4>
+<div id="outline-container-org84e880f" class="outline-4">
+<h4 id="org84e880f"><span class="section-number-4">5.4.2</span> Alternatives</h4>
 <div class="outline-text-4" id="text-5-4-2">
 <ul class="org-ul">
 <li>Performing the ALTER on servers that are not in production service</li>
@@ -923,8 +936,8 @@ and then perform a rename and drop to swap the two.
 </p>
 </div>
 <ul class="org-ul">
-<li><a id="org759f9bc"></a>Shadow copy tool<br />
-<div class="outline-text-5" id="text-org759f9bc">
+<li><a id="org1aa0435"></a>Shadow copy tool<br />
+<div class="outline-text-5" id="text-org1aa0435">
 <ul class="org-ul">
 <li>"online schema change" from facebook</li>
 <li>openark</li>
@@ -935,27 +948,27 @@ and then perform a rename and drop to swap the two.
 </ul>
 </div>
 </div>
-<div id="outline-container-org09759f0" class="outline-3">
-<h3 id="org09759f0"><span class="section-number-3">5.5</span> Indexing Methods</h3>
+<div id="outline-container-org4f0f4ea" class="outline-3">
+<h3 id="org4f0f4ea"><span class="section-number-3">5.5</span> Indexing Methods</h3>
 <div class="outline-text-3" id="text-5-5">
 </div>
-<div id="outline-container-org913bd35" class="outline-4">
-<h4 id="org913bd35"><span class="section-number-4">5.5.1</span> B-tree</h4>
+<div id="outline-container-orgb763364" class="outline-4">
+<h4 id="orgb763364"><span class="section-number-4">5.5.1</span> B-tree</h4>
 <div class="outline-text-4" id="text-5-5-1">
 <ul class="org-ul">
 <li>column order in a index is extremely important</li>
 </ul>
 </div>
 <ul class="org-ul">
-<li><a id="org53cd79a"></a>B+Tree<br />
-<div class="outline-text-5" id="text-org53cd79a">
+<li><a id="org5b5a24a"></a>B+Tree<br />
+<div class="outline-text-5" id="text-org5b5a24a">
 <p>
 data is on the leaf node.
 </p>
 </div>
 </li>
-<li><a id="orga866cab"></a>Limitation<br />
-<div class="outline-text-5" id="text-orga866cab">
+<li><a id="org03c9a48"></a>Limitation<br />
+<div class="outline-text-5" id="text-org03c9a48">
 <ul class="org-ul">
 <li>lookup does not start from the leftmost side of the indexed columns</li>
 <li>you can't skip columns in the index.</li>
@@ -974,16 +987,16 @@ e.g. col2 LIKE 'abc%' &lt;- range condition, then col3=="somevalue" won't be opt
 </ul>
 </div>
 
-<div id="outline-container-org516bfad" class="outline-4">
-<h4 id="org516bfad"><span class="section-number-4">5.5.2</span> Hash</h4>
+<div id="outline-container-org812a738" class="outline-4">
+<h4 id="org812a738"><span class="section-number-4">5.5.2</span> Hash</h4>
 <div class="outline-text-4" id="text-5-5-2">
 <ul class="org-ul">
 <li>only the Memory storage engine supports explicit hash indexes</li>
 </ul>
 </div>
 <ul class="org-ul">
-<li><a id="orgefbdef5"></a>InnoDB<br />
-<div class="outline-text-5" id="text-orgefbdef5">
+<li><a id="org38ab967"></a>InnoDB<br />
+<div class="outline-text-5" id="text-org38ab967">
 <p>
 <i>adaptive hash indexes</i>: When InnoDB notices that some index values are being accessed very frequently,
 it builds a hash index for them in memory on top of B-Tree indexes.
@@ -991,8 +1004,8 @@ it builds a hash index for them in memory on top of B-Tree indexes.
 </div>
 </li>
 
-<li><a id="org11af1f6"></a>Building hash indexes<br />
-<div class="outline-text-5" id="text-org11af1f6">
+<li><a id="orgdbbd7d1"></a>Building hash indexes<br />
+<div class="outline-text-5" id="text-orgdbbd7d1">
 <ol class="org-ol">
 <li>add hash column</li>
 <li>create trigger on <code>insert</code> and <code>update</code></li>
@@ -1011,8 +1024,8 @@ it builds a hash index for them in memory on top of B-Tree indexes.
 </ul>
 </div>
 
-<div id="outline-container-org098d747" class="outline-4">
-<h4 id="org098d747"><span class="section-number-4">5.5.3</span> R-Tree</h4>
+<div id="outline-container-org063c18f" class="outline-4">
+<h4 id="org063c18f"><span class="section-number-4">5.5.3</span> R-Tree</h4>
 <div class="outline-text-4" id="text-5-5-3">
 <ul class="org-ul">
 <li>index GEOMETRY information</li>
@@ -1021,8 +1034,8 @@ it builds a hash index for them in memory on top of B-Tree indexes.
 </div>
 </div>
 
-<div id="outline-container-orgce5a77b" class="outline-4">
-<h4 id="orgce5a77b"><span class="section-number-4">5.5.4</span> Full-text</h4>
+<div id="outline-container-org3bf17a0" class="outline-4">
+<h4 id="org3bf17a0"><span class="section-number-4">5.5.4</span> Full-text</h4>
 <div class="outline-text-4" id="text-5-5-4">
 <p>
 Full-text is a special type of index that finds keywords in the text instead of comparing values directly to the values in the index.
@@ -1030,18 +1043,18 @@ Full-text is a special type of index that finds keywords in the text instead of 
 </div>
 </div>
 </div>
-<div id="outline-container-orge285a89" class="outline-3">
-<h3 id="orge285a89"><span class="section-number-3">5.6</span> Indexing Strategies</h3>
+<div id="outline-container-orgb73a612" class="outline-3">
+<h3 id="orgb73a612"><span class="section-number-3">5.6</span> Indexing Strategies</h3>
 <div class="outline-text-3" id="text-5-6">
 </div>
-<div id="outline-container-org9bbdae3" class="outline-4">
-<h4 id="org9bbdae3"><span class="section-number-4">5.6.1</span> Long string index</h4>
+<div id="outline-container-org01fb9f3" class="outline-4">
+<h4 id="org01fb9f3"><span class="section-number-4">5.6.1</span> Long string index</h4>
 <div class="outline-text-4" id="text-5-6-1">
 </div>
 <ul class="org-ul">
-<li><a id="org3dfcb2f"></a>one approach: simulate a hash index<br /></li>
-<li><a id="org6479798"></a>indexing the first few characters<br />
-<div class="outline-text-5" id="text-org6479798">
+<li><a id="org7984fd6"></a>one approach: simulate a hash index<br /></li>
+<li><a id="orga38880c"></a>indexing the first few characters<br />
+<div class="outline-text-5" id="text-orga38880c">
 <p>
 Index selectivity is the ratio of the number of distinct indexed values (the cardinality) to the total number of rows in the table.
 Choose a prefix that’s long enough to give good selectivity, but short enough to save space
@@ -1076,8 +1089,8 @@ Choose a prefix that’s long enough to give good selectivity, but short enough 
 </ul>
 </div>
 
-<div id="outline-container-org23d94e6" class="outline-4">
-<h4 id="org23d94e6"><span class="section-number-4">5.6.2</span> Multicolumn Indexes</h4>
+<div id="outline-container-org6621d78" class="outline-4">
+<h4 id="org6621d78"><span class="section-number-4">5.6.2</span> Multicolumn Indexes</h4>
 <div class="outline-text-4" id="text-5-6-2">
 <ul class="org-ul">
 <li><p>
@@ -1098,8 +1111,8 @@ Use <code>EXPLAIN</code> to check
 </div>
 </div>
 
-<div id="outline-container-org4ee1479" class="outline-4">
-<h4 id="org4ee1479"><span class="section-number-4">5.6.3</span> Choosing a Good Column Order</h4>
+<div id="outline-container-orgd7a9e6f" class="outline-4">
+<h4 id="orgd7a9e6f"><span class="section-number-4">5.6.3</span> Choosing a Good Column Order</h4>
 <div class="outline-text-4" id="text-5-6-3">
 <p>
 Choose the index order such that rows are sorted and grouped in a way that will benefit the query
@@ -1110,8 +1123,8 @@ leftmost column, then by the next column, and so on.
 </div>
 </div>
 
-<div id="outline-container-org19969c2" class="outline-3">
-<h3 id="org19969c2"><span class="section-number-3">5.7</span> Clustered Indexes</h3>
+<div id="outline-container-orgf6cbd9f" class="outline-3">
+<h3 id="orgf6cbd9f"><span class="section-number-3">5.7</span> Clustered Indexes</h3>
 <div class="outline-text-3" id="text-5-7">
 <p>
 Clustered index is an approach to data storage.
@@ -1122,8 +1135,8 @@ Clustered index is an approach to data storage.
 </div>
 </div>
 
-<div id="outline-container-org7355946" class="outline-3">
-<h3 id="org7355946"><span class="section-number-3">5.8</span> Covering Indexes</h3>
+<div id="outline-container-org70154a5" class="outline-3">
+<h3 id="org70154a5"><span class="section-number-3">5.8</span> Covering Indexes</h3>
 <div class="outline-text-3" id="text-5-8">
 <p>
 An index that contains (or “covers”) all the data needed to satisfy a query is called a <b>covering index</b>.
@@ -1133,8 +1146,8 @@ An index that contains (or “covers”) all the data needed to satisfy a query 
 <li>When you issue a query that is an index-covered query, you’ll see “Using index” in the <i>Extra</i> column in <i>EXPLAIN</i></li>
 </ul>
 </div>
-<div id="outline-container-org22f8432" class="outline-4">
-<h4 id="org22f8432"><span class="section-number-4">5.8.1</span> Benefits</h4>
+<div id="outline-container-org4c188b3" class="outline-4">
+<h4 id="org4c188b3"><span class="section-number-4">5.8.1</span> Benefits</h4>
 <div class="outline-text-4" id="text-5-8-1">
 <ul class="org-ul">
 <li>reduce random I/O</li>
@@ -1143,8 +1156,8 @@ An index that contains (or “covers”) all the data needed to satisfy a query 
 </div>
 </div>
 
-<div id="outline-container-org83683d1" class="outline-3">
-<h3 id="org83683d1"><span class="section-number-3">5.9</span> Using Index for Sorts</h3>
+<div id="outline-container-org7b384f7" class="outline-3">
+<h3 id="org7b384f7"><span class="section-number-3">5.9</span> Using Index for Sorts</h3>
 <div class="outline-text-3" id="text-5-9">
 <p>
 Ordering the results by the index works only when
@@ -1157,12 +1170,12 @@ Ordering the results by the index works only when
 </div>
 </div>
 
-<div id="outline-container-orgb2f26fb" class="outline-2">
-<h2 id="orgb2f26fb"><span class="section-number-2">6</span> Query Optimization</h2>
+<div id="outline-container-org156f6e1" class="outline-2">
+<h2 id="org156f6e1"><span class="section-number-2">6</span> Query Optimization</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-orga34b487" class="outline-3">
-<h3 id="orga34b487"><span class="section-number-3">6.1</span> Isolating the Column</h3>
+<div id="outline-container-org2d052da" class="outline-3">
+<h3 id="org2d052da"><span class="section-number-3">6.1</span> Isolating the Column</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Indexed column is alone on one side of the comparison operator.

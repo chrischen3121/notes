@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-05-19 Wed 08:59 -->
+<!-- 2021-09-09 Thu 22:31 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Algorithmic Trading</title>
@@ -41,7 +41,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -53,7 +53,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -233,20 +246,25 @@
 <li><a href="#org69bd99c">3.3. Implicit Costs</a></li>
 </ul>
 </li>
-<li><a href="#orga0450e4">4. Impact-driven</a>
+<li><a href="#orgf7e10d0">4. Orders</a>
 <ul>
-<li><a href="#orgf3296a4">4.1. TWAP</a></li>
-<li><a href="#org5f5c9a6">4.2. VWAP</a></li>
-<li><a href="#org3dad407">4.3. POV(Percent of Volume)</a></li>
-<li><a href="#orgdf6b6ab">4.4. Minimal Impact</a></li>
+<li><a href="#orge9d3f27">4.1. Order Options</a></li>
 </ul>
 </li>
-<li><a href="#orgb444ff7">5. Cost-driven</a>
+<li><a href="#orga0450e4">5. Impact-driven</a>
 <ul>
-<li><a href="#org19e3f27">5.1. Implementation Shortfall(IS)</a></li>
+<li><a href="#orgf3296a4">5.1. TWAP</a></li>
+<li><a href="#org5f5c9a6">5.2. VWAP</a></li>
+<li><a href="#org3dad407">5.3. POV(Percent of Volume)</a></li>
+<li><a href="#orgdf6b6ab">5.4. Minimal Impact</a></li>
 </ul>
 </li>
-<li><a href="#org6e310e8">6. Opportunistic</a></li>
+<li><a href="#orgb444ff7">6. Cost-driven</a>
+<ul>
+<li><a href="#org19e3f27">6.1. Implementation Shortfall(IS)</a></li>
+</ul>
+</li>
+<li><a href="#org6e310e8">7. Opportunistic</a></li>
 </ul>
 </div>
 </div>
@@ -302,6 +320,7 @@ The client uses broker's infrastructure to send their orders directly to the exc
 </div>
 </div>
 </div>
+
 
 <div id="outline-container-org7e593b7" class="outline-2">
 <h2 id="org7e593b7"><span class="section-number-2">2</span> Algorithms Overview</h2>
@@ -624,9 +643,80 @@ The bid offer can be attributed to a range of factors.
 </div>
 </div>
 
-<div id="outline-container-orga0450e4" class="outline-2">
-<h2 id="orga0450e4"><span class="section-number-2">4</span> Impact-driven</h2>
+<div id="outline-container-orgf7e10d0" class="outline-2">
+<h2 id="orgf7e10d0"><span class="section-number-2">4</span> Orders</h2>
 <div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>Basics: market order, limit order</li>
+<li>Hybrid Orders: market-to-limit</li>
+<li>Conditional Orders: stops, trailing stops</li>
+<li>Hidden Orders: iceberg</li>
+<li>Discretional Orders: pegged orders</li>
+<li>Routed Orders: pass-through orders</li>
+</ul>
+</div>
+
+<div id="outline-container-orge9d3f27" class="outline-3">
+<h3 id="orge9d3f27"><span class="section-number-3">4.1</span> Order Options</h3>
+<div class="outline-text-3" id="text-4-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Example Instructions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Duration</td>
+<td class="org-left">GTD(Good for the day), GTC(Good 'til cancel), GAT(Good after time/date)</td>
+</tr>
+
+<tr>
+<td class="org-left">Auction</td>
+<td class="org-left">MOO(market-on-open), LOO(Limit-on-open), MOC(market-on-close), Next-auction</td>
+</tr>
+
+<tr>
+<td class="org-left">Fill</td>
+<td class="org-left">Immediate-or-cancel(immediate liquidity access), Fill-or-kill</td>
+</tr>
+
+<tr>
+<td class="org-left">Preferencing</td>
+<td class="org-left">Preferenced, Directed</td>
+</tr>
+
+<tr>
+<td class="org-left">Routing</td>
+<td class="org-left">Do-not-route, Directed-routing, Inter-market sweeps, Flashing</td>
+</tr>
+
+<tr>
+<td class="org-left">Linking</td>
+<td class="org-left">One-cancels-other, One-triggers-other</td>
+</tr>
+
+<tr>
+<td class="org-left">Miscellaneous</td>
+<td class="org-left">Identity, Short sales, Odd lots, Settlement</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga0450e4" class="outline-2">
+<h2 id="orga0450e4"><span class="section-number-2">5</span> Impact-driven</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 Impact-driven algorithms aim to minimize the overall market impact.
 TWAP and VWAP are first generation of impact-driven algorithms, their main focus is their respective benchmarks.
@@ -637,8 +727,8 @@ TWAP and VWAP are first generation of impact-driven algorithms, their main focus
 </div>
 
 <div id="outline-container-orgf3296a4" class="outline-3">
-<h3 id="orgf3296a4"><span class="section-number-3">4.1</span> TWAP</h3>
-<div class="outline-text-3" id="text-4-1">
+<h3 id="orgf3296a4"><span class="section-number-3">5.1</span> TWAP</h3>
+<div class="outline-text-3" id="text-5-1">
 <ul class="org-ul">
 <li>predictable way</li>
 <li>considerable signalling risk</li>
@@ -656,9 +746,9 @@ TWAP and VWAP are first generation of impact-driven algorithms, their main focus
 </div>
 </div>
 
-<div id="outline-container-orgcf721c1" class="outline-4">
-<h4 id="orgcf721c1">variations</h4>
-<div class="outline-text-4" id="text-orgcf721c1">
+<div id="outline-container-org449050e" class="outline-4">
+<h4 id="org449050e">variations</h4>
+<div class="outline-text-4" id="text-org449050e">
 </div>
 <ul class="org-ul">
 <li><a id="org7b32e10"></a>aggressive/passive factor<br />
@@ -670,8 +760,8 @@ TWAP and VWAP are first generation of impact-driven algorithms, their main focus
 </div>
 </li>
 
-<li><a id="orgfc0a31f"></a>price adaptive<br />
-<div class="outline-text-5" id="text-orgfc0a31f">
+<li><a id="orgd35248f"></a>price adaptive<br />
+<div class="outline-text-5" id="text-orgd35248f">
 <p>
 adjust the trading schedule dynamically based on the market price(a simple price inline algorithm)
 </p>
@@ -680,13 +770,13 @@ adjust the trading schedule dynamically based on the market price(a simple price
 </ul>
 </div>
 
-<div id="outline-container-org54aa8c5" class="outline-4">
-<h4 id="org54aa8c5">parameters</h4>
-<div class="outline-text-4" id="text-org54aa8c5">
+<div id="outline-container-orgab1d6f8" class="outline-4">
+<h4 id="orgab1d6f8">parameters</h4>
+<div class="outline-text-4" id="text-orgab1d6f8">
 </div>
 <ul class="org-ul">
-<li><a id="orgf67ff2e"></a>tracking<br />
-<div class="outline-text-5" id="text-orgf67ff2e">
+<li><a id="org32dd4fc"></a>tracking<br />
+<div class="outline-text-5" id="text-org32dd4fc">
 <p>
 limit how far it may go ahead(or behind) schedule(pecentage or a cash value)
 </p>
@@ -705,8 +795,8 @@ use randomizations
 </div>
 
 <div id="outline-container-org5f5c9a6" class="outline-3">
-<h3 id="org5f5c9a6"><span class="section-number-3">4.2</span> VWAP</h3>
-<div class="outline-text-3" id="text-4-2">
+<h3 id="org5f5c9a6"><span class="section-number-3">5.2</span> VWAP</h3>
+<div class="outline-text-3" id="text-5-2">
 <ul class="org-ul">
 <li>use historical volume profiles. <b>avgperiod/avgtotal</b></li>
 <li>condition: the day's trading volume follows a similar pattern to the historical profile</li>
@@ -715,9 +805,9 @@ use randomizations
 </ul>
 </div>
 
-<div id="outline-container-orgf118307" class="outline-4">
-<h4 id="orgf118307">variations</h4>
-<div class="outline-text-4" id="text-orgf118307">
+<div id="outline-container-org91b6aaa" class="outline-4">
+<h4 id="org91b6aaa">variations</h4>
+<div class="outline-text-4" id="text-org91b6aaa">
 <ul class="org-ul">
 <li>vulnerable to sudden shifts, some versions may monitor current market conditions</li>
 <li>some variants tracks short-term price and volume trends and dynamically adjusts their target execution profile accordingly</li>
@@ -725,20 +815,20 @@ use randomizations
 </div>
 </div>
 
-<div id="outline-container-org128cfc7" class="outline-4">
-<h4 id="org128cfc7">parameters</h4>
-<div class="outline-text-4" id="text-org128cfc7">
+<div id="outline-container-org361a53d" class="outline-4">
+<h4 id="org361a53d">parameters</h4>
+<div class="outline-text-4" id="text-org361a53d">
 </div>
 <ul class="org-ul">
-<li><a id="org899cf60"></a>tracking<br />
-<div class="outline-text-5" id="text-org899cf60">
+<li><a id="orgb12557e"></a>tracking<br />
+<div class="outline-text-5" id="text-orgb12557e">
 <p>
 control over how closely they track the target completion profile via custom parameters or an execution style parameter
 </p>
 </div>
 </li>
 
-<li><a id="org0f4db16"></a>start/end<br /></li>
+<li><a id="org45b6791"></a>start/end<br /></li>
 
 <li><a id="org15c7ba2"></a>trending/tilting<br />
 <div class="outline-text-5" id="text-org15c7ba2">
@@ -752,8 +842,8 @@ some versions may provide parameters that let the target execution profile be ti
 </div>
 
 <div id="outline-container-org3dad407" class="outline-3">
-<h3 id="org3dad407"><span class="section-number-3">4.3</span> POV(Percent of Volume)</h3>
-<div class="outline-text-3" id="text-4-3">
+<h3 id="org3dad407"><span class="section-number-3">5.3</span> POV(Percent of Volume)</h3>
+<div class="outline-text-3" id="text-5-3">
 <ul class="org-ul">
 <li>also called volume inline, participation, target volume or follow algorithms</li>
 <li>tracking a participation rate: a 20% participation rate of 100,000 total should execute 20,000</li>
@@ -778,9 +868,9 @@ to account for our own trading. e.g. to track participation rate 20% for 1000 ex
 </div>
 </div>
 
-<div id="outline-container-orga408bd7" class="outline-4">
-<h4 id="orga408bd7">variations</h4>
-<div class="outline-text-4" id="text-orga408bd7">
+<div id="outline-container-org6413aba" class="outline-4">
+<h4 id="org6413aba">variations</h4>
+<div class="outline-text-4" id="text-org6413aba">
 </div>
 <ul class="org-ul">
 <li><a id="org32ece72"></a>incorporate forecasting<br />
@@ -791,8 +881,8 @@ based on a mixture of historical volume profile, current observed volume and qua
 </div>
 </li>
 
-<li><a id="orgd35248f"></a>price adaptive<br />
-<div class="outline-text-5" id="text-orgd35248f">
+<li><a id="org391b6f3"></a>price adaptive<br />
+<div class="outline-text-5" id="text-org391b6f3">
 <ul class="org-ul">
 <li>adjust the participation rate based on how the current market price compares to a benchmark</li>
 <li>some will adapt to the relative price changes for other assets, such as sector or market indices, ETFs</li>
@@ -802,14 +892,14 @@ based on a mixture of historical volume profile, current observed volume and qua
 </ul>
 </div>
 
-<div id="outline-container-orgd8263bb" class="outline-4">
-<h4 id="orgd8263bb">parameters</h4>
-<div class="outline-text-4" id="text-orgd8263bb">
+<div id="outline-container-org76f3a11" class="outline-4">
+<h4 id="org76f3a11">parameters</h4>
+<div class="outline-text-4" id="text-org76f3a11">
 </div>
 <ul class="org-ul">
 <li><a id="org70d46c9"></a>participation rate<br /></li>
-<li><a id="org32dd4fc"></a>tracking<br />
-<div class="outline-text-5" id="text-org32dd4fc">
+<li><a id="org70d4985"></a>tracking<br />
+<div class="outline-text-5" id="text-org70d4985">
 <p>
 how closely they track the target participation rate, allow a more dynamic adjustment of the participation rate
 </p>
@@ -824,7 +914,7 @@ help prevent the algorithm needlessly chasing volume
 </div>
 </li>
 
-<li><a id="org45b6791"></a>start/end<br /></li>
+<li><a id="org9fc29c8"></a>start/end<br /></li>
 
 <li><a id="org6aef406"></a>must-be-filled<br />
 <div class="outline-text-5" id="text-org6aef406">
@@ -851,8 +941,8 @@ for illiquid assets more aggressive trading may be necessary to prevent getting 
 </div>
 </div>
 <div id="outline-container-orgdf6b6ab" class="outline-3">
-<h3 id="orgdf6b6ab"><span class="section-number-3">4.4</span> Minimal Impact</h3>
-<div class="outline-text-3" id="text-4-4">
+<h3 id="orgdf6b6ab"><span class="section-number-3">5.4</span> Minimal Impact</h3>
+<div class="outline-text-3" id="text-5-4">
 <p>
 Next logical progression from VWAP and POV algorithms. Not to track a market-driven benchmark; focused on minimising market impact
 </p>
@@ -864,9 +954,9 @@ Next logical progression from VWAP and POV algorithms. Not to track a market-dri
 </ul>
 </div>
 
-<div id="outline-container-org449050e" class="outline-4">
-<h4 id="org449050e">variations</h4>
-<div class="outline-text-4" id="text-org449050e">
+<div id="outline-container-org723ff28" class="outline-4">
+<h4 id="org723ff28">variations</h4>
+<div class="outline-text-4" id="text-org723ff28">
 <ul class="org-ul">
 <li>estimate the probability of being filled on the ATS</li>
 <li>use impact cost models to forecast the overall potential cost</li>
@@ -874,9 +964,9 @@ Next logical progression from VWAP and POV algorithms. Not to track a market-dri
 </div>
 </div>
 
-<div id="outline-container-orgab1d6f8" class="outline-4">
-<h4 id="orgab1d6f8">parameters</h4>
-<div class="outline-text-4" id="text-orgab1d6f8">
+<div id="outline-container-org5c46f84" class="outline-4">
+<h4 id="org5c46f84">parameters</h4>
+<div class="outline-text-4" id="text-org5c46f84">
 </div>
 <ul class="org-ul">
 <li><a id="org340136b"></a>visibility<br /></li>
@@ -887,8 +977,8 @@ Next logical progression from VWAP and POV algorithms. Not to track a market-dri
 </div>
 
 <div id="outline-container-orgb444ff7" class="outline-2">
-<h2 id="orgb444ff7"><span class="section-number-2">5</span> Cost-driven</h2>
-<div class="outline-text-2" id="text-5">
+<h2 id="orgb444ff7"><span class="section-number-2">6</span> Cost-driven</h2>
+<div class="outline-text-2" id="text-6">
 <p>
 Cost-driven algorithms seek to reduce the overall transaction costs, much more than just commissions and spreads.
 Implicit costs such as market impact and timing risk are important components of the overall cost.
@@ -900,8 +990,8 @@ Implicit costs such as market impact and timing risk are important components of
 </div>
 
 <div id="outline-container-org19e3f27" class="outline-3">
-<h3 id="org19e3f27"><span class="section-number-3">5.1</span> Implementation Shortfall(IS)</h3>
-<div class="outline-text-3" id="text-5-1">
+<h3 id="org19e3f27"><span class="section-number-3">6.1</span> Implementation Shortfall(IS)</h3>
+<div class="outline-text-3" id="text-6-1">
 </div>
 <div id="outline-container-org5b62436" class="outline-4">
 <h4 id="org5b62436">definition</h4>
@@ -930,8 +1020,8 @@ to achieve an average price that minimizes the shortfall when compared with the 
 </div>
 
 <div id="outline-container-org6e310e8" class="outline-2">
-<h2 id="org6e310e8"><span class="section-number-2">6</span> Opportunistic</h2>
-<div class="outline-text-2" id="text-6">
+<h2 id="org6e310e8"><span class="section-number-2">7</span> Opportunistic</h2>
+<div class="outline-text-2" id="text-7">
 <p>
 Opportunistic algorithms take advantage whenever the market conditions are favourable
 </p>

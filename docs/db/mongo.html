@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-05-11 Tue 14:46 -->
+<!-- 2021-09-09 Thu 22:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MongoDB</title>
@@ -41,7 +41,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -53,7 +53,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -190,81 +203,81 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org04a0af7">1. Basic</a>
+<li><a href="#org28b016a">1. Basic</a>
 <ul>
-<li><a href="#orgfae8f54">1.1. CRUD</a></li>
-<li><a href="#org6a822af">1.2. Types</a></li>
-<li><a href="#org9b9bd92">1.3. Mongo Shell</a></li>
-<li><a href="#org57b0ed7">1.4. Tools</a></li>
+<li><a href="#orgd119c2e">1.1. CRUD</a></li>
+<li><a href="#org41b2a2f">1.2. Types</a></li>
+<li><a href="#orgbce3ddf">1.3. Mongo Shell</a></li>
+<li><a href="#orgd552b03">1.4. Tools</a></li>
 </ul>
 </li>
-<li><a href="#org5d3abfe">2. CRUD</a>
+<li><a href="#orga1fdb62">2. CRUD</a>
 <ul>
-<li><a href="#org00d54c6">2.1. query</a></li>
-<li><a href="#org64e81fe">2.2. insert</a></li>
-<li><a href="#orgbb0596f">2.3. delete</a></li>
-<li><a href="#orgd82b0f6">2.4. update</a></li>
+<li><a href="#org16e5883">2.1. query</a></li>
+<li><a href="#org34708ef">2.2. insert</a></li>
+<li><a href="#org934f81f">2.3. delete</a></li>
+<li><a href="#org2943b78">2.4. update</a></li>
 </ul>
 </li>
-<li><a href="#org65f09cd">3. Server Administration</a>
+<li><a href="#orge85fc1c">3. Server Administration</a>
 <ul>
-<li><a href="#org1205cdc">3.1. mongod options</a></li>
-<li><a href="#org259a504">3.2. Troubleshoot</a></li>
+<li><a href="#orgcb100eb">3.1. mongod options</a></li>
+<li><a href="#org14f64e5">3.2. Troubleshoot</a></li>
 </ul>
 </li>
-<li><a href="#org0add5d6">4. Indexing</a>
+<li><a href="#orgd0aad29">4. Indexing</a>
 <ul>
-<li><a href="#orgeb66039">4.1. Test Dataset</a></li>
-<li><a href="#org00e8a31">4.2. Designing Indexes</a></li>
-<li><a href="#orga51eca0">4.3. Specifying an Index to Use</a></li>
-<li><a href="#org5cb4bf1">4.4. Other Tips</a></li>
-<li><a href="#orgb861d00">4.5. Special Indexes</a></li>
-<li><a href="#org288de57">4.6. Special Collections</a></li>
-<li><a href="#orgf3e8749">4.7. Tailable Cursors</a></li>
-<li><a href="#org4a5e7b5">4.8. Changing Indexes</a></li>
-<li><a href="#orgc231e4b">4.9. GridFS</a></li>
+<li><a href="#org2e6e28c">4.1. Test Dataset</a></li>
+<li><a href="#orgd7e745c">4.2. Designing Indexes</a></li>
+<li><a href="#orgd8a18ed">4.3. Specifying an Index to Use</a></li>
+<li><a href="#orgbafc4fe">4.4. Other Tips</a></li>
+<li><a href="#orgbf26aee">4.5. Special Indexes</a></li>
+<li><a href="#orgadc166b">4.6. Special Collections</a></li>
+<li><a href="#orgb00c34a">4.7. Tailable Cursors</a></li>
+<li><a href="#org383a9ee">4.8. Changing Indexes</a></li>
+<li><a href="#orgc3b7e34">4.9. GridFS</a></li>
 </ul>
 </li>
-<li><a href="#org15ec85a">5. Aggregation</a>
+<li><a href="#orgef1bfc5">5. Aggregation</a>
 <ul>
-<li><a href="#org60859a7">5.1. Reference</a></li>
-<li><a href="#org33b8ca2">5.2. Expressions</a></li>
-<li><a href="#org4f924ad">5.3. Accumulators</a></li>
-<li><a href="#orgdc62932">5.4. Writing Results to a Collection</a></li>
+<li><a href="#orga621db9">5.1. Reference</a></li>
+<li><a href="#org25a8b84">5.2. Expressions</a></li>
+<li><a href="#orgf1906e7">5.3. Accumulators</a></li>
+<li><a href="#orgdb4354f">5.4. Writing Results to a Collection</a></li>
 </ul>
 </li>
-<li><a href="#org7bea922">6. Transactions</a>
+<li><a href="#org4b8ae52">6. Transactions</a>
 <ul>
-<li><a href="#orgd6855ea">6.1. Core API VS. Callback API</a></li>
-<li><a href="#org1b62e3a">6.2. Core API Example</a></li>
-<li><a href="#org1f52582">6.3. Callback API Example</a></li>
+<li><a href="#org6b8530c">6.1. Core API VS. Callback API</a></li>
+<li><a href="#orgc3e8565">6.2. Core API Example</a></li>
+<li><a href="#orgb9d492a">6.3. Callback API Example</a></li>
 </ul>
 </li>
-<li><a href="#orgb8682f6">7. Design Patterns</a>
+<li><a href="#orgff52f5f">7. Design Patterns</a>
 <ul>
-<li><a href="#org51691d4">7.1. Embedding vs References</a></li>
+<li><a href="#orgb5333a6">7.1. Embedding vs References</a></li>
 </ul>
 </li>
-<li><a href="#org6cc837e">8. Replication</a>
+<li><a href="#org176a729">8. Replication</a>
 <ul>
-<li><a href="#org21e9c54">8.1. <code>rs</code></a></li>
+<li><a href="#orge899719">8.1. <code>rs</code></a></li>
 </ul>
 </li>
-<li><a href="#orga5a6f37">9. Cluster</a>
+<li><a href="#org4e70efe">9. Cluster</a>
 <ul>
-<li><a href="#org56a77c5">9.1. Tools</a></li>
+<li><a href="#org1197b3f">9.1. Tools</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org04a0af7" class="outline-2">
-<h2 id="org04a0af7"><span class="section-number-2">1</span> Basic</h2>
+<div id="outline-container-org28b016a" class="outline-2">
+<h2 id="org28b016a"><span class="section-number-2">1</span> Basic</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgfae8f54" class="outline-3">
-<h3 id="orgfae8f54"><span class="section-number-3">1.1</span> CRUD</h3>
+<div id="outline-container-orgd119c2e" class="outline-3">
+<h3 id="orgd119c2e"><span class="section-number-3">1.1</span> CRUD</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 create, read, update, and delete
@@ -279,8 +292,8 @@ create, read, update, and delete
 </div>
 </div>
 
-<div id="outline-container-org6a822af" class="outline-3">
-<h3 id="org6a822af"><span class="section-number-3">1.2</span> Types</h3>
+<div id="outline-container-org41b2a2f" class="outline-3">
+<h3 id="org41b2a2f"><span class="section-number-3">1.2</span> Types</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 <code>null</code>, Boolean, Number, String, Date(int64 since epoch), Regular expression(query only), Array, Embedded document
@@ -290,9 +303,9 @@ create, read, update, and delete
 <li>Code: MongoDB also makes it possible to store arbitrary JavaScript in queries and documents: <code>{"x" : function() { /* ... */ }}</code></li>
 </ul>
 </div>
-<div id="outline-container-orgee7c907" class="outline-4">
-<h4 id="orgee7c907">Object ID</h4>
-<div class="outline-text-4" id="text-orgee7c907">
+<div id="outline-container-orgd548903" class="outline-4">
+<h4 id="orgd548903">Object ID</h4>
+<div class="outline-text-4" id="text-orgd548903">
 <p>
 12-byte ID for documents
 </p>
@@ -329,8 +342,8 @@ create, read, update, and delete
 </div>
 </div>
 
-<div id="outline-container-org9b9bd92" class="outline-3">
-<h3 id="org9b9bd92"><span class="section-number-3">1.3</span> Mongo Shell</h3>
+<div id="outline-container-orgbce3ddf" class="outline-3">
+<h3 id="orgbce3ddf"><span class="section-number-3">1.3</span> Mongo Shell</h3>
 <div class="outline-text-3" id="text-1-3">
 <div class="org-src-container">
 <pre class="src src-js">conn = <span style="color: #3a81c3; font-weight: bold;">new</span> <span style="color: #ba2f59; font-weight: bold;">Mongo</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"host:port"</span><span style="color: #3a81c3;">)</span>
@@ -342,9 +355,9 @@ db = conn.getDB<span style="color: #3a81c3;">(</span><span style="color: #2d9574
 </ul>
 </div>
 
-<div id="outline-container-org2ea4aee" class="outline-4">
-<h4 id="org2ea4aee">Useful Helpers</h4>
-<div class="outline-text-4" id="text-org2ea4aee">
+<div id="outline-container-org1dd8754" class="outline-4">
+<h4 id="org1dd8754">Useful Helpers</h4>
+<div class="outline-text-4" id="text-org1dd8754">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -383,9 +396,9 @@ db = conn.getDB<span style="color: #3a81c3;">(</span><span style="color: #2d9574
 </div>
 </div>
 
-<div id="outline-container-orga2d24b0" class="outline-4">
-<h4 id="orga2d24b0">Custom Helper</h4>
-<div class="outline-text-4" id="text-orga2d24b0">
+<div id="outline-container-orgc4225c1" class="outline-4">
+<h4 id="orgc4225c1">Custom Helper</h4>
+<div class="outline-text-4" id="text-orgc4225c1">
 <ol class="org-ol">
 <li>define helper function in js</li>
 <li>load js</li>
@@ -394,9 +407,9 @@ db = conn.getDB<span style="color: #3a81c3;">(</span><span style="color: #2d9574
 </div>
 </div>
 
-<div id="outline-container-org108b4be" class="outline-4">
-<h4 id="org108b4be">Frequently Loaded Scripts</h4>
-<div class="outline-text-4" id="text-org108b4be">
+<div id="outline-container-orge633126" class="outline-4">
+<h4 id="orge633126">Frequently Loaded Scripts</h4>
+<div class="outline-text-4" id="text-orge633126">
 <p>
 Use <code>.mongorc.js</code> in your home directory, This file is run whenever you start up the shell.
 </p>
@@ -427,9 +440,9 @@ DBCollection.<span style="color: #4e3163;">prototype</span>.dropIndexes = no;
 </div>
 </div>
 
-<div id="outline-container-org3fb98fd" class="outline-4">
-<h4 id="org3fb98fd">Customizing Your Prompt</h4>
-<div class="outline-text-4" id="text-org3fb98fd">
+<div id="outline-container-orgbe16661" class="outline-4">
+<h4 id="orgbe16661">Customizing Your Prompt</h4>
+<div class="outline-text-4" id="text-orgbe16661">
 <p>
 Just set the <code>prompt</code> variable
 </p>
@@ -455,8 +468,8 @@ Just set the <code>prompt</code> variable
 </div>
 </div>
 
-<div id="outline-container-org57b0ed7" class="outline-3">
-<h3 id="org57b0ed7"><span class="section-number-3">1.4</span> Tools</h3>
+<div id="outline-container-orgd552b03" class="outline-3">
+<h3 id="orgd552b03"><span class="section-number-3">1.4</span> Tools</h3>
 <div class="outline-text-3" id="text-1-4">
 <ul class="org-ul">
 <li><code>mongoimport</code>: importing raw data from a data feed or MySQL</li>
@@ -465,21 +478,21 @@ Just set the <code>prompt</code> variable
 </div>
 </div>
 
-<div id="outline-container-org5d3abfe" class="outline-2">
-<h2 id="org5d3abfe"><span class="section-number-2">2</span> CRUD</h2>
+<div id="outline-container-orga1fdb62" class="outline-2">
+<h2 id="orga1fdb62"><span class="section-number-2">2</span> CRUD</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org00d54c6" class="outline-3">
-<h3 id="org00d54c6"><span class="section-number-3">2.1</span> query</h3>
+<div id="outline-container-org16e5883" class="outline-3">
+<h3 id="org16e5883"><span class="section-number-3">2.1</span> query</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>some query condition: <code>$nin</code>, <code>$or</code>, <code>$exists</code>, <code>$regex</code></li>
 <li>Mongo uses the Perl Compatible Regular Expression</li>
 </ul>
 </div>
-<div id="outline-container-orga995cdf" class="outline-4">
-<h4 id="orga995cdf">querying arrays</h4>
-<div class="outline-text-4" id="text-orga995cdf">
+<div id="outline-container-org6cb2d5a" class="outline-4">
+<h4 id="org6cb2d5a">querying arrays</h4>
+<div class="outline-text-4" id="text-org6cb2d5a">
 <ul class="org-ul">
 <li>contains</li>
 </ul>
@@ -499,18 +512,18 @@ db.food.find<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">
 </ul>
 </div>
 </div>
-<div id="outline-container-org8b6a26c" class="outline-4">
-<h4 id="org8b6a26c">query embedded documents</h4>
-<div class="outline-text-4" id="text-org8b6a26c">
+<div id="outline-container-org6437478" class="outline-4">
+<h4 id="org6437478">query embedded documents</h4>
+<div class="outline-text-4" id="text-org6437478">
 <ul class="org-ul">
 <li><code>db.people.find({"name.first" : "Joe", "name.last" : "Schmoe"})</code></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5f84234" class="outline-4">
-<h4 id="org5f84234"><code>$where</code></h4>
-<div class="outline-text-4" id="text-org5f84234">
+<div id="outline-container-org98c3d78" class="outline-4">
+<h4 id="org98c3d78"><code>$where</code></h4>
+<div class="outline-text-4" id="text-org98c3d78">
 <ul class="org-ul">
 <li>Allows you to execute arbitrary JavaScript as part of your query.(Insecure)</li>
 </ul>
@@ -522,9 +535,9 @@ Each document has to be converted from BSON to a JavaScript object and then run 
 </div>
 </div>
 
-<div id="outline-container-org7481a2b" class="outline-4">
-<h4 id="org7481a2b">query options</h4>
-<div class="outline-text-4" id="text-org7481a2b">
+<div id="outline-container-orgf811d7e" class="outline-4">
+<h4 id="orgf811d7e">query options</h4>
+<div class="outline-text-4" id="text-orgf811d7e">
 <p>
 limit, skip, sort
 </p>
@@ -534,9 +547,9 @@ limit, skip, sort
 </div>
 </div>
 
-<div id="outline-container-orgd8bb460" class="outline-4">
-<h4 id="orgd8bb460">immortal cursors</h4>
-<div class="outline-text-4" id="text-orgd8bb460">
+<div id="outline-container-orgd4ddd40" class="outline-4">
+<h4 id="orgd4ddd40">immortal cursors</h4>
+<div class="outline-text-4" id="text-orgd4ddd40">
 <p>
 Tells the database not to time out the cursor.
 </p>
@@ -544,21 +557,21 @@ Tells the database not to time out the cursor.
 </div>
 </div>
 
-<div id="outline-container-org64e81fe" class="outline-3">
-<h3 id="org64e81fe"><span class="section-number-3">2.2</span> insert</h3>
+<div id="outline-container-org34708ef" class="outline-3">
+<h3 id="org34708ef"><span class="section-number-3">2.2</span> insert</h3>
 <div class="outline-text-3" id="text-2-2">
 </div>
-<div id="outline-container-org9216922" class="outline-4">
-<h4 id="org9216922">insertMany</h4>
-<div class="outline-text-4" id="text-org9216922">
+<div id="outline-container-org753e3f8" class="outline-4">
+<h4 id="org753e3f8">insertMany</h4>
+<div class="outline-text-4" id="text-org753e3f8">
 <ul class="org-ul">
 <li>Batch inserts limit: 48 MB. Drivers will split up the batch insert into multiple 48 MB batch inserts</li>
 </ul>
 </div>
 
 <ul class="org-ul">
-<li><a id="org7c11a7f"></a>ordererd vs unordered<br />
-<div class="outline-text-5" id="text-org7c11a7f">
+<li><a id="orgf59bf6a"></a>ordererd vs unordered<br />
+<div class="outline-text-5" id="text-orgf59bf6a">
 <ul class="org-ul">
 <li>Executing an ordered list of operations on a sharded collection will generally be slower than executing an unordered list since with an ordered list, each operation must wait for the previous operation to finish.</li>
 <li>For unordered inserts, MongoDB will attempt to insert all documents, regardless of whether some insertions produce errors. execute the operations in parallel</li>
@@ -568,9 +581,9 @@ Tells the database not to time out the cursor.
 </ul>
 </div>
 
-<div id="outline-container-org1e14bf1" class="outline-4">
-<h4 id="org1e14bf1">insert</h4>
-<div class="outline-text-4" id="text-org1e14bf1">
+<div id="outline-container-orgded59d8" class="outline-4">
+<h4 id="orgded59d8">insert</h4>
+<div class="outline-text-4" id="text-orgded59d8">
 <p>
 Old method before mongo 3.0. Use insertOne and insertMany instead
 </p>
@@ -578,8 +591,8 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 </div>
 </div>
 
-<div id="outline-container-orgbb0596f" class="outline-3">
-<h3 id="orgbb0596f"><span class="section-number-3">2.3</span> delete</h3>
+<div id="outline-container-org934f81f" class="outline-3">
+<h3 id="org934f81f"><span class="section-number-3">2.3</span> delete</h3>
 <div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li><code>deleteOne</code></li>
@@ -589,8 +602,8 @@ Old method before mongo 3.0. Use insertOne and insertMany instead
 </div>
 </div>
 
-<div id="outline-container-orgd82b0f6" class="outline-3">
-<h3 id="orgd82b0f6"><span class="section-number-3">2.4</span> update</h3>
+<div id="outline-container-org2943b78" class="outline-3">
+<h3 id="org2943b78"><span class="section-number-3">2.4</span> update</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 Updating a document is atomic
@@ -605,9 +618,9 @@ This can be useful to do a dramatic schema migration.
 </p>
 </div>
 
-<div id="outline-container-orgfd12c35" class="outline-4">
-<h4 id="orgfd12c35">update operaters</h4>
-<div class="outline-text-4" id="text-orgfd12c35">
+<div id="outline-container-org8df4d62" class="outline-4">
+<h4 id="org8df4d62">update operaters</h4>
+<div class="outline-text-4" id="text-org8df4d62">
 <ul class="org-ul">
 <li><code>{"$inc": {"field": 1}}</code>: create or increment 1</li>
 <li><code>{"$set": {"new/existed field": "newValue"}}</code>, <code>{"$unset": {"field": 1}}</code></li>
@@ -620,8 +633,8 @@ This can be useful to do a dramatic schema migration.
 </div>
 
 <ul class="org-ul">
-<li><a id="orgaa394a5"></a>array operaters<br />
-<div class="outline-text-5" id="text-orgaa394a5">
+<li><a id="org9182acf"></a>array operaters<br />
+<div class="outline-text-5" id="text-org9182acf">
 <ul class="org-ul">
 <li><code>{"$push": {"field": document}}</code> adds elements to the end of an array if the array exists and creates a new array if it does not.</li>
 <li><code>$each</code>: e.g. <code>{"$push" : {"hourly" : {"$each" : [562.776, 562.790, 559.123]}}})~</code></li>
@@ -665,9 +678,9 @@ This can be useful to do a dramatic schema migration.
 </ul>
 </div>
 
-<div id="outline-container-org740323a" class="outline-4">
-<h4 id="org740323a">upsert</h4>
-<div class="outline-text-4" id="text-org740323a">
+<div id="outline-container-org89b01cb" class="outline-4">
+<h4 id="org89b01cb">upsert</h4>
+<div class="outline-text-4" id="text-org89b01cb">
 <p>
 Eliminating race condition: query-&gt;if exists-&gt;update
 </p>
@@ -675,15 +688,15 @@ Eliminating race condition: query-&gt;if exists-&gt;update
 </div>
 </div>
 </div>
-<div id="outline-container-org65f09cd" class="outline-2">
-<h2 id="org65f09cd"><span class="section-number-2">3</span> Server Administration</h2>
+<div id="outline-container-orge85fc1c" class="outline-2">
+<h2 id="orge85fc1c"><span class="section-number-2">3</span> Server Administration</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org1205cdc" class="outline-3">
-<h3 id="org1205cdc"><span class="section-number-3">3.1</span> mongod options</h3>
+<div id="outline-container-orgcb100eb" class="outline-3">
+<h3 id="orgcb100eb"><span class="section-number-3">3.1</span> mongod options</h3>
 </div>
-<div id="outline-container-org259a504" class="outline-3">
-<h3 id="org259a504"><span class="section-number-3">3.2</span> Troubleshoot</h3>
+<div id="outline-container-org14f64e5" class="outline-3">
+<h3 id="org14f64e5"><span class="section-number-3">3.2</span> Troubleshoot</h3>
 <div class="outline-text-3" id="text-3-2">
 <ul class="org-ul">
 <li><code>getLastError</code></li>
@@ -691,12 +704,12 @@ Eliminating race condition: query-&gt;if exists-&gt;update
 </div>
 </div>
 </div>
-<div id="outline-container-org0add5d6" class="outline-2">
-<h2 id="org0add5d6"><span class="section-number-2">4</span> Indexing</h2>
+<div id="outline-container-orgd0aad29" class="outline-2">
+<h2 id="orgd0aad29"><span class="section-number-2">4</span> Indexing</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgeb66039" class="outline-3">
-<h3 id="orgeb66039"><span class="section-number-3">4.1</span> Test Dataset</h3>
+<div id="outline-container-org2e6e28c" class="outline-3">
+<h3 id="org2e6e28c"><span class="section-number-3">4.1</span> Test Dataset</h3>
 <div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
 <pre class="src src-js"><span style="color: #3a81c3; font-weight: bold;">for</span> <span style="color: #3a81c3;">(</span>i=0; i&lt;1000000; i++<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3;">{</span>
@@ -713,18 +726,18 @@ Eliminating race condition: query-&gt;if exists-&gt;update
 </div>
 </div>
 
-<div id="outline-container-org0eaf18e" class="outline-4">
-<h4 id="org0eaf18e">Profiling</h4>
-<div class="outline-text-4" id="text-org0eaf18e">
+<div id="outline-container-org87b4483" class="outline-4">
+<h4 id="org87b4483">Profiling</h4>
+<div class="outline-text-4" id="text-org87b4483">
 <p>
 <code>cursor.explain("executionStats")</code>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org33ef7c8" class="outline-4">
-<h4 id="org33ef7c8">Stages</h4>
-<div class="outline-text-4" id="text-org33ef7c8">
+<div id="outline-container-orgea4e789" class="outline-4">
+<h4 id="orgea4e789">Stages</h4>
+<div class="outline-text-4" id="text-orgea4e789">
 <ul class="org-ul">
 <li>FETCH: "FETCH" stage will retrieve the documents themselves and return them in batches as the client requests them.</li>
 <li>SORT: means MongoDB would have been unable to sort the result set in the database using an index and instead would have had to do an in-memory sort.</li>
@@ -732,9 +745,9 @@ Eliminating race condition: query-&gt;if exists-&gt;update
 </div>
 </div>
 
-<div id="outline-container-org332cfe7" class="outline-4">
-<h4 id="org332cfe7">Query Types</h4>
-<div class="outline-text-4" id="text-org332cfe7">
+<div id="outline-container-org90fdf6f" class="outline-4">
+<h4 id="org90fdf6f">Query Types</h4>
+<div class="outline-text-4" id="text-org90fdf6f">
 <ul class="org-ul">
 <li>equality filter: {"age": 25}</li>
 <li>multivalue filter: {"age": {"$gte": 40}}</li>
@@ -744,17 +757,17 @@ Eliminating race condition: query-&gt;if exists-&gt;update
 </div>
 </div>
 
-<div id="outline-container-org00e8a31" class="outline-3">
-<h3 id="org00e8a31"><span class="section-number-3">4.2</span> Designing Indexes</h3>
+<div id="outline-container-orgd7e745c" class="outline-3">
+<h3 id="orgd7e745c"><span class="section-number-3">4.2</span> Designing Indexes</h3>
 <div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
 <li>selectivity: minimize the number of records scanned. "nReturned" is very close to "totalKeysExamined".</li>
 </ul>
 </div>
 
-<div id="outline-container-org6abcc6e" class="outline-4">
-<h4 id="org6abcc6e"><b>Cardinality</b></h4>
-<div class="outline-text-4" id="text-org6abcc6e">
+<div id="outline-container-org4370a0a" class="outline-4">
+<h4 id="org4370a0a"><b>Cardinality</b></h4>
+<div class="outline-text-4" id="text-org4370a0a">
 <p>
 Cardinality refers to how many distinct values there are for a field in a collection.
 e.g. "gender" low cardinality. "username" high cardinality
@@ -763,9 +776,9 @@ In general, the greater the cardinality of a field, the more helpful an index on
 </div>
 </div>
 
-<div id="outline-container-org65abbc9" class="outline-4">
-<h4 id="org65abbc9">Designing a Compound Index</h4>
-<div class="outline-text-4" id="text-org65abbc9">
+<div id="outline-container-org6d4d7f1" class="outline-4">
+<h4 id="org6d4d7f1">Designing a Compound Index</h4>
+<div class="outline-text-4" id="text-org6d4d7f1">
 <ol class="org-ol">
 <li>Keys for equality filters should appear first.</li>
 <li>Keys used for sorting should appear before multivalue fields.</li>
@@ -775,21 +788,21 @@ In general, the greater the cardinality of a field, the more helpful an index on
 </div>
 </div>
 
-<div id="outline-container-orga51eca0" class="outline-3">
-<h3 id="orga51eca0"><span class="section-number-3">4.3</span> Specifying an Index to Use</h3>
+<div id="outline-container-orgd8a18ed" class="outline-3">
+<h3 id="orgd8a18ed"><span class="section-number-3">4.3</span> Specifying an Index to Use</h3>
 <div class="outline-text-3" id="text-4-3">
 <ul class="org-ul">
 <li><code>hint([indexname])</code> or <code>hint([indexshape])</code></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org5cb4bf1" class="outline-3">
-<h3 id="org5cb4bf1"><span class="section-number-3">4.4</span> Other Tips</h3>
+<div id="outline-container-orgbafc4fe" class="outline-3">
+<h3 id="orgbafc4fe"><span class="section-number-3">4.4</span> Other Tips</h3>
 <div class="outline-text-3" id="text-4-4">
 </div>
-<div id="outline-container-org3fed782" class="outline-4">
-<h4 id="org3fed782">Inefficient Operators</h4>
-<div class="outline-text-4" id="text-org3fed782">
+<div id="outline-container-org1b65914" class="outline-4">
+<h4 id="org1b65914">Inefficient Operators</h4>
+<div class="outline-text-4" id="text-org1b65914">
 <ul class="org-ul">
 <li><code>$ne</code>: they basically have to scan the entire index.</li>
 <li><code>$not</code>: will fall back to doing a table scan</li>
@@ -798,9 +811,9 @@ In general, the greater the cardinality of a field, the more helpful an index on
 </div>
 </div>
 
-<div id="outline-container-orgd23297f" class="outline-4">
-<h4 id="orgd23297f"><code>$or</code></h4>
-<div class="outline-text-4" id="text-orgd23297f">
+<div id="outline-container-orgf2b0e72" class="outline-4">
+<h4 id="orgf2b0e72"><code>$or</code></h4>
+<div class="outline-text-4" id="text-orgf2b0e72">
 <p>
 Performs two queries and then merges the results. In general, doing two queries and merging the results
 is much less efficient than doing a single query; thus, whenever possible, prefer <code>$in</code> to <code>$or</code>
@@ -808,20 +821,20 @@ is much less efficient than doing a single query; thus, whenever possible, prefe
 </div>
 </div>
 </div>
-<div id="outline-container-orgb861d00" class="outline-3">
-<h3 id="orgb861d00"><span class="section-number-3">4.5</span> Special Indexes</h3>
+<div id="outline-container-orgbf26aee" class="outline-3">
+<h3 id="orgbf26aee"><span class="section-number-3">4.5</span> Special Indexes</h3>
 <div class="outline-text-3" id="text-4-5">
 </div>
-<div id="outline-container-orgc892c3f" class="outline-4">
-<h4 id="orgc892c3f">Index Options</h4>
-<div class="outline-text-4" id="text-orgc892c3f">
+<div id="outline-container-org5d15d96" class="outline-4">
+<h4 id="org5d15d96">Index Options</h4>
+<div class="outline-text-4" id="text-org5d15d96">
 <ul class="org-ul">
 <li>unique. notice: unique index count <code>null</code> as a value.</li>
 </ul>
 </div>
 <ul class="org-ul">
-<li><a id="org1b9d78d"></a>partial<br />
-<div class="outline-text-5" id="text-org1b9d78d">
+<li><a id="orgcc86809"></a>partial<br />
+<div class="outline-text-5" id="text-orgcc86809">
 <p>
 Partial indexes in MongoDB are only created on a subset of the data(the key existed)
 </p>
@@ -835,8 +848,8 @@ It is unlike sparse indexes on relational databases, which create fewer index en
 </p>
 </div>
 </li>
-<li><a id="org757a624"></a>Sparse<br />
-<div class="outline-text-5" id="text-org757a624">
+<li><a id="orgf03a59b"></a>Sparse<br />
+<div class="outline-text-5" id="text-orgf03a59b">
 <p>
 "partial" index is the super set of "sparse" index.  always prefer "partial" to "sparse"
 </p>
@@ -845,19 +858,19 @@ It is unlike sparse indexes on relational databases, which create fewer index en
 </ul>
 </div>
 
-<div id="outline-container-orgf919e4f" class="outline-4">
-<h4 id="orgf919e4f">Geospatial Indexes</h4>
+<div id="outline-container-orgd35dc97" class="outline-4">
+<h4 id="orgd35dc97">Geospatial Indexes</h4>
 </div>
-<div id="outline-container-orgc7efc89" class="outline-4">
-<h4 id="orgc7efc89">Full Text Search</h4>
-<div class="outline-text-4" id="text-orgc7efc89">
+<div id="outline-container-orgabc5707" class="outline-4">
+<h4 id="orgabc5707">Full Text Search</h4>
+<div class="outline-text-4" id="text-orgabc5707">
 <ul class="org-ul">
 <li>poorer write performance on text-indexed collections than on others</li>
 </ul>
 </div>
 <ul class="org-ul">
-<li><a id="orgd6161f1"></a>Create Text Indexes<br />
-<div class="outline-text-5" id="text-orgd6161f1">
+<li><a id="orgfcc6a06"></a>Create Text Indexes<br />
+<div class="outline-text-5" id="text-orgfcc6a06">
 <div class="org-src-container">
 <pre class="src src-js">db.articles.createIndex<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"title"</span>: <span style="color: #2d9574;">"text"</span>,
 			 <span style="color: #2d9574;">"body"</span> : <span style="color: #2d9574;">"text"</span><span style="color: #6c3163;">}</span>,
@@ -873,8 +886,8 @@ db.articles.createIndex<span style="color: #3a81c3;">(</span><span style="color:
 </div>
 </div>
 </li>
-<li><a id="orgf218d61"></a>Text Search<br />
-<div class="outline-text-5" id="text-orgf218d61">
+<li><a id="orgc19ae05"></a>Text Search<br />
+<div class="outline-text-5" id="text-orgc19ae05">
 <div class="org-src-container">
 <pre class="src src-js">db.articles.find<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">"$text"</span>: <span style="color: #2d9574;">{</span><span style="color: #2d9574;">"$search"</span>: <span style="color: #2d9574;">"impact crater lunar"</span><span style="color: #2d9574;">}</span><span style="color: #6c3163;">}</span>,
 		 <span style="color: #6c3163;">{</span>title: 1<span style="color: #6c3163;">}</span>
@@ -889,9 +902,9 @@ db.articles.createIndex<span style="color: #3a81c3;">(</span><span style="color:
 </ul>
 </div>
 
-<div id="outline-container-org9db7408" class="outline-4">
-<h4 id="org9db7408">TTL Indexes</h4>
-<div class="outline-text-4" id="text-org9db7408">
+<div id="outline-container-org5ed733a" class="outline-4">
+<h4 id="org5ed733a">TTL Indexes</h4>
+<div class="outline-text-4" id="text-org5ed733a">
 <p>
 TTL indexes expire and remove data from normal collections based on the value of a date-typed field
 and a TTL value for the index.
@@ -912,13 +925,13 @@ db.runCommand<span style="color: #3a81c3;">(</span><span style="color: #6c3163;"
 </div>
 </div>
 
-<div id="outline-container-org288de57" class="outline-3">
-<h3 id="org288de57"><span class="section-number-3">4.6</span> Special Collections</h3>
+<div id="outline-container-orgadc166b" class="outline-3">
+<h3 id="orgadc166b"><span class="section-number-3">4.6</span> Special Collections</h3>
 <div class="outline-text-3" id="text-4-6">
 </div>
-<div id="outline-container-orgaefbae2" class="outline-4">
-<h4 id="orgaefbae2">Capped Collections</h4>
-<div class="outline-text-4" id="text-orgaefbae2">
+<div id="outline-container-org2608454" class="outline-4">
+<h4 id="org2608454">Capped Collections</h4>
+<div class="outline-text-4" id="text-org2608454">
 <p>
 like circular queues
 </p>
@@ -939,8 +952,8 @@ db.runCommand<span style="color: #3a81c3;">(</span><span style="color: #6c3163;"
 </div>
 </div>
 
-<div id="outline-container-orgf3e8749" class="outline-3">
-<h3 id="orgf3e8749"><span class="section-number-3">4.7</span> Tailable Cursors</h3>
+<div id="outline-container-orgb00c34a" class="outline-3">
+<h3 id="orgb00c34a"><span class="section-number-3">4.7</span> Tailable Cursors</h3>
 <div class="outline-text-3" id="text-4-7">
 <p>
 Tailable cursors are a special type of cursor that are not closed when their results are exhausted.
@@ -949,8 +962,8 @@ They were inspired by the <code>tail -f</code> command
 </div>
 </div>
 
-<div id="outline-container-org4a5e7b5" class="outline-3">
-<h3 id="org4a5e7b5"><span class="section-number-3">4.8</span> Changing Indexes</h3>
+<div id="outline-container-org383a9ee" class="outline-3">
+<h3 id="org383a9ee"><span class="section-number-3">4.8</span> Changing Indexes</h3>
 <div class="outline-text-3" id="text-4-8">
 <ul class="org-ul">
 <li>Background indexing is much slower than foreground indexing.</li>
@@ -958,16 +971,16 @@ They were inspired by the <code>tail -f</code> command
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc231e4b" class="outline-3">
-<h3 id="orgc231e4b"><span class="section-number-3">4.9</span> GridFS</h3>
+<div id="outline-container-orgc3b7e34" class="outline-3">
+<h3 id="orgc3b7e34"><span class="section-number-3">4.9</span> GridFS</h3>
 <div class="outline-text-3" id="text-4-9">
 <ul class="org-ul">
 <li><i>mongofiles</i>: upload(put), download(get), list, search for, or delete files in GridFS.</li>
 </ul>
 </div>
-<div id="outline-container-orge7d1ace" class="outline-4">
-<h4 id="orge7d1ace">PyMongo API</h4>
-<div class="outline-text-4" id="text-orge7d1ace">
+<div id="outline-container-org3c7be83" class="outline-4">
+<h4 id="org3c7be83">PyMongo API</h4>
+<div class="outline-text-4" id="text-org3c7be83">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> pymongo
 <span style="color: #3a81c3; font-weight: bold;">import</span> gridfs
@@ -982,9 +995,9 @@ fs.get<span style="color: #3a81c3;">(</span>file_id<span style="color: #3a81c3;"
 </div>
 </div>
 
-<div id="outline-container-org120804d" class="outline-4">
-<h4 id="org120804d">Chunk</h4>
-<div class="outline-text-4" id="text-org120804d">
+<div id="outline-container-org84b34bd" class="outline-4">
+<h4 id="org84b34bd">Chunk</h4>
+<div class="outline-text-4" id="text-org84b34bd">
 <div class="org-src-container">
 <pre class="src src-js"><span style="color: #2aa1ae; background-color: #ecf3ec;">// </span><span style="color: #2aa1ae; background-color: #ecf3ec;">chunk in fs.chunks</span>
 <span style="color: #3a81c3;">{</span>
@@ -1003,9 +1016,9 @@ fs.get<span style="color: #3a81c3;">(</span>file_id<span style="color: #3a81c3;"
 </div>
 </div>
 
-<div id="outline-container-orgba69d23" class="outline-4">
-<h4 id="orgba69d23">File Metadata</h4>
-<div class="outline-text-4" id="text-orgba69d23">
+<div id="outline-container-org491467b" class="outline-4">
+<h4 id="org491467b">File Metadata</h4>
+<div class="outline-text-4" id="text-org491467b">
 <ul class="org-ul">
 <li>"length": The total number of bytes making up the content of the file.</li>
 <li>"chunkSize": The size of each chunk comprising the file, in bytes. The default is 255 KB, but this can be adjusted if needed.</li>
@@ -1017,12 +1030,12 @@ fs.get<span style="color: #3a81c3;">(</span>file_id<span style="color: #3a81c3;"
 </div>
 </div>
 
-<div id="outline-container-org15ec85a" class="outline-2">
-<h2 id="org15ec85a"><span class="section-number-2">5</span> Aggregation</h2>
+<div id="outline-container-orgef1bfc5" class="outline-2">
+<h2 id="orgef1bfc5"><span class="section-number-2">5</span> Aggregation</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org60859a7" class="outline-3">
-<h3 id="org60859a7"><span class="section-number-3">5.1</span> Reference</h3>
+<div id="outline-container-orga621db9" class="outline-3">
+<h3 id="orga621db9"><span class="section-number-3">5.1</span> Reference</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 <a href="https://docs.mongodb.com/manual/meta/aggregation-quick-reference/">Aggregation Quick Guide</a>
@@ -1030,8 +1043,8 @@ fs.get<span style="color: #3a81c3;">(</span>file_id<span style="color: #3a81c3;"
 </div>
 </div>
 
-<div id="outline-container-org33b8ca2" class="outline-3">
-<h3 id="org33b8ca2"><span class="section-number-3">5.2</span> Expressions</h3>
+<div id="outline-container-org25a8b84" class="outline-3">
+<h3 id="org25a8b84"><span class="section-number-3">5.2</span> Expressions</h3>
 <div class="outline-text-3" id="text-5-2">
 <ul class="org-ul">
 <li><p>
@@ -1070,16 +1083,16 @@ db.getCollection<span style="color: #3a81c3;">(</span><span style="color: #2d957
 </div>
 </div>
 
-<div id="outline-container-org4f924ad" class="outline-3">
-<h3 id="org4f924ad"><span class="section-number-3">5.3</span> Accumulators</h3>
+<div id="outline-container-orgf1906e7" class="outline-3">
+<h3 id="orgf1906e7"><span class="section-number-3">5.3</span> Accumulators</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 $max, $min, $sum, $avg, $first, $last, $push, $addToSet, $mergeObjects
 </p>
 </div>
-<div id="outline-container-orgbce8088" class="outline-4">
-<h4 id="orgbce8088">Project Stage</h4>
-<div class="outline-text-4" id="text-orgbce8088">
+<div id="outline-container-orga051a14" class="outline-4">
+<h4 id="orga051a14">Project Stage</h4>
+<div class="outline-text-4" id="text-orga051a14">
 <div class="org-src-container">
 <pre class="src src-js">db.companies.aggregate<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>
     <span style="color: #2d9574;">{</span> $match: <span style="color: #67b11d;">{</span> <span style="color: #2d9574;">"funding_rounds"</span>: <span style="color: #b1951d;">{</span> $exists: <span style="color: #4e3163;">true</span>, $ne: <span style="color: #3a81c3;">[</span> <span style="color: #3a81c3;">]</span><span style="color: #b1951d;">}</span> <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
@@ -1094,9 +1107,9 @@ $max, $min, $sum, $avg, $first, $last, $push, $addToSet, $mergeObjects
 </div>
 </div>
 
-<div id="outline-container-orgd79c85b" class="outline-4">
-<h4 id="orgd79c85b">Group Stage</h4>
-<div class="outline-text-4" id="text-orgd79c85b">
+<div id="outline-container-orgd7e32ec" class="outline-4">
+<h4 id="orgd7e32ec">Group Stage</h4>
+<div class="outline-text-4" id="text-orgd7e32ec">
 <p>
 Fundamental to the group stage is the "_id" field that we specify as part of the document.
 This is the value of the $group operator itself, using a very strict interpretation.
@@ -1125,9 +1138,9 @@ db.companies.aggregate<span style="color: #3a81c3;">(</span> <span style="color:
 </div>
 </div>
 </div>
-<div id="outline-container-orgc8edb6f" class="outline-4">
-<h4 id="orgc8edb6f">Complex Example</h4>
-<div class="outline-text-4" id="text-orgc8edb6f">
+<div id="outline-container-orgff015d2" class="outline-4">
+<h4 id="orgff015d2">Complex Example</h4>
+<div class="outline-text-4" id="text-orgff015d2">
 <div class="org-src-container">
 <pre class="src src-js">db.companies.aggregate<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>
     <span style="color: #2d9574;">{</span> $match: <span style="color: #67b11d;">{</span> funding_rounds: <span style="color: #b1951d;">{</span> $exists: <span style="color: #4e3163;">true</span>, $ne: <span style="color: #3a81c3;">[</span> <span style="color: #3a81c3;">]</span> <span style="color: #b1951d;">}</span> <span style="color: #67b11d;">}</span> <span style="color: #2d9574;">}</span>,
@@ -1166,8 +1179,8 @@ db.companies.aggregate<span style="color: #3a81c3;">(</span> <span style="color:
 </div>
 </div>
 
-<div id="outline-container-orgdc62932" class="outline-3">
-<h3 id="orgdc62932"><span class="section-number-3">5.4</span> Writing Results to a Collection</h3>
+<div id="outline-container-orgdb4354f" class="outline-3">
+<h3 id="orgdb4354f"><span class="section-number-3">5.4</span> Writing Results to a Collection</h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 $out, $merge
@@ -1179,12 +1192,12 @@ $out, $merge
 </div>
 </div>
 
-<div id="outline-container-org7bea922" class="outline-2">
-<h2 id="org7bea922"><span class="section-number-2">6</span> Transactions</h2>
+<div id="outline-container-org4b8ae52" class="outline-2">
+<h2 id="org4b8ae52"><span class="section-number-2">6</span> Transactions</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-orgd6855ea" class="outline-3">
-<h3 id="orgd6855ea"><span class="section-number-3">6.1</span> Core API VS. Callback API</h3>
+<div id="outline-container-org6b8530c" class="outline-3">
+<h3 id="org6b8530c"><span class="section-number-3">6.1</span> Core API VS. Callback API</h3>
 <div class="outline-text-3" id="text-6-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -1219,8 +1232,8 @@ $out, $merge
 </table>
 </div>
 </div>
-<div id="outline-container-org1b62e3a" class="outline-3">
-<h3 id="org1b62e3a"><span class="section-number-3">6.2</span> Core API Example</h3>
+<div id="outline-container-orgc3e8565" class="outline-3">
+<h3 id="orgc3e8565"><span class="section-number-3">6.2</span> Core API Example</h3>
 <div class="outline-text-3" id="text-6-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">uri</span> = <span style="color: #2d9574;">'mongodb+srv://server.example.com/'</span>
@@ -1293,8 +1306,8 @@ client.get_database<span style="color: #3a81c3;">(</span> <span style="color: #2
 </div>
 </div>
 
-<div id="outline-container-org1f52582" class="outline-3">
-<h3 id="org1f52582"><span class="section-number-3">6.3</span> Callback API Example</h3>
+<div id="outline-container-orgb9d492a" class="outline-3">
+<h3 id="orgb9d492a"><span class="section-number-3">6.3</span> Callback API Example</h3>
 <div class="outline-text-3" id="text-6-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">uriString</span> = <span style="color: #2d9574;">'mongodb+srv://server.example.com/'</span>
@@ -1321,15 +1334,15 @@ client.get_database<span style="color: #3a81c3;">(</span> <span style="color: #2
 </div>
 </div>
 
-<div id="outline-container-orgb8682f6" class="outline-2">
-<h2 id="orgb8682f6"><span class="section-number-2">7</span> Design Patterns</h2>
+<div id="outline-container-orgff52f5f" class="outline-2">
+<h2 id="orgff52f5f"><span class="section-number-2">7</span> Design Patterns</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 see <a href="https://www.mongodb.com/blog/post/building-with-patterns-a-summary">Summary</a>
 </p>
 </div>
-<div id="outline-container-org51691d4" class="outline-3">
-<h3 id="org51691d4"><span class="section-number-3">7.1</span> Embedding vs References</h3>
+<div id="outline-container-orgb5333a6" class="outline-3">
+<h3 id="orgb5333a6"><span class="section-number-3">7.1</span> Embedding vs References</h3>
 <div class="outline-text-3" id="text-7-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -1381,12 +1394,12 @@ see <a href="https://www.mongodb.com/blog/post/building-with-patterns-a-summary"
 </div>
 </div>
 
-<div id="outline-container-org6cc837e" class="outline-2">
-<h2 id="org6cc837e"><span class="section-number-2">8</span> Replication</h2>
+<div id="outline-container-org176a729" class="outline-2">
+<h2 id="org176a729"><span class="section-number-2">8</span> Replication</h2>
 <div class="outline-text-2" id="text-8">
 </div>
-<div id="outline-container-org21e9c54" class="outline-3">
-<h3 id="org21e9c54"><span class="section-number-3">8.1</span> <code>rs</code></h3>
+<div id="outline-container-orge899719" class="outline-3">
+<h3 id="orge899719"><span class="section-number-3">8.1</span> <code>rs</code></h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 <code>rs</code> is a global variable that contains replication helper functions
@@ -1420,12 +1433,12 @@ rs.reconfig<span style="color: #3a81c3;">(</span>config<span style="color: #3a81
 </div>
 </div>
 
-<div id="outline-container-orga5a6f37" class="outline-2">
-<h2 id="orga5a6f37"><span class="section-number-2">9</span> Cluster</h2>
+<div id="outline-container-org4e70efe" class="outline-2">
+<h2 id="org4e70efe"><span class="section-number-2">9</span> Cluster</h2>
 <div class="outline-text-2" id="text-9">
 </div>
-<div id="outline-container-org56a77c5" class="outline-3">
-<h3 id="org56a77c5"><span class="section-number-3">9.1</span> Tools</h3>
+<div id="outline-container-org1197b3f" class="outline-3">
+<h3 id="org1197b3f"><span class="section-number-3">9.1</span> Tools</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>MongoDB Ops Manager</li>

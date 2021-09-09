@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-05-11 Tue 14:46 -->
+<!-- 2021-09-09 Thu 22:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Flask</title>
@@ -41,7 +41,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -53,7 +53,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -162,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -190,74 +203,74 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orga66660c">1. WSGI</a></li>
-<li><a href="#orged079f2">2. Context</a></li>
-<li><a href="#org1beb8aa">3. Request hooks</a></li>
-<li><a href="#org0ecdad3">4. Response</a>
+<li><a href="#org26ab2dc">1. WSGI</a></li>
+<li><a href="#orga40abca">2. Context</a></li>
+<li><a href="#org4dafec9">3. Request hooks</a></li>
+<li><a href="#org73c8ba3">4. Response</a>
 <ul>
-<li><a href="#orge404cfc">4.1. tuple</a></li>
-<li><a href="#orgdbbf81c">4.2. <b>response</b> object</a></li>
-<li><a href="#org1260385">4.3. redirect</a></li>
-<li><a href="#orgbfbc948">4.4. abort</a></li>
+<li><a href="#org1106f2d">4.1. tuple</a></li>
+<li><a href="#org06ef3ee">4.2. <b>response</b> object</a></li>
+<li><a href="#org60239fe">4.3. redirect</a></li>
+<li><a href="#org266e89f">4.4. abort</a></li>
 </ul>
 </li>
-<li><a href="#org30a2294">5. Jinja2 template engine</a>
+<li><a href="#org7aa5f2b">5. Jinja2 template engine</a>
 <ul>
-<li><a href="#org6e614a7">5.1. Variable</a></li>
-<li><a href="#orga31347a">5.2. Filters</a></li>
-<li><a href="#org81f3c8f">5.3. Control structures</a></li>
-<li><a href="#orgee2eaf9">5.4. Inheritance</a></li>
-<li><a href="#org57931fd">5.5. Custom Error Pages</a></li>
-<li><a href="#org850e54d">5.6. Links</a></li>
-<li><a href="#org4ee11ae">5.7. Static files</a></li>
+<li><a href="#orgb00cd38">5.1. Variable</a></li>
+<li><a href="#org7a94636">5.2. Filters</a></li>
+<li><a href="#org5f28a95">5.3. Control structures</a></li>
+<li><a href="#org4c0cb64">5.4. Inheritance</a></li>
+<li><a href="#orgbbe7a02">5.5. Custom Error Pages</a></li>
+<li><a href="#orgfa18b2e">5.6. Links</a></li>
+<li><a href="#org287787d">5.7. Static files</a></li>
 </ul>
 </li>
-<li><a href="#orgbb51557">6. Web forms</a>
+<li><a href="#orgfc9167c">6. Web forms</a>
 <ul>
-<li><a href="#org0416cd1">6.1. flask_wtf</a></li>
-<li><a href="#org0d1f32e">6.2. redirect issue</a></li>
-<li><a href="#orga748a74">6.3. Sessions</a></li>
-<li><a href="#org2ceab7f">6.4. flash</a></li>
+<li><a href="#orgf5cf681">6.1. flask_wtf</a></li>
+<li><a href="#orgdee8db4">6.2. redirect issue</a></li>
+<li><a href="#orgc6ada9a">6.3. Sessions</a></li>
+<li><a href="#org7ddcc7c">6.4. flash</a></li>
 </ul>
 </li>
-<li><a href="#orga994352">7. Databases</a>
+<li><a href="#org7067cf7">7. Databases</a>
 <ul>
-<li><a href="#orgba0ff40">7.1. ORMs/ODMs</a></li>
-<li><a href="#org797566b">7.2. flask_sqlalchemy</a></li>
+<li><a href="#orgd226c81">7.1. ORMs/ODMs</a></li>
+<li><a href="#orgdf7dd12">7.2. flask_sqlalchemy</a></li>
 </ul>
 </li>
-<li><a href="#orgfd817d2">8. Application Structure</a>
+<li><a href="#org1936592">8. Application Structure</a>
 <ul>
-<li><a href="#org957abee">8.1. Configuration Example</a></li>
-<li><a href="#org026cf11">8.2. Dynamic App Creation</a></li>
-<li><a href="#orgf6670d6">8.3. Launch Script</a></li>
-<li><a href="#orgc7c4e67">8.4. <b>Project Generator</b></a></li>
+<li><a href="#orga234da4">8.1. Configuration Example</a></li>
+<li><a href="#org96921ca">8.2. Dynamic App Creation</a></li>
+<li><a href="#org328abf3">8.3. Launch Script</a></li>
+<li><a href="#org72ae397">8.4. <b>Project Generator</b></a></li>
 </ul>
 </li>
-<li><a href="#org3fac3a9">9. RESTful API</a>
+<li><a href="#orgaa3ccd3">9. RESTful API</a>
 <ul>
-<li><a href="#orgf72a647">9.1. characteristics</a></li>
-<li><a href="#orgb4f63b3">9.2. Request Methods</a></li>
-<li><a href="#org4112fd0">9.3. URL</a></li>
-<li><a href="#org7d2af9f">9.4. Error Handling</a></li>
-<li><a href="#orgd6d0a67">9.5. Authentication</a></li>
+<li><a href="#org9ef3b59">9.1. characteristics</a></li>
+<li><a href="#orgee2b574">9.2. Request Methods</a></li>
+<li><a href="#org4e573ce">9.3. URL</a></li>
+<li><a href="#orgad63ff9">9.4. Error Handling</a></li>
+<li><a href="#org9499e87">9.5. Authentication</a></li>
 </ul>
 </li>
-<li><a href="#org759c06b">10. Extensions</a>
+<li><a href="#orge3d90f3">10. Extensions</a>
 <ul>
-<li><a href="#org4e69580">10.1. flask_script</a></li>
-<li><a href="#org74c1e7f">10.2. flask_bootstrap</a></li>
-<li><a href="#org42091c7">10.3. flask_moment</a></li>
-<li><a href="#org078f1d2">10.4. flask_mail</a></li>
-<li><a href="#orgd056eda">10.5. flask_restful</a></li>
+<li><a href="#orgacd0560">10.1. flask_script</a></li>
+<li><a href="#org6c7cf66">10.2. flask_bootstrap</a></li>
+<li><a href="#orgb0011c6">10.3. flask_moment</a></li>
+<li><a href="#orge1ae803">10.4. flask_mail</a></li>
+<li><a href="#orga22aef5">10.5. flask_restful</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga66660c" class="outline-2">
-<h2 id="orga66660c"><span class="section-number-2">1</span> WSGI</h2>
+<div id="outline-container-org26ab2dc" class="outline-2">
+<h2 id="org26ab2dc"><span class="section-number-2">1</span> WSGI</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Web Server Gateway Interface
@@ -276,8 +289,8 @@ Web Server Gateway Interface
 </div>
 </div>
 
-<div id="outline-container-orged079f2" class="outline-2">
-<h2 id="orged079f2"><span class="section-number-2">2</span> Context</h2>
+<div id="outline-container-orga40abca" class="outline-2">
+<h2 id="orga40abca"><span class="section-number-2">2</span> Context</h2>
 <div class="outline-text-2" id="text-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -325,8 +338,8 @@ Web Server Gateway Interface
 </div>
 </div>
 
-<div id="outline-container-org1beb8aa" class="outline-2">
-<h2 id="org1beb8aa"><span class="section-number-2">3</span> Request hooks</h2>
+<div id="outline-container-org4dafec9" class="outline-2">
+<h2 id="org4dafec9"><span class="section-number-2">3</span> Request hooks</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 hook decorators
@@ -340,12 +353,12 @@ hook decorators
 </div>
 </div>
 
-<div id="outline-container-org0ecdad3" class="outline-2">
-<h2 id="org0ecdad3"><span class="section-number-2">4</span> Response</h2>
+<div id="outline-container-org73c8ba3" class="outline-2">
+<h2 id="org73c8ba3"><span class="section-number-2">4</span> Response</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orge404cfc" class="outline-3">
-<h3 id="orge404cfc"><span class="section-number-3">4.1</span> tuple</h3>
+<div id="outline-container-org1106f2d" class="outline-3">
+<h3 id="org1106f2d"><span class="section-number-3">4.1</span> tuple</h3>
 <div class="outline-text-3" id="text-4-1">
 <ul class="org-ul">
 <li>Form: (html, status_code, headerdict)</li>
@@ -353,8 +366,8 @@ hook decorators
 </div>
 </div>
 
-<div id="outline-container-orgdbbf81c" class="outline-3">
-<h3 id="orgdbbf81c"><span class="section-number-3">4.2</span> <b>response</b> object</h3>
+<div id="outline-container-org06ef3ee" class="outline-3">
+<h3 id="org06ef3ee"><span class="section-number-3">4.2</span> <b>response</b> object</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask <span style="color: #3a81c3; font-weight: bold;">import</span> make_response
@@ -369,8 +382,8 @@ hook decorators
 </div>
 </div>
 
-<div id="outline-container-org1260385" class="outline-3">
-<h3 id="org1260385"><span class="section-number-3">4.3</span> redirect</h3>
+<div id="outline-container-org60239fe" class="outline-3">
+<h3 id="org60239fe"><span class="section-number-3">4.3</span> redirect</h3>
 <div class="outline-text-3" id="text-4-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">return</span> redirect<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'http://www.example.com'</span><span style="color: #3a81c3;">)</span>
@@ -379,8 +392,8 @@ hook decorators
 </div>
 </div>
 
-<div id="outline-container-orgbfbc948" class="outline-3">
-<h3 id="orgbfbc948"><span class="section-number-3">4.4</span> abort</h3>
+<div id="outline-container-org266e89f" class="outline-3">
+<h3 id="org266e89f"><span class="section-number-3">4.4</span> abort</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 used for error handling
@@ -396,12 +409,12 @@ used for error handling
 </div>
 </div>
 
-<div id="outline-container-org30a2294" class="outline-2">
-<h2 id="org30a2294"><span class="section-number-2">5</span> Jinja2 template engine</h2>
+<div id="outline-container-org7aa5f2b" class="outline-2">
+<h2 id="org7aa5f2b"><span class="section-number-2">5</span> Jinja2 template engine</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org6e614a7" class="outline-3">
-<h3 id="org6e614a7"><span class="section-number-3">5.1</span> Variable</h3>
+<div id="outline-container-orgb00cd38" class="outline-3">
+<h3 id="orgb00cd38"><span class="section-number-3">5.1</span> Variable</h3>
 <div class="outline-text-3" id="text-5-1">
 <ul class="org-ul">
 <li>Form: <code>{{ name }}</code></li>
@@ -417,8 +430,8 @@ used for error handling
 </div>
 </div>
 
-<div id="outline-container-orga31347a" class="outline-3">
-<h3 id="orga31347a"><span class="section-number-3">5.2</span> Filters</h3>
+<div id="outline-container-org7a94636" class="outline-3">
+<h3 id="org7a94636"><span class="section-number-3">5.2</span> Filters</h3>
 <div class="outline-text-3" id="text-5-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -477,8 +490,8 @@ used for error handling
 </div>
 </div>
 
-<div id="outline-container-orgc81ace3" class="outline-4">
-<h4 id="orgc81ace3"><span class="section-number-4">5.2.1</span> safe</h4>
+<div id="outline-container-orgce7d2cf" class="outline-4">
+<h4 id="orgce7d2cf"><span class="section-number-4">5.2.1</span> safe</h4>
 <div class="outline-text-4" id="text-5-2-1">
 <ul class="org-ul">
 <li>Never use the safe filter on values that aren’t trusted, such as text entered by users on web forms.</li>
@@ -487,12 +500,12 @@ used for error handling
 </div>
 </div>
 
-<div id="outline-container-org81f3c8f" class="outline-3">
-<h3 id="org81f3c8f"><span class="section-number-3">5.3</span> Control structures</h3>
+<div id="outline-container-org5f28a95" class="outline-3">
+<h3 id="org5f28a95"><span class="section-number-3">5.3</span> Control structures</h3>
 <div class="outline-text-3" id="text-5-3">
 </div>
-<div id="outline-container-org5170455" class="outline-4">
-<h4 id="org5170455"><span class="section-number-4">5.3.1</span> if</h4>
+<div id="outline-container-orge87cb61" class="outline-4">
+<h4 id="orge87cb61"><span class="section-number-4">5.3.1</span> if</h4>
 <div class="outline-text-4" id="text-5-3-1">
 <div class="org-src-container">
 <pre class="src src-web">{% if user %}
@@ -505,8 +518,8 @@ used for error handling
 </div>
 </div>
 
-<div id="outline-container-org86dafb9" class="outline-4">
-<h4 id="org86dafb9"><span class="section-number-4">5.3.2</span> for loop</h4>
+<div id="outline-container-org4904e0e" class="outline-4">
+<h4 id="org4904e0e"><span class="section-number-4">5.3.2</span> for loop</h4>
 <div class="outline-text-4" id="text-5-3-2">
 <div class="org-src-container">
 <pre class="src src-web">&lt;ul&gt;
@@ -519,8 +532,8 @@ used for error handling
 </div>
 </div>
 
-<div id="outline-container-orgc5826ec" class="outline-4">
-<h4 id="orgc5826ec"><span class="section-number-4">5.3.3</span> macro</h4>
+<div id="outline-container-org8c20573" class="outline-4">
+<h4 id="org8c20573"><span class="section-number-4">5.3.3</span> macro</h4>
 <div class="outline-text-4" id="text-5-3-3">
 <p>
 macro are similar to functions in Python code
@@ -539,9 +552,9 @@ macro are similar to functions in Python code
 </div>
 </div>
 
-<div id="outline-container-org0d6fe70" class="outline-5">
-<h5 id="org0d6fe70">import macro from standalone macro file</h5>
-<div class="outline-text-5" id="text-org0d6fe70">
+<div id="outline-container-orge498301" class="outline-5">
+<h5 id="orge498301">import macro from standalone macro file</h5>
+<div class="outline-text-5" id="text-orge498301">
 <div class="org-src-container">
 <pre class="src src-web">{% import 'macros.html' as macros %}
 &lt;ul&gt;
@@ -555,8 +568,8 @@ macro are similar to functions in Python code
 </div>
 </div>
 
-<div id="outline-container-org45c7f1a" class="outline-4">
-<h4 id="org45c7f1a"><span class="section-number-4">5.3.4</span> include common file</h4>
+<div id="outline-container-org363774e" class="outline-4">
+<h4 id="org363774e"><span class="section-number-4">5.3.4</span> include common file</h4>
 <div class="outline-text-4" id="text-5-3-4">
 <p>
 {% include 'common.html' %}
@@ -565,15 +578,15 @@ macro are similar to functions in Python code
 </div>
 </div>
 
-<div id="outline-container-orgee2eaf9" class="outline-3">
-<h3 id="orgee2eaf9"><span class="section-number-3">5.4</span> Inheritance</h3>
+<div id="outline-container-org4c0cb64" class="outline-3">
+<h3 id="org4c0cb64"><span class="section-number-3">5.4</span> Inheritance</h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 Block tags define elements that a derived template can change.
 </p>
 </div>
-<div id="outline-container-org9bc9fac" class="outline-4">
-<h4 id="org9bc9fac"><span class="section-number-4">5.4.1</span> base template</h4>
+<div id="outline-container-org392db8d" class="outline-4">
+<h4 id="org392db8d"><span class="section-number-4">5.4.1</span> base template</h4>
 <div class="outline-text-4" id="text-5-4-1">
 <div class="org-src-container">
 <pre class="src src-web">&lt;html&gt;
@@ -592,8 +605,8 @@ Block tags define elements that a derived template can change.
 </div>
 </div>
 
-<div id="outline-container-org9cff2c0" class="outline-4">
-<h4 id="org9cff2c0"><span class="section-number-4">5.4.2</span> extendsion template</h4>
+<div id="outline-container-org004ffd5" class="outline-4">
+<h4 id="org004ffd5"><span class="section-number-4">5.4.2</span> extendsion template</h4>
 <div class="outline-text-4" id="text-5-4-2">
 <p>
 If the application needs to add its own content to a block that already has some content,
@@ -616,8 +629,8 @@ then Jinja2’s super() function must be used.
 </div>
 </div>
 
-<div id="outline-container-org57931fd" class="outline-3">
-<h3 id="org57931fd"><span class="section-number-3">5.5</span> Custom Error Pages</h3>
+<div id="outline-container-orgbbe7a02" class="outline-3">
+<h3 id="orgbbe7a02"><span class="section-number-3">5.5</span> Custom Error Pages</h3>
 <div class="outline-text-3" id="text-5-5">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@app.errorhandler</span><span style="color: #3a81c3;">(</span>404<span style="color: #3a81c3;">)</span>
@@ -632,8 +645,8 @@ then Jinja2’s super() function must be used.
 </div>
 </div>
 
-<div id="outline-container-org850e54d" class="outline-3">
-<h3 id="org850e54d"><span class="section-number-3">5.6</span> Links</h3>
+<div id="outline-container-orgfa18b2e" class="outline-3">
+<h3 id="orgfa18b2e"><span class="section-number-3">5.6</span> Links</h3>
 <div class="outline-text-3" id="text-5-6">
 <p>
 <b>url_for()</b> function to generate dynamic URLs from the imformation stored in the app's URL map.
@@ -650,8 +663,8 @@ then Jinja2’s super() function must be used.
 </div>
 </div>
 
-<div id="outline-container-org4ee11ae" class="outline-3">
-<h3 id="org4ee11ae"><span class="section-number-3">5.7</span> Static files</h3>
+<div id="outline-container-org287787d" class="outline-3">
+<h3 id="org287787d"><span class="section-number-3">5.7</span> Static files</h3>
 <div class="outline-text-3" id="text-5-7">
 <p>
 Flask looks for static files in a subdirectory called <i>static</i> located in the application’s root folder.
@@ -664,15 +677,15 @@ Flask looks for static files in a subdirectory called <i>static</i> located in t
 </div>
 </div>
 
-<div id="outline-container-orgbb51557" class="outline-2">
-<h2 id="orgbb51557"><span class="section-number-2">6</span> Web forms</h2>
+<div id="outline-container-orgfc9167c" class="outline-2">
+<h2 id="orgfc9167c"><span class="section-number-2">6</span> Web forms</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Form data from clients is in request.form (POST)
 </p>
 </div>
-<div id="outline-container-org0416cd1" class="outline-3">
-<h3 id="org0416cd1"><span class="section-number-3">6.1</span> flask_wtf</h3>
+<div id="outline-container-orgf5cf681" class="outline-3">
+<h3 id="orgf5cf681"><span class="section-number-3">6.1</span> flask_wtf</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 <i>flask_wtf</i> wraps the <b>WTForms</b> packages, handles two things:
@@ -683,8 +696,8 @@ Form data from clients is in request.form (POST)
 </ul>
 </div>
 
-<div id="outline-container-org0264c52" class="outline-4">
-<h4 id="org0264c52"><span class="section-number-4">6.1.1</span> CSRF protection</h4>
+<div id="outline-container-org7ed2418" class="outline-4">
+<h4 id="org7ed2418"><span class="section-number-4">6.1.1</span> CSRF protection</h4>
 <div class="outline-text-4" id="text-6-1-1">
 <p>
 <i>flask_wtf</i> uses token to verify the authenticity of requests with form data
@@ -704,8 +717,8 @@ instead of being embedded in the code.
 </div>
 </div>
 
-<div id="outline-container-org46be211" class="outline-4">
-<h4 id="org46be211"><span class="section-number-4">6.1.2</span> Form class</h4>
+<div id="outline-container-org649de52" class="outline-4">
+<h4 id="org649de52"><span class="section-number-4">6.1.2</span> Form class</h4>
 <div class="outline-text-4" id="text-6-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_wtf <span style="color: #3a81c3; font-weight: bold;">import</span> FlaskForm
@@ -723,9 +736,9 @@ instead of being embedded in the code.
 </ul>
 </div>
 
-<div id="outline-container-org7d7febc" class="outline-5">
-<h5 id="org7d7febc">Fields</h5>
-<div class="outline-text-5" id="text-org7d7febc">
+<div id="outline-container-org251ab76" class="outline-5">
+<h5 id="org251ab76">Fields</h5>
+<div class="outline-text-5" id="text-org251ab76">
 <ul class="org-ul">
 <li>Text field: StringField, TextAreaField, PasswordField, HiddenField, DateField, DateTimeField,</li>
 </ul>
@@ -745,9 +758,9 @@ IntegerField, DecimalField, FloatField
 </div>
 </div>
 
-<div id="outline-container-org2374cb7" class="outline-5">
-<h5 id="org2374cb7">Validators</h5>
-<div class="outline-text-5" id="text-org2374cb7">
+<div id="outline-container-orgc79ddc7" class="outline-5">
+<h5 id="orgc79ddc7">Validators</h5>
+<div class="outline-text-5" id="text-orgc79ddc7">
 <p>
 Email, IPAddress, Length, NumberRange, Optional, Required, Regexp, URL, AnyOf, NoneOf
 </p>
@@ -757,9 +770,9 @@ Email, IPAddress, Length, NumberRange, Optional, Required, Regexp, URL, AnyOf, N
 </div>
 </div>
 
-<div id="outline-container-org6f5c81e" class="outline-5">
-<h5 id="org6f5c81e">Template</h5>
-<div class="outline-text-5" id="text-org6f5c81e">
+<div id="outline-container-org0421fff" class="outline-5">
+<h5 id="org0421fff">Template</h5>
+<div class="outline-text-5" id="text-org0421fff">
 <div class="org-src-container">
 <pre class="src src-web">{% import "bootstrap/wtf.html" as wtf %}
 {{ wtf.quick_form(form) }}
@@ -768,9 +781,9 @@ Email, IPAddress, Length, NumberRange, Optional, Required, Regexp, URL, AnyOf, N
 </div>
 </div>
 
-<div id="outline-container-orgd9ec31e" class="outline-5">
-<h5 id="orgd9ec31e">View function</h5>
-<div class="outline-text-5" id="text-orgd9ec31e">
+<div id="outline-container-orgfc6817e" class="outline-5">
+<h5 id="orgfc6817e">View function</h5>
+<div class="outline-text-5" id="text-orgfc6817e">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #ba2f59; font-weight: bold;">@app.route</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'/'</span>, methods=<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'GET'</span>, <span style="color: #2d9574;">'POST'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
 <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">index</span><span style="color: #3a81c3;">()</span>:
@@ -791,8 +804,8 @@ Email, IPAddress, Length, NumberRange, Optional, Required, Regexp, URL, AnyOf, N
 </div>
 </div>
 
-<div id="outline-container-org0d1f32e" class="outline-3">
-<h3 id="org0d1f32e"><span class="section-number-3">6.2</span> redirect issue</h3>
+<div id="outline-container-orgdee8db4" class="outline-3">
+<h3 id="orgdee8db4"><span class="section-number-3">6.2</span> redirect issue</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 Browsers repeat the last request they have sent when they are asked to refresh the page.
@@ -806,8 +819,8 @@ form submission.
 </div>
 </div>
 
-<div id="outline-container-orga748a74" class="outline-3">
-<h3 id="orga748a74"><span class="section-number-3">6.3</span> Sessions</h3>
+<div id="outline-container-orgc6ada9a" class="outline-3">
+<h3 id="orgc6ada9a"><span class="section-number-3">6.3</span> Sessions</h3>
 <div class="outline-text-3" id="text-6-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask <span style="color: #3a81c3; font-weight: bold;">import</span> Flask, render_template, session, redirect, url_for
@@ -824,8 +837,8 @@ form submission.
 </div>
 </div>
 
-<div id="outline-container-org2ceab7f" class="outline-3">
-<h3 id="org2ceab7f"><span class="section-number-3">6.4</span> flash</h3>
+<div id="outline-container-org7ddcc7c" class="outline-3">
+<h3 id="org7ddcc7c"><span class="section-number-3">6.4</span> flash</h3>
 <div class="outline-text-3" id="text-6-4">
 <ul class="org-ul">
 <li>To give the user a confirmation message after a request is completed</li>
@@ -840,8 +853,8 @@ form submission.
 </div>
 </div>
 
-<div id="outline-container-orgf1375b6" class="outline-4">
-<h4 id="orgf1375b6"><span class="section-number-4">6.4.1</span> render messages</h4>
+<div id="outline-container-org200a840" class="outline-4">
+<h4 id="org200a840"><span class="section-number-4">6.4.1</span> render messages</h4>
 <div class="outline-text-4" id="text-6-4-1">
 <p>
 The best place to render flashed messages is the <i>base</i> template.
@@ -865,12 +878,12 @@ use get_flashed_messages() to retrieve the messages and render them
 </div>
 </div>
 
-<div id="outline-container-orga994352" class="outline-2">
-<h2 id="orga994352"><span class="section-number-2">7</span> Databases</h2>
+<div id="outline-container-org7067cf7" class="outline-2">
+<h2 id="org7067cf7"><span class="section-number-2">7</span> Databases</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-orgba0ff40" class="outline-3">
-<h3 id="orgba0ff40"><span class="section-number-3">7.1</span> ORMs/ODMs</h3>
+<div id="outline-container-orgd226c81" class="outline-3">
+<h3 id="orgd226c81"><span class="section-number-3">7.1</span> ORMs/ODMs</h3>
 <div class="outline-text-3" id="text-7-1">
 <ul class="org-ul">
 <li>SQLAlchemy</li>
@@ -879,8 +892,8 @@ use get_flashed_messages() to retrieve the messages and render them
 </div>
 </div>
 
-<div id="outline-container-org797566b" class="outline-3">
-<h3 id="org797566b"><span class="section-number-3">7.2</span> flask_sqlalchemy</h3>
+<div id="outline-container-orgdf7dd12" class="outline-3">
+<h3 id="orgdf7dd12"><span class="section-number-3">7.2</span> flask_sqlalchemy</h3>
 <div class="outline-text-3" id="text-7-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask.ext.sqlalchemy <span style="color: #3a81c3; font-weight: bold;">import</span> SQLAlchemy
@@ -897,8 +910,8 @@ use get_flashed_messages() to retrieve the messages and render them
 </div>
 </div>
 
-<div id="outline-container-orga70b302" class="outline-4">
-<h4 id="orga70b302"><span class="section-number-4">7.2.1</span> Model</h4>
+<div id="outline-container-orgbd7692f" class="outline-4">
+<h4 id="orgbd7692f"><span class="section-number-4">7.2.1</span> Model</h4>
 <div class="outline-text-4" id="text-7-2-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Role</span><span style="color: #3a81c3;">(</span>db.Model<span style="color: #3a81c3;">)</span>:
@@ -923,8 +936,8 @@ use get_flashed_messages() to retrieve the messages and render them
 </div>
 </div>
 
-<div id="outline-container-orgf643c83" class="outline-4">
-<h4 id="orgf643c83"><span class="section-number-4">7.2.2</span> Relationship</h4>
+<div id="outline-container-orgbd94684" class="outline-4">
+<h4 id="orgbd94684"><span class="section-number-4">7.2.2</span> Relationship</h4>
 <div class="outline-text-4" id="text-7-2-2">
 <p>
 SQLAlchemy relationship options: backref, primaryjoin, lazy, uselist, order_by, secondary, secondaryjoin
@@ -932,13 +945,13 @@ SQLAlchemy relationship options: backref, primaryjoin, lazy, uselist, order_by, 
 </div>
 </div>
 
-<div id="outline-container-orga4c8630" class="outline-4">
-<h4 id="orga4c8630"><span class="section-number-4">7.2.3</span> Ops</h4>
+<div id="outline-container-orgc613947" class="outline-4">
+<h4 id="orgc613947"><span class="section-number-4">7.2.3</span> Ops</h4>
 <div class="outline-text-4" id="text-7-2-3">
 </div>
-<div id="outline-container-orgff538d0" class="outline-5">
-<h5 id="orgff538d0">Creating</h5>
-<div class="outline-text-5" id="text-orgff538d0">
+<div id="outline-container-org176d51a" class="outline-5">
+<h5 id="org176d51a">Creating</h5>
+<div class="outline-text-5" id="text-org176d51a">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">db</span> = SQLAlchemy<span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>
 
@@ -949,9 +962,9 @@ db.create_all<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 
-<div id="outline-container-org2d1b032" class="outline-5">
-<h5 id="org2d1b032">Inserting</h5>
-<div class="outline-text-5" id="text-org2d1b032">
+<div id="outline-container-org046b728" class="outline-5">
+<h5 id="org046b728">Inserting</h5>
+<div class="outline-text-5" id="text-org046b728">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">admin_role</span> = Role<span style="color: #3a81c3;">(</span>name=<span style="color: #2d9574;">'Admin'</span><span style="color: #3a81c3;">)</span>
 <span style="color: #715ab1;">user_john</span> = User<span style="color: #3a81c3;">(</span>username=<span style="color: #2d9574;">'john'</span>, role=admin_role<span style="color: #3a81c3;">)</span>
@@ -987,9 +1000,9 @@ check
 </div>
 </div>
 
-<div id="outline-container-org54690a8" class="outline-5">
-<h5 id="org54690a8">Modifying</h5>
-<div class="outline-text-5" id="text-org54690a8">
+<div id="outline-container-org5a72652" class="outline-5">
+<h5 id="org5a72652">Modifying</h5>
+<div class="outline-text-5" id="text-org5a72652">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">admin_role.name</span> = <span style="color: #2d9574;">'Administrator'</span>
 db.session.add<span style="color: #3a81c3;">(</span>admin_role<span style="color: #3a81c3;">)</span>
@@ -999,9 +1012,9 @@ db.session.commit<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 
-<div id="outline-container-orgf378d59" class="outline-5">
-<h5 id="orgf378d59">Deleting</h5>
-<div class="outline-text-5" id="text-orgf378d59">
+<div id="outline-container-org6ea0fe2" class="outline-5">
+<h5 id="org6ea0fe2">Deleting</h5>
+<div class="outline-text-5" id="text-org6ea0fe2">
 <div class="org-src-container">
 <pre class="src src-python">db.session.delete<span style="color: #3a81c3;">(</span>mod_role<span style="color: #3a81c3;">)</span>
 db.session.commit<span style="color: #3a81c3;">()</span>
@@ -1010,9 +1023,9 @@ db.session.commit<span style="color: #3a81c3;">()</span>
 </div>
 </div>
 
-<div id="outline-container-org87e7b34" class="outline-5">
-<h5 id="org87e7b34">Querying</h5>
-<div class="outline-text-5" id="text-org87e7b34">
+<div id="outline-container-org6087314" class="outline-5">
+<h5 id="org6087314">Querying</h5>
+<div class="outline-text-5" id="text-org6087314">
 <div class="org-src-container">
 <pre class="src src-python">Role.query.<span style="color: #3a81c3;">all</span><span style="color: #3a81c3;">()</span>
 User.query.filter_by<span style="color: #3a81c3;">(</span>role=admin_role<span style="color: #3a81c3;">)</span>.<span style="color: #3a81c3;">all</span><span style="color: #3a81c3;">()</span>
@@ -1023,8 +1036,8 @@ User.query.filter_by<span style="color: #3a81c3;">(</span>role=admin_role<span s
 </div>
 </div>
 
-<div id="outline-container-org730949a" class="outline-4">
-<h4 id="org730949a"><span class="section-number-4">7.2.4</span> Integration with the Python Shell</h4>
+<div id="outline-container-org9a68ea3" class="outline-4">
+<h4 id="org9a68ea3"><span class="section-number-4">7.2.4</span> Integration with the Python Shell</h4>
 <div class="outline-text-4" id="text-7-2-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_script <span style="color: #3a81c3; font-weight: bold;">import</span> Shell
@@ -1037,8 +1050,8 @@ manager.add_command<span style="color: #3a81c3;">(</span><span style="color: #2d
 </div>
 </div>
 </div>
-<div id="outline-container-org8af46b8" class="outline-4">
-<h4 id="org8af46b8"><span class="section-number-4">7.2.5</span> Database Migrations</h4>
+<div id="outline-container-org3812d5b" class="outline-4">
+<h4 id="org3812d5b"><span class="section-number-4">7.2.5</span> Database Migrations</h4>
 <div class="outline-text-4" id="text-7-2-5">
 <p>
 use flask-migrate
@@ -1060,31 +1073,31 @@ python main.py db upgrade
 </div>
 </div>
 
-<div id="outline-container-orgfd817d2" class="outline-2">
-<h2 id="orgfd817d2"><span class="section-number-2">8</span> Application Structure</h2>
+<div id="outline-container-org1936592" class="outline-2">
+<h2 id="org1936592"><span class="section-number-2">8</span> Application Structure</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
-<pre class="src src-text">          &#9500;&#9472;&#9472; __init__.py
-	  &#9500;&#9472;&#9472; main/
-	      &#9500;&#9472;&#9472; __init__.py
-	      &#9500;&#9472;&#9472; errors.py
-	      &#9500;&#9472;&#9472; forms.py
-	      &#9492;&#9472;&#9472; views.py
-	  &#9500;&#9472;&#9472; static/
-	  &#9500;&#9472;&#9472; templates/
-	  &#9500;&#9472;&#9472; email.py
-	  &#9500;&#9472;&#9472; models.py
-	  &#9500;&#9472;&#9472; migrations/
-	  &#9500;&#9472;&#9472; venv/
-	  &#9500;&#9472;&#9472; tests/
-	  &#9500;&#9472;&#9472; requirements.txt
-	  &#9500;&#9472;&#9472; config.py
-	  &#9492;&#9472;&#9472; manage.py        launches the application and other application tasks.
+<pre class="src src-text">&#9500;&#9472;&#9472; __init__.py
+&#9500;&#9472;&#9472; main/
+    &#9500;&#9472;&#9472; __init__.py
+    &#9500;&#9472;&#9472; errors.py
+    &#9500;&#9472;&#9472; forms.py
+    &#9492;&#9472;&#9472; views.py
+&#9500;&#9472;&#9472; static/
+&#9500;&#9472;&#9472; templates/
+&#9500;&#9472;&#9472; email.py
+&#9500;&#9472;&#9472; models.py
+&#9500;&#9472;&#9472; migrations/
+&#9500;&#9472;&#9472; venv/
+&#9500;&#9472;&#9472; tests/
+&#9500;&#9472;&#9472; requirements.txt
+&#9500;&#9472;&#9472; config.py
+&#9492;&#9472;&#9472; manage.py        launches the application and other application tasks.
 </pre>
 </div>
 </div>
-<div id="outline-container-org957abee" class="outline-3">
-<h3 id="org957abee"><span class="section-number-3">8.1</span> Configuration Example</h3>
+<div id="outline-container-orga234da4" class="outline-3">
+<h3 id="orga234da4"><span class="section-number-3">8.1</span> Configuration Example</h3>
 <div class="outline-text-3" id="text-8-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> os
@@ -1097,7 +1110,7 @@ python main.py db upgrade
     <span style="color: #715ab1;">FLASKY_MAIL_SENDER</span> = <span style="color: #2d9574;">'Flasky Admin <a href="mailto:flasky%40example.com">&lt;flasky@example.com&gt;</a>'</span>
     <span style="color: #715ab1;">FLASKY_ADMIN</span> = os.environ.get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'FLASKY_ADMIN'</span><span style="color: #3a81c3;">)</span>
 
-    <span style="color: #ba2f59; font-weight: bold;">@staticmethod</span>
+    @<span style="color: #3a81c3;">staticmethod</span>
     <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">init_app</span><span style="color: #3a81c3;">(</span>app<span style="color: #3a81c3;">)</span>:
 	<span style="color: #3a81c3; font-weight: bold;">pass</span>
 
@@ -1132,8 +1145,8 @@ python main.py db upgrade
 </div>
 </div>
 
-<div id="outline-container-org026cf11" class="outline-3">
-<h3 id="org026cf11"><span class="section-number-3">8.2</span> Dynamic App Creation</h3>
+<div id="outline-container-org96921ca" class="outline-3">
+<h3 id="org96921ca"><span class="section-number-3">8.2</span> Dynamic App Creation</h3>
 <div class="outline-text-3" id="text-8-2">
 <ul class="org-ul">
 <li><i>app/__init__.py</i></li>
@@ -1169,9 +1182,9 @@ python main.py db upgrade
 </div>
 </div>
 
-<div id="outline-container-org58316cf" class="outline-5">
-<h5 id="org58316cf">Blueprint</h5>
-<div class="outline-text-5" id="text-org58316cf">
+<div id="outline-container-orgc3f4775" class="outline-5">
+<h5 id="orgc3f4775">Blueprint</h5>
+<div class="outline-text-5" id="text-orgc3f4775">
 <p>
 A blueprint is similar to an application in that it can also define routes
 </p>
@@ -1204,8 +1217,8 @@ A blueprint is similar to an application in that it can also define routes
 </div>
 </div>
 
-<div id="outline-container-orgf6670d6" class="outline-3">
-<h3 id="orgf6670d6"><span class="section-number-3">8.3</span> Launch Script</h3>
+<div id="outline-container-org328abf3" class="outline-3">
+<h3 id="org328abf3"><span class="section-number-3">8.3</span> Launch Script</h3>
 <div class="outline-text-3" id="text-8-3">
 <ul class="org-ul">
 <li><p>
@@ -1251,12 +1264,12 @@ the function’s docstring is displayed in the help messages
 </div>
 </div>
 
-<div id="outline-container-orgc7c4e67" class="outline-3">
-<h3 id="orgc7c4e67"><span class="section-number-3">8.4</span> <b>Project Generator</b></h3>
+<div id="outline-container-org72ae397" class="outline-3">
+<h3 id="org72ae397"><span class="section-number-3">8.4</span> <b>Project Generator</b></h3>
 <div class="outline-text-3" id="text-8-4">
 </div>
-<div id="outline-container-org4dfafb2" class="outline-4">
-<h4 id="org4dfafb2"><span class="section-number-4">8.4.1</span> <b>cookiecutter</b></h4>
+<div id="outline-container-orgf67736d" class="outline-4">
+<h4 id="orgf67736d"><span class="section-number-4">8.4.1</span> <b>cookiecutter</b></h4>
 <div class="outline-text-4" id="text-8-4-1">
 <ul class="org-ul">
 <li>cookiecutter-flask</li>
@@ -1266,16 +1279,16 @@ the function’s docstring is displayed in the help messages
 </div>
 </div>
 </div>
-<div id="outline-container-org3fac3a9" class="outline-2">
-<h2 id="org3fac3a9"><span class="section-number-2">9</span> RESTful API</h2>
+<div id="outline-container-orgaa3ccd3" class="outline-2">
+<h2 id="orgaa3ccd3"><span class="section-number-2">9</span> RESTful API</h2>
 <div class="outline-text-2" id="text-9">
 </div>
-<div id="outline-container-orgf72a647" class="outline-3">
-<h3 id="orgf72a647"><span class="section-number-3">9.1</span> characteristics</h3>
+<div id="outline-container-org9ef3b59" class="outline-3">
+<h3 id="org9ef3b59"><span class="section-number-3">9.1</span> characteristics</h3>
 <div class="outline-text-3" id="text-9-1">
 </div>
-<div id="outline-container-org331c5d1" class="outline-4">
-<h4 id="org331c5d1"><span class="section-number-4">9.1.1</span> Stateless</h4>
+<div id="outline-container-org0e620d7" class="outline-4">
+<h4 id="org0e620d7"><span class="section-number-4">9.1.1</span> Stateless</h4>
 <div class="outline-text-4" id="text-9-1-1">
 <p>
 A client request must contain all the information that is necessary to carry it out.
@@ -1283,8 +1296,8 @@ The server must not store any state about the client that persists from one requ
 </p>
 </div>
 </div>
-<div id="outline-container-org7a3ef0c" class="outline-4">
-<h4 id="org7a3ef0c"><span class="section-number-4">9.1.2</span> Cache</h4>
+<div id="outline-container-org32ec67c" class="outline-4">
+<h4 id="org32ec67c"><span class="section-number-4">9.1.2</span> Cache</h4>
 <div class="outline-text-4" id="text-9-1-2">
 <p>
 Responses from the server can be labeled as <b>cacheable</b> or <b>noncacheable</b> so that
@@ -1292,16 +1305,16 @@ clients (or intermediaries between clients and servers) can use a cache for opti
 </p>
 </div>
 </div>
-<div id="outline-container-org58ac679" class="outline-4">
-<h4 id="org58ac679"><span class="section-number-4">9.1.3</span> Uniform Interface</h4>
+<div id="outline-container-orgf734071" class="outline-4">
+<h4 id="orgf734071"><span class="section-number-4">9.1.3</span> Uniform Interface</h4>
 <div class="outline-text-4" id="text-9-1-3">
 <p>
 often HTTP, HTTPs
 </p>
 </div>
 </div>
-<div id="outline-container-orgf46d333" class="outline-4">
-<h4 id="orgf46d333"><span class="section-number-4">9.1.4</span> Layered System</h4>
+<div id="outline-container-org368f467" class="outline-4">
+<h4 id="org368f467"><span class="section-number-4">9.1.4</span> Layered System</h4>
 <div class="outline-text-4" id="text-9-1-4">
 <p>
 Proxy servers, caches, or gateways can be inserted between clients and servers
@@ -1309,8 +1322,8 @@ as necessary to improve performance, reliability, and scalability.
 </p>
 </div>
 </div>
-<div id="outline-container-orgf73ee24" class="outline-4">
-<h4 id="orgf73ee24"><span class="section-number-4">9.1.5</span> Code-on-Demand</h4>
+<div id="outline-container-org234ead1" class="outline-4">
+<h4 id="org234ead1"><span class="section-number-4">9.1.5</span> Code-on-Demand</h4>
 <div class="outline-text-4" id="text-9-1-5">
 <p>
 Clients can optionally download code from the server to execute in their context.
@@ -1319,8 +1332,8 @@ Clients can optionally download code from the server to execute in their context
 </div>
 </div>
 
-<div id="outline-container-orgb4f63b3" class="outline-3">
-<h3 id="orgb4f63b3"><span class="section-number-3">9.2</span> Request Methods</h3>
+<div id="outline-container-orgee2b574" class="outline-3">
+<h3 id="orgee2b574"><span class="section-number-3">9.2</span> Request Methods</h3>
 <div class="outline-text-3" id="text-9-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -1388,8 +1401,8 @@ Clients can optionally download code from the server to execute in their context
 </table>
 </div>
 </div>
-<div id="outline-container-org4112fd0" class="outline-3">
-<h3 id="org4112fd0"><span class="section-number-3">9.3</span> URL</h3>
+<div id="outline-container-org4e573ce" class="outline-3">
+<h3 id="org4e573ce"><span class="section-number-3">9.3</span> URL</h3>
 <div class="outline-text-3" id="text-9-3">
 <p>
 <code>/api/v1.0/[collection]/[individual]</code>
@@ -1397,8 +1410,8 @@ Clients can optionally download code from the server to execute in their context
 </div>
 </div>
 
-<div id="outline-container-org7d2af9f" class="outline-3">
-<h3 id="org7d2af9f"><span class="section-number-3">9.4</span> Error Handling</h3>
+<div id="outline-container-orgad63ff9" class="outline-3">
+<h3 id="orgad63ff9"><span class="section-number-3">9.4</span> Error Handling</h3>
 <div class="outline-text-3" id="text-9-4">
 <ul class="org-ul">
 <li>200: OK</li>
@@ -1410,8 +1423,8 @@ Clients can optionally download code from the server to execute in their context
 <li>500: internal server error</li>
 </ul>
 </div>
-<div id="outline-container-org4bc4aee" class="outline-4">
-<h4 id="org4bc4aee"><span class="section-number-4">9.4.1</span> rehandle 404, 500</h4>
+<div id="outline-container-orgc89434f" class="outline-4">
+<h4 id="orgc89434f"><span class="section-number-4">9.4.1</span> rehandle 404, 500</h4>
 <div class="outline-text-4" id="text-9-4-1">
 <p>
 404/500 are generated by Flask on its own and will usually return an HTML response
@@ -1443,12 +1456,12 @@ implement rest of errors
 </div>
 </div>
 </div>
-<div id="outline-container-orgd6d0a67" class="outline-3">
-<h3 id="orgd6d0a67"><span class="section-number-3">9.5</span> Authentication</h3>
+<div id="outline-container-org9499e87" class="outline-3">
+<h3 id="org9499e87"><span class="section-number-3">9.5</span> Authentication</h3>
 <div class="outline-text-3" id="text-9-5">
 </div>
-<div id="outline-container-orgd513f84" class="outline-4">
-<h4 id="orgd513f84"><span class="section-number-4">9.5.1</span> flask-httpauth Usage</h4>
+<div id="outline-container-org3668dfd" class="outline-4">
+<h4 id="org3668dfd"><span class="section-number-4">9.5.1</span> flask-httpauth Usage</h4>
 <div class="outline-text-4" id="text-9-5-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_httpauth <span style="color: #3a81c3; font-weight: bold;">import</span> HTTPBasicAuth
@@ -1472,8 +1485,8 @@ implement rest of errors
 </div>
 </div>
 
-<div id="outline-container-org8ed9711" class="outline-4">
-<h4 id="org8ed9711"><span class="section-number-4">9.5.2</span> Token-based Authentication</h4>
+<div id="outline-container-org20c9926" class="outline-4">
+<h4 id="org20c9926"><span class="section-number-4">9.5.2</span> Token-based Authentication</h4>
 <div class="outline-text-4" id="text-9-5-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">User</span><span style="color: #3a81c3;">(</span>db.Model<span style="color: #3a81c3;">)</span>:
@@ -1483,7 +1496,7 @@ implement rest of errors
 		       expires_in=expiration<span style="color: #3a81c3;">)</span>
 	<span style="color: #3a81c3; font-weight: bold;">return</span> s.dumps<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">{</span><span style="color: #2d9574;">'id'</span>: <span style="color: #3a81c3; font-weight: bold;">self</span>.<span style="color: #3a81c3;">id</span><span style="color: #6c3163;">}</span><span style="color: #3a81c3;">)</span>
 
-    <span style="color: #ba2f59; font-weight: bold;">@staticmethod</span>
+    @<span style="color: #3a81c3;">staticmethod</span>
     <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">verify_auth_token</span><span style="color: #3a81c3;">(</span>token<span style="color: #3a81c3;">)</span>:
 	<span style="color: #715ab1;">s</span> = Serializer<span style="color: #3a81c3;">(</span>current_app.config<span style="color: #6c3163;">[</span><span style="color: #2d9574;">'SECRET_KEY'</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
 	<span style="color: #3a81c3; font-weight: bold;">try</span>:
@@ -1494,9 +1507,9 @@ implement rest of errors
 </pre>
 </div>
 </div>
-<div id="outline-container-org03c44d4" class="outline-5">
-<h5 id="org03c44d4">Verification</h5>
-<div class="outline-text-5" id="text-org03c44d4">
+<div id="outline-container-orga3780c9" class="outline-5">
+<h5 id="orga3780c9">Verification</h5>
+<div class="outline-text-5" id="text-orga3780c9">
 <ul class="org-ul">
 <li><i>app/api_1_0/authentication.py</i></li>
 </ul>
@@ -1529,8 +1542,8 @@ implement rest of errors
 </div>
 </div>
 
-<div id="outline-container-org28066a4" class="outline-4">
-<h4 id="org28066a4"><span class="section-number-4">9.5.3</span> Serializing</h4>
+<div id="outline-container-org1b78c41" class="outline-4">
+<h4 id="org1b78c41"><span class="section-number-4">9.5.3</span> Serializing</h4>
 <div class="outline-text-4" id="text-9-5-3">
 <p>
 Model should implement <b>to_json</b> method and @staticmethod <b>from_json</b>
@@ -1538,8 +1551,8 @@ Model should implement <b>to_json</b> method and @staticmethod <b>from_json</b>
 </div>
 </div>
 
-<div id="outline-container-org48f18f0" class="outline-4">
-<h4 id="org48f18f0"><span class="section-number-4">9.5.4</span> Pagination of Large Resource</h4>
+<div id="outline-container-org9d1b838" class="outline-4">
+<h4 id="org9d1b838"><span class="section-number-4">9.5.4</span> Pagination of Large Resource</h4>
 <div class="outline-text-4" id="text-9-5-4">
 <p>
 Example:
@@ -1569,8 +1582,8 @@ Example:
 </div>
 </div>
 
-<div id="outline-container-orgcfe9713" class="outline-4">
-<h4 id="orgcfe9713"><span class="section-number-4">9.5.5</span> Use httpie to test API</h4>
+<div id="outline-container-org6698f2c" class="outline-4">
+<h4 id="org6698f2c"><span class="section-number-4">9.5.5</span> Use httpie to test API</h4>
 <div class="outline-text-4" id="text-9-5-5">
 <div class="org-src-container">
 <pre class="src src-sh">http --json --auth : GET http://127.0.0.1:5000/api/v1.0/posts/
@@ -1581,12 +1594,12 @@ Example:
 </div>
 </div>
 
-<div id="outline-container-org759c06b" class="outline-2">
-<h2 id="org759c06b"><span class="section-number-2">10</span> Extensions</h2>
+<div id="outline-container-orge3d90f3" class="outline-2">
+<h2 id="orge3d90f3"><span class="section-number-2">10</span> Extensions</h2>
 <div class="outline-text-2" id="text-10">
 </div>
-<div id="outline-container-org4e69580" class="outline-3">
-<h3 id="org4e69580"><span class="section-number-3">10.1</span> flask_script</h3>
+<div id="outline-container-orgacd0560" class="outline-3">
+<h3 id="orgacd0560"><span class="section-number-3">10.1</span> flask_script</h3>
 <div class="outline-text-3" id="text-10-1">
 <p>
 Command-Line Options
@@ -1594,8 +1607,8 @@ Command-Line Options
 </div>
 </div>
 
-<div id="outline-container-org74c1e7f" class="outline-3">
-<h3 id="org74c1e7f"><span class="section-number-3">10.2</span> flask_bootstrap</h3>
+<div id="outline-container-org6c7cf66" class="outline-3">
+<h3 id="org6c7cf66"><span class="section-number-3">10.2</span> flask_bootstrap</h3>
 <div class="outline-text-3" id="text-10-2">
 <p>
 base template blocks
@@ -1606,8 +1619,8 @@ base template blocks
 </div>
 </div>
 
-<div id="outline-container-org42091c7" class="outline-3">
-<h3 id="org42091c7"><span class="section-number-3">10.3</span> flask_moment</h3>
+<div id="outline-container-orgb0011c6" class="outline-3">
+<h3 id="orgb0011c6"><span class="section-number-3">10.3</span> flask_moment</h3>
 <div class="outline-text-3" id="text-10-3">
 <ul class="org-ul">
 <li>Localization of dates and times</li>
@@ -1619,8 +1632,8 @@ client-side moment.js do the localization. <i>flask_moment</i> module integrates
 </div>
 </div>
 
-<div id="outline-container-org078f1d2" class="outline-3">
-<h3 id="org078f1d2"><span class="section-number-3">10.4</span> flask_mail</h3>
+<div id="outline-container-orge1ae803" class="outline-3">
+<h3 id="orge1ae803"><span class="section-number-3">10.4</span> flask_mail</h3>
 <div class="outline-text-3" id="text-10-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_mail <span style="color: #3a81c3; font-weight: bold;">import</span> Mail
@@ -1636,8 +1649,8 @@ client-side moment.js do the localization. <i>flask_moment</i> module integrates
 </pre>
 </div>
 </div>
-<div id="outline-container-orge39b417" class="outline-4">
-<h4 id="orge39b417"><span class="section-number-4">10.4.1</span> Simplify Mail Sending</h4>
+<div id="outline-container-org6a4b427" class="outline-4">
+<h4 id="org6a4b427"><span class="section-number-4">10.4.1</span> Simplify Mail Sending</h4>
 <div class="outline-text-4" id="text-10-4-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> flask_mail <span style="color: #3a81c3; font-weight: bold;">import</span> Message
@@ -1656,8 +1669,8 @@ client-side moment.js do the localization. <i>flask_moment</i> module integrates
 </div>
 </div>
 
-<div id="outline-container-orgf7f34f7" class="outline-4">
-<h4 id="orgf7f34f7"><span class="section-number-4">10.4.2</span> Configuration</h4>
+<div id="outline-container-org5f67a80" class="outline-4">
+<h4 id="org5f67a80"><span class="section-number-4">10.4.2</span> Configuration</h4>
 <div class="outline-text-4" id="text-10-4-2">
 <p>
 MAIL_HOSTNAME, MAIL_PORT, MAIL_USE_TLS, MAIL_USE_SSL, MAIL_USERNAME, MAIL_PASSWORD
@@ -1665,8 +1678,8 @@ MAIL_HOSTNAME, MAIL_PORT, MAIL_USE_TLS, MAIL_USE_SSL, MAIL_USERNAME, MAIL_PASSWO
 </div>
 </div>
 
-<div id="outline-container-org93eb954" class="outline-4">
-<h4 id="org93eb954"><span class="section-number-4">10.4.3</span> Asynchronous Sending</h4>
+<div id="outline-container-org7649203" class="outline-4">
+<h4 id="org7649203"><span class="section-number-4">10.4.3</span> Asynchronous Sending</h4>
 <div class="outline-text-4" id="text-10-4-3">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">thr</span> = Thread<span style="color: #3a81c3;">(</span>target=send_async_email, args=<span style="color: #6c3163;">[</span>app, msg<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
@@ -1677,8 +1690,8 @@ MAIL_HOSTNAME, MAIL_PORT, MAIL_USE_TLS, MAIL_USE_SSL, MAIL_USERNAME, MAIL_PASSWO
 </div>
 </div>
 
-<div id="outline-container-orgd056eda" class="outline-3">
-<h3 id="orgd056eda"><span class="section-number-3">10.5</span> flask_restful</h3>
+<div id="outline-container-orga22aef5" class="outline-3">
+<h3 id="orga22aef5"><span class="section-number-3">10.5</span> flask_restful</h3>
 </div>
 </div>
 </div>
