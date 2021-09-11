@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-11 Sat 10:23 -->
+<!-- 2021-09-11 Sat 23:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Intro to Descriptive Statistics</title>
+<title>Intro to Statistics</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
 <style type="text/css">
@@ -219,28 +219,25 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Intro to Descriptive Statistics</h1>
+<h1 class="title">Intro to Statistics</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7b8ad1d">1. Symbols</a>
+<li><a href="#org6337996">1. Population</a></li>
+<li><a href="#orge373846">2. Sampling Distribution</a>
 <ul>
-<li><a href="#org5289f19">1.1. Population</a></li>
-<li><a href="#org31e0673">1.2. Sampling Distribution</a></li>
+<li><a href="#orgb3682c6">2.1. Confidence Interval Bounds</a></li>
 </ul>
 </li>
+<li><a href="#org993cb04">3. Scipy Tools</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org7b8ad1d" class="outline-2">
-<h2 id="org7b8ad1d"><span class="section-number-2">1</span> Symbols</h2>
+<div id="outline-container-org6337996" class="outline-2">
+<h2 id="org6337996"><span class="section-number-2">1</span> Population</h2>
 <div class="outline-text-2" id="text-1">
-</div>
-<div id="outline-container-org5289f19" class="outline-3">
-<h3 id="org5289f19"><span class="section-number-3">1.1</span> Population</h3>
-<div class="outline-text-3" id="text-1-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -264,9 +261,9 @@
 </div>
 </div>
 
-<div id="outline-container-org31e0673" class="outline-3">
-<h3 id="org31e0673"><span class="section-number-3">1.2</span> Sampling Distribution</h3>
-<div class="outline-text-3" id="text-1-2">
+<div id="outline-container-orge373846" class="outline-2">
+<h2 id="orge373846"><span class="section-number-2">2</span> Sampling Distribution</h2>
+<div class="outline-text-2" id="text-2">
 <dl class="org-dl">
 <dt>Sampling Distribution</dt><dd>Distribution of sample means</dd>
 </dl>
@@ -300,22 +297,82 @@
 </tr>
 
 <tr>
-<td class="org-left">\(SE\)</td>
+<td class="org-left">\(SE\)(Standard Error)</td>
 <td class="org-left">standard deviation of sample means</td>
-</tr>
-
-<tr>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">&#xa0;</td>
 </tr>
 </tbody>
 </table>
 <ul class="org-ul">
 <li>\(M=\frac{1}{n}\sum_{i=1}^{n}\bar{X_i}\)</li>
 <li>Ratio of \(\sigma\) to \(SE\): \(\frac{\sigma}{SE}=\sqrt{n}\)</li>
+<li>Margin of Error: \(1.96SE = \frac{1.96\sigma}{\sqrt{n}}\) 95%</li>
 <li><b>Central Limit Theorem</b>
 \[SE=\frac{\sigma}{\sqrt{n}}\]</li>
 </ul>
+</div>
+
+<div id="outline-container-orgb3682c6" class="outline-3">
+<h3 id="orgb3682c6"><span class="section-number-3">2.1</span> Confidence Interval Bounds</h3>
+<div class="outline-text-3" id="text-2-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">z-score(critical value)</th>
+<th scope="col" class="org-right">CI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">\(\pm 1.96\)</td>
+<td class="org-right">95%</td>
+</tr>
+
+<tr>
+<td class="org-left">\(\pm 2.33\)</td>
+<td class="org-right">98%</td>
+</tr>
+</tbody>
+</table>
+<p>
+\(\bar{X_i}\) should be in \((\mu-1.96SE, \mu+1.96SE)\), then 95% Confidence Interval is:
+\[\bar{X_i}-1.96SE<\mu<\bar{X_i}+1.96SE\]
+</p>
+<ul class="org-ul">
+<li>95% CI with the bigger sample size -&gt; the smaller CI bounds</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org993cb04" class="outline-2">
+<h2 id="org993cb04"><span class="section-number-2">3</span> Scipy Tools</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> scipy.stats <span style="color: #3a81c3; font-weight: bold;">import</span> norm
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">98% CI to z-score</span>
+norm.ppf<span style="color: #3a81c3;">(</span>0.01+0.98<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 2.3263478740408408</span>
+norm.ppf<span style="color: #3a81c3;">(</span>0.01<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; -2.3263478740408408</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">z-score to cdf, reverse of ppf</span>
+norm.cdf<span style="color: #3a81c3;">(</span>2.3263478740408408<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.99</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">z-score to sf, sf=1-cdf</span>
+norm.sf<span style="color: #3a81c3;">(</span>2.3263478740408408<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.01</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#  </span><span style="color: #dc752f; background-color: #ecf3ec;">TODO</span><span style="color: #2aa1ae; background-color: #ecf3ec;">: pdf</span>
+</pre>
 </div>
 </div>
 </div>

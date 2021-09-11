@@ -1,0 +1,51 @@
+#+TITLE: Intro to Statistics
+#+OPTIONS: H:3 toc:2 num:3 ^:nil
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+
+* Population
+   | $\mu$    | mean(expected value) |
+   | $\sigma$ | standard deviation   |
+
+* Sampling Distribution
+   - Sampling Distribution :: Distribution of sample means
+   | $X_i$                | Variable in Sample i               |
+   | $\bar{X_i}$          | sample mean                        |
+   | $n$                  | number of samples                  |
+   | $M$                  | mean of sample means               |
+   | $SE$(Standard Error) | standard deviation of sample means |
+   - $M=\frac{1}{n}\sum_{i=1}^{n}\bar{X_i}$
+   - Ratio of $\sigma$ to $SE$: $\frac{\sigma}{SE}=\sqrt{n}$
+   - Margin of Error: $1.96SE = \frac{1.96\sigma}{\sqrt{n}}$ 95%
+   - *Central Limit Theorem*
+     $$SE=\frac{\sigma}{\sqrt{n}}$$
+
+** Confidence Interval Bounds
+   | z-score(critical value)  |  CI |
+   |--------------------------+-----|
+   | $\pm 1.96$               | 95% |
+   | $\pm 2.33$               | 98% |
+   $\bar{X_i}$ should be in $(\mu-1.96SE, \mu+1.96SE)$, then 95% Confidence Interval is:
+   $$\bar{X_i}-1.96SE<\mu<\bar{X_i}+1.96SE$$
+   - 95% CI with the bigger sample size -> the smaller CI bounds
+
+* Scipy Tools
+  #+begin_src python
+    from scipy.stats import norm
+
+    # 98% CI to z-score
+    norm.ppf(0.01+0.98)
+    # => 2.3263478740408408
+    norm.ppf(0.01)
+    # => -2.3263478740408408
+
+    # z-score to cdf, reverse of ppf
+    norm.cdf(2.3263478740408408)
+    # => 0.99
+
+    # z-score to sf, sf=1-cdf
+    norm.sf(2.3263478740408408)
+    # => 0.01
+
+    #  TODO: pdf
+  #+end_src
