@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-13 Mon 11:17 -->
+<!-- 2021-09-13 Mon 16:33 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Intro to Statistics</title>
@@ -224,7 +224,7 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org779b5ad">1. Population</a></li>
+<li><a href="#org3a86444">1. Symbols</a></li>
 <li><a href="#org39dfca6">2. Sampling Distribution</a>
 <ul>
 <li><a href="#org56ddc6b">2.1. Confidence Interval Bounds</a></li>
@@ -236,15 +236,21 @@
 <li><a href="#org6d4f7bf">3.2. Critical Region</a></li>
 <li><a href="#org2323191">3.3. Hypotheses</a></li>
 <li><a href="#org3351a7c">3.4. Statistical Decision Errors</a></li>
+<li><a href="#org62d0deb">3.5. t-Tests</a></li>
 </ul>
 </li>
-<li><a href="#orgb278efe">4. Scipy Tools</a></li>
+<li><a href="#orgb278efe">4. Scipy Tools</a>
+<ul>
+<li><a href="#org2e6bc14">4.1. Normal Distribution</a></li>
+<li><a href="#org851b931">4.2. t-Distribution</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org779b5ad" class="outline-2">
-<h2 id="org779b5ad"><span class="section-number-2">1</span> Population</h2>
+<div id="outline-container-org3a86444" class="outline-2">
+<h2 id="org3a86444"><span class="section-number-2">1</span> Symbols</h2>
 <div class="outline-text-2" id="text-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -264,11 +270,43 @@
 <td class="org-left">\(\sigma\)</td>
 <td class="org-left">standard deviation</td>
 </tr>
+
+<tr>
+<td class="org-left">\(\hat\mu\)</td>
+<td class="org-left">estimated population mean</td>
+</tr>
+
+<tr>
+<td class="org-left">\(\hat\sigma\)</td>
+<td class="org-left">estimated population sd</td>
+</tr>
+
+<tr>
+<td class="org-left">\(\bar{X_i}\)</td>
+<td class="org-left">one sample \(X_i\)'s mean</td>
+</tr>
+
+<tr>
+<td class="org-left">\(s\)</td>
+<td class="org-left">sample sd</td>
+</tr>
+
+<tr>
+<td class="org-left">\(n\)</td>
+<td class="org-left">sample size</td>
+</tr>
 </tbody>
 </table>
+<ul class="org-ul">
+<li>\(\hat\mu=\bar{X_i}\)</li>
+<li>Bessel's correction
+\[\hat\sigma=\sqrt\frac{\sum_{i=1}^n(x_i-\bar{x})}{n-1}\]
+<ul class="org-ul">
+<li>\(n-1\): effective sample size</li>
+</ul></li>
+</ul>
 </div>
 </div>
-
 
 <div id="outline-container-org39dfca6" class="outline-2">
 <h2 id="org39dfca6"><span class="section-number-2">2</span> Sampling Distribution</h2>
@@ -391,7 +429,7 @@ For one-tailed test
 </p>
 
 
-<div id="org77ad11c" class="figure">
+<div id="orgd7085f3" class="figure">
 <p><img src="../resources/MOOC/Statistics/CriticalRegionOneTailed.png" alt="CriticalRegionOneTailed.png" />
 </p>
 </div></li>
@@ -401,7 +439,7 @@ For two-tailed test
 </p>
 
 
-<div id="orgf8a84cc" class="figure">
+<div id="org2a0537f" class="figure">
 <p><img src="../resources/MOOC/Statistics/CriticalRegionTwoTailed.png" alt="CriticalRegionTwoTailed.png" />
 </p>
 </div></li>
@@ -434,7 +472,7 @@ For two-tailed test
 <div class="outline-text-4" id="text-3-3-1">
 <ul class="org-ul">
 <li>\(H_0\): Most dogs have four legs. (Most = more than 50%)</li>
-<li>\(H_a\): Most dogs have less than four legs.(one-tailed Test)</li>
+<li>\(H_A\): Most dogs have less than four legs.(one-tailed Test)</li>
 <li>Sample: 10 dogs, all have four legs. (fail to reject \(H_0\))</li>
 <li>Sample: 10 dogs, 6 dogs have three legs. (reject \(H_0\))</li>
 </ul>
@@ -477,11 +515,74 @@ For two-tailed test
 </table>
 </div>
 </div>
+
+<div id="outline-container-org62d0deb" class="outline-3">
+<h3 id="org62d0deb"><span class="section-number-3">3.5</span> t-Tests</h3>
+<div class="outline-text-3" id="text-3-5">
+</div>
+<div id="outline-container-orgef94728" class="outline-4">
+<h4 id="orgef94728"><span class="section-number-4">3.5.1</span> t-Distribution</h4>
+<div class="outline-text-4" id="text-3-5-1">
+<p>
+Since we don't know the population standard deviation \(\sigma\),
+we use sample standard deviation \(s\) to calculate \(SE\). It's more prone to error.
+It's more spread out and thicker in the tails than a normal distribution.
+<img src="../resources/MOOC/Statistics/t-Distribution.png" alt="t-Distribution.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdaf7aa7" class="outline-4">
+<h4 id="orgdaf7aa7"><span class="section-number-4">3.5.2</span> Degrees of Freedom</h4>
+<div class="outline-text-4" id="text-3-5-2">
+<ul class="org-ul">
+<li>Example1: You have to choose n numbers from all natural numbers.(\(DF=n\))</li>
+<li>Example2: You have n numbers that must sum to 10. (\(DF=n-1\))</li>
+<li>Example3: \(DF=4\)
+<img src="../resources/MOOC/Statistics/DegreesOfFreedom.png" alt="DegreesOfFreedom.png" /></li>
+<li>Related to estimated population sd: \(x_1+x_2+...+x_n=\bar{x}\cdot{n}\) (to get \(\bar{x}\cdot{n}\) -&gt; \(DF=n-1\))
+<ul class="org-ul">
+<li>Only \(n-1\) values are independent <b>after</b> we know the mean.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org290bcf5" class="outline-4">
+<h4 id="org290bcf5"><span class="section-number-4">3.5.3</span> P-Value</h4>
+<div class="outline-text-4" id="text-3-5-3">
+
+<div id="org07bcb1e" class="figure">
+<p><img src="../resources/MOOC/Statistics/P-Value.png" alt="P-Value.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7a7bc61" class="outline-4">
+<h4 id="org7a7bc61"><span class="section-number-4">3.5.4</span> One Sample t-Test</h4>
+<div class="outline-text-4" id="text-3-5-4">
+<p>
+\[t=\frac{\hat\mu-\mu_0}{\hat\sigma/\sqrt{n}}\]
+</p>
+<ul class="org-ul">
+<li>\(\mu_0\) is some specified value.</li>
+<li>\(H_0\): \(\mu = \mu_0\)</li>
+<li>\(H_A\): \(\mu < \mu_0\), \(\mu > \mu_0\), \(\mu \neq \mu_0\)</li>
+<li>Cohen's d: \(d=\frac{\hat\mu-\mu_0}{\hat\sigma}\)</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 
 <div id="outline-container-orgb278efe" class="outline-2">
 <h2 id="orgb278efe"><span class="section-number-2">4</span> Scipy Tools</h2>
 <div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org2e6bc14" class="outline-3">
+<h3 id="org2e6bc14"><span class="section-number-3">4.1</span> Normal Distribution</h3>
+<div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> scipy.stats <span style="color: #3a81c3; font-weight: bold;">import</span> norm
 
@@ -499,8 +600,37 @@ norm.cdf<span style="color: #3a81c3;">(</span>2.3263478740408408<span style="col
 norm.sf<span style="color: #3a81c3;">(</span>2.3263478740408408<span style="color: #3a81c3;">)</span>
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.01 # alpha level for one-tailed test</span>
 
-<span style="color: #2aa1ae; background-color: #ecf3ec;">#  </span><span style="color: #dc752f; background-color: #ecf3ec;">TODO</span><span style="color: #2aa1ae; background-color: #ecf3ec;">: pdf</span>
+norm.pdf<span style="color: #3a81c3;">(</span>2.3263478740408408<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.02665214220345808</span>
 </pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org851b931" class="outline-3">
+<h3 id="org851b931"><span class="section-number-3">4.2</span> t-Distribution</h3>
+<div class="outline-text-3" id="text-4-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> scipy.stats <span style="color: #3a81c3; font-weight: bold;">import</span> t
+
+<span style="color: #715ab1;">df</span> = 19 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Degrees of Freedom</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">98% CI to t-statistic</span>
+t.ppf<span style="color: #3a81c3;">(</span>0.01+0.98, df<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 2.539483190622288</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">t-statistic to cdf</span>
+t.cdf<span style="color: #3a81c3;">(</span>2.539483190622288, df<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.9899999999999646 ~ 0.99</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">t-statistic to sf, sf=1-cdf</span>
+t.sf<span style="color: #3a81c3;">(</span>2.539483190622288, df<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.01</span>
+
+t.pdf<span style="color: #3a81c3;">(</span>2.539483190622288, df<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.021185141747626802</span>
+</pre>
+</div>
 </div>
 </div>
 </div>

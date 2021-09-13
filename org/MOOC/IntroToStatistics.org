@@ -3,10 +3,18 @@
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
 
-* Population
-   | $\mu$    | mean(expected value) |
-   | $\sigma$ | standard deviation   |
-
+* Symbols
+   | $\mu$        | mean(expected value)      |
+   | $\sigma$     | standard deviation        |
+   | $\hat\mu$    | estimated population mean |
+   | $\hat\sigma$ | estimated population sd   |
+   | $\bar{X_i}$  | one sample $X_i$'s mean   |
+   | $s$          | sample sd                 |
+   | $n$          | sample size               |
+   - $\hat\mu=\bar{X_i}$
+   - Bessel's correction
+     $$\hat\sigma=\sqrt\frac{\sum_{i=1}^n(x_i-\bar{x})}{n-1}$$
+     - $n-1$: effective sample size
 
 * Sampling Distribution
    - Sampling Distribution :: Distribution of sample means
@@ -61,7 +69,7 @@
 
 *** Example
     - $H_0$: Most dogs have four legs. (Most = more than 50%)
-    - $H_a$: Most dogs have less than four legs.(one-tailed Test)
+    - $H_A$: Most dogs have less than four legs.(one-tailed Test)
     - Sample: 10 dogs, all have four legs. (fail to reject $H_0$)
     - Sample: 10 dogs, 6 dogs have three legs. (reject $H_0$)
 
@@ -70,7 +78,36 @@
    | real world $H_0$ *True*  | Type I Error | Correct       |
    | real world $H_0$ *False* | Correct      | Type II Error |
 
+** t-Tests
+*** t-Distribution
+    Since we don't know the population standard deviation $\sigma$,
+    we use sample standard deviation $s$ to calculate $SE$. It's more prone to error.
+    It's more spread out and thicker in the tails than a normal distribution.
+    [[../resources/MOOC/Statistics/t-Distribution.png]]
+
+*** Degrees of Freedom
+    - Example1: You have to choose n numbers from all natural numbers.($DF=n$)
+    - Example2: You have n numbers that must sum to 10. ($DF=n-1$)
+    - Example3: $DF=4$
+      [[../resources/MOOC/Statistics/DegreesOfFreedom.png]]
+    - Related to estimated population sd: $x_1+x_2+...+x_n=\bar{x}\cdot{n}$ (to get $\bar{x}\cdot{n}$ -> $DF=n-1$)
+      - Only $n-1$ values are independent *after* we know the mean.
+
+*** P-Value
+    [[../resources/MOOC/Statistics/P-Value.png]]
+
+*** One Sample t-Test
+    $$t=\frac{\hat\mu-\mu_0}{\hat\sigma/\sqrt{n}}$$
+    - $\mu_0$ is some specified value.
+    - $H_0$: $\mu = \mu_0$
+    - $H_A$: $\mu < \mu_0$, $\mu > \mu_0$, $\mu \neq \mu_0$
+    - Cohen's d: $d=\frac{\hat\mu-\mu_0}{\hat\sigma}$
+
+*** Dependent t-Test
+    # TODO
+
 * Scipy Tools
+** Normal Distribution
   #+begin_src python
     from scipy.stats import norm
 
@@ -88,5 +125,30 @@
     norm.sf(2.3263478740408408)
     # => 0.01 # alpha level for one-tailed test
 
-    #  TODO: pdf
+    norm.pdf(2.3263478740408408)
+    # => 0.02665214220345808
   #+end_src
+
+** t-Distribution
+   #+begin_src python
+     from scipy.stats import t
+
+     df = 19 # Degrees of Freedom
+
+     # 98% CI to t-statistic
+     t.ppf(0.01+0.98, df)
+     # => 2.539483190622288
+
+     # t-statistic to cdf
+     t.cdf(2.539483190622288, df)
+     # => 0.9899999999999646 ~ 0.99
+
+     # t-statistic to sf, sf=1-cdf
+     t.sf(2.539483190622288, df)
+     # => 0.01
+
+     t.pdf(2.539483190622288, df)
+     # => 0.021185141747626802
+   #+end_src
+
+# TODO: Lesson 6 31
