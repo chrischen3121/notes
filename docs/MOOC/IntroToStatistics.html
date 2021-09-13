@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-11 Sat 23:50 -->
+<!-- 2021-09-13 Mon 11:17 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Intro to Statistics</title>
@@ -224,19 +224,27 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6337996">1. Population</a></li>
-<li><a href="#orge373846">2. Sampling Distribution</a>
+<li><a href="#org779b5ad">1. Population</a></li>
+<li><a href="#org39dfca6">2. Sampling Distribution</a>
 <ul>
-<li><a href="#orgb3682c6">2.1. Confidence Interval Bounds</a></li>
+<li><a href="#org56ddc6b">2.1. Confidence Interval Bounds</a></li>
 </ul>
 </li>
-<li><a href="#org993cb04">3. Scipy Tools</a></li>
+<li><a href="#org61bd542">3. Hypothesis Testing</a>
+<ul>
+<li><a href="#org3a95436">3.1. \(\alpha\) Levels</a></li>
+<li><a href="#org6d4f7bf">3.2. Critical Region</a></li>
+<li><a href="#org2323191">3.3. Hypotheses</a></li>
+<li><a href="#org3351a7c">3.4. Statistical Decision Errors</a></li>
+</ul>
+</li>
+<li><a href="#orgb278efe">4. Scipy Tools</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6337996" class="outline-2">
-<h2 id="org6337996"><span class="section-number-2">1</span> Population</h2>
+<div id="outline-container-org779b5ad" class="outline-2">
+<h2 id="org779b5ad"><span class="section-number-2">1</span> Population</h2>
 <div class="outline-text-2" id="text-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -261,8 +269,9 @@
 </div>
 </div>
 
-<div id="outline-container-orge373846" class="outline-2">
-<h2 id="orge373846"><span class="section-number-2">2</span> Sampling Distribution</h2>
+
+<div id="outline-container-org39dfca6" class="outline-2">
+<h2 id="org39dfca6"><span class="section-number-2">2</span> Sampling Distribution</h2>
 <div class="outline-text-2" id="text-2">
 <dl class="org-dl">
 <dt>Sampling Distribution</dt><dd>Distribution of sample means</dd>
@@ -305,14 +314,18 @@
 <ul class="org-ul">
 <li>\(M=\frac{1}{n}\sum_{i=1}^{n}\bar{X_i}\)</li>
 <li>Ratio of \(\sigma\) to \(SE\): \(\frac{\sigma}{SE}=\sqrt{n}\)</li>
-<li>Margin of Error: \(1.96SE = \frac{1.96\sigma}{\sqrt{n}}\) 95%</li>
+<li>Margin of Error: \(z\cdot\frac{\sigma}{\sqrt{n}}\). it's half the width of the confidence interval.
+<ul class="org-ul">
+<li>e.g. for 95% CI: Margin of Error \(= 1.96SE = \frac{1.96\sigma}{\sqrt{n}}\)</li>
+</ul></li>
 <li><b>Central Limit Theorem</b>
 \[SE=\frac{\sigma}{\sqrt{n}}\]</li>
+<li>z score of sample mean: \(z=\frac{\bar{X_i} - \mu}{SE}\)</li>
 </ul>
 </div>
 
-<div id="outline-container-orgb3682c6" class="outline-3">
-<h3 id="orgb3682c6"><span class="section-number-3">2.1</span> Confidence Interval Bounds</h3>
+<div id="outline-container-org56ddc6b" class="outline-3">
+<h3 id="org56ddc6b"><span class="section-number-3">2.1</span> Confidence Interval Bounds</h3>
 <div class="outline-text-3" id="text-2-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -351,9 +364,124 @@
 </div>
 </div>
 
-<div id="outline-container-org993cb04" class="outline-2">
-<h2 id="org993cb04"><span class="section-number-2">3</span> Scipy Tools</h2>
+<div id="outline-container-org61bd542" class="outline-2">
+<h2 id="org61bd542"><span class="section-number-2">3</span> Hypothesis Testing</h2>
 <div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org3a95436" class="outline-3">
+<h3 id="org3a95436"><span class="section-number-3">3.1</span> \(\alpha\) Levels</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Levels of Likelihood. \(\alpha\) level is a criterion for deciding whether or not something is likely or unlikely.
+</p>
+<ul class="org-ul">
+<li>5% (generally used)</li>
+<li>1%</li>
+<li>0.1%</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6d4f7bf" class="outline-3">
+<h3 id="org6d4f7bf"><span class="section-number-3">3.2</span> Critical Region</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li><p>
+For one-tailed test
+</p>
+
+
+<div id="org77ad11c" class="figure">
+<p><img src="../resources/MOOC/Statistics/CriticalRegionOneTailed.png" alt="CriticalRegionOneTailed.png" />
+</p>
+</div></li>
+
+<li><p>
+For two-tailed test
+</p>
+
+
+<div id="orgf8a84cc" class="figure">
+<p><img src="../resources/MOOC/Statistics/CriticalRegionTwoTailed.png" alt="CriticalRegionTwoTailed.png" />
+</p>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2323191" class="outline-3">
+<h3 id="org2323191"><span class="section-number-3">3.3</span> Hypotheses</h3>
+<div class="outline-text-3" id="text-3-3">
+<ul class="org-ul">
+<li>\(\mu_I\) is the population parameters after the <b>intervention</b>. (干预后的实验)</li>
+<li>\(H_0\) (Null Hypothesis): \(\mu\approx\mu_I\) (no significant difference)
+<ul class="org-ul">
+<li>\(\mu_I\) is not in critical region</li>
+</ul></li>
+<li>\(H_a\) (Alternative Hypothesis), or \(H_1\)
+<ul class="org-ul">
+<li>\(\mu_I\) is in critical region</li>
+<li>\[\mu\not\approx\mu_I\]</li>
+<li>\(\mu\lt\mu_I\) \(\mu_I\) is in the one-tailed right critical region</li>
+<li>\(\mu\gt\mu_I\) one-tailed left critical region</li>
+<li>\(\mu\neq\mu_I\) two-tailed</li>
+</ul></li>
+</ul>
+</div>
+
+<div id="outline-container-org1d5125c" class="outline-4">
+<h4 id="org1d5125c"><span class="section-number-4">3.3.1</span> Example</h4>
+<div class="outline-text-4" id="text-3-3-1">
+<ul class="org-ul">
+<li>\(H_0\): Most dogs have four legs. (Most = more than 50%)</li>
+<li>\(H_a\): Most dogs have less than four legs.(one-tailed Test)</li>
+<li>Sample: 10 dogs, all have four legs. (fail to reject \(H_0\))</li>
+<li>Sample: 10 dogs, 6 dogs have three legs. (reject \(H_0\))</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3351a7c" class="outline-3">
+<h3 id="org3351a7c"><span class="section-number-3">3.4</span> Statistical Decision Errors</h3>
+<div class="outline-text-3" id="text-3-4">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">Reject \(H_0\)</td>
+<td class="org-left">Retain \(H_0\)</td>
+</tr>
+
+<tr>
+<td class="org-left">real world \(H_0\) <b>True</b></td>
+<td class="org-left">Type I Error</td>
+<td class="org-left">Correct</td>
+</tr>
+
+<tr>
+<td class="org-left">real world \(H_0\) <b>False</b></td>
+<td class="org-left">Correct</td>
+<td class="org-left">Type II Error</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb278efe" class="outline-2">
+<h2 id="orgb278efe"><span class="section-number-2">4</span> Scipy Tools</h2>
+<div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> scipy.stats <span style="color: #3a81c3; font-weight: bold;">import</span> norm
 
@@ -369,7 +497,7 @@ norm.cdf<span style="color: #3a81c3;">(</span>2.3263478740408408<span style="col
 
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">z-score to sf, sf=1-cdf</span>
 norm.sf<span style="color: #3a81c3;">(</span>2.3263478740408408<span style="color: #3a81c3;">)</span>
-<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.01</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; 0.01 # alpha level for one-tailed test</span>
 
 <span style="color: #2aa1ae; background-color: #ecf3ec;">#  </span><span style="color: #dc752f; background-color: #ecf3ec;">TODO</span><span style="color: #2aa1ae; background-color: #ecf3ec;">: pdf</span>
 </pre>

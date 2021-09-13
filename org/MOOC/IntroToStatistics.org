@@ -7,18 +7,21 @@
    | $\mu$    | mean(expected value) |
    | $\sigma$ | standard deviation   |
 
+
 * Sampling Distribution
    - Sampling Distribution :: Distribution of sample means
-   | $X_i$                | Variable in Sample i               |
-   | $\bar{X_i}$          | sample mean                        |
-   | $n$                  | number of samples                  |
-   | $M$                  | mean of sample means               |
-   | $SE$(Standard Error) | standard deviation of sample means |
+   | $X_i$                   | Variable in Sample i               |
+   | $\bar{X_i}$             | sample mean                        |
+   | $n$                     | number of samples                  |
+   | $M$                     | mean of sample means               |
+   | $SE$(Standard Error)    | standard deviation of sample means |
    - $M=\frac{1}{n}\sum_{i=1}^{n}\bar{X_i}$
    - Ratio of $\sigma$ to $SE$: $\frac{\sigma}{SE}=\sqrt{n}$
-   - Margin of Error: $1.96SE = \frac{1.96\sigma}{\sqrt{n}}$ 95%
+   - Margin of Error: $z\cdot\frac{\sigma}{\sqrt{n}}$. it's half the width of the confidence interval.
+     - e.g. for 95% CI: Margin of Error $= 1.96SE = \frac{1.96\sigma}{\sqrt{n}}$
    - *Central Limit Theorem*
      $$SE=\frac{\sigma}{\sqrt{n}}$$
+   - z score of sample mean: $z=\frac{\bar{X_i} - \mu}{SE}$
 
 ** Confidence Interval Bounds
    | z-score(critical value)  |  CI |
@@ -28,6 +31,44 @@
    $\bar{X_i}$ should be in $(\mu-1.96SE, \mu+1.96SE)$, then 95% Confidence Interval is:
    $$\bar{X_i}-1.96SE<\mu<\bar{X_i}+1.96SE$$
    - 95% CI with the bigger sample size -> the smaller CI bounds
+
+* Hypothesis Testing
+** $\alpha$ Levels
+   Levels of Likelihood. $\alpha$ level is a criterion for deciding whether or not something is likely or unlikely.
+   - 5% (generally used)
+   - 1%
+   - 0.1%
+
+** Critical Region
+   - For one-tailed test
+
+     [[../resources/MOOC/Statistics/CriticalRegionOneTailed.png]]
+
+   - For two-tailed test
+
+     [[../resources/MOOC/Statistics/CriticalRegionTwoTailed.png]]
+
+** Hypotheses
+   - $\mu_I$ is the population parameters after the *intervention*. (干预后的实验)
+   - $H_0$ (Null Hypothesis): $\mu\approx\mu_I$ (no significant difference)
+     - $\mu_I$ is not in critical region
+   - $H_a$ (Alternative Hypothesis), or $H_1$
+     - $\mu_I$ is in critical region
+     - $$\mu\not\approx\mu_I$$
+     - $\mu\lt\mu_I$ $\mu_I$ is in the one-tailed right critical region
+     - $\mu\gt\mu_I$ one-tailed left critical region
+     - $\mu\neq\mu_I$ two-tailed
+
+*** Example
+    - $H_0$: Most dogs have four legs. (Most = more than 50%)
+    - $H_a$: Most dogs have less than four legs.(one-tailed Test)
+    - Sample: 10 dogs, all have four legs. (fail to reject $H_0$)
+    - Sample: 10 dogs, 6 dogs have three legs. (reject $H_0$)
+
+** Statistical Decision Errors
+   |                          | Reject $H_0$ | Retain $H_0$  |
+   | real world $H_0$ *True*  | Type I Error | Correct       |
+   | real world $H_0$ *False* | Correct      | Type II Error |
 
 * Scipy Tools
   #+begin_src python
@@ -45,7 +86,7 @@
 
     # z-score to sf, sf=1-cdf
     norm.sf(2.3263478740408408)
-    # => 0.01
+    # => 0.01 # alpha level for one-tailed test
 
     #  TODO: pdf
   #+end_src
