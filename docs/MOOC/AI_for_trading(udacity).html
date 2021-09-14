@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-14 Tue 11:49 -->
+<!-- 2021-09-14 Tue 17:14 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AI for Trading</title>
@@ -252,19 +252,29 @@
 <li><a href="#orge43d401">4.2. Momentum Indicators</a></li>
 </ul>
 </li>
-<li><a href="#orga96a77a">5. Trading Strategy</a>
+<li><a href="#orgcf7db93">5. Trading Strategies</a>
 <ul>
-<li><a href="#org5402551">5.1. Alpha Research</a></li>
-<li><a href="#org1fc6e97">5.2. Momentum Strategy Example</a></li>
+<li><a href="#orgfcc8319">5.1. Types of Trading Strategies</a></li>
+<li><a href="#orgeae4a51">5.2. Process of Cross-sectional Strategies</a></li>
+<li><a href="#org938a241">5.3. Alpha Research Flow</a></li>
+<li><a href="#org1fc6e97">5.4. Momentum Strategy Example</a></li>
 </ul>
 </li>
-<li><a href="#org75c118e">6. Terms</a></li>
-<li><a href="#org21eb087">7. Insights</a>
+<li><a href="#org07ee644">6. Risks</a></li>
+<li><a href="#org678d98b">7. Financial Data Processing</a>
 <ul>
-<li><a href="#org0c997ad">7.1. Why Invest in Complex Black-box Models?</a></li>
+<li><a href="#orge24087f">7.1. Outliers</a></li>
+<li><a href="#org2d8ee48">7.2. Filtering</a></li>
 </ul>
 </li>
-<li><a href="#orgff64afe">8. Stars</a></li>
+<li><a href="#org75c118e">8. Terms</a></li>
+<li><a href="#org21eb087">9. Insights</a>
+<ul>
+<li><a href="#org0c997ad">9.1. Why Invest in Complex Black-box Models?</a></li>
+</ul>
+</li>
+<li><a href="#orgaff44db">10. Quant Workflow</a></li>
+<li><a href="#orgff64afe">11. Stars</a></li>
 </ul>
 </div>
 </div>
@@ -538,7 +548,6 @@ The best model will depend on exactly what your analysis seeks to achieve.
 </div>
 </div>
 
-
 <div id="outline-container-org9ca11e6" class="outline-2">
 <h2 id="org9ca11e6"><span class="section-number-2">4</span> Indicators</h2>
 <div class="outline-text-2" id="text-4">
@@ -551,7 +560,7 @@ The best model will depend on exactly what your analysis seeks to achieve.
 <h4 id="org9c57cc6"><span class="section-number-4">4.1.1</span> Bollinger Bands</h4>
 <div class="outline-text-4" id="text-4-1-1">
 
-<div id="org5beb269" class="figure">
+<div id="orgfa1fbb0" class="figure">
 <p><img src="../resources/Trading/bollinger_bands.png" alt="bollinger_bands.png" />
 </p>
 </div>
@@ -571,25 +580,70 @@ The best model will depend on exactly what your analysis seeks to achieve.
 </div>
 </div>
 
-<div id="outline-container-orga96a77a" class="outline-2">
-<h2 id="orga96a77a"><span class="section-number-2">5</span> Trading Strategy</h2>
+<div id="outline-container-orgcf7db93" class="outline-2">
+<h2 id="orgcf7db93"><span class="section-number-2">5</span> Trading Strategies</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org5402551" class="outline-3">
-<h3 id="org5402551"><span class="section-number-3">5.1</span> Alpha Research</h3>
+<div id="outline-container-orgfcc8319" class="outline-3">
+<h3 id="orgfcc8319"><span class="section-number-3">5.1</span> Types of Trading Strategies</h3>
 <div class="outline-text-3" id="text-5-1">
 <ol class="org-ol">
+<li>Single Asset Strategies</li>
+<li>Pairwise Strategies</li>
+<li>Cross-sectional Strategies(statistical arbitrage, market neutral investing): use group of assets</li>
+<li>Alternative Data Based Strategies: Satellite Imagery, Social Media, Geolocation, Consumer Transaction Data</li>
+</ol>
+
+<p>
+Large hedge funds are most interested in 3 and 4, large hedge funds seek:
+</p>
+<ul class="org-ul">
+<li>High capacity -&gt; 3</li>
+<li>New, different ideas -&gt; 4
+<ul class="org-ul">
+<li>Hedge funds hope to uncover signals in hard-to-find, expensive and difficult to work with data.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgeae4a51" class="outline-3">
+<h3 id="orgeae4a51"><span class="section-number-3">5.2</span> Process of Cross-sectional Strategies</h3>
+<div class="outline-text-3" id="text-5-2">
+
+<div id="org1d5a081" class="figure">
+<p><img src="../resources/Trading/cross_sectional.png" alt="cross_sectional.png" />
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org938a241" class="outline-3">
+<h3 id="org938a241"><span class="section-number-3">5.3</span> Alpha Research Flow</h3>
+<div class="outline-text-3" id="text-5-3">
+<ol class="org-ol">
 <li>Observation: Find a pattern that seems to be recurring in the market over time.</li>
-<li>Turn the observation into an expression, both mathematically and programmatically.</li>
+<li>Turn the observation into Alpha(an expression), both mathematically and programmatically.</li>
+<li>(Alpha Combination: To combine several Alphas into an overall Alpha).
+<ul class="org-ul">
+<li>Important step in modern markets</li>
+<li>Try to combine <b>different</b> inputs: e.g. Momentum alpha + Fundamental alpha</li>
+</ul></li>
 <li>Use historical data to verify it.</li>
 <li>Define strategy in more detailed manner, then run full backtesting exercises.</li>
 </ol>
+
+
+<p>
+Videos: <a href="https://youtu.be/cnJK8c2zfq4">Part1</a> <a href="https://youtu.be/v3w4JZKQixc">Part2</a> <a href="https://youtu.be/vSxnkduTWWY">Part3</a>
+</p>
 </div>
 </div>
 
 <div id="outline-container-org1fc6e97" class="outline-3">
-<h3 id="org1fc6e97"><span class="section-number-3">5.2</span> Momentum Strategy Example</h3>
-<div class="outline-text-3" id="text-5-2">
+<h3 id="org1fc6e97"><span class="section-number-3">5.4</span> Momentum Strategy Example</h3>
+<div class="outline-text-3" id="text-5-4">
 <ol class="org-ol">
 <li>Choose a stock universe (attention: avoid <b>Survivorship Bias</b>)</li>
 <li>Re-sample prices if needed, then compute log returns.</li>
@@ -600,8 +654,8 @@ The best model will depend on exactly what your analysis seeks to achieve.
 </div>
 
 <div id="outline-container-org7f9d1f2" class="outline-4">
-<h4 id="org7f9d1f2"><span class="section-number-4">5.2.1</span> Statistical Analysis</h4>
-<div class="outline-text-4" id="text-5-2-1">
+<h4 id="org7f9d1f2"><span class="section-number-4">5.4.1</span> Statistical Analysis</h4>
+<div class="outline-text-4" id="text-5-4-1">
 <ul class="org-ul">
 <li>Sample Monthly Mean Return: \(\bar{x}\)</li>
 <li>t-statistic: \(t=\frac{{\bar{x}-\mu_0}}{SE}=\frac{\bar{x}}{SE}\) (if the true mean month return \(\mu_0\) is 0)</li>
@@ -614,9 +668,153 @@ The best model will depend on exactly what your analysis seeks to achieve.
 </div>
 </div>
 
-<div id="outline-container-org75c118e" class="outline-2">
-<h2 id="org75c118e"><span class="section-number-2">6</span> Terms</h2>
+<div id="outline-container-org07ee644" class="outline-2">
+<h2 id="org07ee644"><span class="section-number-2">6</span> Risks</h2>
 <div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>Systematic Risks: Inherent to entire market
+<ul class="org-ul">
+<li>inflation</li>
+<li>recession</li>
+<li>interest rates</li>
+<li>GDP</li>
+</ul></li>
+<li>Sector-specific Risks
+<ul class="org-ul">
+<li>regulation</li>
+<li>legislation</li>
+<li>materials costs</li>
+</ul></li>
+<li>Idiosyncratic Risks(Specific Risks)
+<ul class="org-ul">
+<li>labor strike</li>
+<li>managerial change</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org678d98b" class="outline-2">
+<h2 id="org678d98b"><span class="section-number-2">7</span> Financial Data Processing</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orge24087f" class="outline-3">
+<h3 id="orge24087f"><span class="section-number-3">7.1</span> Outliers</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+Sources of outliers:
+</p>
+<ul class="org-ul">
+<li>Fat Finger Errors</li>
+<li>Data Errors: missing value, 0s, duplicate values&#x2026;(could check if volume was 0)</li>
+<li>Earnings, mergers and other announcements</li>
+</ul>
+</div>
+
+<div id="outline-container-orgfb8182d" class="outline-4">
+<h4 id="orgfb8182d"><span class="section-number-4">7.1.1</span> Spotting Outliers in Raw Data</h4>
+<div class="outline-text-4" id="text-7-1-1">
+<ul class="org-ul">
+<li>Screen the data</li>
+<li>Rule-based searching and filtering methods. Examples:
+<ul class="org-ul">
+<li>percent change thresholds (but will yield many false positives)</li>
+<li>can use volume information to improve the accuracy of the filter</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7081823" class="outline-4">
+<h4 id="org7081823"><span class="section-number-4">7.1.2</span> Handling Outliers in Raw Data</h4>
+<div class="outline-text-4" id="text-7-1-2">
+<ul class="org-ul">
+<li><b>Cross check with another data source</b></li>
+<li>Minimize false positives</li>
+<li>Decide how to deal with data values are missing</li>
+<li>May keep the missing data</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd483fa8" class="outline-4">
+<h4 id="orgd483fa8"><span class="section-number-4">7.1.3</span> Spotting Outliers in Signal Returns</h4>
+<div class="outline-text-4" id="text-7-1-3">
+<ul class="org-ul">
+<li>Look at the return distribution (skeptical when it's too good)</li>
+<li>Compare return distribution to the normal distribution using <b>QQ Plots</b>
+<ul class="org-ul">
+<li>A good quant should try to understand the cause of outliers and returns.</li>
+<li>Check the dates and stocks that causes the difference.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org59536c8" class="outline-4">
+<h4 id="org59536c8"><span class="section-number-4">7.1.4</span> Handling Outliers in Signal Returns</h4>
+<div class="outline-text-4" id="text-7-1-4">
+<ul class="org-ul">
+<li>Case1: Data error from venders
+<ul class="org-ul">
+<li>fix it by replacing with correct data from other venders</li>
+<li>try to determine if the result will be greatly affected if the data is replaced by any reasonable value.</li>
+</ul></li>
+<li>Case2: Due to legit market events
+<ul class="org-ul">
+<li>exclude small market cap assets (they're hard to predict)</li>
+</ul></li>
+<li>Case3: Earnings, announcements
+<ul class="org-ul">
+<li>check if you can pause before these events</li>
+<li>try to avoid losing money when you can't pause before the event</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4190c49" class="outline-4">
+<h4 id="org4190c49"><span class="section-number-4">7.1.5</span> Ways to Reduce Effect of Outliers</h4>
+<div class="outline-text-4" id="text-7-1-5">
+<ul class="org-ul">
+<li>Moving Window: But signals may be generated with a slight delay depending on the window size.</li>
+<li>Use average prices of many stocks or even entire sector or index.</li>
+<li>(Optional) May incorporate Bayesian methods or machine learning into outlier detection.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2d8ee48" class="outline-3">
+<h3 id="org2d8ee48"><span class="section-number-3">7.2</span> Filtering</h3>
+<div class="outline-text-3" id="text-7-2">
+</div>
+<div id="outline-container-orgb8917f3" class="outline-4">
+<h4 id="orgb8917f3"><span class="section-number-4">7.2.1</span> Filtering Decision Example</h4>
+<div class="outline-text-4" id="text-7-2-1">
+<p>
+Stock prices are volatile during market crashes. Two ways to handle:
+</p>
+<ul class="org-ul">
+<li>Including the data during these periods
+<ul class="org-ul">
+<li>the results will be highly skewed.</li>
+<li>the signals won't perform optimally on normal trading days.</li>
+</ul></li>
+<li>Not including these data
+<ul class="org-ul">
+<li>When the event happens, the signal may perform really poorly.</li>
+<li>To establish <b>stop loss levels</b> thresholds to prevent further losses.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org75c118e" class="outline-2">
+<h2 id="org75c118e"><span class="section-number-2">8</span> Terms</h2>
+<div class="outline-text-2" id="text-8">
 <dl class="org-dl">
 <dt>Stock</dt><dd>An asset that represents ownership in a company. A claim on part of a corportation's assets and earnings. There are two main types, common and preferred.</dd>
 <dt>Share</dt><dd>A single share represents partial ownership of a company relative to the total number of shares in existence.</dd>
@@ -631,21 +829,30 @@ The best model will depend on exactly what your analysis seeks to achieve.
 <dt>Equity Security</dt><dd>A security that represents fractional ownership in an entity, such as stock.</dd>
 <dt>Option Contract</dt><dd>A contract which gives the buyer the right, but not the obligation, to buy or sell an underlying asset at a specified price on or by a specified date</dd>
 <dt>Futures Contract</dt><dd>A contract that obligates the buyer to buy or the seller to sell an asset at a predetermined price at a specified time in the future</dd>
-<dt>Total Market Capitalization</dt><dd>the dollar value of a company's outstanding shares.</dd>
+<dt>Total Market Capitalization</dt><dd>The dollar value of a company's outstanding shares.</dd>
 <dt>Inflection Point</dt><dd>拐点</dd>
 <dt>Cross-sectional Analysis</dt><dd>Cross-sectional analysis looks at data collected at a single point in time, rather than over a period of time. OPP Time-series Analysis</dd>
-<dt>Data-snooping(P-hacking)</dt><dd>the misuse of data analysis to find patterns in data by performing many statistical tests on the data and only reporting those that come back with significant results.</dd>
+<dt>Data-snooping(P-hacking)</dt><dd>The misuse of data analysis to find patterns in data by performing many statistical tests on the data and only reporting those that come back with significant results.</dd>
+<dt>Backtesting</dt><dd>The process of rigorously simulating the entire flow in an automated fashion using historical data.</dd>
+<dt>Alpha</dt><dd>An expression that outputs a vector of values which are proportional to the size of the position you will take on each asset.
+<ul class="org-ul">
+<li>The procedure that produces the ranks. The ranks themselves make up the <b>Alpha Vector</b>.</li>
+</ul></dd>
+<dt>Volume</dt><dd>Number of shares traded.</dd>
+<dt>Turnover</dt><dd>Volume Traded \(\times\) Price Per Share</dd>
+<dt>Contrarian Strategies</dt><dd>seek to identify sudden price movements and trade against such movements.(minute level data, risky)</dd>
+<dt>Lookahead Bias</dt><dd>Incorporating the information from the future.(this misuse often make your results look better)</dd>
 </dl>
 </div>
 </div>
 
 <div id="outline-container-org21eb087" class="outline-2">
-<h2 id="org21eb087"><span class="section-number-2">7</span> Insights</h2>
-<div class="outline-text-2" id="text-7">
+<h2 id="org21eb087"><span class="section-number-2">9</span> Insights</h2>
+<div class="outline-text-2" id="text-9">
 </div>
 <div id="outline-container-org0c997ad" class="outline-3">
-<h3 id="org0c997ad"><span class="section-number-3">7.1</span> Why Invest in Complex Black-box Models?</h3>
-<div class="outline-text-3" id="text-7-1">
+<h3 id="org0c997ad"><span class="section-number-3">9.1</span> Why Invest in Complex Black-box Models?</h3>
+<div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>risk the black box nature of the model in order to get access to <b>new</b> or <b>different</b> forecasts
 <ul class="org-ul">
@@ -657,10 +864,34 @@ The best model will depend on exactly what your analysis seeks to achieve.
 </div>
 </div>
 
+<div id="outline-container-orgaff44db" class="outline-2">
+<h2 id="orgaff44db"><span class="section-number-2">10</span> Quant Workflow</h2>
+<div class="outline-text-2" id="text-10">
+<ol class="org-ol">
+<li>An initial hypothesis: an idea for a way to profit from trading.
+<ul class="org-ul">
+<li>How? The more you know about the markets, the more likely you are able to come up with a potentially profitable idea.</li>
+</ul></li>
+
+<li>Preliminary research and testing: in a fairly basic way, quickly test, determine:
+<ul class="org-ul">
+<li><b>Signal</b> or <b>Alpha</b></li>
+<li>What assets to buy/sell at what time</li>
+</ul></li>
+<li>Detailed research and testing, and <b>backtesting</b>, to determine:
+<ul class="org-ul">
+<li>How to spend money</li>
+<li>How to make trades</li>
+<li>What conditions to exit positions</li>
+<li>Risk constraints</li>
+</ul></li>
+</ol>
+</div>
+</div>
 
 <div id="outline-container-orgff64afe" class="outline-2">
-<h2 id="orgff64afe"><span class="section-number-2">8</span> Stars</h2>
-<div class="outline-text-2" id="text-8">
+<h2 id="orgff64afe"><span class="section-number-2">11</span> Stars</h2>
+<div class="outline-text-2" id="text-11">
 <ul class="org-ul">
 <li>Lesson 5
 <ul class="org-ul">

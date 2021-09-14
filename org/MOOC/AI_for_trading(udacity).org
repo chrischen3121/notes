@@ -106,7 +106,6 @@
    1. When returns and log returns are small, their values are approximately equal.
    1. Logarithms can help make an algorithm more *numerically stable*.
 
-
 * Indicators
 ** Overlap Studies
 *** Bollinger Bands
@@ -117,12 +116,33 @@
    - large price movements with volume
    - stocks making new highs
 
-* Trading Strategy
-** Alpha Research
+* Trading Strategies
+** Types of Trading Strategies
+   1. Single Asset Strategies
+   2. Pairwise Strategies
+   3. Cross-sectional Strategies(statistical arbitrage, market neutral investing): use group of assets
+   4. Alternative Data Based Strategies: Satellite Imagery, Social Media, Geolocation, Consumer Transaction Data
+
+   Large hedge funds are most interested in 3 and 4, large hedge funds seek:
+   - High capacity -> 3
+   - New, different ideas -> 4
+     - Hedge funds hope to uncover signals in hard-to-find, expensive and difficult to work with data.
+
+** Process of Cross-sectional Strategies
+   [[../resources/Trading/cross_sectional.png]]
+
+
+** Alpha Research Flow
    1. Observation: Find a pattern that seems to be recurring in the market over time.
-   1. Turn the observation into an expression, both mathematically and programmatically.
+   1. Turn the observation into Alpha(an expression), both mathematically and programmatically.
+   1. (Alpha Combination: To combine several Alphas into an overall Alpha).
+      - Important step in modern markets
+      - Try to combine *different* inputs: e.g. Momentum alpha + Fundamental alpha
    1. Use historical data to verify it.
    1. Define strategy in more detailed manner, then run full backtesting exercises.
+
+
+   Videos: [[https://youtu.be/cnJK8c2zfq4][Part1]] [[https://youtu.be/v3w4JZKQixc][Part2]] [[https://youtu.be/vSxnkduTWWY][Part3]]
 
 ** Momentum Strategy Example
    1. Choose a stock universe (attention: avoid *Survivorship Bias*)
@@ -138,6 +158,70 @@
     - $H_A$: $\bar{x}>0$
     - If *P-Value* $\le\alpha$ level, then reject $H_0$.
 
+* Risks
+  - Systematic Risks: Inherent to entire market
+    - inflation
+    - recession
+    - interest rates
+    - GDP
+  - Sector-specific Risks
+    - regulation
+    - legislation
+    - materials costs
+  - Idiosyncratic Risks(Specific Risks)
+    - labor strike
+    - managerial change
+
+* Financial Data Processing
+** Outliers
+   Sources of outliers:
+   - Fat Finger Errors
+   - Data Errors: missing value, 0s, duplicate values...(could check if volume was 0)
+   - Earnings, mergers and other announcements
+
+*** Spotting Outliers in Raw Data
+    - Screen the data
+    - Rule-based searching and filtering methods. Examples:
+      - percent change thresholds (but will yield many false positives)
+      - can use volume information to improve the accuracy of the filter
+
+*** Handling Outliers in Raw Data
+    - *Cross check with another data source*
+    - Minimize false positives
+    - Decide how to deal with data values are missing
+    - May keep the missing data
+
+*** Spotting Outliers in Signal Returns
+    - Look at the return distribution (skeptical when it's too good)
+    - Compare return distribution to the normal distribution using *QQ Plots*
+      - A good quant should try to understand the cause of outliers and returns.
+      - Check the dates and stocks that causes the difference.
+
+*** Handling Outliers in Signal Returns
+    - Case1: Data error from venders
+      - fix it by replacing with correct data from other venders
+      - try to determine if the result will be greatly affected if the data is replaced by any reasonable value.
+    - Case2: Due to legit market events
+      - exclude small market cap assets (they're hard to predict)
+    - Case3: Earnings, announcements
+      - check if you can pause before these events
+      - try to avoid losing money when you can't pause before the event
+
+*** Ways to Reduce Effect of Outliers
+    - Moving Window: But signals may be generated with a slight delay depending on the window size.
+    - Use average prices of many stocks or even entire sector or index.
+    - (Optional) May incorporate Bayesian methods or machine learning into outlier detection.
+
+** Filtering
+*** Filtering Decision Example
+    Stock prices are volatile during market crashes. Two ways to handle:
+    - Including the data during these periods
+      - the results will be highly skewed.
+      - the signals won't perform optimally on normal trading days.
+    - Not including these data
+      - When the event happens, the signal may perform really poorly.
+      - To establish *stop loss levels* thresholds to prevent further losses.
+
 * Terms
 - Stock :: An asset that represents ownership in a company. A claim on part of a corportation's assets and earnings. There are two main types, common and preferred.
 - Share :: A single share represents partial ownership of a company relative to the total number of shares in existence.
@@ -152,10 +236,17 @@
 - Equity Security :: A security that represents fractional ownership in an entity, such as stock.
 - Option Contract :: A contract which gives the buyer the right, but not the obligation, to buy or sell an underlying asset at a specified price on or by a specified date
 - Futures Contract :: A contract that obligates the buyer to buy or the seller to sell an asset at a predetermined price at a specified time in the future
-- Total Market Capitalization :: the dollar value of a company's outstanding shares.
+- Total Market Capitalization :: The dollar value of a company's outstanding shares.
 - Inflection Point :: 拐点
 - Cross-sectional Analysis :: Cross-sectional analysis looks at data collected at a single point in time, rather than over a period of time. OPP Time-series Analysis
-- Data-snooping(P-hacking) :: the misuse of data analysis to find patterns in data by performing many statistical tests on the data and only reporting those that come back with significant results.
+- Data-snooping(P-hacking) :: The misuse of data analysis to find patterns in data by performing many statistical tests on the data and only reporting those that come back with significant results.
+- Backtesting :: The process of rigorously simulating the entire flow in an automated fashion using historical data.
+- Alpha :: An expression that outputs a vector of values which are proportional to the size of the position you will take on each asset.
+  - The procedure that produces the ranks. The ranks themselves make up the *Alpha Vector*.
+- Volume :: Number of shares traded.
+- Turnover :: Volume Traded $\times$ Price Per Share
+- Contrarian Strategies :: seek to identify sudden price movements and trade against such movements.(minute level data, risky)
+- Lookahead Bias :: Incorporating the information from the future.(this misuse often make your results look better)
 
 * Insights
 ** Why Invest in Complex Black-box Models?
@@ -163,6 +254,18 @@
      - pure AI-based strategies with exceptional performance
      - high Sharpe ratio high frequency algorithms
 
+* Quant Workflow
+  1. An initial hypothesis: an idea for a way to profit from trading.
+     - How? The more you know about the markets, the more likely you are able to come up with a potentially profitable idea.
+
+  1. Preliminary research and testing: in a fairly basic way, quickly test, determine:
+     - *Signal* or *Alpha*
+     - What assets to buy/sell at what time
+  1. Detailed research and testing, and *backtesting*, to determine:
+     - How to spend money
+     - How to make trades
+     - What conditions to exit positions
+     - Risk constraints
 
 * Stars
   - Lesson 5
