@@ -96,7 +96,7 @@
 ** Distribution of Returns
    The conversation about the best model for the distribution of returns has been going on for at least the past century.
    The best model will depend on exactly what your analysis seeks to achieve.
-   [[../resources/Trading/returns_distributions.png]]
+   [[../resources/MOOC/Trading/returns_distributions.png]]
 
 ** Why Log Returns?
    1. Log returns can be interpreted as *continuously compounded returns*.
@@ -109,7 +109,7 @@
 * Indicators
 ** Overlap Studies
 *** Bollinger Bands
-   [[../resources/Trading/bollinger_bands.png]]
+   [[../resources/MOOC/Trading/bollinger_bands.png]]
 
 ** Momentum Indicators
    - moving averages
@@ -129,7 +129,7 @@
      - Hedge funds hope to uncover signals in hard-to-find, expensive and difficult to work with data.
 
 ** Process of Cross-sectional Strategies
-   [[../resources/Trading/cross_sectional.png]]
+   [[../resources/MOOC/Trading/cross_sectional.png]]
 
 
 ** Alpha Research Flow
@@ -172,7 +172,7 @@
     - labor strike
     - managerial change
 
-* Financial Data Processing
+* Data Processing
 ** Outliers
    Sources of outliers:
    - Fat Finger Errors
@@ -212,7 +212,6 @@
     - Use average prices of many stocks or even entire sector or index.
     - (Optional) May incorporate Bayesian methods or machine learning into outlier detection.
 
-** Filtering
 *** Filtering Decision Example
     Stock prices are volatile during market crashes. Two ways to handle:
     - Including the data during these periods
@@ -221,6 +220,46 @@
     - Not including these data
       - When the event happens, the signal may perform really poorly.
       - To establish *stop loss levels* thresholds to prevent further losses.
+
+** Testing for Normality
+*** Why to Check If the Data is Normal?
+    When we use statistical models such as regression. We use hypotheses tests to check if we can trust the model parameters of the model.
+    These tests assume that our data is normally distributed.
+    If our data is not normally distributed, these tests tend to tell us the model is valid when in fact it is not.
+
+*** Box Plot
+   - Use *Boxplot* to check for *symmetry*.
+   [[../resources/MOOC/Trading/boxplot_of_normal_distribution.png]]
+
+*** QQ Plot
+    Quantile-Quantile Plot. Common quantiles are:
+    - Quartiles: 4 groups
+    - Deciles: 10 groups
+    - Percentiles: 100 groups
+    #+begin_src python
+      import matplotlib.pyplot as plt
+      from scipy.stats import gamma
+      data = gamma.rvs(a=5, size=10000)
+      stats.probplot(data, dist="norm", plot=plt)
+      plt.show()
+    #+end_src
+   [[../resources/MOOC/Trading/qq_plot.png]]
+
+*** Single Number Testing (cutoff point)
+    - Shapiro-Wilk Test ~stats.shapiro~: $H_0$ - data is normal distributed
+    - D'Agostino-Pearson Test: $H_0$ - data is normal distributed
+    - Kolmogorov-Smirnov Test: $H_0$ - given two distribution, they are the same.
+      #+begin_src python
+	from scipy import stats
+	sample = stats.lognorm.rvs(s=0.5, loc=0.0, scale=1.0, size=1000)
+	normal_args = (sample.mean(), sample.std())
+	result = stats.kstest(sample, "norm", normal_args)
+	assert result.pvalue < 0.05
+      #+end_src
+
+** Regression
+   To use one or more *independent* variables to predict a *dependent* variable. The regression is
+   used to see how two assets move in relation to each other, e.g. Statistical Arbitrage.
 
 * Terms
 - Stock :: An asset that represents ownership in a company. A claim on part of a corportation's assets and earnings. There are two main types, common and preferred.
@@ -247,6 +286,8 @@
 - Turnover :: Volume Traded $\times$ Price Per Share
 - Contrarian Strategies :: seek to identify sudden price movements and trade against such movements.(minute level data, risky)
 - Lookahead Bias :: Incorporating the information from the future.(this misuse often make your results look better)
+- Signal to Noise Ratio :: The signal is the meaningful part of input data. The noise is the random part of input data. The ratio is low for finance, the output models tend to *overfit* the data.
+- Quartiles :: Quartiles are the three dividing lines that divide the data into four groups.
 
 * Insights
 ** Why Invest in Complex Black-box Models?
