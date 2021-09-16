@@ -258,9 +258,131 @@
 	assert result.pvalue < 0.05
       #+end_src
 
+** Testing for Stationary
+   - Stationary :: The /mean/, /variance/, /covariance/ are the same over time. In particular, we want to check if the variance of data is stable over time.
+   - Homoscedasity :: Terminology for constant variance over time.
+   - Heteroskedasticity :: Terminology for a changing variance over time.
+
+*** Breusch-Pagan Test
+    To check if the data is Homoscedasity or Heteroskedasticity.
+    - $H_0$: The data is Homoscedasity.
+    - $pvalue\le 0.05$: The data is Heteroskedasticity.(with 95% confidence)
+
+    #+begin_example
+    One Use Case:
+    It takes the residuals from a regression, and checks if they are dependent upon the
+    independent variables that we fed into the regression.
+
+    The test does this by performing a second regression of the residuals against the
+    independent variables, and checking if the coefficients from that second regression
+    are statistically significant (non-zero). Thus, the data is likely heteroscedastic.
+    #+end_example
+    #+begin_src python
+      from statsmodels.stats.diagnostic import het_breuschpagan
+      result = het_breuschpagan(residuals, independent_vars)
+      result.f_pvalue
+    #+end_src
+
+** Transform into Normality & Stationary
+   - Use ~log~ function to get more normal data
+   - Use $ln(p_{t}/p_{t-1})$ to get more homosceedastic data.
+*** Apply Box-Cox Transformation
+    $$T(x)=\frac{x^{\lambda}-1}{\lambda}$$
+    - $\lambda$ is a constant value you can choose
+    - inputs: any dataset
+    - outputs: more normally distributed dataset
+    - $T(x)=\ln(x)$ if we choose $\lambda=0$
+
 ** Regression
    To use one or more *independent* variables to predict a *dependent* variable. The regression is
    used to see how two assets move in relation to each other, e.g. Statistical Arbitrage.
+
+*** Linear Regression
+    Say $y$ depends on $x$
+    $$y=\beta x + \alpha$$
+    - $\beta$ is coefficient
+    - $\alpha$ is intercept
+    [[../resources/MOOC/Trading/linear_regression.png]]
+    - Residuals(error terms): differences between the best fit regression line at each point.
+      - $residuals=y_{actual}-y_{predicted}$
+      - if residuals are not normally distributed, this gives us a hint that the model has a bias in its prediction errors. One way to improve is to use *Multiple Regression*.
+    [[../resources/MOOC/Trading/residuals.png]]
+
+    #+begin_src python
+      from sklearn.linear_model import LinearRegression
+
+      def regression_slope_and_intercept(xSeries, ySeries):
+	  """
+	  xSeries: pandas series, x variable
+	  ySeries: pandas series, y variable
+	  """
+	  lr = LinearRegression()
+
+	  xVar = s1.values.reshape(-1,1) # reshape to 2D numpy array
+	  yVar = s2.values.reshape(-1,1)
+
+	  lr.fit(xVar, yVar)
+
+	  slope = lr.coef_[0][0]
+	  intercept = lr.intercept_[0]
+
+	  return (slope, intercept)
+    #+end_src
+
+*** Multiple Regression
+    $$y=\sum_{i=1}^{n}\beta_{i}x_{i} + \alpha$$
+
+*** Multivariate Multiple Regression
+    Use more than one independent variables to predict more than one dependent variables.
+    $$y_1=\sum_{i=1}^{n}\beta_{1i}x_{1i} + \alpha_1$$
+    $$y_2=\sum_{i=1}^{n}\beta_{2i}x_{2i} + \alpha_2$$
+
+*** Evaluating the Model
+    - R-squared ($R^2$) metric: range from 0 to 1. R-squared is 1 means all the variation in the dependent variable can be explained by all the variation in the independent variable
+    - Adjusted R-squared: to find the minimum combination of independent variables that are most relevant for our model.
+    - F-test: checks whether coefficients and intercepts are not zero, therefore the model describes a meaningful relationship.
+      - $H_0$: parameters are zero.
+      - $pvalue\le 0.05$: parameters are not zero.
+
+*** Pros and Cons
+    - Pros
+      - a tool to analyze time-series data
+      - a fundamental building block of neural network
+    - Cons
+      - Regression is sensitive to some choice you make about the model. For instance, how much historical data we choose to use in the model.
+      - Regression is sensitive to *outliers* in the data. As it adds more noise to the trading data.
+
+** Time Series Modeling
+   - Auto-regression
+   - Moving Averages
+   - Auto-regressive Moving Averages
+   - Auto-regressive Integrated Moving Averages
+   - Machine Learning Methods
+     - Kalman and Particle Filters
+     - Recurrent Neural Networks
+
+*** Autoregressive(AR) Model
+    AR model tries to fit a line that is a liner combination of previous values.
+    $$y_t = \alpha + B_{1}y_{t-1} + B_{2}y_{t-2} + ... + \epsilon_t$$
+    - $\alpha$: intercept
+    - $B_i$: coefficients
+    - $\epsilon_t$: Error(noise), represents movements that cannot be predicted using the previous values.
+    - Lag: the number of past values used in the model. e.g. AR Lag 2 model
+    - Describe an AR model as $AR(p)$, where p stands for the lag.
+    - Check the adjusted R-squared(Adj $R^2$) and adjust the lag.
+    - *Vector Autoregressive Model*: similar with Multivariate Multiple Regression
+      [[../resources/MOOC/Trading/vector_autoregressive_mode.png]]
+
+*** Moving Average(MA) Model
+    $$y_t=\mu+\epsilon_t+\theta_1\epsilon_{t-1}+\theta_2\epsilon_{t-2}+...\theta_q\epsilon_{t-q}$$
+    - $MA(q)$, where q stands for the lag.
+    - To decide the best value for q, draw a *autocorrelation* plot.
+    - Autocorrelation is a measure of how much the current value moves in relation to *one of* its previous values.
+      [[../resources/MOOC/Trading/autocorrelation.png]]
+
+*** Correlation $\ne$ Regression
+    - Correlation :: measures the pairwise relationship between exactly two periods at a time. (ranges -1 to 1)
+    - Multiple Regression :: measures how a set of independent variables *collectively* influence the value of the dependent variable.
 
 * Terms
 - Stock :: An asset that represents ownership in a company. A claim on part of a corportation's assets and earnings. There are two main types, common and preferred.
@@ -309,6 +431,22 @@
      - What conditions to exit positions
      - Risk constraints
 
+* Utilities
+** Simulating Prices
+   #+begin_src python
+     # just set the seed for the random number generator
+     np.random.seed(100)
+     # use returns to create a price series
+     drift = 100
+     r0 = pd.Series(np.random.normal(0, 1, 1000))
+     s0 = pd.Series(np.cumsum(r0), name='s0') + drift
+
+     noise1 = np.random.normal(0, 0.4, 1000)
+     drift1 = 50
+     r1 = r0 + noise1
+     s1 = pd.Series(np.cumsum(r1), name='s1') + drift1
+   #+end_src
+
 * Stars
   - Lesson 5
     - [[https://youtu.be/jMT3VbUGiZI][9. Gaps in Market Data]]
@@ -327,3 +465,5 @@
     - [[https://youtu.be/8Hna_hR_N7c][4. Insights from a Quant]]
   - Lesson 12
     - [[https://youtu.be/Sa1MJegyYf][6. Testing for Normality]]
+    - [[https://youtu.be/N8Fhq8wiQZU][10. Transforming Data]]
+    - [[https://youtu.be/GRY4eakMBJ8][11. Linear Regression]]
