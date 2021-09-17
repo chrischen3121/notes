@@ -1,0 +1,106 @@
+#+TITLE: Financial Data
+#+OPTIONS: H:2 toc:2 num:2 ^:nil
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+
+* Data Types
+** Market Data
+    - Tick Data
+      - Quote Data: bid, bid size, ask, ask size
+      - Trade Data: last trade, volume
+    - OHLC: open, high, low, close
+    - Orderbook
+    - Transaction
+
+** Corporate Actions
+    - Stock Splits
+    - Cash Dividends: Partial cash distribution of company earnings.
+      - Symbol, Ex-Dividend Date, Dividend, Record Date, Announcement Date, Payment Date
+      - Adjusted Price Factor: $1+D/S$  D: Dividend  S: Stock price at ex-dividend date
+      - Divide the historical price by the adjusted price factor to normalize.
+    - ...
+
+** Alternative Data
+    - Social Media Posts: can convey sentiment towards companies.
+    - News Articles: can shape investor opinion.
+    - Satellite Images: used to estimate crop yield.
+    - Consumer Data: can predict sales and revenue long before official announcements.
+
+* Fundamental Analysis
+** Data Sources
+   (usually updated every quarter)
+  - Balance Sheet
+  - Cash Flow Statements
+
+** PE ratio
+  Price to Earnings Ratio. It's important to be careful about how we interpret a high or low PE ratio.
+  The market price of a share is based on the *collective estimates* by investors of the company's *current equity* plus its *future earnings*.
+  The future earnings are based on estimates of future cash flow, which are then adjusted to their *Present Value* (PV).
+  - High PE ratio: A company may have low or negative earnings, but a high stock price due to the estimated future earnings.
+  - Low PE ratio: may be a company has high and stable earnings, but less expectations for future growth.
+
+** Other Key Factors
+  - Sales Per Share(Revenue is the same)
+  - Earnings Per Share
+    - Earnings gives investors a sense of how much the equity of the company has changed over the past 3 months.
+  - Dividends Per Share
+
+** Key Points
+  - Try to analyze a collection of different measures over time.
+  - Can be used as risk factors.
+
+* Risk Data
+  - Systematic Risks: Inherent to entire market
+    - inflation
+    - recession
+    - interest rates
+    - GDP
+  - Sector-specific Risks
+    - regulation
+    - legislation
+    - materials costs
+  - Idiosyncratic Risks(Specific Risks)
+    - labor strike
+    - managerial change
+
+* Utilities to Generate Fake Data
+** Simulating Normal Returns
+   #+begin_src python
+     import numpy as np
+     import pandas as pd
+     # just set the seed for the random number generator
+     np.random.seed(100)
+     # use returns to create a price series
+     drift = 100
+     r0 = pd.Series(np.random.normal(0, 1, 1000))
+     s0 = pd.Series(np.cumsum(r0), name='s0') + drift
+
+     noise1 = np.random.normal(0, 0.4, 1000)
+     drift1 = 50
+     r1 = r0 + noise1
+     s1 = pd.Series(np.cumsum(r1), name='s1') + drift1
+
+   #+end_src
+
+** Simulating Returns with Autoregressive Properties
+   #+begin_src python
+     import numpy as np
+     import pandas as pd
+     from statsmodels.tsa.arima_process import ArmaProcess
+
+     np.random.seed(200)
+     ar_params = np.array([1, -0.5]) # autoregression params
+     ma_params = np.array([1, -0.3]) # moving average params
+     ret = ArmaProcess(ar_params, ma_params).generate_sample(nsample=5*252)
+     ret = pd.Series(ret)
+     drift = 100
+     price = pd.Series(np.cumsum(ret)) + drift
+   #+end_src
+
+* References
+  - Lesson 5
+    - [[https://youtu.be/jMT3VbUGiZI][9. Gaps in Market Data]]
+  - Lesson 6
+    - [[https://youtu.be/XaMaVFUIc_I][5. Missing Values]]
+    - [[https://youtu.be/DFwu2ysGY8c][13. Alternative Data]]
+    - [[https://youtu.be/g7zJV-Ontbo][14. Interview: Satellite Data]]
