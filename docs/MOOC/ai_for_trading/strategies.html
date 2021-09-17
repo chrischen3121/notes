@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-17 Fri 20:47 -->
+<!-- 2021-09-17 Fri 20:20 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Log Return</title>
+<title>Strategies</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
 <style type="text/css">
@@ -219,184 +219,127 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Log Return</h1>
+<h1 class="title">Strategies</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8583618">1. Raw Return &amp; Log Return</a></li>
-<li><a href="#org0f36e97">2. Continuous Compounding</a>
+<li><a href="#orgadaed3f">1. Types of Trading Strategies</a></li>
+<li><a href="#orge0cdf9c">2. Alpha Research Flow</a></li>
+<li><a href="#org5d8820f">3. Cross-sectional Strategy</a>
 <ul>
-<li><a href="#org2decce1">2.1. Additivity</a></li>
-<li><a href="#org5823afc">2.2. Annualized Rate of Return</a></li>
-<li><a href="#org4dddf2d">2.3. Compounding Example Table</a></li>
+<li><a href="#org86a0aed">3.1. Process of Cross-sectional Strategies</a></li>
+<li><a href="#org8457a6d">3.2. Example</a></li>
 </ul>
 </li>
-<li><a href="#org112daaa">3. Distribution of Returns</a></li>
-<li><a href="#orge3f9800">4. Why Log Returns?</a></li>
-<li><a href="#orgcc94af2">5. Reference</a></li>
+<li><a href="#org3671427">4. Statistical Analysis for Returns</a></li>
+<li><a href="#org07f5ef4">5. References</a></li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org8583618" class="outline-2">
-<h2 id="org8583618"><span class="section-number-2">1</span> Raw Return &amp; Log Return</h2>
+<div id="outline-container-orgadaed3f" class="outline-2">
+<h2 id="orgadaed3f"><span class="section-number-2">1</span> Types of Trading Strategies</h2>
 <div class="outline-text-2" id="text-1">
-<p>
-\[RawReturn(r) = \frac{p_t - p_{t-1}}{p_{t-1}}\]
-\[LogReturn(R) = ln(p_t/p_{t-1}) = ln(p_t) - ln(p_{t-1})\]
-\[LogReturn=ln(RawReturn+1)\]
-\[RawReturn=e^{LogReturn}-1\]
-</p>
-</div>
-</div>
-
-<div id="outline-container-org0f36e97" class="outline-2">
-<h2 id="org0f36e97"><span class="section-number-2">2</span> Continuous Compounding</h2>
-<div class="outline-text-2" id="text-2">
-<ul class="org-ul">
-<li>Compounding Formula</li>
-</ul>
-<p>
-\[p_t=p_{t-1}(1+\frac{r}{n})^n\]
-</p>
-<ul class="org-ul">
-<li>Now make <b>n</b> bigger and bigger</li>
-</ul>
-<p>
-\[\lim_{n \to \infty}(1+\frac{r}{n})^n=e^r\]
-</p>
-<ul class="org-ul">
-<li>Compounding infinitely often is called <b>continuous compounding</b></li>
-</ul>
-<p>
-\[100\times e^{0.04}=104.08\]
-</p>
-<ul class="org-ul">
-<li>Reverse the previous calculation</li>
-</ul>
-<p>
-\[104.08/100=e^r\]
-\[r=ln(104.08/100)=0.04\]
-</p>
-<ul class="org-ul">
-<li>r is the <b>continuously compounded return</b>. It is just the <b>log return</b></li>
-</ul>
-</div>
-
-<div id="outline-container-org2decce1" class="outline-3">
-<h3 id="org2decce1"><span class="section-number-3">2.1</span> Additivity</h3>
-<div class="outline-text-3" id="text-2-1">
-<p>
-Annual rate of <b>continuous compounding</b> is simply the sum of the monthly rates.
-</p>
-<ul class="org-ul">
-<li>invest $100 for two years with a monthly  continuously compounded interest rate was 2%</li>
-</ul>
-<p>
-\[100\times{e^{0.02}}\times{e^{0.02}}... = 100\times{e^{(0.02+0.02+...)}}=100\times{e^{0.24}}=127.12\]
-</p>
-<ul class="org-ul">
-<li>Time Additivity of Log Returns. <b>log return for Jan and Feb = log return for Jan + log return for Feb</b></li>
-</ul>
-<p>
-\[ln(\frac{p_{Mar 1}}{p_{Jan 1}}) = ln(\frac{p_{Mar 1}}{p_{Feb 1}}) + ln(\frac{p_{Feb 1}}{p_{Jan 1}})\]
-</p>
-</div>
-</div>
-
-<div id="outline-container-org5823afc" class="outline-3">
-<h3 id="org5823afc"><span class="section-number-3">2.2</span> Annualized Rate of Return</h3>
-<div class="outline-text-3" id="text-2-2">
-<p>
-If we just had a single monthly rate, but we assumed that the rates for all the months of the year were the same,
-we could <i>extrapolate</i> the monthly rate to an annual rate by multiplying by 12. This is called <b>annualizing the
-rate of continuous compounding</b>.
-\[LogReturn(Y)=\sum_{M=1}^{12} LogReturn(M)=MeanOfLogReturn(M)\times 12\]
-\[RawReturn(Y)=e^{LogReturn(Y)}-1\]
-</p>
-</div>
-</div>
-
-<div id="outline-container-org4dddf2d" class="outline-3">
-<h3 id="org4dddf2d"><span class="section-number-3">2.3</span> Compounding Example Table</h3>
-<div class="outline-text-3" id="text-2-3">
-<ul class="org-ul">
-<li>rate of interest of 4%</li>
-</ul>
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Compounding Frequency</th>
-<th scope="col" class="org-left">Value of $100 after 1 year</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">Annually(n=1)</td>
-<td class="org-left">$104.00</td>
-</tr>
-
-<tr>
-<td class="org-left">Quarterly(n=4)</td>
-<td class="org-left">$104.06</td>
-</tr>
-
-<tr>
-<td class="org-left">Weekly(n=52)</td>
-<td class="org-left">$104.08</td>
-</tr>
-
-<tr>
-<td class="org-left">Daily(n=252)</td>
-<td class="org-left">$104.08</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org112daaa" class="outline-2">
-<h2 id="org112daaa"><span class="section-number-2">3</span> Distribution of Returns</h2>
-<div class="outline-text-2" id="text-3">
-<p>
-The conversation about the best model for the distribution of returns has been going on for at least the past century.
-The best model will depend on exactly what your analysis seeks to achieve.
-<img src="../../resources/MOOC/Trading/returns_distributions.png" alt="returns_distributions.png" />
-</p>
-</div>
-</div>
-
-<div id="outline-container-orge3f9800" class="outline-2">
-<h2 id="orge3f9800"><span class="section-number-2">4</span> Why Log Returns?</h2>
-<div class="outline-text-2" id="text-4">
 <ol class="org-ol">
-<li>Log returns can be interpreted as <b>continuously compounded returns</b>.</li>
-<li>Log returns are time-additive. The multi-period log return is simply the sum of single period log returns.</li>
-<li>The use of log returns prevents security prices from becoming negative in models of security returns.</li>
-<li>log returns of a security can be reasonably modeled as distributed according to a normal distribution. ?</li>
-<li>When returns and log returns are small, their values are approximately equal.</li>
-<li>Logarithms can help make an algorithm more <b>numerically stable</b>.</li>
+<li>Single Asset Strategies</li>
+<li>Pairwise Strategies</li>
+<li>Cross-sectional Strategies(statistical arbitrage, market neutral investing): use group of assets</li>
+<li>Alternative Data Based Strategies: Satellite Imagery, Social Media, Geolocation, Consumer Transaction Data</li>
+</ol>
+
+<p>
+Large hedge funds are most interested in 3 and 4, large hedge funds seek:
+</p>
+<ul class="org-ul">
+<li>High capacity -&gt; 3</li>
+<li>New, different ideas -&gt; 4
+<ul class="org-ul">
+<li>Hedge funds hope to uncover signals in hard-to-find, expensive and difficult to work with data.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge0cdf9c" class="outline-2">
+<h2 id="orge0cdf9c"><span class="section-number-2">2</span> Alpha Research Flow</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li>Observation: Find a pattern that seems to be recurring in the market over time.</li>
+<li>Turn the observation into Alpha(an expression), both mathematically and programmatically.</li>
+<li>(Alpha Combination: To combine several Alphas into an overall Alpha).
+<ul class="org-ul">
+<li>Important step in modern markets</li>
+<li>Try to combine <b>different</b> inputs: e.g. Momentum alpha + Fundamental alpha</li>
+</ul></li>
+<li>Use historical data to verify it.</li>
+<li>Define strategy in more detailed manner, then run full backtesting exercises.</li>
+</ol>
+
+<p>
+Videos: <a href="https://youtu.be/cnJK8c2zfq4">Part1</a> <a href="https://youtu.be/v3w4JZKQixc">Part2</a> <a href="https://youtu.be/vSxnkduTWWY">Part3</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5d8820f" class="outline-2">
+<h2 id="org5d8820f"><span class="section-number-2">3</span> Cross-sectional Strategy</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org86a0aed" class="outline-3">
+<h3 id="org86a0aed"><span class="section-number-3">3.1</span> Process of Cross-sectional Strategies</h3>
+<div class="outline-text-3" id="text-3-1">
+
+<div id="org93333c3" class="figure">
+<p><img src="../../resources/MOOC/Trading/cross_sectional.png" alt="cross_sectional.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8457a6d" class="outline-3">
+<h3 id="org8457a6d"><span class="section-number-3">3.2</span> Example</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+An simple cross-sectional top-n momentum strategy:
+</p>
+<ol class="org-ol">
+<li>Choose a stock universe (attention: avoid <b>Survivorship Bias</b>)</li>
+<li>Re-sample prices if needed, then compute log returns.</li>
+<li>Rank by returns, select top-n/bottom-n(cross-sectional analysis)</li>
+<li>Compute long and short portfolio returns</li>
+<li>Combine portfolio returns</li>
 </ol>
 </div>
 </div>
+</div>
 
-<div id="outline-container-orgcc94af2" class="outline-2">
-<h2 id="orgcc94af2"><span class="section-number-2">5</span> Reference</h2>
+<div id="outline-container-org3671427" class="outline-2">
+<h2 id="org3671427"><span class="section-number-2">4</span> Statistical Analysis for Returns</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>Sample Monthly Log Mean Return: \(\bar{x}\)</li>
+<li>t-statistic: \(t=\frac{{\bar{x}-\mu_0}}{SE}=\frac{\bar{x}}{SE}\) (if the true mean month return \(\mu_0\) is 0)</li>
+<li>\(SE=\frac{s}{\sqrt{n}}\): \(s\) is the sample standard deviance.</li>
+<li>\(H_0\): \(\mu=0\)</li>
+<li>\(H_A\): \(\mu>0\)</li>
+<li>If <b>P-Value</b> \(\le\alpha\) level, then reject \(H_0\).</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org07f5ef4" class="outline-2">
+<h2 id="org07f5ef4"><span class="section-number-2">5</span> References</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
-<li>Lesson 7
+<li>Lesson 8
 <ul class="org-ul">
-<li><a href="https://youtu.be/62fZN1QnGjc">3. Log Returns</a></li>
-<li>5. Distributions of Returns and Prices <a href="https://youtu.be/cGoXGiO1DYk">Video</a></li>
+<li><a href="https://youtu.be/O7c6bPXBUsU">1. Designing a Trading Strategy</a></li>
+<li><a href="https://youtu.be/TCOFgM-hxkQ">4. Long and Short Positions</a></li>
+<li><a href="https://youtu.be/rrCHC20FkIc">6. Trading Strategy</a></li>
+</ul></li>
+<li>Project1 Trading with Momentum
+<ul class="org-ul">
+<li><a href="https://youtu.be/8Hna_hR_N7c">4. Insights from a Quant</a></li>
 </ul></li>
 </ul>
 </div>

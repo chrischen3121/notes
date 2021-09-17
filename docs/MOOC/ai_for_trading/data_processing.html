@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2021-09-17 Fri 20:36 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Data Processing</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ChrisChen" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+	     margin-bottom: .2em; }
+  .subtitle { text-align: center;
+	      font-size: medium;
+	      font-weight: bold;
+	      margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+	    padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css">
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+	displayAlign: "left",
+	displayIndent: "2em",
+
+	"HTML-CSS": { scale: 100,
+			linebreaks: { automatic: "false" },
+			webFont: "TeX"
+		       },
+	SVG: {scale: 100,
+	      linebreaks: { automatic: "false" },
+	      font: "TeX"},
+	NativeMML: {scale: 100},
+	TeX: { equationNumbers: {autoNumber: "AMS"},
+	       MultLineWidth: "85%",
+	       TagSide: "left",
+	       TagIndent: ".8em"
+	     }
+});
+</script>
+<script type="text/javascript"
+	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Data Processing</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgfff84a9">1. Outliers</a>
+<ul>
+<li><a href="#orgb2cf16b">1.1. Source of Outliers</a></li>
+<li><a href="#orgfd380aa">1.2. Spotting Outliers in Raw Data</a></li>
+<li><a href="#orgf6ea3a9">1.3. Handling Outliers in Raw Data</a></li>
+<li><a href="#orgd131c95">1.4. Spotting Outliers in Signal Returns</a></li>
+<li><a href="#org5751449">1.5. Handling Outliers in Signal Returns</a></li>
+<li><a href="#org77d42a5">1.6. Ways to Reduce Effect of Outliers</a></li>
+</ul>
+</li>
+<li><a href="#org9ca53fb">2. Ways to Handle Sudden Fluctuations</a></li>
+<li><a href="#org22f20ad">3. Testing for Stationary</a>
+<ul>
+<li><a href="#org1551473">3.1. Breusch-Pagan Test</a></li>
+</ul>
+</li>
+<li><a href="#org9876fc6">4. Testing for Normality</a>
+<ul>
+<li><a href="#org5b0e8e9">4.1. Why to Check If the Data is Normal?</a></li>
+<li><a href="#orgc524393">4.2. Box Plot</a></li>
+<li><a href="#org7f4c855">4.3. QQ Plot</a></li>
+<li><a href="#org5bac71d">4.4. Single Number Testing (cutoff point)</a></li>
+</ul>
+</li>
+<li><a href="#orgdc2d832">5. Transform Data into Normality &amp; Stationary</a>
+<ul>
+<li><a href="#org63c9197">5.1. Apply Box-Cox Transformation</a></li>
+</ul>
+</li>
+<li><a href="#org20b7c69">6. References</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgfff84a9" class="outline-2">
+<h2 id="orgfff84a9"><span class="section-number-2">1</span> Outliers</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgb2cf16b" class="outline-3">
+<h3 id="orgb2cf16b"><span class="section-number-3">1.1</span> Source of Outliers</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>Fat Finger Errors</li>
+<li>Data Errors: missing value, 0s, duplicate values&#x2026;(could check if volume was 0)</li>
+<li>Earnings, mergers and other announcements</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfd380aa" class="outline-3">
+<h3 id="orgfd380aa"><span class="section-number-3">1.2</span> Spotting Outliers in Raw Data</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>Screen the data</li>
+<li>Rule-based searching and filtering methods. Examples:
+<ul class="org-ul">
+<li>percent change thresholds (but will yield many false positives)</li>
+<li>can use volume information to improve the accuracy of the filter</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf6ea3a9" class="outline-3">
+<h3 id="orgf6ea3a9"><span class="section-number-3">1.3</span> Handling Outliers in Raw Data</h3>
+<div class="outline-text-3" id="text-1-3">
+<ul class="org-ul">
+<li><b>Cross check with another data source</b></li>
+<li>Minimize false positives</li>
+<li>Decide how to deal with data values are missing</li>
+<li>May keep the missing data, especially when they represent a real non-tradable event.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd131c95" class="outline-3">
+<h3 id="orgd131c95"><span class="section-number-3">1.4</span> Spotting Outliers in Signal Returns</h3>
+<div class="outline-text-3" id="text-1-4">
+<ul class="org-ul">
+<li>Look at the return distribution (skeptical when it's too good)</li>
+<li>Compare return distribution to the normal distribution using <b>QQ Plots</b>
+<ul class="org-ul">
+<li>A good quant should try to understand the cause of outliers and returns.</li>
+<li>Check the dates and stocks that causes the difference.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5751449" class="outline-3">
+<h3 id="org5751449"><span class="section-number-3">1.5</span> Handling Outliers in Signal Returns</h3>
+<div class="outline-text-3" id="text-1-5">
+<ul class="org-ul">
+<li>Case1: Data error from venders
+<ul class="org-ul">
+<li>fix it by replacing with correct data from other venders</li>
+<li>try to determine if the result will be greatly affected if the data is replaced by any reasonable value.</li>
+</ul></li>
+<li>Case2: Due to legit market events
+<ul class="org-ul">
+<li>exclude small market cap assets (they're hard to predict)</li>
+</ul></li>
+<li>Case3: Earnings, announcements
+<ul class="org-ul">
+<li>check if you can pause before these events</li>
+<li>try to avoid losing money when you can't pause before the event</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org77d42a5" class="outline-3">
+<h3 id="org77d42a5"><span class="section-number-3">1.6</span> Ways to Reduce Effect of Outliers</h3>
+<div class="outline-text-3" id="text-1-6">
+<ul class="org-ul">
+<li>Moving Windows: But signals may be generated with a slight delay depending on the window size.</li>
+<li>Use average prices of many stocks or even entire sector or index.</li>
+<li>(Optional) May incorporate Bayesian methods or machine learning into outlier detection.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9ca53fb" class="outline-2">
+<h2 id="org9ca53fb"><span class="section-number-2">2</span> Ways to Handle Sudden Fluctuations</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Stock prices are volatile during market crashes. Two ways to handle:
+</p>
+<ul class="org-ul">
+<li>Including the data during these periods
+<ul class="org-ul">
+<li>the results will be highly skewed.</li>
+<li>the signals won't perform optimally on normal trading days.</li>
+</ul></li>
+<li>Not including these data
+<ul class="org-ul">
+<li>When the event happens, the signal may perform really poorly.</li>
+<li>To establish <b>stop loss levels</b> thresholds to prevent further losses.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org22f20ad" class="outline-2">
+<h2 id="org22f20ad"><span class="section-number-2">3</span> Testing for Stationary</h2>
+<div class="outline-text-2" id="text-3">
+<dl class="org-dl">
+<dt>Stationary</dt><dd>The <i>mean</i>, <i>variance</i>, <i>covariance</i> are the same over time. In particular, we want to check if the variance of data is stable over time.</dd>
+<dt>Homoscedasity</dt><dd>Terminology for constant variance over time.</dd>
+<dt>Heteroskedasticity</dt><dd>Terminology for a changing variance over time.</dd>
+</dl>
+</div>
+
+<div id="outline-container-org1551473" class="outline-3">
+<h3 id="org1551473"><span class="section-number-3">3.1</span> Breusch-Pagan Test</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+To check if the data is Homoscedasity or Heteroskedasticity.
+</p>
+<ul class="org-ul">
+<li>\(H_0\): The data is Homoscedasity.</li>
+<li>\(pvalue\le 0.05\): The data is Heteroskedasticity.(with 95% confidence)</li>
+</ul>
+
+<pre class="example" id="org5001bca">
+One Use Case:
+It takes the residuals from a regression, and checks if they are dependent upon the
+independent variables that we fed into the regression.
+
+The test does this by performing a second regression of the residuals against the
+independent variables, and checking if the coefficients from that second regression
+are statistically significant (non-zero). Thus, the data is likely heteroscedastic.
+</pre>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> statsmodels.stats.diagnostic <span style="color: #3a81c3; font-weight: bold;">import</span> het_breuschpagan
+<span style="color: #715ab1;">result</span> = het_breuschpagan<span style="color: #3a81c3;">(</span>residuals, independent_vars<span style="color: #3a81c3;">)</span>
+result.f_pvalue
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9876fc6" class="outline-2">
+<h2 id="org9876fc6"><span class="section-number-2">4</span> Testing for Normality</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org5b0e8e9" class="outline-3">
+<h3 id="org5b0e8e9"><span class="section-number-3">4.1</span> Why to Check If the Data is Normal?</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+When we use statistical models such as regression. We use hypotheses tests to check if we can trust the model parameters of the model.
+These tests assume that our data is normally distributed.
+If our data is not normally distributed, these tests tend to tell us the model is valid when in fact it is not.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc524393" class="outline-3">
+<h3 id="orgc524393"><span class="section-number-3">4.2</span> Box Plot</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li>Use <b>Boxplot</b> to check for <b>symmetry</b>.</li>
+</ul>
+
+<div id="orga31c2f1" class="figure">
+<p><img src="../../resources/MOOC/Trading/boxplot_of_normal_distribution.png" alt="boxplot_of_normal_distribution.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7f4c855" class="outline-3">
+<h3 id="org7f4c855"><span class="section-number-3">4.3</span> QQ Plot</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+Quantile-Quantile Plot. Common quantiles are:
+</p>
+<ul class="org-ul">
+<li>Quartiles: 4 groups</li>
+<li>Deciles: 10 groups</li>
+<li>Percentiles: 100 groups</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> matplotlib.pyplot <span style="color: #3a81c3; font-weight: bold;">as</span> plt
+<span style="color: #3a81c3; font-weight: bold;">from</span> scipy.stats <span style="color: #3a81c3; font-weight: bold;">import</span> gamma
+<span style="color: #715ab1;">data</span> = gamma.rvs<span style="color: #3a81c3;">(</span>a=5, size=10000<span style="color: #3a81c3;">)</span>
+stats.probplot<span style="color: #3a81c3;">(</span>data, dist=<span style="color: #2d9574;">"norm"</span>, plot=plt<span style="color: #3a81c3;">)</span>
+plt.show<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+
+<div id="orga19ca7f" class="figure">
+<p><img src="../../resources/MOOC/Trading/qq_plot.png" alt="qq_plot.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5bac71d" class="outline-3">
+<h3 id="org5bac71d"><span class="section-number-3">4.4</span> Single Number Testing (cutoff point)</h3>
+<div class="outline-text-3" id="text-4-4">
+<ul class="org-ul">
+<li><b>Shapiro-Wilk</b> Test <code>stats.shapiro</code>: \(H_0\) - data is normally distributed</li>
+<li><b>D'Agostino-Pearson</b> Test: \(H_0\) - data is normally distributed</li>
+<li><p>
+<b>Kolmogorov-Smirnov</b> Test: \(H_0\) - given two distribution, they are the same.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> scipy <span style="color: #3a81c3; font-weight: bold;">import</span> stats
+<span style="color: #715ab1;">sample</span> = stats.lognorm.rvs<span style="color: #3a81c3;">(</span>s=0.5, loc=0.0, scale=1.0, size=1000<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">normal_args</span> = <span style="color: #3a81c3;">(</span>sample.mean<span style="color: #6c3163;">()</span>, sample.std<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">result</span> = stats.kstest<span style="color: #3a81c3;">(</span>sample, <span style="color: #2d9574;">"norm"</span>, normal_args<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">assert</span> result.pvalue &lt; 0.05
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgdc2d832" class="outline-2">
+<h2 id="orgdc2d832"><span class="section-number-2">5</span> Transform Data into Normality &amp; Stationary</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>Use <code>log</code> function to get more normal data</li>
+<li>Use \(ln(p_{t}/p_{t-1})\) to get more homosceedastic data.</li>
+</ul>
+</div>
+
+<div id="outline-container-org63c9197" class="outline-3">
+<h3 id="org63c9197"><span class="section-number-3">5.1</span> Apply Box-Cox Transformation</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+\[T(x)=\frac{x^{\lambda}-1}{\lambda}\]
+</p>
+<ul class="org-ul">
+<li>\(\lambda\) is a constant value you can choose</li>
+<li>inputs: any dataset</li>
+<li>outputs: more normally distributed dataset</li>
+<li>\(T(x)=\ln(x)\) if we choose \(\lambda=0\)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org20b7c69" class="outline-2">
+<h2 id="org20b7c69"><span class="section-number-2">6</span> References</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>Lesson 12
+<ul class="org-ul">
+<li><a href="https://youtu.be/Sa1MJegyYf">6. Testing for Normality</a></li>
+<li><a href="https://youtu.be/N8Fhq8wiQZU">10. Transforming Data</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>
