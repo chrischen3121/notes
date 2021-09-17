@@ -1,0 +1,41 @@
+#+TITLE: Linux Shell Scripting
+#+OPTIONS: H:2 toc:1 num:2 ^:nil
+#+LANGUAGE: en-US
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+* 基础
+  - shebang: ~#~ sharp ~!~ bang ~#!~ shebang
+    - 执行带shebang ~#!/bin/bash~ 等同于 ~/bin/bash script.sh~
+** 打印
+   - 无引号 vs 单引号 vs 双引号
+     - 无引号无法包含 ';'
+     - 单引号Bash不会对 ~$var~ 求值
+     - 双引号会需要一些转义符号
+   - ~echo~ 输出自带 '\n' ~printf~ 不带
+   - 彩色输出： ~\e[1;31m~ 31表示文本修改为红色，41表示背景修改为红色
+     - ~\e[0m~ 重置
+
+** 环境变量
+*** 查看进程环境变量
+    #+begin_src bash
+      PID=`pgrep emacs`
+      cat /proc/$PID/environ | tr '\0' '\n' # 默认是以\0分隔环境变量
+    #+end_src
+*** PATH
+    ~PATH~ 通常定义在 ~/etc/environment~, ~/etc/profile~, ~~/.bashrc~
+    - 修改PATH: ~export PATH="$PATH:/home/user/bin"~
+
+*** 识别当前环境SHELL
+    #+begin_src bash
+      echo $SHELL
+      echo $0
+    #+end_src
+
+*** *检查是否为超级用户*
+    #+begin_src bash
+      if [ $UID -ne 0 ]; then
+	  echo Non root user. Please run as root.
+      else
+	  echo "Root user"
+      fi
+    #+end_src
