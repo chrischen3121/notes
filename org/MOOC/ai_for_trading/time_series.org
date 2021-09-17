@@ -12,6 +12,9 @@
     - Kalman Filter
     - Particle Filters
     - Recurrent Neural Networks
+** Correlation $\ne$ Regression
+   - Correlation :: measures the pairwise relationship between exactly two periods at a time. (ranges -1 to 1)
+   - Multiple Regression :: measures how a set of independent variables *collectively* influence the value of the dependent variable.
 
 * Autoregressive(AR) Model
   AR model tries to fit a line that is a liner combination of previous values.
@@ -23,6 +26,7 @@
   - Describe an AR model as $AR(p)$, where p stands for the lag.
   - Check the adjusted R-squared(Adj $R^2$) and adjust the lag.
   - *Vector Autoregressive Model*: similar with Multivariate Multiple Regression
+
     [[../../resources/MOOC/Trading/vector_autoregressive_mode.png]]
 
 * Moving Average(MA) Model
@@ -30,42 +34,46 @@
   - $MA(q)$, where q stands for the lag.
   - To decide the best value for q, draw a *autocorrelation* plot.
 
-* Autocorrelation
-  Autocorrelation is a measure of how much the current value moves in relation to *one of* its previous values.
-  [[../../resources/MOOC/Trading/autocorrelation.png]]
-  #+begin_src python
-    # Autocorrelation Plots
-    from statsmodels.graphics.tsaplots import plot_acf
-    _ = plot_acf(lret, lags=10, title='log return autocorrelation')
+** Autocorrelation
+   Autocorrelation is a measure of how much the current value moves in relation to *one of* its previous values.
 
-    from statsmodels.graphics.tsaplots import plot_pacf
-    _ = plot_pacf(lret, lags=10, title='log return Partial Autocorrelation')
-  #+end_src
-  #+begin_verse
-  Partial autocorrelation is different from autocorrelation in that it shows the influence of each period
-  that is not attributed to the other periods leading up to the current period.  In other words, the two-day
-  lag had a fairly strong correlation with the current value because it had a strong correlation with the
-  one-day lag. However, the two-day lag's partial correlation with the current period that isn't attributable
+*** *Autocorelation Plot*
+   [[../../resources/MOOC/Trading/autocorrelation.png]]
+   #+begin_src python
+     # Autocorrelation Plots
+     from statsmodels.graphics.tsaplots import plot_acf
+     _ = plot_acf(lret, lags=10, title='log return autocorrelation')
 
-  #+end_verse
-  -
-  to the one-day lag is relatively small.*Ljung-Box Test* helps us check whether the lag we chose gives autocorrelations that are significantly different from zero.
-    - $H_0$: the previous lags as a whole are not correlated with the current period.
-    - $pvalue\le 0.05$: the past lags have some correlation with the current period.
-  #+begin_src python
-    from statsmodels.stats.diagnostic import acorr_ljungbox
-    lb_test_stat, lb_p_value = acorr_ljungbox(lret, lags=20)
+     from statsmodels.graphics.tsaplots import plot_pacf
+     _ = plot_pacf(lret, lags=10, title='log return Partial Autocorrelation')
+   #+end_src
+    Partial autocorrelation is different from autocorrelation in that it shows the influence of each period
+    that is not attributed to the other periods leading up to the current period.  In other words, the two-day
+    lag had a fairly strong correlation with the current value because it had a strong correlation with the
+    one-day lag. However, the two-day lag's partial correlation with the current period that isn't attributable
+    to the one-day lag is relatively small.
 
-  #+end_src
-* Correlation $\ne$ Regression
-  - Correlation :: measures the pairwise relationship between exactly two periods at a time. (ranges -1 to 1)
-  - Multiple Regression :: measures how a set of independent variables *collectively* influence the value of the dependent variable.
+*** *Ljung-Box Test*
+    Ljung-Box Test helps us check whether the lag we chose gives autocorrelations that are significantly different from zero.
+     - $H_0$: the previous lags as a whole are not correlated with the current period.
+     - $pvalue\le 0.05$: the past lags have some correlation with the current period.
+   #+begin_src python
+     from statsmodels.stats.diagnostic import acorr_ljungbox
+     lb_test_stat, lb_p_value = acorr_ljungbox(lret, lags=20)
+   #+end_src
+
 
 * *ARMA* (Autoregressive Moving Average)
-  $$ARMA(p, q): y~AR(p)+MA(q)$$
+  $$ARMA(p, q): y\sim AR(p)+MA(q)$$
+
+  $$\begin{align*}
+  y_t & = \alpha + B_{1}y_{t-1} + B_{2}y_{t-2} + ... \\
+  & = \epsilon_t + \theta_{1}\epsilon_{t-1} + \theta_{2}\epsilon_{t-2} + ... \\
+  \end{align*}$$
+
   - p is the lag for autoregression
   - q is the lag for moving average
-  - *ARIMA* (Autoregressive Integrated Moving Average): A variation of the ARMA which is used in *Pair Trading*
+  - *ARIMA* (Autoregressive Integrated Moving Average) is a variation of the ARMA which is used in *Pair Trading*
   #+begin_src python
     import numpy as np
     import pandas as pd
@@ -112,9 +120,53 @@
     arima_pred = pd.Series(arima_result.fittedvalues)
   #+end_src
 
-* Test for Time Series Stationary
+* Testing for Time Series Stationary
   - Augmented Dickey Fuller Test
-  [[../../resources/MOOC/Trading/dicky_fuller_test.png]]
-  - When the time difference pass the test, then we can say it is stationary and integrated of order zero. It can be modeled with *ARMA*
+
+  [[../../resources/MOOC/Trading/dickey_fuller_test.png]]
+
+  - When the time difference pass the test, then we can say it is stationary
+    and integrated of order zero. It can be modeled with *ARMA*
+
+* Kalman Filter
+  Used for time series in self-driving cars.
+  - No need to choose a lag.
+  - Single-state($t-1$) represents the past.
+  - Handles data with noisy indirect measurements.
+  - Dynamically updates its underlying model every time it performs a measurement.
+
+  [[../../resources/MOOC/Trading/kalman_filter.png]]
+  1. Predicts the hidden state (log returns) as a probability distribution.
+  2. Takes measurements(actual log returns) and then updates its belief about the hidden state.
+
+* Particle Filter
+  A type of genetic algorithm is used for self-driving cars as well as time series.
+  The genetic algorithm apply *natural selection* to improve our estimates.
+  - Particles: helpers each with a certain view on where the returns are going based on market data.
+  - If the predictions made by particles are more spread out, we are less confidant of the prediction.
+
+  Pros:
+  - Can handle data with non-normal distributions
+  - Not assume linear relationship, can better fit non-linear data.
+
+* Recurrent Neural Networks(RNN)
+  Used in NLP and time series.
+
+  [[../../resources/MOOC/Trading/rnn.png]]
+  [[../../resources/MOOC/Trading/rnn2.png]]
+  [[../../resources/MOOC/Trading/rnn3.png]]
+** Long-Short Term Memory Cells (LSTM)
+   One commonly used version of RNN is made up of LSTM cells.
+   - consists of several neural networks each perform a specific task.
+
+  [[../../resources/MOOC/Trading/lstm.png]]
+
 
 * References
+  - Lesson 13
+    - [[https://youtu.be/9jE7S4b-oIU][2. Autoregressive Models]]
+    - [[https://youtu.be/1FkCP_dwxjI][3. Moving Average Models]]
+    - [[https://youtu.be/cj1RCBTDog8][4. Advanced Time Series Models]]
+    - [[https://youtu.be/CLJhgfMI4Ho][6. Kalman Filter]]
+    - [[https://youtu.be/4KhDUAvwI74][7. Particle Filter]]
+    - [[https://youtu.be/5cYAAHyRHDo][8. Recurrent Neural Networks]]

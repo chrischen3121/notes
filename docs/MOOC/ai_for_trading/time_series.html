@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-17 Fri 17:53 -->
+<!-- 2021-09-17 Fri 23:32 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Time Series Modeling</title>
@@ -224,20 +224,33 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6407e5b">1. Overview</a></li>
-<li><a href="#orge77e3e0">2. Autoregressive(AR) Model</a></li>
-<li><a href="#org936f25e">3. Moving Average(MA) Model</a></li>
-<li><a href="#orgcfb6b29">4. Autocorrelation</a></li>
-<li><a href="#org964dec8">5. Correlation \(\ne\) Regression</a></li>
-<li><a href="#orgbb86b5d">6. <b>ARMA</b> (Autoregressive Moving Average)</a></li>
-<li><a href="#org556862f">7. Test for Time Series Stationary</a></li>
-<li><a href="#orgceb8b71">8. References</a></li>
+<li><a href="#org265c511">1. Overview</a>
+<ul>
+<li><a href="#orge64240e">1.1. Correlation \(\ne\) Regression</a></li>
+</ul>
+</li>
+<li><a href="#orga07c30b">2. Autoregressive(AR) Model</a></li>
+<li><a href="#org9a7a792">3. Moving Average(MA) Model</a>
+<ul>
+<li><a href="#org229f13e">3.1. Autocorrelation</a></li>
+</ul>
+</li>
+<li><a href="#org10dddd0">4. <b>ARMA</b> (Autoregressive Moving Average)</a></li>
+<li><a href="#orgaab29f0">5. Testing for Time Series Stationary</a></li>
+<li><a href="#org13449b1">6. Kalman Filter</a></li>
+<li><a href="#org4db5d60">7. Particle Filter</a></li>
+<li><a href="#org2741d52">8. Recurrent Neural Networks(RNN)</a>
+<ul>
+<li><a href="#org7a09082">8.1. Long-Short Term Memory Cells (LSTM)</a></li>
+</ul>
+</li>
+<li><a href="#orgf849b97">9. References</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6407e5b" class="outline-2">
-<h2 id="org6407e5b"><span class="section-number-2">1</span> Overview</h2>
+<div id="outline-container-org265c511" class="outline-2">
+<h2 id="org265c511"><span class="section-number-2">1</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>Auto-regression</li>
@@ -252,10 +265,19 @@
 </ul></li>
 </ul>
 </div>
+<div id="outline-container-orge64240e" class="outline-3">
+<h3 id="orge64240e"><span class="section-number-3">1.1</span> Correlation \(\ne\) Regression</h3>
+<div class="outline-text-3" id="text-1-1">
+<dl class="org-dl">
+<dt>Correlation</dt><dd>measures the pairwise relationship between exactly two periods at a time. (ranges -1 to 1)</dd>
+<dt>Multiple Regression</dt><dd>measures how a set of independent variables <b>collectively</b> influence the value of the dependent variable.</dd>
+</dl>
+</div>
+</div>
 </div>
 
-<div id="outline-container-orge77e3e0" class="outline-2">
-<h2 id="orge77e3e0"><span class="section-number-2">2</span> Autoregressive(AR) Model</h2>
+<div id="outline-container-orga07c30b" class="outline-2">
+<h2 id="orga07c30b"><span class="section-number-2">2</span> Autoregressive(AR) Model</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 AR model tries to fit a line that is a liner combination of previous values.
@@ -268,14 +290,21 @@ AR model tries to fit a line that is a liner combination of previous values.
 <li>Lag: the number of past values used in the model. e.g. AR Lag 2 model</li>
 <li>Describe an AR model as \(AR(p)\), where p stands for the lag.</li>
 <li>Check the adjusted R-squared(Adj \(R^2\)) and adjust the lag.</li>
-<li><b>Vector Autoregressive Model</b>: similar with Multivariate Multiple Regression
-<img src="../../resources/MOOC/Trading/vector_autoregressive_mode.png" alt="vector_autoregressive_mode.png" /></li>
+<li><p>
+<b>Vector Autoregressive Model</b>: similar with Multivariate Multiple Regression
+</p>
+
+
+<div id="org9b164a4" class="figure">
+<p><img src="../../resources/MOOC/Trading/vector_autoregressive_mode.png" alt="vector_autoregressive_mode.png" />
+</p>
+</div></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org936f25e" class="outline-2">
-<h2 id="org936f25e"><span class="section-number-2">3</span> Moving Average(MA) Model</h2>
+<div id="outline-container-org9a7a792" class="outline-2">
+<h2 id="org9a7a792"><span class="section-number-2">3</span> Moving Average(MA) Model</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 \[y_t=\mu+\epsilon_t+\theta_1\epsilon_{t-1}+\theta_2\epsilon_{t-2}+...\theta_q\epsilon_{t-q}\]
@@ -285,15 +314,23 @@ AR model tries to fit a line that is a liner combination of previous values.
 <li>To decide the best value for q, draw a <b>autocorrelation</b> plot.</li>
 </ul>
 </div>
-</div>
 
-<div id="outline-container-orgcfb6b29" class="outline-2">
-<h2 id="orgcfb6b29"><span class="section-number-2">4</span> Autocorrelation</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-org229f13e" class="outline-3">
+<h3 id="org229f13e"><span class="section-number-3">3.1</span> Autocorrelation</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 Autocorrelation is a measure of how much the current value moves in relation to <b>one of</b> its previous values.
-<img src="../../resources/MOOC/Trading/autocorrelation.png" alt="autocorrelation.png" />
 </p>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgca9448c"></a><b>Autocorelation Plot</b><br />
+<div class="outline-text-4" id="text-orgca9448c">
+
+<div id="org21d3885" class="figure">
+<p><img src="../../resources/MOOC/Trading/autocorrelation.png" alt="autocorrelation.png" />
+</p>
+</div>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Autocorrelation Plots</span>
 <span style="color: #3a81c3; font-weight: bold;">from</span> statsmodels.graphics.tsaplots <span style="color: #3a81c3; font-weight: bold;">import</span> plot_acf
@@ -303,18 +340,20 @@ Autocorrelation is a measure of how much the current value moves in relation to 
 <span style="color: #715ab1;">_</span> = plot_pacf<span style="color: #3a81c3;">(</span>lret, lags=10, title=<span style="color: #2d9574;">'log return Partial Autocorrelation'</span><span style="color: #3a81c3;">)</span>
 </pre>
 </div>
-<p class="verse">
-Partial autocorrelation is different from autocorrelation in that it shows the influence of each period<br />
-that is not attributed to the other periods leading up to the current period.  In other words, the two-day<br />
-lag had a fairly strong correlation with the current value because it had a strong correlation with the<br />
-one-day lag. However, the two-day lag's partial correlation with the current period that isn't attributable<br />
-<br />
-</p>
-<ul class="org-ul">
-<li></li>
-</ul>
 <p>
-to the one-day lag is relatively small.*Ljung-Box Test* helps us check whether the lag we chose gives autocorrelations that are significantly different from zero.
+Partial autocorrelation is different from autocorrelation in that it shows the influence of each period
+that is not attributed to the other periods leading up to the current period.  In other words, the two-day
+lag had a fairly strong correlation with the current value because it had a strong correlation with the
+one-day lag. However, the two-day lag's partial correlation with the current period that isn't attributable
+to the one-day lag is relatively small.
+</p>
+</div>
+</li>
+
+<li><a id="orgb683e81"></a><b>Ljung-Box Test</b><br />
+<div class="outline-text-4" id="text-orgb683e81">
+<p>
+Ljung-Box Test helps us check whether the lag we chose gives autocorrelations that are significantly different from zero.
 </p>
 <ul class="org-ul">
 <li>\(H_0\): the previous lags as a whole are not correlated with the current period.</li>
@@ -323,31 +362,33 @@ to the one-day lag is relatively small.*Ljung-Box Test* helps us check whether t
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> statsmodels.stats.diagnostic <span style="color: #3a81c3; font-weight: bold;">import</span> acorr_ljungbox
 <span style="color: #715ab1;">lb_test_stat</span>, <span style="color: #715ab1;">lb_p_value</span> = acorr_ljungbox<span style="color: #3a81c3;">(</span>lret, lags=20<span style="color: #3a81c3;">)</span>
-
 </pre>
 </div>
 </div>
-</div>
-<div id="outline-container-org964dec8" class="outline-2">
-<h2 id="org964dec8"><span class="section-number-2">5</span> Correlation \(\ne\) Regression</h2>
-<div class="outline-text-2" id="text-5">
-<dl class="org-dl">
-<dt>Correlation</dt><dd>measures the pairwise relationship between exactly two periods at a time. (ranges -1 to 1)</dd>
-<dt>Multiple Regression</dt><dd>measures how a set of independent variables <b>collectively</b> influence the value of the dependent variable.</dd>
-</dl>
+</li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-orgbb86b5d" class="outline-2">
-<h2 id="orgbb86b5d"><span class="section-number-2">6</span> <b>ARMA</b> (Autoregressive Moving Average)</h2>
-<div class="outline-text-2" id="text-6">
+
+<div id="outline-container-org10dddd0" class="outline-2">
+<h2 id="org10dddd0"><span class="section-number-2">4</span> <b>ARMA</b> (Autoregressive Moving Average)</h2>
+<div class="outline-text-2" id="text-4">
 <p>
-\[ARMA(p, q): y~AR(p)+MA(q)\]
+\[ARMA(p, q): y\sim AR(p)+MA(q)\]
 </p>
+
+<p>
+\[\begin{align*}
+  y_t & = \alpha + B_{1}y_{t-1} + B_{2}y_{t-2} + ... \\
+  & = \epsilon_t + \theta_{1}\epsilon_{t-1} + \theta_{2}\epsilon_{t-2} + ... \\
+  \end{align*}\]
+</p>
+
 <ul class="org-ul">
 <li>p is the lag for autoregression</li>
 <li>q is the lag for moving average</li>
-<li><b>ARIMA</b> (Autoregressive Integrated Moving Average): A variation of the ARMA which is used in <b>Pair Trading</b></li>
+<li><b>ARIMA</b> (Autoregressive Integrated Moving Average) is a variation of the ARMA which is used in <b>Pair Trading</b></li>
 </ul>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
@@ -398,25 +439,121 @@ np.random.seed<span style="color: #3a81c3;">(</span>200<span style="color: #3a81
 </div>
 </div>
 
-<div id="outline-container-org556862f" class="outline-2">
-<h2 id="org556862f"><span class="section-number-2">7</span> Test for Time Series Stationary</h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-orgaab29f0" class="outline-2">
+<h2 id="orgaab29f0"><span class="section-number-2">5</span> Testing for Time Series Stationary</h2>
+<div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>Augmented Dickey Fuller Test</li>
 </ul>
 
-<div id="org538344e" class="figure">
-<p><img src="../../resources/MOOC/Trading/dicky_fuller_test.png" alt="dicky_fuller_test.png" />
+
+<div id="orgadff8d1" class="figure">
+<p><img src="../../resources/MOOC/Trading/dickey_fuller_test.png" alt="dickey_fuller_test.png" />
 </p>
 </div>
+
 <ul class="org-ul">
-<li>When the time difference pass the test, then we can say it is stationary and integrated of order zero. It can be modeled with <b>ARMA</b></li>
+<li>When the time difference pass the test, then we can say it is stationary
+and integrated of order zero. It can be modeled with <b>ARMA</b></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgceb8b71" class="outline-2">
-<h2 id="orgceb8b71"><span class="section-number-2">8</span> References</h2>
+<div id="outline-container-org13449b1" class="outline-2">
+<h2 id="org13449b1"><span class="section-number-2">6</span> Kalman Filter</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Used for time series in self-driving cars.
+</p>
+<ul class="org-ul">
+<li>No need to choose a lag.</li>
+<li>Single-state(\(t-1\)) represents the past.</li>
+<li>Handles data with noisy indirect measurements.</li>
+<li>Dynamically updates its underlying model every time it performs a measurement.</li>
+</ul>
+
+
+<div id="org9dbb2d3" class="figure">
+<p><img src="../../resources/MOOC/Trading/kalman_filter.png" alt="kalman_filter.png" />
+</p>
+</div>
+<ol class="org-ol">
+<li>Predicts the hidden state (log returns) as a probability distribution.</li>
+<li>Takes measurements(actual log returns) and then updates its belief about the hidden state.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org4db5d60" class="outline-2">
+<h2 id="org4db5d60"><span class="section-number-2">7</span> Particle Filter</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+A type of genetic algorithm is used for self-driving cars as well as time series.
+The genetic algorithm apply <b>natural selection</b> to improve our estimates.
+</p>
+<ul class="org-ul">
+<li>Particles: helpers each with a certain view on where the returns are going based on market data.</li>
+<li>If the predictions made by particles are more spread out, we are less confidant of the prediction.</li>
+</ul>
+
+<p>
+Pros:
+</p>
+<ul class="org-ul">
+<li>Can handle data with non-normal distributions</li>
+<li>Not assume linear relationship, can better fit non-linear data.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2741d52" class="outline-2">
+<h2 id="org2741d52"><span class="section-number-2">8</span> Recurrent Neural Networks(RNN)</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Used in NLP and time series.
+</p>
+
+<p>
+<img src="../../resources/MOOC/Trading/rnn.png" alt="rnn.png" />
+<img src="../../resources/MOOC/Trading/rnn2.png" alt="rnn2.png" />
+<img src="../../resources/MOOC/Trading/rnn3.png" alt="rnn3.png" />
+</p>
+</div>
+<div id="outline-container-org7a09082" class="outline-3">
+<h3 id="org7a09082"><span class="section-number-3">8.1</span> Long-Short Term Memory Cells (LSTM)</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+One commonly used version of RNN is made up of LSTM cells.
+</p>
+<ul class="org-ul">
+<li>consists of several neural networks each perform a specific task.</li>
+</ul>
+
+
+<div id="org4fcbec9" class="figure">
+<p><img src="../../resources/MOOC/Trading/lstm.png" alt="lstm.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgf849b97" class="outline-2">
+<h2 id="orgf849b97"><span class="section-number-2">9</span> References</h2>
+<div class="outline-text-2" id="text-9">
+<ul class="org-ul">
+<li>Lesson 13
+<ul class="org-ul">
+<li><a href="https://youtu.be/9jE7S4b-oIU">2. Autoregressive Models</a></li>
+<li><a href="https://youtu.be/1FkCP_dwxjI">3. Moving Average Models</a></li>
+<li><a href="https://youtu.be/cj1RCBTDog8">4. Advanced Time Series Models</a></li>
+<li><a href="https://youtu.be/CLJhgfMI4Ho">6. Kalman Filter</a></li>
+<li><a href="https://youtu.be/4KhDUAvwI74">7. Particle Filter</a></li>
+<li><a href="https://youtu.be/5cYAAHyRHDo">8. Recurrent Neural Networks</a></li>
+</ul></li>
+</ul>
+</div>
 </div>
 </div>
 </body>
