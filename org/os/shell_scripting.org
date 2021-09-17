@@ -6,6 +6,9 @@
 * 基础
   - shebang: ~#~ sharp ~!~ bang ~#!~ shebang
     - 执行带shebang ~#!/bin/bash~ 等同于 ~/bin/bash script.sh~
+  - 所有变量的值都是 *字符串*
+  - *等号左右空格问题* ~a = 1~ 为比较语句， ~a=1~ 为赋值语句
+
 ** 打印
    - 无引号 vs 单引号 vs 双引号
      - 无引号无法包含 ';'
@@ -38,4 +41,45 @@
       else
 	  echo "Root user"
       fi
+    #+end_src
+
+** 数学运算
+*** let
+    #+begin_src bash
+      num1=5
+      num2=4
+      let result=num1+num2
+      let num1++
+      let num2+=3
+    #+end_src
+
+*** 操作符 ~(())~, ~[]~
+    #+begin_src bash
+      num1=5
+      num2=4
+      result=$[ num1 + num2 ]
+      result=$[ $num1 + 4 ]
+      result=$(( num1 + 6 ))
+    #+end_src
+
+*** expr
+    #+begin_src bash
+      result=`expr 3 + 4`
+      result=$(expr $num1 + 1)
+    #+end_src
+
+*** 浮点数运算 ~bc~
+    #+begin_src bash
+      echo "4 * 0.52" | bc
+      result = `echo "$num1 * 1.5" | bc`
+
+      # 设定精度、进制等
+      echo "scale=4;1/3" | bc
+      #=> .3333
+      echo "obase=2;$num" | bc # 十进制转二进制
+      echo "obase=10;ibase=2;$binary" | bc # 二进制转十进制
+
+      # 平方，平方根
+      echo "10^10" | bc
+      echo "sqrt(100)" | bc
     #+end_src

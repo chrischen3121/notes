@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-09-17 Fri 11:50 -->
+<!-- 2021-09-17 Fri 12:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux Shell Scripting</title>
@@ -236,8 +236,11 @@
 <ul class="org-ul">
 <li>执行带shebang <code>#!/bin/bash</code> 等同于 <code>/bin/bash script.sh</code></li>
 </ul></li>
+<li>所有变量的值都是 <b>字符串</b></li>
+<li><b>等号左右空格问题</b> <code>a = 1</code> 为比较语句， <code>a=1</code> 为赋值语句</li>
 </ul>
 </div>
+
 <div id="outline-container-org93ed668" class="outline-3">
 <h3 id="org93ed668"><span class="section-number-3">1.1</span> 打印</h3>
 <div class="outline-text-3" id="text-1-1">
@@ -300,6 +303,69 @@ cat /proc/$<span style="color: #715ab1;">PID</span>/environ | tr <span style="co
 <span style="color: #3a81c3; font-weight: bold;">else</span>
     <span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"Root user"</span>
 <span style="color: #3a81c3; font-weight: bold;">fi</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgb6bea06" class="outline-3">
+<h3 id="orgb6bea06"><span class="section-number-3">1.3</span> 数学运算</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<ul class="org-ul">
+<li><a id="org5e6acfb"></a>let<br />
+<div class="outline-text-4" id="text-org5e6acfb">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #715ab1;">num1</span>=5
+<span style="color: #715ab1;">num2</span>=4
+<span style="color: #3a81c3;">let</span> <span style="color: #715ab1;">result</span>=num1+num2
+<span style="color: #3a81c3;">let</span> num1++
+<span style="color: #3a81c3;">let</span> <span style="color: #715ab1;">num2</span>+=3
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orga9f8ca0"></a>操作符 <code>(())</code>, <code>[]</code><br />
+<div class="outline-text-4" id="text-orga9f8ca0">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #715ab1;">num1</span>=5
+<span style="color: #715ab1;">num2</span>=4
+<span style="color: #715ab1;">result</span>=$<span style="color: #3a81c3;">[</span> num1 + num2 <span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">result</span>=$<span style="color: #3a81c3;">[</span> $<span style="color: #715ab1;">num1</span> + 4 <span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">result</span>=$<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span> num1 + 6 <span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org050823f"></a>expr<br />
+<div class="outline-text-4" id="text-org050823f">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #715ab1;">result</span>=<span style="color: #6c3163;">`expr 3 + 4`</span>
+<span style="color: #715ab1;">result</span>=$<span style="color: #3a81c3;">(</span>expr $<span style="color: #715ab1;">num1</span> + 1<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org7f3cba2"></a>浮点数运算 <code>bc</code><br />
+<div class="outline-text-4" id="text-org7f3cba2">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"4 * 0.52"</span> | bc
+<span style="color: #715ab1;">result</span> = <span style="color: #6c3163;">`echo "$num1 * 1.5" | bc`</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#35774;&#23450;&#31934;&#24230;&#12289;&#36827;&#21046;&#31561;</span>
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"scale=4;1/3"</span> | bc
+<span style="color: #2aa1ae; background-color: #ecf3ec;">#</span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; .3333</span>
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"obase=2;$num"</span> | bc <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#21313;&#36827;&#21046;&#36716;&#20108;&#36827;&#21046;</span>
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"obase=10;ibase=2;$binary"</span> | bc <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#20108;&#36827;&#21046;&#36716;&#21313;&#36827;&#21046;</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#24179;&#26041;&#65292;&#24179;&#26041;&#26681;</span>
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"10^10"</span> | bc
+<span style="color: #3a81c3;">echo</span> <span style="color: #2d9574;">"sqrt(100)"</span> | bc
 </pre>
 </div>
 </div>
