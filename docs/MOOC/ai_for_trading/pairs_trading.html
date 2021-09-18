@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-18 Sat 16:38 -->
+<!-- 2021-09-18 Sat 17:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI for Trading</title>
+<title>Pairs Trading</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
 <style type="text/css">
@@ -194,25 +194,232 @@
   /*]]>*/-->
 </style>
 <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css">
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+	displayAlign: "left",
+	displayIndent: "2em",
+
+	"HTML-CSS": { scale: 100,
+			linebreaks: { automatic: "false" },
+			webFont: "TeX"
+		       },
+	SVG: {scale: 100,
+	      linebreaks: { automatic: "false" },
+	      font: "TeX"},
+	NativeMML: {scale: 100},
+	TeX: { equationNumbers: {autoNumber: "AMS"},
+	       MultLineWidth: "85%",
+	       TagSide: "left",
+	       TagIndent: ".8em"
+	     }
+});
+</script>
+<script type="text/javascript"
+	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
-<h1 class="title">AI for Trading</h1>
-<ul class="org-ul">
-<li><a href="./ai_for_trading/insights.html">Insights</a></li>
-<li><a href="./ai_for_trading/financial_data.html">Financial Data</a></li>
-<li><a href="./ai_for_trading/log_return.html">Log Return</a></li>
-<li><a href="./ai_for_trading/data_processing.html">Data Processing</a></li>
-<li><a href="./ai_for_trading/regression.html">Regression</a></li>
-<li><a href="./ai_for_trading/volatility.html">Volatility</a></li>
-<li><a href="./ai_for_trading/indicators.html">Indicators</a></li>
-<li><a href="./ai_for_trading/strategies.html">Strategies</a>
-<ul class="org-ul">
-<li><a href="./ai_for_trading/pairs_trading.html">Pairs Trading</a></li>
-</ul></li>
-<li><a href="./ai_for_trading/time_series.html">Time Series Modeling</a></li>
-<li><a href="./ai_for_trading/terminologies.html">Terminologies</a></li>
+<h1 class="title">Pairs Trading</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcd5706a">1. Finding Pairs</a></li>
+<li><a href="#orga77eb26">2. Mean Reversion</a>
+<ul>
+<li><a href="#orgf776ed2">2.1. Drift and Volatility</a></li>
 </ul>
+</li>
+<li><a href="#org34339e3">3. Hedge Ratio</a></li>
+<li><a href="#org8caf83a">4. Spread</a></li>
+<li><a href="#orgca6a99f">5. Cointegration</a>
+<ul>
+<li><a href="#orgd10f70f">5.1. Cointegration \(\ne\) Correlation</a></li>
+<li><a href="#org021a36b">5.2. Test for Checking Cointegration</a></li>
+</ul>
+</li>
+<li><a href="#org8659e0c">6. References</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgcd5706a" class="outline-2">
+<h2 id="orgcd5706a"><span class="section-number-2">1</span> Finding Pairs</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Finding the economic links
+</p>
+<ul class="org-ul">
+<li>Government Policies</li>
+<li>Customers and suppliers with in the same supply chain</li>
+<li>Timezone Lag</li>
+</ul>
+
+<p>
+Insights
+</p>
+<ul class="org-ul">
+<li>Looking for a time lag</li>
+</ul>
+
+<p>
+Checking
+</p>
+<ul class="org-ul">
+<li>check if spread is stationary</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga77eb26" class="outline-2">
+<h2 id="orga77eb26"><span class="section-number-2">2</span> Mean Reversion</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+A mean reverting time series is one that tends to move back and forth around some constant value.
+</p>
+</div>
+<div id="outline-container-orgf776ed2" class="outline-3">
+<h3 id="orgf776ed2"><span class="section-number-3">2.1</span> Drift and Volatility</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+To describe a mean reverting process
+</p>
+<dl class="org-dl">
+<dt>Drift Term</dt><dd>Long Term Average</dd>
+<dt>Volatility Term</dt><dd>Randomness</dd>
+</dl>
+
+<p>
+Formula:
+\[dp_t=p_t\mu dt + p_t\sigma\epsilon\sqrt{dt}\]
+</p>
+
+<ul class="org-ul">
+<li>\(dp_t\) represents the change in price over the time t</li>
+<li>drift term \(p_t\mu dt\)
+<ul class="org-ul">
+<li>\(p_t\): current price</li>
+<li>\(\mu\): a constant average mu</li>
+<li>\(dt\): change in time</li>
+</ul></li>
+<li>volatility term \(p_t\sigma\epsilon\sqrt{dt}\)
+<ul class="org-ul">
+<li>\(p_t\): current price</li>
+<li>\(\sigma\): a standard deviation sigma</li>
+<li>\(\epsilon\): a random noise factor</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org34339e3" class="outline-2">
+<h2 id="org34339e3"><span class="section-number-2">3</span> Hedge Ratio</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Two ways to calculate the hedge ratio
+</p>
+<ol class="org-ol">
+<li>The Price Ratio \(\frac{B}{A}\): the price of stock B divided by the price of stock A</li>
+<li>Run a Linear Regression \(B=\beta A + \alpha\)
+<ul class="org-ul">
+<li>Stock A is the independent variable.</li>
+<li>Stock B is the dependent variable.</li>
+<li>the coefficient \(\beta\) is the hedge ratio.</li>
+</ul></li>
+</ol>
+
+<p>
+The difference is that the regression accounts for a series of previous prices.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8caf83a" class="outline-2">
+<h2 id="org8caf83a"><span class="section-number-2">4</span> Spread</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+\[Spread = B_{actual} - B_{estimate}\]
+\[B_{estimate}=\beta A + \alpha\]
+</p>
+<ul class="org-ul">
+<li>\(\beta\) is the hedge ratio</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgca6a99f" class="outline-2">
+<h2 id="orgca6a99f"><span class="section-number-2">5</span> Cointegration</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Two stocks \(y_t\sim I(1)\), \(x_t\sim I(1)\)
+Try linear regression:
+\[y_t\approx\beta x_t + \alpha\]
+\[Spread = y_t - (\alpha + \beta x_t)\]
+</p>
+<ul class="org-ul">
+<li>If spread is stationary, then Spread is I(0) and x, y are cointegrated.</li>
+<li>Hedge Ratio \(\beta\) is coefficient of cointegrated.</li>
+</ul>
+</div>
+
+<div id="outline-container-orgd10f70f" class="outline-3">
+<h3 id="orgd10f70f"><span class="section-number-3">5.1</span> Cointegration \(\ne\) Correlation</h3>
+<div class="outline-text-3" id="text-5-1">
+<ul class="org-ul">
+<li>Cointegration means that, over a range of days, the <b>relative increase</b> in A is matched by a <b>relative increase</b> in B.</li>
+<li>A strong positive correlation means when stock A moves up stock B moves up <b>at the same time</b> and vice versa. (not measure the <b>relative increase</b>)</li>
+</ul>
+
+
+<div id="org5759c1e" class="figure">
+<p><img src="../../resources/MOOC/Trading/correlation_vs_cointegration.png" alt="correlation_vs_cointegration.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org021a36b" class="outline-3">
+<h3 id="org021a36b"><span class="section-number-3">5.2</span> Test for Checking Cointegration</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+Two-Step Engle-Granger Test
+</p>
+<ol class="org-ol">
+<li>Get hedge ratio from a linear regression</li>
+<li>Calculate spread and check if spread is stationary
+<ul class="org-ul">
+<li>if spread is stationary, the two series are cointegrated</li>
+</ul></li>
+</ol>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgb14ff03"></a>Check If Spread is Stationary<br />
+<div class="outline-text-4" id="text-orgb14ff03">
+<p>
+Augmented Dickey-Fuller Test
+</p>
+<ul class="org-ul">
+<li>\(pvalue\le 0.05\): spread is stationary</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8659e0c" class="outline-2">
+<h2 id="org8659e0c"><span class="section-number-2">6</span> References</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>Lesson 15
+<ul class="org-ul">
+<li><a href="https://youtu.be/7lEm_tFXcBk">3. Pairs Trading</a></li>
+<li><a href="https://youtu.be/N4ZI5SyFMOc">6. Cointegration</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
 </div>
 </body>
 </html>

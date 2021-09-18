@@ -1,0 +1,79 @@
+#+TITLE: Pairs Trading
+#+OPTIONS: H:2 toc:2 num:2 ^:nil
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+* Finding Pairs
+  Finding the economic links
+  - Government Policies
+  - Customers and suppliers with in the same supply chain
+  - Timezone Lag
+
+  Insights
+  - Looking for a time lag
+
+  Checking
+  - check if spread is stationary
+
+* Mean Reversion
+  A mean reverting time series is one that tends to move back and forth around some constant value.
+** Drift and Volatility
+   To describe a mean reverting process
+   - Drift Term :: Long Term Average
+   - Volatility Term :: Randomness
+
+   Formula:
+   $$dp_t=p_t\mu dt + p_t\sigma\epsilon\sqrt{dt}$$
+
+   - $dp_t$ represents the change in price over the time t
+   - drift term $p_t\mu dt$
+     - $p_t$: current price
+     - $\mu$: a constant average mu
+     - $dt$: change in time
+   - volatility term $p_t\sigma\epsilon\sqrt{dt}$
+     - $p_t$: current price
+     - $\sigma$: a standard deviation sigma
+     - $\epsilon$: a random noise factor
+
+* Hedge Ratio
+  Two ways to calculate the hedge ratio
+  1. The Price Ratio $\frac{B}{A}$: the price of stock B divided by the price of stock A
+  2. Run a Linear Regression $B=\beta A + \alpha$
+     - Stock A is the independent variable.
+     - Stock B is the dependent variable.
+     - the coefficient $\beta$ is the hedge ratio.
+
+  The difference is that the regression accounts for a series of previous prices.
+
+* Spread
+  $$Spread = B_{actual} - B_{estimate}$$
+  $$B_{estimate}=\beta A + \alpha$$
+  - $\beta$ is the hedge ratio
+
+* Cointegration
+  Two stocks $y_t\sim I(1)$, $x_t\sim I(1)$
+  Try linear regression:
+  $$y_t\approx\beta x_t + \alpha$$
+  $$Spread = y_t - (\alpha + \beta x_t)$$
+  - If spread is stationary, then Spread is I(0) and x, y are cointegrated.
+  - Hedge Ratio $\beta$ is coefficient of cointegrated.
+
+** Cointegration $\ne$ Correlation
+   - Cointegration means that, over a range of days, the *relative increase* in A is matched by a *relative increase* in B.
+   - A strong positive correlation means when stock A moves up stock B moves up *at the same time* and vice versa. (not measure the *relative increase*)
+
+   [[../../resources/MOOC/Trading/correlation_vs_cointegration.png]]
+
+** Test for Checking Cointegration
+   Two-Step Engle-Granger Test
+   1. Get hedge ratio from a linear regression
+   1. Calculate spread and check if spread is stationary
+      - if spread is stationary, the two series are cointegrated
+
+*** Check If Spread is Stationary
+    Augmented Dickey-Fuller Test
+    - $pvalue\le 0.05$: spread is stationary
+
+* References
+  - Lesson 15
+    - [[https://youtu.be/7lEm_tFXcBk][3. Pairs Trading]]
+    - [[https://youtu.be/N4ZI5SyFMOc][6. Cointegration]]

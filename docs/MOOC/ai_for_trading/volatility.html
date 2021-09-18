@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-18 Sat 11:57 -->
+<!-- 2021-09-18 Sat 16:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Log Return</title>
+<title>Volatility</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
 <style type="text/css">
@@ -219,184 +219,204 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">Log Return</h1>
+<h1 class="title">Volatility</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgde21474">1. Raw Return &amp; Log Return</a></li>
-<li><a href="#orgf108c1c">2. Continuous Compounding</a>
+<li><a href="#org3f23b19">1. Overview</a></li>
+<li><a href="#orge5e053f">2. Uses of Volatility</a></li>
+<li><a href="#org1855cb5">3. Formula</a>
 <ul>
-<li><a href="#orgd3df549">2.1. Additivity</a></li>
-<li><a href="#orge96a7ba">2.2. Annualized Rate of Return</a></li>
-<li><a href="#org0546b6a">2.3. Compounding Example Table</a></li>
+<li><a href="#org87e2cc8">3.1. Annualized Volatility</a></li>
+<li><a href="#org9b761b8">3.2. Exponentially Weighted Moving Average</a></li>
 </ul>
 </li>
-<li><a href="#org8eadead">3. Distribution of Returns</a></li>
-<li><a href="#orgae09e26">4. Why Log Returns?</a></li>
-<li><a href="#org5ddd6ec">5. Reference</a></li>
+<li><a href="#org174d02e">4. Modeling Volatility</a>
+<ul>
+<li><a href="#org35e2fdc">4.1. ARCH</a></li>
+</ul>
+</li>
+<li><a href="#org4e4415c">5. VIX Index</a></li>
+<li><a href="#org1006fd9">6. References</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgde21474" class="outline-2">
-<h2 id="orgde21474"><span class="section-number-2">1</span> Raw Return &amp; Log Return</h2>
+<div id="outline-container-org3f23b19" class="outline-2">
+<h2 id="org3f23b19"><span class="section-number-2">1</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-\[\text{raw return}(r) = \frac{p_t - p_{t-1}}{p_{t-1}}\]
-\[LogReturn(R) = ln(p_t/p_{t-1}) = ln(p_t) - ln(p_{t-1})\]
-\[LogReturn=ln(RawReturn+1)\]
-\[RawReturn=e^{LogReturn}-1\]
+Volatility is simply the standard deviation of the probability distribution of log returns, and can be used for:
 </p>
+<ul class="org-ul">
+<li>Measuring risk</li>
+<li>Defining position sizes</li>
+<li>Designing alpha factors</li>
+<li>Determining the prices of options contracts</li>
+<li>Trading volatility directly</li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-orgf108c1c" class="outline-2">
-<h2 id="orgf108c1c"><span class="section-number-2">2</span> Continuous Compounding</h2>
+<div id="outline-container-orge5e053f" class="outline-2">
+<h2 id="orge5e053f"><span class="section-number-2">2</span> Uses of Volatility</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
-<li>Compounding Formula</li>
-</ul>
-<p>
-\[p_t=p_{t-1}(1+\frac{r}{n})^n\]
-</p>
+<li>is often quoted as gauge for fear. e.g. VIX
 <ul class="org-ul">
-<li>Now make <b>n</b> bigger and bigger</li>
-</ul>
-<p>
-\[\lim_{n \to \infty}(1+\frac{r}{n})^n=e^r\]
-</p>
+<li>volatility tends to be high when the market is going down.</li>
+<li>tends to be low when the market is going up.</li>
+</ul></li>
+<li>Limit the universe
 <ul class="org-ul">
-<li>Compounding infinitely often is called <b>continuous compounding</b></li>
-</ul>
-<p>
-\[100\times e^{0.04}=104.08\]
-</p>
+<li>some strategy may might work best on high volatility stocks.</li>
+<li>low volatility stocks tends to perform well compared to high volatility stocks. e.g. USMV, SPLV</li>
+</ul></li>
+<li>Normalize another metric by volatility
 <ul class="org-ul">
-<li>Reverse the previous calculation</li>
-</ul>
-<p>
-\[104.08/100=e^r\]
-\[r=ln(104.08/100)=0.04\]
-</p>
+<li>e.g. same profit with different volatility.</li>
+<li>e.g. Normalize the momentum signal by dividing by the volatility.</li>
+</ul></li>
+<li>Help determine position sizes
 <ul class="org-ul">
-<li>r is the <b>continuously compounded return</b>. It is just the <b>log return</b></li>
+<li>Quants utilize smaller position sizes when market are volatile to minimize the volatility of P&amp;L</li>
+<li><p>
+An example formula:
+</p>
+
+
+<div id="orge1943b6" class="figure">
+<p><img src="../../resources/MOOC/Trading/position_size.png" alt="position_size.png" />
+</p>
+</div></li>
+</ul></li>
 </ul>
 </div>
-
-<div id="outline-container-orgd3df549" class="outline-3">
-<h3 id="orgd3df549"><span class="section-number-3">2.1</span> Additivity</h3>
-<div class="outline-text-3" id="text-2-1">
-<p>
-Annual rate of <b>continuous compounding</b> is simply the sum of the monthly rates.
-</p>
-<ul class="org-ul">
-<li>invest $100 for two years with a monthly  continuously compounded interest rate was 2%</li>
-</ul>
-<p>
-\[100\times{e^{0.02}}\times{e^{0.02}}... = 100\times{e^{(0.02+0.02+...)}}=100\times{e^{0.24}}=127.12\]
-</p>
-<ul class="org-ul">
-<li>Time Additivity of Log Returns. <b>log return for Jan and Feb = log return for Jan + log return for Feb</b></li>
-</ul>
-<p>
-\[ln(\frac{p_{Mar 1}}{p_{Jan 1}}) = ln(\frac{p_{Mar 1}}{p_{Feb 1}}) + ln(\frac{p_{Feb 1}}{p_{Jan 1}})\]
-</p>
-</div>
 </div>
 
-<div id="outline-container-orge96a7ba" class="outline-3">
-<h3 id="orge96a7ba"><span class="section-number-3">2.2</span> Annualized Rate of Return</h3>
-<div class="outline-text-3" id="text-2-2">
-<p>
-If we just had a single monthly rate, but we assumed that the rates for all the months of the year were the same,
-we could <i>extrapolate</i> the monthly rate to an annual rate by multiplying by 12. This is called <b>annualizing the
-rate of continuous compounding</b>.
-\[LogReturn(Y)=\sum_{M=1}^{12} LogReturn(M)=MeanOfLogReturn(M)\times 12\]
-\[RawReturn(Y)=e^{LogReturn(Y)}-1\]
-</p>
-</div>
-</div>
-
-<div id="outline-container-org0546b6a" class="outline-3">
-<h3 id="org0546b6a"><span class="section-number-3">2.3</span> Compounding Example Table</h3>
-<div class="outline-text-3" id="text-2-3">
-<ul class="org-ul">
-<li>rate of interest of 4%</li>
-</ul>
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Compounding Frequency</th>
-<th scope="col" class="org-left">Value of $100 after 1 year</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">Annually(n=1)</td>
-<td class="org-left">$104.00</td>
-</tr>
-
-<tr>
-<td class="org-left">Quarterly(n=4)</td>
-<td class="org-left">$104.06</td>
-</tr>
-
-<tr>
-<td class="org-left">Weekly(n=52)</td>
-<td class="org-left">$104.08</td>
-</tr>
-
-<tr>
-<td class="org-left">Daily(n=252)</td>
-<td class="org-left">$104.08</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org8eadead" class="outline-2">
-<h2 id="org8eadead"><span class="section-number-2">3</span> Distribution of Returns</h2>
+<div id="outline-container-org1855cb5" class="outline-2">
+<h2 id="org1855cb5"><span class="section-number-2">3</span> Formula</h2>
 <div class="outline-text-2" id="text-3">
 <p>
-The conversation about the best model for the distribution of returns has been going on for at least the past century.
-The best model will depend on exactly what your analysis seeks to achieve.
-<img src="../../resources/MOOC/Trading/returns_distributions.png" alt="returns_distributions.png" />
+\[Volatility\ \sigma=\sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(\bar{r} - r_i)^2}\]
 </p>
+<ul class="org-ul">
+<li>\(r_i=ln(p_t / p_{t-1})\)</li>
+</ul>
+</div>
+
+<div id="outline-container-org87e2cc8" class="outline-3">
+<h3 id="org87e2cc8"><span class="section-number-3">3.1</span> Annualized Volatility</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+\[\sigma_{year}=\sqrt{n}\sigma_{day}\]
+</p>
+<ul class="org-ul">
+<li>n is the number of <b>trading days</b> in a year, which is 252.</li>
+<li>\(Var(r_{year})=Var(r_1)+Var(r_2)+...+Var(r_n)\) if \(r_1\), \(r_2\) &#x2026; are independent.</li>
+<li>e.g. \(\sigma_{year}^2=12\sigma_{month}^12\)</li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-orgae09e26" class="outline-2">
-<h2 id="orgae09e26"><span class="section-number-2">4</span> Why Log Returns?</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-org9b761b8" class="outline-3">
+<h3 id="org9b761b8"><span class="section-number-3">3.2</span> Exponentially Weighted Moving Average</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Simplify the volatility formula
+</p>
 <ol class="org-ol">
-<li>Log returns can be interpreted as <b>continuously compounded returns</b>.</li>
-<li>Log returns are time-additive. The multi-period log return is simply the sum of single period log returns.</li>
-<li>The use of log returns prevents security prices from becoming negative in models of security returns.</li>
-<li>log returns of a security can be reasonably modeled as distributed according to a normal distribution. ?</li>
-<li>When returns and log returns are small, their values are approximately equal.</li>
-<li>Logarithms can help make an algorithm more <b>numerically stable</b>.</li>
+<li>\(\sigma_t^2=\frac{1}{n}\sum_{i=1}^{n}(r_{t-i})^2\)</li>
+<li>weighted average \(\sigma_t^2=\sum_{i=1}^n\alpha_{i}r_{t-i}^2\), \(\sum_{i=1}^{n}\alpha_i=1\)</li>
+<li>exponential: \(\alpha_{i+1}=\lambda\alpha_i\)</li>
 </ol>
+<p>
+\[\sigma_t^2=\frac{\lambda^{0}r_{t-1}^2+\lambda^{1}r_{t-2}^2 + ... + \lambda^{n-1}r_{t-n}^2}{1+\lambda+...+\lambda^{n-1}}\]
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> pandas <span style="color: #3a81c3; font-weight: bold;">as</span> pd
+<span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">ewm_volatility</span><span style="color: #3a81c3;">(</span>prices, l<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">log_rets</span> = np.log<span style="color: #3a81c3;">(</span>prices/prices.shift<span style="color: #6c3163;">(</span>1<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">ewm_volatility</span> = np.sqrt<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>log_rets**2<span style="color: #6c3163;">)</span>.ewm<span style="color: #6c3163;">(</span>alpha=1-l<span style="color: #6c3163;">)</span>.mean<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">return</span> ewm_volatility
+</pre>
+</div>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org5ddd6ec" class="outline-2">
-<h2 id="org5ddd6ec"><span class="section-number-2">5</span> Reference</h2>
+<div id="outline-container-org174d02e" class="outline-2">
+<h2 id="org174d02e"><span class="section-number-2">4</span> Modeling Volatility</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org35e2fdc" class="outline-3">
+<h3 id="org35e2fdc"><span class="section-number-3">4.1</span> ARCH</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Autoregressive Conditionally Heteroscedastic
+</p>
+<ul class="org-ul">
+<li>Autoregressive: the current value is somehow related to the recent past values.</li>
+<li>Heteroscedastic: the variable may have different magnitudes of variability at different time points.
+<ul class="org-ul">
+<li>The magnitude of variability is commonly measured using variance.</li>
+</ul></li>
+<li>Conditional: refers to a constraint we place in the model.
+<ul class="org-ul">
+<li>The constraint limits the heteroscedastic property to be conditionally dependent on the previous values.</li>
+</ul></li>
+
+<li>ARCH(1) model
+\[\text{Estimated Current Variance } Var(r_t|r_{t-1})=\alpha_0 + \alpha_1 r_{t-1}^2\]
+<ul class="org-ul">
+<li>\(\alpha_0, \alpha_1\) are parameters.</li>
+</ul></li>
+<li>ARCH(m) model
+\[\text{Estimated Current Variance } Var(r_t|r_{t-1},r_{t-2},...,r_{t-m})=\alpha_0 + \alpha_1 r_{t-1}^2 + ... + \alpha_m r_{t-m}^2\]</li>
+
+<li><p>
+GARCH(m, n)
+</p>
+
+<p>
+Generalized ARCH model: to make the current variance dependent on previous estimates of the variance.
+\[\begin{align*}
+     \sigma_t^2 & = Var(y_t|y_{t-1},...,y_{t-m},\sigma_{t-1}^2,...,\sigma_{t-n}^2) \\
+     & = \alpha_0 + \alpha_1 y_{t-1}^2 + ... + \alpha_m y_{t-m}^2 + \beta_1\sigma_{t-1}^2 + ... + \beta_n\sigma_{t-n}^2
+     \end{align*}\]
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org4e4415c" class="outline-2">
+<h2 id="org4e4415c"><span class="section-number-2">5</span> VIX Index</h2>
 <div class="outline-text-2" id="text-5">
+<p>
+VIX index represents the annualized volatility of the S&amp;P 500 Index
+<img src="../../resources/MOOC/Trading/vix.png" alt="vix.png" />
+</p>
 <ul class="org-ul">
-<li>Lesson 7
+<li>VVIX is a volatility index of the VIX Index</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1006fd9" class="outline-2">
+<h2 id="org1006fd9"><span class="section-number-2">6</span> References</h2>
+<div class="outline-text-2" id="text-6">
 <ul class="org-ul">
-<li><a href="https://youtu.be/62fZN1QnGjc">3. Log Returns</a></li>
-<li>5. Distributions of Returns and Prices <a href="https://youtu.be/cGoXGiO1DYk">Video</a></li>
+<li>Lesson 14
+<ul class="org-ul">
+<li><a href="https://youtu.be/yakh1pjP7uY">3. Annualized Volatility</a></li>
+<li><a href="https://youtu.be/VBPitTHzYRI">8. Exponentially Weighted Moving Average</a></li>
+<li><a href="https://youtu.be/82v4v_PKDAE">10. Forecasting Volatility</a></li>
+<li><a href="https://youtu.be/Vh9ajVRedvY">11. Use of Volatility</a></li>
 </ul></li>
 </ul>
 </div>
