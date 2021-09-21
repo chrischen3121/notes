@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-17 Fri 23:32 -->
+<!-- 2021-09-21 Tue 10:24 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Time Series Modeling</title>
@@ -224,33 +224,33 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org265c511">1. Overview</a>
+<li><a href="#org62d8409">1. Overview</a>
 <ul>
-<li><a href="#orge64240e">1.1. Correlation \(\ne\) Regression</a></li>
+<li><a href="#org302109c">1.1. Correlation \(\ne\) Regression</a></li>
 </ul>
 </li>
-<li><a href="#orga07c30b">2. Autoregressive(AR) Model</a></li>
-<li><a href="#org9a7a792">3. Moving Average(MA) Model</a>
+<li><a href="#org2070f5e">2. Autoregressive(AR) Model</a></li>
+<li><a href="#org61029e2">3. Moving Average(MA) Model</a>
 <ul>
-<li><a href="#org229f13e">3.1. Autocorrelation</a></li>
+<li><a href="#org3c1d917">3.1. Autocorrelation</a></li>
 </ul>
 </li>
-<li><a href="#org10dddd0">4. <b>ARMA</b> (Autoregressive Moving Average)</a></li>
-<li><a href="#orgaab29f0">5. Testing for Time Series Stationary</a></li>
-<li><a href="#org13449b1">6. Kalman Filter</a></li>
-<li><a href="#org4db5d60">7. Particle Filter</a></li>
-<li><a href="#org2741d52">8. Recurrent Neural Networks(RNN)</a>
+<li><a href="#org113dc69">4. <b>ARMA</b> (Autoregressive Moving Average)</a></li>
+<li><a href="#org9fb47ac">5. Testing for Time Series Stationary</a></li>
+<li><a href="#org9456831">6. Kalman Filter</a></li>
+<li><a href="#orga21db90">7. Particle Filter</a></li>
+<li><a href="#org87cd95a">8. Recurrent Neural Networks(RNN)</a>
 <ul>
-<li><a href="#org7a09082">8.1. Long-Short Term Memory Cells (LSTM)</a></li>
+<li><a href="#org22f5c85">8.1. Long-Short Term Memory Cells (LSTM)</a></li>
 </ul>
 </li>
-<li><a href="#orgf849b97">9. References</a></li>
+<li><a href="#orga85f3ed">9. References</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org265c511" class="outline-2">
-<h2 id="org265c511"><span class="section-number-2">1</span> Overview</h2>
+<div id="outline-container-org62d8409" class="outline-2">
+<h2 id="org62d8409"><span class="section-number-2">1</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>Auto-regression</li>
@@ -265,8 +265,8 @@
 </ul></li>
 </ul>
 </div>
-<div id="outline-container-orge64240e" class="outline-3">
-<h3 id="orge64240e"><span class="section-number-3">1.1</span> Correlation \(\ne\) Regression</h3>
+<div id="outline-container-org302109c" class="outline-3">
+<h3 id="org302109c"><span class="section-number-3">1.1</span> Correlation \(\ne\) Regression</h3>
 <div class="outline-text-3" id="text-1-1">
 <dl class="org-dl">
 <dt>Correlation</dt><dd>measures the pairwise relationship between exactly two periods at a time. (ranges -1 to 1)</dd>
@@ -276,16 +276,16 @@
 </div>
 </div>
 
-<div id="outline-container-orga07c30b" class="outline-2">
-<h2 id="orga07c30b"><span class="section-number-2">2</span> Autoregressive(AR) Model</h2>
+<div id="outline-container-org2070f5e" class="outline-2">
+<h2 id="org2070f5e"><span class="section-number-2">2</span> Autoregressive(AR) Model</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-AR model tries to fit a line that is a liner combination of previous values.
-\[y_t = \alpha + B_{1}y_{t-1} + B_{2}y_{t-2} + ... + \epsilon_t\]
+\(AR(p)\) model tries to fit a line that is a liner combination of previous values.
+\[y_t = \alpha + \beta_{1}y_{t-1} + \beta_{2}y_{t-2} + ... + \beta_{t-p}y_{t-p} + \epsilon_t\]
 </p>
 <ul class="org-ul">
 <li>\(\alpha\): intercept</li>
-<li>\(B_i\): coefficients</li>
+<li>\(\beta_i\): coefficients</li>
 <li>\(\epsilon_t\): Error(noise), represents movements that cannot be predicted using the previous values.</li>
 <li>Lag: the number of past values used in the model. e.g. AR Lag 2 model</li>
 <li>Describe an AR model as \(AR(p)\), where p stands for the lag.</li>
@@ -295,7 +295,7 @@ AR model tries to fit a line that is a liner combination of previous values.
 </p>
 
 
-<div id="org9b164a4" class="figure">
+<div id="orgae07bb0" class="figure">
 <p><img src="../../resources/MOOC/Trading/vector_autoregressive_mode.png" alt="vector_autoregressive_mode.png" />
 </p>
 </div></li>
@@ -303,8 +303,8 @@ AR model tries to fit a line that is a liner combination of previous values.
 </div>
 </div>
 
-<div id="outline-container-org9a7a792" class="outline-2">
-<h2 id="org9a7a792"><span class="section-number-2">3</span> Moving Average(MA) Model</h2>
+<div id="outline-container-org61029e2" class="outline-2">
+<h2 id="org61029e2"><span class="section-number-2">3</span> Moving Average(MA) Model</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 \[y_t=\mu+\epsilon_t+\theta_1\epsilon_{t-1}+\theta_2\epsilon_{t-2}+...\theta_q\epsilon_{t-q}\]
@@ -315,8 +315,8 @@ AR model tries to fit a line that is a liner combination of previous values.
 </ul>
 </div>
 
-<div id="outline-container-org229f13e" class="outline-3">
-<h3 id="org229f13e"><span class="section-number-3">3.1</span> Autocorrelation</h3>
+<div id="outline-container-org3c1d917" class="outline-3">
+<h3 id="org3c1d917"><span class="section-number-3">3.1</span> Autocorrelation</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Autocorrelation is a measure of how much the current value moves in relation to <b>one of</b> its previous values.
@@ -324,10 +324,10 @@ Autocorrelation is a measure of how much the current value moves in relation to 
 </div>
 
 <ul class="org-ul">
-<li><a id="orgca9448c"></a><b>Autocorelation Plot</b><br />
-<div class="outline-text-4" id="text-orgca9448c">
+<li><a id="orgd6a6d5b"></a><b>Autocorelation Plot</b><br />
+<div class="outline-text-4" id="text-orgd6a6d5b">
 
-<div id="org21d3885" class="figure">
+<div id="orgdc42515" class="figure">
 <p><img src="../../resources/MOOC/Trading/autocorrelation.png" alt="autocorrelation.png" />
 </p>
 </div>
@@ -350,8 +350,8 @@ to the one-day lag is relatively small.
 </div>
 </li>
 
-<li><a id="orgb683e81"></a><b>Ljung-Box Test</b><br />
-<div class="outline-text-4" id="text-orgb683e81">
+<li><a id="org1b380b1"></a><b>Ljung-Box Test</b><br />
+<div class="outline-text-4" id="text-org1b380b1">
 <p>
 Ljung-Box Test helps us check whether the lag we chose gives autocorrelations that are significantly different from zero.
 </p>
@@ -371,8 +371,8 @@ Ljung-Box Test helps us check whether the lag we chose gives autocorrelations th
 </div>
 
 
-<div id="outline-container-org10dddd0" class="outline-2">
-<h2 id="org10dddd0"><span class="section-number-2">4</span> <b>ARMA</b> (Autoregressive Moving Average)</h2>
+<div id="outline-container-org113dc69" class="outline-2">
+<h2 id="org113dc69"><span class="section-number-2">4</span> <b>ARMA</b> (Autoregressive Moving Average)</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 \[ARMA(p, q): y\sim AR(p)+MA(q)\]
@@ -380,7 +380,7 @@ Ljung-Box Test helps us check whether the lag we chose gives autocorrelations th
 
 <p>
 \[\begin{align*}
-  y_t & = \alpha + B_{1}y_{t-1} + B_{2}y_{t-2} + ... \\
+  y_t & = \alpha + \beta_{1}y_{t-1} + \beta_{2}y_{t-2} + ... \\
   & = \epsilon_t + \theta_{1}\epsilon_{t-1} + \theta_{2}\epsilon_{t-2} + ... \\
   \end{align*}\]
 </p>
@@ -439,15 +439,15 @@ np.random.seed<span style="color: #3a81c3;">(</span>200<span style="color: #3a81
 </div>
 </div>
 
-<div id="outline-container-orgaab29f0" class="outline-2">
-<h2 id="orgaab29f0"><span class="section-number-2">5</span> Testing for Time Series Stationary</h2>
+<div id="outline-container-org9fb47ac" class="outline-2">
+<h2 id="org9fb47ac"><span class="section-number-2">5</span> Testing for Time Series Stationary</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>Augmented Dickey Fuller Test</li>
 </ul>
 
 
-<div id="orgadff8d1" class="figure">
+<div id="orgb6db52a" class="figure">
 <p><img src="../../resources/MOOC/Trading/dickey_fuller_test.png" alt="dickey_fuller_test.png" />
 </p>
 </div>
@@ -459,8 +459,8 @@ and integrated of order zero. It can be modeled with <b>ARMA</b></li>
 </div>
 </div>
 
-<div id="outline-container-org13449b1" class="outline-2">
-<h2 id="org13449b1"><span class="section-number-2">6</span> Kalman Filter</h2>
+<div id="outline-container-org9456831" class="outline-2">
+<h2 id="org9456831"><span class="section-number-2">6</span> Kalman Filter</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Used for time series in self-driving cars.
@@ -473,7 +473,7 @@ Used for time series in self-driving cars.
 </ul>
 
 
-<div id="org9dbb2d3" class="figure">
+<div id="orgbe02bc1" class="figure">
 <p><img src="../../resources/MOOC/Trading/kalman_filter.png" alt="kalman_filter.png" />
 </p>
 </div>
@@ -484,8 +484,8 @@ Used for time series in self-driving cars.
 </div>
 </div>
 
-<div id="outline-container-org4db5d60" class="outline-2">
-<h2 id="org4db5d60"><span class="section-number-2">7</span> Particle Filter</h2>
+<div id="outline-container-orga21db90" class="outline-2">
+<h2 id="orga21db90"><span class="section-number-2">7</span> Particle Filter</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 A type of genetic algorithm is used for self-driving cars as well as time series.
@@ -506,8 +506,8 @@ Pros:
 </div>
 </div>
 
-<div id="outline-container-org2741d52" class="outline-2">
-<h2 id="org2741d52"><span class="section-number-2">8</span> Recurrent Neural Networks(RNN)</h2>
+<div id="outline-container-org87cd95a" class="outline-2">
+<h2 id="org87cd95a"><span class="section-number-2">8</span> Recurrent Neural Networks(RNN)</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Used in NLP and time series.
@@ -519,8 +519,8 @@ Used in NLP and time series.
 <img src="../../resources/MOOC/Trading/rnn3.png" alt="rnn3.png" />
 </p>
 </div>
-<div id="outline-container-org7a09082" class="outline-3">
-<h3 id="org7a09082"><span class="section-number-3">8.1</span> Long-Short Term Memory Cells (LSTM)</h3>
+<div id="outline-container-org22f5c85" class="outline-3">
+<h3 id="org22f5c85"><span class="section-number-3">8.1</span> Long-Short Term Memory Cells (LSTM)</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 One commonly used version of RNN is made up of LSTM cells.
@@ -530,7 +530,7 @@ One commonly used version of RNN is made up of LSTM cells.
 </ul>
 
 
-<div id="org4fcbec9" class="figure">
+<div id="org0f21b8f" class="figure">
 <p><img src="../../resources/MOOC/Trading/lstm.png" alt="lstm.png" />
 </p>
 </div>
@@ -539,8 +539,8 @@ One commonly used version of RNN is made up of LSTM cells.
 </div>
 
 
-<div id="outline-container-orgf849b97" class="outline-2">
-<h2 id="orgf849b97"><span class="section-number-2">9</span> References</h2>
+<div id="outline-container-orga85f3ed" class="outline-2">
+<h2 id="orga85f3ed"><span class="section-number-2">9</span> References</h2>
 <div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li>Lesson 13

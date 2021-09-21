@@ -1,5 +1,5 @@
 #+TITLE: Pairs Trading
-#+OPTIONS: H:2 toc:2 num:2 ^:nil
+#+OPTIONS: H:3 toc:2 num:2 ^:nil
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
 * Finding Pairs
@@ -64,15 +64,31 @@
    [[../../resources/MOOC/Trading/correlation_vs_cointegration.png]]
 
 ** Test for Checking Cointegration
-   Two-Step Engle-Granger Test
+*** Two-Step Engle-Granger Test
    1. Get hedge ratio from a linear regression
-   1. Calculate spread and check if spread is stationary
+      - run a regression on one series against the other $y_t=\beta x_t$
+   1. Create a new spread series $z_t=y_t-\beta x_t$
+   1. Check if spread $z_t$ is stationary
       - if spread is stationary, the two series are cointegrated
 
 *** Check If Spread is Stationary
     Augmented Dickey-Fuller Test
     - $pvalue\le 0.05$: spread is stationary
 
+** How to Find Cointegration Pairs
+   - Compare every pair of stocks in the universe: $n\times n$ comparisons. (May use GPU)
+   - Group stocks by sector, industry...
+   - Use *Clustering*, a class of unsupervised machine learning algorithms.
+     - Inputs are time series.
+
+* Signals
+  - *Principle: Buy Low Sell High*: Buy when it's on sale, and sell when it's overpriced.
+  [[../../resources/MOOC/Trading/trade_pairs.png]]
+  - Short the Spread :: Short the asset that has increased, long the asset that has decreased. (relatively).
+  - Long the Spread :: Short the asset that has increased, long the asset that has decreased.
+
+** Defining Thresholds
+   One way is to use the *Z-score* of the spread.
 * References
   - Lesson 15
     - [[https://youtu.be/7lEm_tFXcBk][3. Pairs Trading]]
@@ -80,4 +96,4 @@
 
 * To Learn
   - Lesson 15
-    - 7. ADF and roots
+    - 7. *ADF* and roots

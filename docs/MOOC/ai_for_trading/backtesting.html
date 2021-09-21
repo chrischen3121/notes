@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-21 Tue 10:18 -->
+<!-- 2021-09-21 Tue 09:58 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Regression</title>
+<title>Backtesting</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
 <style type="text/css">
@@ -194,175 +194,35 @@
   /*]]>*/-->
 </style>
 <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css">
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-	displayAlign: "left",
-	displayIndent: "2em",
-
-	"HTML-CSS": { scale: 100,
-			linebreaks: { automatic: "false" },
-			webFont: "TeX"
-		       },
-	SVG: {scale: 100,
-	      linebreaks: { automatic: "false" },
-	      font: "TeX"},
-	NativeMML: {scale: 100},
-	TeX: { equationNumbers: {autoNumber: "AMS"},
-	       MultLineWidth: "85%",
-	       TagSide: "left",
-	       TagIndent: ".8em"
-	     }
-});
-</script>
-<script type="text/javascript"
-	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
-<h1 class="title">Regression</h1>
+<h1 class="title">Backtesting</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2cf839b">1. Concept</a></li>
-<li><a href="#org50a8ec0">2. Pros and Cons</a></li>
-<li><a href="#orga0e4291">3. Linear Regression</a></li>
-<li><a href="#org1d32623">4. Multiple Regression</a>
-<ul>
-<li><a href="#orgfa35804">4.1. Multivariate Multiple Regression</a></li>
-</ul>
-</li>
-<li><a href="#org68bfdd9">5. Testing for Dependency</a></li>
-<li><a href="#orgef2249f">6. References</a></li>
+<li><a href="#org1dc8aa7">1. Stages</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2cf839b" class="outline-2">
-<h2 id="org2cf839b"><span class="section-number-2">1</span> Concept</h2>
+
+<div id="outline-container-org1dc8aa7" class="outline-2">
+<h2 id="org1dc8aa7"><span class="section-number-2">1</span> Stages</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-To use one or more <b>independent</b> variables to predict a <b>dependent</b> variable.
-The regression is used to see how two assets move in relation to each other,
-e.g. Statistical Arbitrage.
+Divide the data into three sets.
 </p>
-</div>
-</div>
-
-<div id="outline-container-org50a8ec0" class="outline-2">
-<h2 id="org50a8ec0"><span class="section-number-2">2</span> Pros and Cons</h2>
-<div class="outline-text-2" id="text-2">
 <ul class="org-ul">
-<li>Pros
-<ul class="org-ul">
-<li>a tool to analyze time-series data</li>
-<li>a fundamental building block of neural network</li>
-</ul></li>
-<li>Cons
-<ul class="org-ul">
-<li>Regression is sensitive to some choice you make about the model. For instance, how much historical data we choose to use in the model.</li>
-<li>Regression is sensitive to <b>outliers</b> in the data. As it adds more noise to the trading data.</li>
-</ul></li>
+<li>Training Set</li>
+<li>Validation Set</li>
+<li>Test Set</li>
 </ul>
-</div>
-</div>
 
-<div id="outline-container-orga0e4291" class="outline-2">
-<h2 id="orga0e4291"><span class="section-number-2">3</span> Linear Regression</h2>
-<div class="outline-text-2" id="text-3">
 <p>
-Say \(y\) depends on \(x\)
-\[y=\beta x + \alpha\]
+<img src="../../resources/MOOC/Trading/backtesting_sets.png" alt="backtesting_sets.png" />
+<img src="../../resources/MOOC/Trading/backtesting_stages.png" alt="backtesting_stages.png" />
 </p>
-<ul class="org-ul">
-<li>\(\beta\) is coefficient</li>
-<li>\(\alpha\) is intercept</li>
-</ul>
-
-<div id="org78108a5" class="figure">
-<p><img src="../../resources/MOOC/Trading/linear_regression.png" alt="linear_regression.png" />
-</p>
-</div>
-<ul class="org-ul">
-<li>Residuals(error terms): differences between the best fit regression line at each point.
-<ul class="org-ul">
-<li>\(residuals=y_{actual}-y_{predicted}\)</li>
-<li>if residuals are not normally distributed, this gives us a hint that the model has a bias in its prediction errors. One way to improve is to use <b>Multiple Regression</b>.</li>
-</ul></li>
-</ul>
-
-<div id="org86a6364" class="figure">
-<p><img src="../../resources/MOOC/Trading/residuals.png" alt="residuals.png" />
-</p>
-</div>
-
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> sklearn.linear_model <span style="color: #3a81c3; font-weight: bold;">import</span> LinearRegression
-
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">regression_slope_and_intercept</span><span style="color: #3a81c3;">(</span>xSeries, ySeries<span style="color: #3a81c3;">)</span>:
-    <span style="color: #da8b55;">"""</span>
-<span style="color: #da8b55;">    xSeries: pandas series, x variable</span>
-<span style="color: #da8b55;">    ySeries: pandas series, y variable</span>
-<span style="color: #da8b55;">    """</span>
-    <span style="color: #715ab1;">lr</span> = LinearRegression<span style="color: #3a81c3;">()</span>
-
-    <span style="color: #715ab1;">xVar</span> = s1.values.reshape<span style="color: #3a81c3;">(</span>-1,1<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">reshape to 2D numpy array</span>
-    <span style="color: #715ab1;">yVar</span> = s2.values.reshape<span style="color: #3a81c3;">(</span>-1,1<span style="color: #3a81c3;">)</span>
-
-    lr.fit<span style="color: #3a81c3;">(</span>xVar, yVar<span style="color: #3a81c3;">)</span>
-
-    <span style="color: #715ab1;">slope</span> = lr.coef_<span style="color: #3a81c3;">[</span>0<span style="color: #3a81c3;">][</span>0<span style="color: #3a81c3;">]</span>
-    <span style="color: #715ab1;">intercept</span> = lr.intercept_<span style="color: #3a81c3;">[</span>0<span style="color: #3a81c3;">]</span>
-
-    <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3;">(</span>slope, intercept<span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-</div>
-</div>
-<div id="outline-container-org1d32623" class="outline-2">
-<h2 id="org1d32623"><span class="section-number-2">4</span> Multiple Regression</h2>
-<div class="outline-text-2" id="text-4">
-<p>
-\[y=\sum_{i=1}^{n}\beta_{i}x_{i} + \alpha\]
-</p>
-</div>
-
-<div id="outline-container-orgfa35804" class="outline-3">
-<h3 id="orgfa35804"><span class="section-number-3">4.1</span> Multivariate Multiple Regression</h3>
-<div class="outline-text-3" id="text-4-1">
-<p>
-Use more than one independent variables to predict more than one dependent variables.
-\[y_1=\sum_{i=1}^{n}\beta_{1i}x_{1i} + \alpha_1\]
-\[y_2=\sum_{i=1}^{n}\beta_{2i}x_{2i} + \alpha_2\]
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org68bfdd9" class="outline-2">
-<h2 id="org68bfdd9"><span class="section-number-2">5</span> Testing for Dependency</h2>
-<div class="outline-text-2" id="text-5">
-<ul class="org-ul">
-<li>R-squared (\(R^2\)) metric: range from 0 to 1. R-squared is 1 means all the variation in the dependent variable can be explained by all the variation in the independent variable</li>
-<li>Adjusted R-squared: to find the minimum combination of independent variables that are most relevant for our model.</li>
-<li>F-test: checks whether coefficients and intercepts are not zero, therefore the model describes a meaningful relationship.
-<ul class="org-ul">
-<li>\(H_0\): parameters are zero.</li>
-<li>\(pvalue\le 0.05\): parameters are not zero.</li>
-</ul></li>
-</ul>
-</div>
-</div>
-
-
-<div id="outline-container-orgef2249f" class="outline-2">
-<h2 id="orgef2249f"><span class="section-number-2">6</span> References</h2>
-<div class="outline-text-2" id="text-6">
-<ul class="org-ul">
-<li>Lesson 12
-<ul class="org-ul">
-<li><a href="https://youtu.be/GRY4eakMBJ8">11. Linear Regression</a></li>
-</ul></li>
-</ul>
 </div>
 </div>
 </div>
