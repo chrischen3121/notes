@@ -45,15 +45,17 @@
   The difference is that the regression accounts for a series of previous prices.
 
 * Spread
+  - B and A are prices of two assets.
   $$Spread = B_{actual} - B_{estimate}$$
-  $$B_{estimate}=\beta A + \alpha$$
+  $$B_{estimate}=\beta A_{actual} + \alpha$$
   - $\beta$ is the hedge ratio
 
 * Cointegration
   Two stocks $y_t\sim I(1)$, $x_t\sim I(1)$
   Try linear regression:
   $$y_t\approx\beta x_t + \alpha$$
-  $$Spread = y_t - (\alpha + \beta x_t)$$
+  $$Spread = y_t - \beta x_t$$
+  $$Spread(with\_intercept) = y_t - (\alpha + \beta x_t)$$
   - If spread is stationary, then Spread is I(0) and x, y are cointegrated.
   - Hedge Ratio $\beta$ is coefficient of cointegrated.
 
@@ -74,6 +76,17 @@
 *** Check If Spread is Stationary
     Augmented Dickey-Fuller Test
     - $pvalue\le 0.05$: spread is stationary
+
+    #+begin_src python
+      # Augmented Dickey Fuller Test
+      from statsmodels.tsa.stattools import adfuller
+
+      # adfuller(x, maxlag=None, regression='c', autolag='AIC', store=False, regresults=False)[source]
+      adf_result = adfuller(spread_series)
+
+      adf = adf_result[0]
+      pvalue = adf_result[1]
+    #+end_src
 
 ** How to Find Cointegration Pairs
    - Compare every pair of stocks in the universe: $n\times n$ comparisons. (May use GPU)

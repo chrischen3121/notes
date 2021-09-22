@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-21 Tue 10:18 -->
+<!-- 2021-09-22 Wed 17:51 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Regression</title>
@@ -224,21 +224,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2cf839b">1. Concept</a></li>
-<li><a href="#org50a8ec0">2. Pros and Cons</a></li>
-<li><a href="#orga0e4291">3. Linear Regression</a></li>
-<li><a href="#org1d32623">4. Multiple Regression</a>
+<li><a href="#orgb4ce43e">1. Concept</a></li>
+<li><a href="#org54da8f5">2. Pros and Cons</a></li>
+<li><a href="#org4671844">3. Linear Regression</a></li>
+<li><a href="#org4ff7e3e">4. Multiple Regression</a>
 <ul>
-<li><a href="#orgfa35804">4.1. Multivariate Multiple Regression</a></li>
+<li><a href="#orgf8489ee">4.1. Multivariate Multiple Regression</a></li>
 </ul>
 </li>
-<li><a href="#org68bfdd9">5. Testing for Dependency</a></li>
-<li><a href="#orgef2249f">6. References</a></li>
+<li><a href="#org6672c9a">5. Testing for Dependency</a></li>
+<li><a href="#orgc82d72c">6. References</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2cf839b" class="outline-2">
-<h2 id="org2cf839b"><span class="section-number-2">1</span> Concept</h2>
+<div id="outline-container-orgb4ce43e" class="outline-2">
+<h2 id="orgb4ce43e"><span class="section-number-2">1</span> Concept</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 To use one or more <b>independent</b> variables to predict a <b>dependent</b> variable.
@@ -248,8 +248,8 @@ e.g. Statistical Arbitrage.
 </div>
 </div>
 
-<div id="outline-container-org50a8ec0" class="outline-2">
-<h2 id="org50a8ec0"><span class="section-number-2">2</span> Pros and Cons</h2>
+<div id="outline-container-org54da8f5" class="outline-2">
+<h2 id="org54da8f5"><span class="section-number-2">2</span> Pros and Cons</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>Pros
@@ -266,8 +266,8 @@ e.g. Statistical Arbitrage.
 </div>
 </div>
 
-<div id="outline-container-orga0e4291" class="outline-2">
-<h2 id="orga0e4291"><span class="section-number-2">3</span> Linear Regression</h2>
+<div id="outline-container-org4671844" class="outline-2">
+<h2 id="org4671844"><span class="section-number-2">3</span> Linear Regression</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Say \(y\) depends on \(x\)
@@ -278,7 +278,7 @@ Say \(y\) depends on \(x\)
 <li>\(\alpha\) is intercept</li>
 </ul>
 
-<div id="org78108a5" class="figure">
+<div id="org197f2f5" class="figure">
 <p><img src="../../resources/MOOC/Trading/linear_regression.png" alt="linear_regression.png" />
 </p>
 </div>
@@ -290,7 +290,7 @@ Say \(y\) depends on \(x\)
 </ul></li>
 </ul>
 
-<div id="org86a6364" class="figure">
+<div id="org3a53f77" class="figure">
 <p><img src="../../resources/MOOC/Trading/residuals.png" alt="residuals.png" />
 </p>
 </div>
@@ -305,7 +305,7 @@ Say \(y\) depends on \(x\)
 <span style="color: #da8b55;">    """</span>
     <span style="color: #715ab1;">lr</span> = LinearRegression<span style="color: #3a81c3;">()</span>
 
-    <span style="color: #715ab1;">xVar</span> = s1.values.reshape<span style="color: #3a81c3;">(</span>-1,1<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">reshape to 2D numpy array</span>
+    <span style="color: #715ab1;">xVar</span> = s1.values.reshape<span style="color: #3a81c3;">(</span>-1,1<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">reshape to 2D numpy array [1, 2, 3] -&gt; [[1], [2], [3]]</span>
     <span style="color: #715ab1;">yVar</span> = s2.values.reshape<span style="color: #3a81c3;">(</span>-1,1<span style="color: #3a81c3;">)</span>
 
     lr.fit<span style="color: #3a81c3;">(</span>xVar, yVar<span style="color: #3a81c3;">)</span>
@@ -318,16 +318,16 @@ Say \(y\) depends on \(x\)
 </div>
 </div>
 </div>
-<div id="outline-container-org1d32623" class="outline-2">
-<h2 id="org1d32623"><span class="section-number-2">4</span> Multiple Regression</h2>
+<div id="outline-container-org4ff7e3e" class="outline-2">
+<h2 id="org4ff7e3e"><span class="section-number-2">4</span> Multiple Regression</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 \[y=\sum_{i=1}^{n}\beta_{i}x_{i} + \alpha\]
 </p>
 </div>
 
-<div id="outline-container-orgfa35804" class="outline-3">
-<h3 id="orgfa35804"><span class="section-number-3">4.1</span> Multivariate Multiple Regression</h3>
+<div id="outline-container-orgf8489ee" class="outline-3">
+<h3 id="orgf8489ee"><span class="section-number-3">4.1</span> Multivariate Multiple Regression</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 Use more than one independent variables to predict more than one dependent variables.
@@ -338,8 +338,8 @@ Use more than one independent variables to predict more than one dependent varia
 </div>
 </div>
 
-<div id="outline-container-org68bfdd9" class="outline-2">
-<h2 id="org68bfdd9"><span class="section-number-2">5</span> Testing for Dependency</h2>
+<div id="outline-container-org6672c9a" class="outline-2">
+<h2 id="org6672c9a"><span class="section-number-2">5</span> Testing for Dependency</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>R-squared (\(R^2\)) metric: range from 0 to 1. R-squared is 1 means all the variation in the dependent variable can be explained by all the variation in the independent variable</li>
@@ -354,8 +354,8 @@ Use more than one independent variables to predict more than one dependent varia
 </div>
 
 
-<div id="outline-container-orgef2249f" class="outline-2">
-<h2 id="orgef2249f"><span class="section-number-2">6</span> References</h2>
+<div id="outline-container-orgc82d72c" class="outline-2">
+<h2 id="orgc82d72c"><span class="section-number-2">6</span> References</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>Lesson 12
