@@ -2,6 +2,17 @@
 #+OPTIONS: H:3 toc:2 num:2 ^:nil
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
+
+* Overview
+  1. Finding Pairs
+  1. Calculating Hedge Ratio
+  1. Calculating Spread
+  1. Is Spread Stationary?
+  1. If Yes, candidate for *Mean Reversion Trading*.
+  1. Choosing Thresholds for Spread
+  1. If Spread widens/narrows, short/long the spread.
+  1. Backtesting
+
 * Finding Pairs
   Finding the economic links
   - Government Policies
@@ -102,6 +113,36 @@
 
 ** Defining Thresholds
    One way is to use the *Z-score* of the spread.
+
+* Variations
+** Group Pairs Trading
+   If we grouped the stocks within the same industry into a virtual portfolio and calculated the return of that industry,
+   this portfolio return would represent the general expected movement of all stocks within the industry. Then, for each
+   individual stock series, we can calculate the spread between its return and the portfolio return. So when the spread
+   between the single stock and the industry changes significantly, we can use that as a signal to buy or sell.
+
+*** *Johansen Test*
+    The *Johansen test* gives us coefficients that we can multiply to each of the stock series, so that a linear
+    combination produces a number.
+    $$w_1\times stock_1 + w_2\times stock_2 + w_3\times stock_3=spread$$
+
+    We get the historical average of the spread. Then we check if the spread deviates significantly from that average.
+    We check whether each of the three individual series moved up or down significantly to result in the change in spread.
+    We short the series that are relatively high, and long the series that are relatively low. To determine how much to
+    long or short, we again use the weights that are given by the Johansen test $(w_1, w_2, w_3)$
+
+    - Note that for the purpose of cointegration trading we use the original price series, and do not convert them to log returns.
+
+*** Example
+    Let's say the spread has gotten larger. $w_1=0.5$, $w_2=0.3$, $w_3=-0.1$
+    - proportions: 5 shares for $stock_1$, 3 shares for $stock_2$, 1 share for $stock_3$
+    - If stock_1 stock is higher than usual (*relative to the others*), we short 5 shares of $stock_1$
+      because we expect it should revert by decreasing relative to the others.
+
+*** Details of Johansen Test
+    - Lesson 15
+      - 13. Details of Johansen Test
+
 * References
   - Lesson 15
     - [[https://youtu.be/7lEm_tFXcBk][3. Pairs Trading]]
