@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-27 Mon 17:22 -->
+<!-- 2021-09-27 Mon 17:21 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI for Trading</title>
+<title>Portfolio</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="ChrisChen" />
 <style type="text/css">
@@ -197,24 +197,64 @@
 </head>
 <body>
 <div id="content">
-<h1 class="title">AI for Trading</h1>
-<ul class="org-ul">
-<li><a href="./ai_for_trading/insights.html">Insights</a></li>
-<li><a href="./ai_for_trading/financial_data.html">Financial Data</a></li>
-<li><a href="./ai_for_trading/log_return.html">Log Return</a></li>
-<li><a href="./ai_for_trading/data_processing.html">Data Processing</a></li>
-<li><a href="./ai_for_trading/regression.html">Regression</a></li>
-<li><a href="./ai_for_trading/volatility.html">Volatility</a></li>
-<li><a href="./ai_for_trading/indicators.html">Indicators</a></li>
-<li><a href="./ai_for_trading/strategies.html">Strategies</a>
-<ul class="org-ul">
-<li><a href="./ai_for_trading/pairs_trading.html">Pairs Trading</a></li>
-<li><a href="./ai_for_trading/backtesting.html">Backtesting</a></li>
-</ul></li>
-<li><a href="./ai_for_trading/time_series.html">Time Series Modeling</a></li>
-<li><a href="./ai_for_trading/portfolio.html">Portfolio Management</a></li>
-<li><a href="./ai_for_trading/terminologies.html">Terminologies</a></li>
+<h1 class="title">Portfolio</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org417d984">1. Cumulative Returns</a>
+<ul>
+<li><a href="#org1f2eb58">1.1. Using Returns</a></li>
+<li><a href="#org11c65f0">1.2. Using Log Returns</a></li>
 </ul>
+</li>
+<li><a href="#orgc513f95">2. Relative Returns</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org417d984" class="outline-2">
+<h2 id="org417d984"><span class="section-number-2">1</span> Cumulative Returns</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Two ways to calculate cumulative returns
+</p>
+</div>
+<div id="outline-container-org1f2eb58" class="outline-3">
+<h3 id="org1f2eb58"><span class="section-number-3">1.1</span> Using Returns</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #715ab1;">returns</span> = prices / prices.shift<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span> - 1
+<span style="color: #715ab1;">returns</span> = returns.fillna<span style="color: #3a81c3;">(</span>0<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">opntional</span>
+<span style="color: #715ab1;">cum_returns</span> = <span style="color: #3a81c3;">(</span>returns + 1<span style="color: #3a81c3;">)</span>.cumprod<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">cum_return</span> = cum_returns.iloc<span style="color: #3a81c3;">[</span>-1<span style="color: #3a81c3;">]</span> - 1
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org11c65f0" class="outline-3">
+<h3 id="org11c65f0"><span class="section-number-3">1.2</span> Using Log Returns</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+<span style="color: #715ab1;">log_returns</span> = np.log<span style="color: #3a81c3;">(</span>prices<span style="color: #3a81c3;">)</span> - np.log<span style="color: #3a81c3;">(</span>prices.shift<span style="color: #6c3163;">(</span>1<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">log_returns</span> = log_returns.fillna<span style="color: #3a81c3;">(</span>0<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">optional</span>
+<span style="color: #715ab1;">cum_log_returns</span> = log_returns.cumsum<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">cum_return</span> = np.exp<span style="color: #3a81c3;">(</span>cum_log_returns.iloc<span style="color: #6c3163;">[</span>-1<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span> - 1
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc513f95" class="outline-2">
+<h2 id="orgc513f95"><span class="section-number-2">2</span> Relative Returns</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>Fund Returns - Benchmark Returns</li>
+</ul>
+</div>
+</div>
 </div>
 </body>
 </html>
