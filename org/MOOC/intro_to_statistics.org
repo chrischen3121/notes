@@ -114,40 +114,57 @@
 ** Covariance
    $$cov(X, Y)=\sum_{i=1}^n((x_i-\bar{x})(y_i-\bar{y}))$$
 
-** Correlation Coefficient
+** Correlation Coefficients
+   - Pearson's coefficient measures linear correlation
+   - Spearman's rho coefficient compare the ranks of data
+   - Kendall's tau coefficient compare the ranks of data
+*** Pearson's r
    Correlation coefficient $r$ is also known as Pearson's r.
    $$r=\frac{cov(X, Y)}{S_X \cdot S_Y}$$
    - The range of $r$ is from -1 to 1
-   - $r^2$ = % of the variation in Y explained by the variation in X
+   - $r^2$: % of the variation in Y explained by the variation in X
      - $r^2$ is called *coefficient of determination*, measures the strength of the relationship.
    - Function ~PEARSON~ In Excel
-   #+begin_src python
-     import numpy as np
-     from scipy.stats import pearsonr
 
-     X = np.arange(100)
-     Y = X * 3
+*** Code Examples
+    #+begin_src python
+      import numpy as np
+      import scipy.stats
 
-     # cov(X, Y)
-     np.cov(X, Y)
-     # =>
-     # array([[ 841.66666667, 2525.        ],
-     #        [2525.        , 7575.        ]])
+      x = np.arange(10, 20)
+      y = np.array([2, 1, 4, 5, 8, 12, 18, 25, 96, 48])
 
-     # pearson's r
-     pearsonr(X, Y)
-     # => (1, 0)
-   #+end_src
+      np.cov(x, y) # covariance
+      np.np.corrcoef(X, Y) # Pearson's r in numpy
 
-** Non-linear
-   Spearman’s r
-   #+begin_src python
-     import numpy as np
-     from scipy.stats import pearsonr
+      scipy.stats.pearsonr(x, y)    # Pearson's r
+      #=> (0.7586402890911869, 0.010964341301680832) # first is coefficient, second is pvalue
+      scipy.stats.spearmanr(x, y)   # Spearman's rho
+      #=> SpearmanrResult(correlation=0.9757575757575757, pvalue=1.4675461874042197e-06)
+      scipy.stats.kendalltau(x, y)  # Kendall's tau
+      #=> KendalltauResult(correlation=0.911111111111111, pvalue=2.9761904761904762e-05)
+    #+end_src
+    #+begin_src python
+      # in pandas
+      x.corr(y)
+      y.coor(x)
+      x.corr(y, method='spearman')
+      x.corr(y, method='kendall')
+    #+end_src
 
-     X = np.arange(100)
-     Y = X * 3
-   #+end_src
+** Hypothesis Testing
+   $r$ is the sample correlation, $\rho$ is the actual population correlation.
+   - $H_0$: $\rho = 0$
+   - $H_a$:
+     - $\rho > 0$: Positive directional
+     - $\rho < 0$: Negative directional
+     - $\rho \ne 0$: Non-directional
+
+   - Using t-test with $N-2$ degree of freedom
+     - $t=\frac{r\sqrt{N-2}}{\sqrt{1-r^2}}$
+
+** Important Point
+   Keep in mind that *correlation does not indicate causation*.
 
 * Scipy Tools
 ** Normal Distribution
