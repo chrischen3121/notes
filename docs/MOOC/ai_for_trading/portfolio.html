@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-09-27 Mon 17:21 -->
+<!-- 2021-10-05 Tue 10:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Portfolio</title>
@@ -194,6 +194,28 @@
   /*]]>*/-->
 </style>
 <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css">
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+	displayAlign: "left",
+	displayIndent: "2em",
+
+	"HTML-CSS": { scale: 100,
+			linebreaks: { automatic: "false" },
+			webFont: "TeX"
+		       },
+	SVG: {scale: 100,
+	      linebreaks: { automatic: "false" },
+	      font: "TeX"},
+	NativeMML: {scale: 100},
+	TeX: { equationNumbers: {autoNumber: "AMS"},
+	       MultLineWidth: "85%",
+	       TagSide: "left",
+	       TagIndent: ".8em"
+	     }
+});
+</script>
+<script type="text/javascript"
+	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -202,25 +224,31 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org417d984">1. Cumulative Returns</a>
+<li><a href="#org6a7f79b">1. Cumulative Returns</a>
 <ul>
-<li><a href="#org1f2eb58">1.1. Using Returns</a></li>
-<li><a href="#org11c65f0">1.2. Using Log Returns</a></li>
+<li><a href="#orge8914c4">1.1. Using Returns</a></li>
+<li><a href="#org7978345">1.2. Using Log Returns</a></li>
 </ul>
 </li>
-<li><a href="#orgc513f95">2. Relative Returns</a></li>
+<li><a href="#org4453418">2. Relative Returns</a>
+<ul>
+<li><a href="#orga530267">2.1. Tracking Error</a></li>
+</ul>
+</li>
+<li><a href="#orgc4aca64">3. Absolute Returns</a></li>
+<li><a href="#org99e7406">4. Covariance Matrix</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org417d984" class="outline-2">
-<h2 id="org417d984"><span class="section-number-2">1</span> Cumulative Returns</h2>
+<div id="outline-container-org6a7f79b" class="outline-2">
+<h2 id="org6a7f79b"><span class="section-number-2">1</span> Cumulative Returns</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Two ways to calculate cumulative returns
 </p>
 </div>
-<div id="outline-container-org1f2eb58" class="outline-3">
-<h3 id="org1f2eb58"><span class="section-number-3">1.1</span> Using Returns</h3>
+<div id="outline-container-orge8914c4" class="outline-3">
+<h3 id="orge8914c4"><span class="section-number-3">1.1</span> Using Returns</h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">returns</span> = prices / prices.shift<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span> - 1
@@ -232,8 +260,8 @@ Two ways to calculate cumulative returns
 </div>
 </div>
 
-<div id="outline-container-org11c65f0" class="outline-3">
-<h3 id="org11c65f0"><span class="section-number-3">1.2</span> Using Log Returns</h3>
+<div id="outline-container-org7978345" class="outline-3">
+<h3 id="org7978345"><span class="section-number-3">1.2</span> Using Log Returns</h3>
 <div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
@@ -247,12 +275,80 @@ Two ways to calculate cumulative returns
 </div>
 </div>
 
-<div id="outline-container-orgc513f95" class="outline-2">
-<h2 id="orgc513f95"><span class="section-number-2">2</span> Relative Returns</h2>
+<div id="outline-container-org4453418" class="outline-2">
+<h2 id="org4453418"><span class="section-number-2">2</span> Relative Returns</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>Fund Returns - Benchmark Returns</li>
+<li>For Active Fund: <b>Active Returns</b></li>
+<li>For Passive Fund: <b>Tracking Error</b></li>
 </ul>
+</div>
+
+<div id="outline-container-orga530267" class="outline-3">
+<h3 id="orga530267"><span class="section-number-3">2.1</span> Tracking Error</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Operationalize the tracking error.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+<span style="color: #715ab1;">excess_returns</span> = portfolio_returns - benchmark_returns
+<span style="color: #715ab1;">daily_tracking_errors</span> = excess_returns.std<span style="color: #3a81c3;">(</span>ddof=1<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">annualized_tracking_error</span> = np.sqrt<span style="color: #3a81c3;">(</span>252<span style="color: #3a81c3;">)</span> *  daily_tracking_errors
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc4aca64" class="outline-2">
+<h2 id="orgc4aca64"><span class="section-number-2">3</span> Absolute Returns</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>Benchmark: Cash Interest Rate e.g. US Treasury, LIBOR</li>
+<li>Because the benchmark is relatively small, Hedge funds are evaluated by their performance alone.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org99e7406" class="outline-2">
+<h2 id="org99e7406"><span class="section-number-2">4</span> Covariance Matrix</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+\[P=\begin{bmatrix}
+  Cov(r_A, r_A) & Cov(r_A, r_B) \\
+  Cov(r_B, r_A) & Cov(r_B, r_B)
+  \end{bmatrix}\]
+</p>
+
+<p>
+covariance is:
+\[\begin{align*}
+  Cov(r_A, r_B) &= E[(r_A-\bar{r_A})(r_B-\bar{r_B})] \\
+  & = \frac{1}{n-1}\sum_{i=1}^n(r_{Ai}-\bar{r_A})(r_{Bi}-\bar{r_B}) \\
+  & = \frac{1}{n-1}\sum_{i=1}^{n}r_{Ai}r_{Bi}\text{ (if }\bar{r_A}=\bar{r_B}=0\text{)} \\
+  & = \frac{1}{n-1}\boldsymbol{r}_A^T \boldsymbol{r}_B
+  \end{align*}\]
+</p>
+
+<p>
+\[\boldsymbol{r}^T\boldsymbol{r} = \begin{bmatrix}
+  \cdots & \boldsymbol{r}_A & \cdots \\
+  \cdots & \boldsymbol{r}_B & \cdots \end{bmatrix}\begin{bmatrix}
+  \vdots & \vdots \\
+  \boldsymbol{r}_A & \boldsymbol{r}_B \\
+  \vdots & \vdots\end{bmatrix} = \begin{bmatrix}
+  \boldsymbol{r}_A^T \boldsymbol{r}_A & \boldsymbol{r}_A^T \boldsymbol{r}_B \\
+  \boldsymbol{r}_B^T \boldsymbol{r}_A & \boldsymbol{r}_B^T \boldsymbol{r}_B \\
+  \end{bmatrix}
+  \]
+</p>
+
+<p>
+So if each vector of observations in your data matrix has mean 0, the covariance matrix is:
+\[\frac{1}{n-1}\boldsymbol{r}_T\boldsymbol{r}\]
+</p>
 </div>
 </div>
 </div>

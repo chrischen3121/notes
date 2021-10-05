@@ -38,3 +38,31 @@
 * Absolute Returns
   - Benchmark: Cash Interest Rate e.g. US Treasury, LIBOR
   - Because the benchmark is relatively small, Hedge funds are evaluated by their performance alone.
+
+* Covariance Matrix
+  $$P=\begin{bmatrix}
+  Cov(r_A, r_A) & Cov(r_A, r_B) \\
+  Cov(r_B, r_A) & Cov(r_B, r_B)
+  \end{bmatrix}$$
+
+  covariance is:
+  $$\begin{align*}
+  Cov(r_A, r_B) &= E[(r_A-\bar{r_A})(r_B-\bar{r_B})] \\
+  & = \frac{1}{n-1}\sum_{i=1}^n(r_{Ai}-\bar{r_A})(r_{Bi}-\bar{r_B}) \\
+  & = \frac{1}{n-1}\sum_{i=1}^{n}r_{Ai}r_{Bi}\text{ (if }\bar{r_A}=\bar{r_B}=0\text{)} \\
+  & = \frac{1}{n-1}\boldsymbol{r}_A^T \boldsymbol{r}_B
+  \end{align*}$$
+
+  $$\boldsymbol{r}^T\boldsymbol{r} = \begin{bmatrix}
+  \cdots & \boldsymbol{r}_A & \cdots \\
+  \cdots & \boldsymbol{r}_B & \cdots \end{bmatrix}\begin{bmatrix}
+  \vdots & \vdots \\
+  \boldsymbol{r}_A & \boldsymbol{r}_B \\
+  \vdots & \vdots\end{bmatrix} = \begin{bmatrix}
+  \boldsymbol{r}_A^T \boldsymbol{r}_A & \boldsymbol{r}_A^T \boldsymbol{r}_B \\
+  \boldsymbol{r}_B^T \boldsymbol{r}_A & \boldsymbol{r}_B^T \boldsymbol{r}_B \\
+  \end{bmatrix}
+  $$
+
+  So if each vector of observations in your data matrix has mean 0, the covariance matrix is:
+  $$\frac{1}{n-1}\boldsymbol{r}_T\boldsymbol{r}$$
