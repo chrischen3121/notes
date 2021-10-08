@@ -1,5 +1,5 @@
 #+TITLE: Portfolio
-#+OPTIONS: H:2 toc:2 num:2 ^:nil
+#+OPTIONS: H:3 toc:2 num:2 ^:nil
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
 * Cumulative Returns
@@ -174,6 +174,27 @@
     - if $det(H)(a, b)=0$ then the second derivative test is inconclusive, and the point
       $(a, b)$ could be any of a minimum, maximum or saddle point.
 
+** Terminologies
+   - Domain :: all constraint functions are defined.
+   - Feasible Set :: The set of points that satisfy all the constraints.
+   - Unbounded :: An optimization problem where in the objective reaches positive/negative infinity for points in the feasible set.
+
+** Convex
+   An important type of optimization problems.
+   - The *objective function* and *inequality constraints* are convex.
+   - A convex function curves upward everywhere.
+   - Only has one minimum/maximum. i.e. local minimum is the globally optimal value.
+
+*** Example: Minimum Portfolio Variance
+    - Objective Function
+      $$\sigma_P^2=w_A^2\sigma_A^2 + w_B^2\sigma_B^2+2w_A w_B\sigma_A\sigma_B\rho_{r_A r_B}$$
+    - Constraints
+      $$w_A+w_B=1$$
+    - Solving the Problem
+      $$\frac{d(\sigma_P^2)}{dw_A}=0$$
+      ...
+      $$w_A=\frac{\sigma_B^2-\sigma_A \sigma_B \rho_{r_A r_B}}{\sigma_A^2+\sigma_B^2-2\sigma_A\sigma_B\rho_{r_A r_B}}$$
+
 ** ~cvxpy~
    - one variable with the size of one
    #+begin_src python
@@ -188,6 +209,22 @@
      # Optimal value of x => x.value[0]
      # Optimal value of the objective => problem.value
    #+end_src
+
+** Portfolio Optimization Problems
+*** Common Constraints
+    - *no short selling* weights: $0\le w_i \le 1$,  $\sum_{i=1}^n w_i$
+    - *sector limits*: $w_{tech1}+w_{tech2}+w_{tech3}\le M$;   /M=% of portfolio to invest in tech companies/
+    - *constraint on portfolio return*: $\boldsymbol{w}^T\boldsymbol{\mu}\ge r_{min}$;  /r_{min}=minimum acceptable portfolio return/
+
+*** Maximizing Portfolio Return
+    - *objective*: minimize $f(w)=-\boldsymbol{w}^T\boldsymbol{\mu}$
+    - *constraint*: $\boldsymbol{w}^T\boldsymbol{P_x} \le p$;  /p=maximum permissible portfolio variance/
+
+*** Maximizing Portfolio Return And Minimizing Portfolio Variance
+    - *objective*: minimize $f(w)=-\boldsymbol{w}^T\boldsymbol{\mu}+b \boldsymbol{w}^T\boldsymbol{P_x}$;  /b=tradeoff prarameter/
+
+*** Minimizing Distance to a Set of Target Weights
+*** Tracking an Index
 
 * Summary
   - Portfolio Expected Return

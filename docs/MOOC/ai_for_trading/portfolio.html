@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-08 Fri 18:09 -->
+<!-- 2021-10-08 Fri 22:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Portfolio</title>
@@ -224,59 +224,62 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org417d984">1. Cumulative Returns</a>
+<li><a href="#orgadfc7a9">1. Cumulative Returns</a>
 <ul>
-<li><a href="#org1f2eb58">1.1. Using Returns</a></li>
-<li><a href="#org11c65f0">1.2. Using Log Returns</a></li>
+<li><a href="#org97c504e">1.1. Using Returns</a></li>
+<li><a href="#orgcb4471a">1.2. Using Log Returns</a></li>
 </ul>
 </li>
-<li><a href="#orgc513f95">2. Relative Returns</a>
+<li><a href="#orgce5bdec">2. Relative Returns</a>
 <ul>
-<li><a href="#org955df3a">2.1. Tracking Error</a></li>
+<li><a href="#org0684cfd">2.1. Tracking Error</a></li>
 </ul>
 </li>
-<li><a href="#org5c20d95">3. Absolute Returns</a></li>
-<li><a href="#orgf160ea1">4. Covariance Matrix</a></li>
-<li><a href="#orge944781">5. Sharpe Ratio</a>
+<li><a href="#org2cf2376">3. Absolute Returns</a></li>
+<li><a href="#org2bb4c1a">4. Covariance Matrix</a></li>
+<li><a href="#orge8f3996">5. Sharpe Ratio</a>
 <ul>
-<li><a href="#org88724ff">5.1. Efficient Frontier</a></li>
-<li><a href="#org00a0922">5.2. Capital Market Line</a></li>
-<li><a href="#org84ccfb0">5.3. Portfolio Return \(\bar{r}_P\)</a></li>
-<li><a href="#org3faa24c">5.4. Sharpe Ratio</a></li>
+<li><a href="#orgb69a5c0">5.1. Efficient Frontier</a></li>
+<li><a href="#org6c43509">5.2. Capital Market Line</a></li>
+<li><a href="#org94879c9">5.3. Portfolio Return \(\bar{r}_P\)</a></li>
+<li><a href="#orgef94825">5.4. Sharpe Ratio</a></li>
 </ul>
 </li>
-<li><a href="#org5351025">6. Other Risk Measures</a>
+<li><a href="#org52543ea">6. Other Risk Measures</a>
 <ul>
-<li><a href="#orga5e7ec5">6.1. Semi-Deviation</a></li>
-<li><a href="#org0657d33">6.2. VaR(Value-at-Risk)</a></li>
+<li><a href="#orgdc45d9e">6.1. Semi-Deviation</a></li>
+<li><a href="#org755ccae">6.2. VaR(Value-at-Risk)</a></li>
 </ul>
 </li>
-<li><a href="#org7132b81">7. CAPM</a>
+<li><a href="#orgb3a4751">7. CAPM</a>
 <ul>
-<li><a href="#org80dd618">7.1. Compensation to Investors</a></li>
-<li><a href="#org969b8ad">7.2. Security Market Line</a></li>
-<li><a href="#org460dcb3">7.3. Example</a></li>
+<li><a href="#orgc3de840">7.1. Compensation to Investors</a></li>
+<li><a href="#org8c2b9de">7.2. Security Market Line</a></li>
+<li><a href="#org42d7cec">7.3. Example</a></li>
 </ul>
 </li>
-<li><a href="#org815e496">8. Optimization</a>
+<li><a href="#org34d5ef5">8. Optimization</a>
 <ul>
-<li><a href="#org1a16781">8.1. Basics</a></li>
-<li><a href="#orgace71a5">8.2. <code>cvxpy</code></a></li>
+<li><a href="#orgd01512c">8.1. Basics</a></li>
+<li><a href="#org18d0189">8.2. Terminologies</a></li>
+<li><a href="#org2101f24">8.3. Convex</a></li>
+<li><a href="#org9b5f9a0">8.4. <code>cvxpy</code></a></li>
+<li><a href="#org9d06d95">8.5. Portfolio Optimization Problems</a></li>
 </ul>
 </li>
-<li><a href="#org0db56df">9. Summary</a></li>
+<li><a href="#orga9c82f1">9. Summary</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org417d984" class="outline-2">
-<h2 id="org417d984"><span class="section-number-2">1</span> Cumulative Returns</h2>
+<div id="outline-container-orgadfc7a9" class="outline-2">
+<h2 id="orgadfc7a9"><span class="section-number-2">1</span> Cumulative Returns</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Two ways to calculate cumulative returns
 </p>
 </div>
-<div id="outline-container-org1f2eb58" class="outline-3">
-<h3 id="org1f2eb58"><span class="section-number-3">1.1</span> Using Returns</h3>
+<div id="outline-container-org97c504e" class="outline-3">
+<h3 id="org97c504e"><span class="section-number-3">1.1</span> Using Returns</h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #715ab1;">returns</span> = prices / prices.shift<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span> - 1
@@ -288,8 +291,8 @@ Two ways to calculate cumulative returns
 </div>
 </div>
 
-<div id="outline-container-org11c65f0" class="outline-3">
-<h3 id="org11c65f0"><span class="section-number-3">1.2</span> Using Log Returns</h3>
+<div id="outline-container-orgcb4471a" class="outline-3">
+<h3 id="orgcb4471a"><span class="section-number-3">1.2</span> Using Log Returns</h3>
 <div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
@@ -303,8 +306,8 @@ Two ways to calculate cumulative returns
 </div>
 </div>
 
-<div id="outline-container-orgc513f95" class="outline-2">
-<h2 id="orgc513f95"><span class="section-number-2">2</span> Relative Returns</h2>
+<div id="outline-container-orgce5bdec" class="outline-2">
+<h2 id="orgce5bdec"><span class="section-number-2">2</span> Relative Returns</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>Fund Returns - Benchmark Returns</li>
@@ -313,8 +316,8 @@ Two ways to calculate cumulative returns
 </ul>
 </div>
 
-<div id="outline-container-org955df3a" class="outline-3">
-<h3 id="org955df3a"><span class="section-number-3">2.1</span> Tracking Error</h3>
+<div id="outline-container-org0684cfd" class="outline-3">
+<h3 id="org0684cfd"><span class="section-number-3">2.1</span> Tracking Error</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Operationalize the tracking error.
@@ -330,8 +333,8 @@ Operationalize the tracking error.
 </div>
 </div>
 
-<div id="outline-container-org5c20d95" class="outline-2">
-<h2 id="org5c20d95"><span class="section-number-2">3</span> Absolute Returns</h2>
+<div id="outline-container-org2cf2376" class="outline-2">
+<h2 id="org2cf2376"><span class="section-number-2">3</span> Absolute Returns</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li>Benchmark: Cash Interest Rate e.g. US Treasury, LIBOR</li>
@@ -340,8 +343,8 @@ Operationalize the tracking error.
 </div>
 </div>
 
-<div id="outline-container-orgf160ea1" class="outline-2">
-<h2 id="orgf160ea1"><span class="section-number-2">4</span> Covariance Matrix</h2>
+<div id="outline-container-org2bb4c1a" class="outline-2">
+<h2 id="org2bb4c1a"><span class="section-number-2">4</span> Covariance Matrix</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 \[P=\begin{bmatrix}
@@ -380,15 +383,15 @@ So if each vector of observations in your data matrix has mean 0, the covariance
 </div>
 </div>
 
-<div id="outline-container-orge944781" class="outline-2">
-<h2 id="orge944781"><span class="section-number-2">5</span> Sharpe Ratio</h2>
+<div id="outline-container-orge8f3996" class="outline-2">
+<h2 id="orge8f3996"><span class="section-number-2">5</span> Sharpe Ratio</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org88724ff" class="outline-3">
-<h3 id="org88724ff"><span class="section-number-3">5.1</span> Efficient Frontier</h3>
+<div id="outline-container-orgb69a5c0" class="outline-3">
+<h3 id="orgb69a5c0"><span class="section-number-3">5.1</span> Efficient Frontier</h3>
 <div class="outline-text-3" id="text-5-1">
 
-<div id="orgda9955e" class="figure">
+<div id="org44d1ed5" class="figure">
 <p><img src="../../resources/MOOC/Trading/efficient_frontier.png" alt="efficient_frontier.png" />
 </p>
 </div>
@@ -398,11 +401,11 @@ So if each vector of observations in your data matrix has mean 0, the covariance
 </div>
 </div>
 
-<div id="outline-container-org00a0922" class="outline-3">
-<h3 id="org00a0922"><span class="section-number-3">5.2</span> Capital Market Line</h3>
+<div id="outline-container-org6c43509" class="outline-3">
+<h3 id="org6c43509"><span class="section-number-3">5.2</span> Capital Market Line</h3>
 <div class="outline-text-3" id="text-5-2">
 
-<div id="org6f3214c" class="figure">
+<div id="orga4e3bb0" class="figure">
 <p><img src="../../resources/MOOC/Trading/capital_mkt_line.png" alt="capital_mkt_line.png" />
 </p>
 </div>
@@ -411,7 +414,7 @@ So if each vector of observations in your data matrix has mean 0, the covariance
 <li>Risk-free rate: normally refers to the rate of return on a three month treasury bill as the risk-free rate.</li>
 </ul>
 
-<div id="org6c0aa8c" class="figure">
+<div id="orga9b43a0" class="figure">
 <p><img src="../../resources/MOOC/Trading/mkt_risk_premium.png" alt="mkt_risk_premium.png" />
 </p>
 </div>
@@ -422,11 +425,11 @@ So if each vector of observations in your data matrix has mean 0, the covariance
 </div>
 </div>
 
-<div id="outline-container-org84ccfb0" class="outline-3">
-<h3 id="org84ccfb0"><span class="section-number-3">5.3</span> Portfolio Return \(\bar{r}_P\)</h3>
+<div id="outline-container-org94879c9" class="outline-3">
+<h3 id="org94879c9"><span class="section-number-3">5.3</span> Portfolio Return \(\bar{r}_P\)</h3>
 <div class="outline-text-3" id="text-5-3">
 
-<div id="org796a9f5" class="figure">
+<div id="org67c3006" class="figure">
 <p><img src="../../resources/MOOC/Trading/portfolio_return.png" alt="portfolio_return.png" />
 </p>
 </div>
@@ -439,8 +442,8 @@ So if each vector of observations in your data matrix has mean 0, the covariance
 </div>
 </div>
 
-<div id="outline-container-org3faa24c" class="outline-3">
-<h3 id="org3faa24c"><span class="section-number-3">5.4</span> Sharpe Ratio</h3>
+<div id="outline-container-orgef94825" class="outline-3">
+<h3 id="orgef94825"><span class="section-number-3">5.4</span> Sharpe Ratio</h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 The Sharpe ratio is the <b>ratio of reward to volatility</b>.
@@ -448,9 +451,9 @@ The Sharpe ratio is the <b>ratio of reward to volatility</b>.
 </p>
 </div>
 
-<ul class="org-ul">
-<li><a id="orgea5dfea"></a>Sharpe Ratio Over a Period of Time<br />
-<div class="outline-text-4" id="text-orgea5dfea">
+<div id="outline-container-org4629f03" class="outline-4">
+<h4 id="org4629f03">Sharpe Ratio Over a Period of Time</h4>
+<div class="outline-text-4" id="text-org4629f03">
 <p>
 Risk premium(excess return) \(D_t=r_{P, t} - r_{f, t}\)
 \[D_{avg}=\frac{\sum_{t-1}^T D_t}{T}\]
@@ -458,25 +461,25 @@ Risk premium(excess return) \(D_t=r_{P, t} - r_{f, t}\)
 \[Sharpe=\frac{D_{avg}}{\sigma_D}\]
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org1250111"></a>Annualized Sharpe Ratio<br />
-<div class="outline-text-4" id="text-org1250111">
+<div id="outline-container-org1fcb4d0" class="outline-4">
+<h4 id="org1fcb4d0">Annualized Sharpe Ratio</h4>
+<div class="outline-text-4" id="text-org1fcb4d0">
 <p>
 \[Sharpe_{year}=\sqrt{252}Sharpe_{day}\]
 </p>
 </div>
-</li>
-</ul>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org5351025" class="outline-2">
-<h2 id="org5351025"><span class="section-number-2">6</span> Other Risk Measures</h2>
+<div id="outline-container-org52543ea" class="outline-2">
+<h2 id="org52543ea"><span class="section-number-2">6</span> Other Risk Measures</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-orga5e7ec5" class="outline-3">
-<h3 id="orga5e7ec5"><span class="section-number-3">6.1</span> Semi-Deviation</h3>
+<div id="outline-container-orgdc45d9e" class="outline-3">
+<h3 id="orgdc45d9e"><span class="section-number-3">6.1</span> Semi-Deviation</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Semi-deviation measure of risk is to measure downside risk specifically, rather than any kind of volatility.
@@ -487,8 +490,8 @@ Where \(I_{r_i<\mu}\) equals 1 when \(r_i<\mu\), and 0 otherwise.
 </div>
 </div>
 
-<div id="outline-container-org0657d33" class="outline-3">
-<h3 id="org0657d33"><span class="section-number-3">6.2</span> VaR(Value-at-Risk)</h3>
+<div id="outline-container-org755ccae" class="outline-3">
+<h3 id="org755ccae"><span class="section-number-3">6.2</span> VaR(Value-at-Risk)</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 VaR is defined as the maximum dollar amount expected to be lost over a given time horizon at a predefined confidence level.
@@ -507,7 +510,7 @@ more on <a href="https://en.wikipedia.org/wiki/Value_at_risk">WikipediA</a>
 </p>
 
 
-<div id="orgc53ab8b" class="figure">
+<div id="org7f85448" class="figure">
 <p><img src="../../resources/MOOC/Trading/var-diagram.jpg" alt="var-diagram.jpg" />
 </p>
 </div>
@@ -515,8 +518,8 @@ more on <a href="https://en.wikipedia.org/wiki/Value_at_risk">WikipediA</a>
 </div>
 </div>
 
-<div id="outline-container-org7132b81" class="outline-2">
-<h2 id="org7132b81"><span class="section-number-2">7</span> CAPM</h2>
+<div id="outline-container-orgb3a4751" class="outline-2">
+<h2 id="orgb3a4751"><span class="section-number-2">7</span> CAPM</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 The Capital Assets Pricing Model, pronounced “cap M”.
@@ -546,8 +549,8 @@ by the variance of the market.
 </ul>
 </div>
 
-<div id="outline-container-org80dd618" class="outline-3">
-<h3 id="org80dd618"><span class="section-number-3">7.1</span> Compensation to Investors</h3>
+<div id="outline-container-orgc3de840" class="outline-3">
+<h3 id="orgc3de840"><span class="section-number-3">7.1</span> Compensation to Investors</h3>
 <div class="outline-text-3" id="text-7-1">
 <ul class="org-ul">
 <li>Time value of money: represented by the risk free return.</li>
@@ -556,8 +559,8 @@ by the variance of the market.
 </div>
 </div>
 
-<div id="outline-container-org969b8ad" class="outline-3">
-<h3 id="org969b8ad"><span class="section-number-3">7.2</span> Security Market Line</h3>
+<div id="outline-container-org8c2b9de" class="outline-3">
+<h3 id="org8c2b9de"><span class="section-number-3">7.2</span> Security Market Line</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 The Security Market Line is the graphical representation of CAPM and it represents the relation between the risk and return of stocks.
@@ -565,15 +568,15 @@ Note that the x-axis is \(\beta\).
 </p>
 
 
-<div id="org48a98ae" class="figure">
+<div id="orgef32be9" class="figure">
 <p><img src="../../resources/MOOC/Trading/security_market_line.png" alt="security_market_line.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org460dcb3" class="outline-3">
-<h3 id="org460dcb3"><span class="section-number-3">7.3</span> Example</h3>
+<div id="outline-container-org42d7cec" class="outline-3">
+<h3 id="org42d7cec"><span class="section-number-3">7.3</span> Example</h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 Given \(r_f=2%\), \(\beta_i=1.2\), \(r_m=10%\)
@@ -583,27 +586,28 @@ Given \(r_f=2%\), \(\beta_i=1.2\), \(r_m=10%\)
 </div>
 </div>
 
-<div id="outline-container-org815e496" class="outline-2">
-<h2 id="org815e496"><span class="section-number-2">8</span> Optimization</h2>
+<div id="outline-container-org34d5ef5" class="outline-2">
+<h2 id="org34d5ef5"><span class="section-number-2">8</span> Optimization</h2>
 <div class="outline-text-2" id="text-8">
 </div>
-<div id="outline-container-org1a16781" class="outline-3">
-<h3 id="org1a16781"><span class="section-number-3">8.1</span> Basics</h3>
+<div id="outline-container-orgd01512c" class="outline-3">
+<h3 id="orgd01512c"><span class="section-number-3">8.1</span> Basics</h3>
 <div class="outline-text-3" id="text-8-1">
 </div>
-<ul class="org-ul">
-<li><a id="org0ad1d8a"></a>One Variable Function \(f(x)\)<br />
-<div class="outline-text-4" id="text-org0ad1d8a">
+<div id="outline-container-org9c8757b" class="outline-4">
+<h4 id="org9c8757b">One Variable Function \(f(x)\)</h4>
+<div class="outline-text-4" id="text-org9c8757b">
 <ul class="org-ul">
 <li>Finds the point \(x_0\) where \(f'(x)=0\)</li>
 <li>\(x_0\) is the local maximum if \(f''(x)<0\), or the local minimum if \(f''(x)>0\)</li>
 <li>inconclusive if \(f''(x)=0\)</li>
 </ul>
 </div>
-</li>
+</div>
 
-<li><a id="org8961fc8"></a>Two Variable Function \(f(x, y)\)<br />
-<div class="outline-text-4" id="text-org8961fc8">
+<div id="outline-container-org9c98233" class="outline-4">
+<h4 id="org9c98233">Two Variable Function \(f(x, y)\)</h4>
+<div class="outline-text-4" id="text-org9c98233">
 <p>
 <b>Hessian matrix</b> of second-order partial derivatives:
 \[H(x, y)= \begin{pmatrix}
@@ -628,13 +632,53 @@ Given \(r_f=2%\), \(\beta_i=1.2\), \(r_m=10%\)
 \((a, b)\) could be any of a minimum, maximum or saddle point.</li>
 </ul>
 </div>
-</li>
+</div>
+</div>
+
+<div id="outline-container-org18d0189" class="outline-3">
+<h3 id="org18d0189"><span class="section-number-3">8.2</span> Terminologies</h3>
+<div class="outline-text-3" id="text-8-2">
+<dl class="org-dl">
+<dt>Domain</dt><dd>all constraint functions are defined.</dd>
+<dt>Feasible Set</dt><dd>The set of points that satisfy all the constraints.</dd>
+<dt>Unbounded</dt><dd>An optimization problem where in the objective reaches positive/negative infinity for points in the feasible set.</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org2101f24" class="outline-3">
+<h3 id="org2101f24"><span class="section-number-3">8.3</span> Convex</h3>
+<div class="outline-text-3" id="text-8-3">
+<p>
+An important type of optimization problems.
+</p>
+<ul class="org-ul">
+<li>The <b>objective function</b> and <b>inequality constraints</b> are convex.</li>
+<li>A convex function curves upward everywhere.</li>
+<li>Only has one minimum/maximum. i.e. local minimum is the globally optimal value.</li>
 </ul>
 </div>
 
-<div id="outline-container-orgace71a5" class="outline-3">
-<h3 id="orgace71a5"><span class="section-number-3">8.2</span> <code>cvxpy</code></h3>
-<div class="outline-text-3" id="text-8-2">
+<div id="outline-container-org720fb2c" class="outline-4">
+<h4 id="org720fb2c">Example: Minimum Portfolio Variance</h4>
+<div class="outline-text-4" id="text-org720fb2c">
+<ul class="org-ul">
+<li>Objective Function
+\[\sigma_P^2=w_A^2\sigma_A^2 + w_B^2\sigma_B^2+2w_A w_B\sigma_A\sigma_B\rho_{r_A r_B}\]</li>
+<li>Constraints
+\[w_A+w_B=1\]</li>
+<li>Solving the Problem
+\[\frac{d(\sigma_P^2)}{dw_A}=0\]
+&#x2026;
+\[w_A=\frac{\sigma_B^2-\sigma_A \sigma_B \rho_{r_A r_B}}{\sigma_A^2+\sigma_B^2-2\sigma_A\sigma_B\rho_{r_A r_B}}\]</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9b5f9a0" class="outline-3">
+<h3 id="org9b5f9a0"><span class="section-number-3">8.4</span> <code>cvxpy</code></h3>
+<div class="outline-text-3" id="text-8-4">
 <ul class="org-ul">
 <li>one variable with the size of one</li>
 </ul>
@@ -653,10 +697,52 @@ Given \(r_f=2%\), \(\beta_i=1.2\), \(r_m=10%\)
 </div>
 </div>
 </div>
+
+<div id="outline-container-org9d06d95" class="outline-3">
+<h3 id="org9d06d95"><span class="section-number-3">8.5</span> Portfolio Optimization Problems</h3>
+<div class="outline-text-3" id="text-8-5">
+</div>
+<div id="outline-container-org58875e7" class="outline-4">
+<h4 id="org58875e7">Common Constraints</h4>
+<div class="outline-text-4" id="text-org58875e7">
+<ul class="org-ul">
+<li><b>no short selling</b> weights: \(0\le w_i \le 1\),  \(\sum_{i=1}^n w_i\)</li>
+<li><b>sector limits</b>: \(w_{tech1}+w_{tech2}+w_{tech3}\le M\);   <i>M=% of portfolio to invest in tech companies</i></li>
+<li><b>constraint on portfolio return</b>: \(\boldsymbol{w}^T\boldsymbol{\mu}\ge r_{min}\);  <i>r_{min}=minimum acceptable portfolio return</i></li>
+</ul>
+</div>
 </div>
 
-<div id="outline-container-org0db56df" class="outline-2">
-<h2 id="org0db56df"><span class="section-number-2">9</span> Summary</h2>
+<div id="outline-container-org55ab424" class="outline-4">
+<h4 id="org55ab424">Maximizing Portfolio Return</h4>
+<div class="outline-text-4" id="text-org55ab424">
+<ul class="org-ul">
+<li><b>objective</b>: minimize \(f(w)=-\boldsymbol{w}^T\boldsymbol{\mu}\)</li>
+<li><b>constraint</b>: \(\boldsymbol{w}^T\boldsymbol{P_x} \le p\);  <i>p=maximum permissible portfolio variance</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4608484" class="outline-4">
+<h4 id="org4608484">Maximizing Portfolio Return And Minimizing Portfolio Variance</h4>
+<div class="outline-text-4" id="text-org4608484">
+<ul class="org-ul">
+<li><b>objective</b>: minimize \(f(w)=-\boldsymbol{w}^T\boldsymbol{\mu}+b \boldsymbol{w}^T\boldsymbol{P_x}\);  <i>b=tradeoff prarameter</i></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge0d5c32" class="outline-4">
+<h4 id="orge0d5c32">Minimizing Distance to a Set of Target Weights</h4>
+</div>
+<div id="outline-container-orga7e87e7" class="outline-4">
+<h4 id="orga7e87e7">Tracking an Index</h4>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga9c82f1" class="outline-2">
+<h2 id="orga9c82f1"><span class="section-number-2">9</span> Summary</h2>
 <div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li>Portfolio Expected Return</li>
