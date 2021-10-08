@@ -67,6 +67,91 @@
   So if each vector of observations in your data matrix has mean 0, the covariance matrix is:
   $$\frac{1}{n-1}\boldsymbol{r}_T\boldsymbol{r}$$
 
+* Sharpe Ratio
+** Efficient Frontier
+   [[../../resources/MOOC/Trading/efficient_frontier.png]]
+   - The portfolios on the efficient frontier are known as market portfolios.
+
+** Capital Market Line
+   [[../../resources/MOOC/Trading/capital_mkt_line.png]]
+   - $r_f=0.03$ $\sigma_f\approx0$
+   - Risk-free rate: normally refers to the rate of return on a three month treasury bill as the risk-free rate.
+   [[../../resources/MOOC/Trading/mkt_risk_premium.png]]
+   - Market Risk Premium :: The difference between the market return and the risk-free rate.
+   - Sharpe Ratio :: is just the slope of the line which is $\frac{\bar{r}_M - r_f}{\sigma_M}$.
+
+** Portfolio Return $\bar{r}_P$
+   [[../../resources/MOOC/Trading/portfolio_return.png]]
+   - Choose the $\sigma_P$.
+     - Choose the weights on the risk-free asset and the market portfolio.
+
+** Sharpe Ratio
+   The Sharpe ratio is the *ratio of reward to volatility*.
+   $$Sharpe=\frac{r_P-r_f}{\sigma_{excess\ return}}$$
+
+*** Sharpe Ratio Over a Period of Time
+    Risk premium(excess return) $D_t=r_{P, t} - r_{f, t}$
+    $$D_{avg}=\frac{\sum_{t-1}^T D_t}{T}$$
+    $$\sigma_D=\sqrt{\frac{\sum_{t=1}^T (D_t-D_{avg})^2}{T-1}}$$
+    $$Sharpe=\frac{D_{avg}}{\sigma_D}$$
+
+*** Annualized Sharpe Ratio
+    $$Sharpe_{year}=\sqrt{252}Sharpe_{day}$$
+
+* Other Risk Measures
+** Semi-Deviation
+   Semi-deviation measure of risk is to measure downside risk specifically, rather than any kind of volatility.
+   Semi-deviation is calculated in a similar way as standard deviation, except it only includes observations that are less than the mean.
+   $$SemiDeviation=\sum_{t=1}^n(r_i-\mu)^2\times I_{r_i<\mu}$$
+   Where $I_{r_i<\mu}$ equals 1 when $r_i<\mu$, and 0 otherwise.
+
+** VaR(Value-at-Risk)
+   VaR is defined as the maximum dollar amount expected to be lost over a given time horizon at a predefined confidence level.
+
+   For example, if the 95% one month VaR is $1 million
+   - there is 95% confidence that the portfolio will not lose more than $1 million next month.
+   - or there is a 5% chance of losing $1 million or more next month.
+
+   more on [[https://en.wikipedia.org/wiki/Value_at_risk][WikipediA]]
+
+   [[../../resources/MOOC/Trading/var-diagram.jpg]]
+
+* CAPM
+  The Capital Assets Pricing Model, pronounced “cap M”.
+
+  The CAPM is a model that describes the relationship between *systematic risk* and *expected return for assets*.
+  The CAPM assumes that the excess return of a stock is determined by the market return and the stock’s relationship
+  with the market’s movement.
+
+  For a stock, the return of stock $i$ equals the return of the risk free asset plus $\beta$ times the difference
+  between the market return and the risk free return. $\beta_i$ is the covariance of stock $i$ and the market divided
+  by the variance of the market.
+
+  $$r_i-r_f=\beta_i\times(r_m-r_f)$$
+  - $r_i$: stock return
+  - $r_f$: risk free rate
+  - $r_m$: market return
+  - $\beta_i=\frac{cov(r_i, r_m)}{\sigma_m^2}$: describes which direction and by how much a stock or portfolio moves relative to the market.
+  - When $\beta_i$ is greater than 1, stock /i/ moves up and down more than the market.
+
+** Compensation to Investors
+   - Time value of money: represented by the risk free return.
+   - Risk exposure to the market: $\beta_i\times(r_m-r_f)$
+
+** Security Market Line
+   The Security Market Line is the graphical representation of CAPM and it represents the relation between the risk and return of stocks.
+   Note that the x-axis is $\beta$.
+
+   [[../../resources/MOOC/Trading/security_market_line.png]]
+
+** Example
+   Given $r_f=2%$, $\beta_i=1.2$, $r_m=10%$
+   $$r_i=r_f+\beta_i\times(r_m-r_f)=11.6%$$
+
+** CAMP of a Portfolio
+   $$r_P=\sum_{i=1}^n w_i(r_f+\beta_i(r_m-r_f))$$
+   $$\beta_P=\sum_{i=1}^n w_i\beta_i$$
+
 * Summary
   - Portfolio Expected Return
   $$\mu_P=\sum_{i=1}^{N}w_i \mu_i=\boldsymbol{w^T\mu}$$
