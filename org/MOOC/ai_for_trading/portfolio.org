@@ -148,13 +148,54 @@
    Given $r_f=2%$, $\beta_i=1.2$, $r_m=10%$
    $$r_i=r_f+\beta_i\times(r_m-r_f)=11.6%$$
 
-** CAMP of a Portfolio
-   $$r_P=\sum_{i=1}^n w_i(r_f+\beta_i(r_m-r_f))$$
-   $$\beta_P=\sum_{i=1}^n w_i\beta_i$$
+* Optimization
+** Basics
+*** One Variable Function $f(x)$
+    - Finds the point $x_0$ where $f'(x)=0$
+    - $x_0$ is the local maximum if $f''(x)<0$, or the local minimum if $f''(x)>0$
+    - inconclusive if $f''(x)=0$
+
+*** Two Variable Function $f(x, y)$
+    *Hessian matrix* of second-order partial derivatives:
+    $$H(x, y)= \begin{pmatrix}
+    f_{xx}(x, y) & f_{xy}(x, y) \\
+    f_{yx}(x, y) & f_{yy}(x, y)
+    \end{pmatrix}$$
+
+    *Determinant* of a matrix
+    $$det\begin{pmatrix}
+    a & b \\
+    c & d
+    \end{pmatrix} = ad - bc$$
+
+    - if $det(H)(a, b)>0$ and $f_{xx}(a, b)>0$ then $(a, b)$ is a local minimum of f.
+    - if $det(H)(a, b)>0$ and $f_{xx}(a, b)<0$ then $(a, b)$ is a local maximum of f.
+    - if $det(H)(a, b)<0$ then $(a, b)$ is a saddle point of f.
+    - if $det(H)(a, b)=0$ then the second derivative test is inconclusive, and the point
+      $(a, b)$ could be any of a minimum, maximum or saddle point.
+
+** ~cvxpy~
+   - one variable with the size of one
+   #+begin_src python
+     import cvxpy as cvx
+     import numpy as np
+
+     x = cvx.Variable(1)
+     objective = cvx.Minimize((x - 1)**2 + 1)
+     constraints = [x <= 0]
+     problem = cvx.Problem(objective, constraints)
+     result = problem.solve()
+     # Optimal value of x => x.value[0]
+     # Optimal value of the objective => problem.value
+   #+end_src
 
 * Summary
   - Portfolio Expected Return
   $$\mu_P=\sum_{i=1}^{N}w_i \mu_i=\boldsymbol{w^T\mu}$$
   - Portfolio Variance
   $$\sigma_P^2=\sum_{i=1}^N\sum_{j=1}^N w_i Cov(r_i, r_j)w_j=\boldsymbol{w^TPx}$$
-  - $P_x$ is the covariance matrix.
+    - $P_x$ is the covariance matrix.
+  - CAMP Portfolio Return
+   $$r_P=\sum_{i=1}^n w_i(r_f+\beta_i(r_m-r_f))$$
+  - CAMP Portfolio Beta
+   $$\beta_P=\sum_{i=1}^n w_i\beta_i$$
