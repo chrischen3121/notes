@@ -196,7 +196,7 @@
       $$w_A=\frac{\sigma_B^2-\sigma_A \sigma_B \rho_{r_A r_B}}{\sigma_A^2+\sigma_B^2-2\sigma_A\sigma_B\rho_{r_A r_B}}$$
 
 ** ~cvxpy~
-   - one variable with the size of one
+*** one variable with the size of one
    #+begin_src python
      import cvxpy as cvx
      import numpy as np
@@ -210,6 +210,12 @@
      # Optimal value of the objective => problem.value
    #+end_src
 
+*** Useful Functions
+    - *cvx.quad_form*: ~cvx.quad_form(w, P)~ represents the $\boldsymbol{w}^T\boldsymbol{P_x}$, the *portfolio variance*.
+    - *cvx.norm*: ~cvx.norm(w-b, 2)~ minimize the distance between *w* and another vector *b*, i.e. $||\boldsymbol{x}-\boldsymbol{b}||_2$
+      - L2-Norm
+    - *problem.status*: Use ~problem.status~ to access the status of the problem and check whether it has been determined to be *unfeasible* or *unbounded*.
+
 ** Portfolio Optimization Problems
 *** Common Constraints
     - *no short selling* weights: $0\le w_i \le 1$,  $\sum_{i=1}^n w_i$
@@ -218,20 +224,31 @@
 
 *** Maximizing Portfolio Return
     - *objective*: minimize $f(w)=-\boldsymbol{w}^T\boldsymbol{\mu}$
-    - *constraint*: $\boldsymbol{w}^T\boldsymbol{P_x} \le p$;  /p=maximum permissible portfolio variance/
+    - *constraint*: $\boldsymbol{w}^T\boldsymbol{P_w} \le p$;  /p=maximum permissible portfolio variance/
 
 *** Maximizing Portfolio Return And Minimizing Portfolio Variance
-    - *objective*: minimize $f(w)=-\boldsymbol{w}^T\boldsymbol{\mu}+b \boldsymbol{w}^T\boldsymbol{P_x}$;  /b=tradeoff prarameter/
+    - *objective*: minimize $f(w)=-\boldsymbol{w}^T\boldsymbol{\mu}+b \boldsymbol{w}^T\boldsymbol{P_w}$;  /b=tradeoff prarameter/
 
 *** Minimizing Distance to a Set of Target Weights
+    The goal would be to get the weights as close as possible to the set of target weights while respecting a set of constraints.
+    As an example, these target weights might be values thought to be proportional to future returns for each asset, in other words,
+    an alpha vector.
+
+    - *objective*: minimize $||\boldsymbol{w}-\boldsymbol{w}^*||_2$;  $\boldsymbol{w}^*$ /=a set of target portfolio weights/
+
 *** Tracking an Index
+    one intuitive way is to simply minimize the difference between your portfolio weights and the weights on the assets in the index,
+    and minimize portfolio variance at the same time.
+    - *objective*: minimize $\boldsymbol{w}^T\boldsymbol{P_w}+\lambda||\boldsymbol{w}-\boldsymbol{q}||_2$
+      - *q* = a set of index weights
+      - $\lambda$ = a tradeoff parameter
 
 * Summary
-  - Portfolio Expected Return
+  - *Portfolio Expected Return*
   $$\mu_P=\sum_{i=1}^{N}w_i \mu_i=\boldsymbol{w^T\mu}$$
-  - Portfolio Variance
-  $$\sigma_P^2=\sum_{i=1}^N\sum_{j=1}^N w_i Cov(r_i, r_j)w_j=\boldsymbol{w^TPx}$$
-    - $P_x$ is the covariance matrix.
+  - *Portfolio Variance*
+    - $P_w$ is the covariance matrix.
+  $$\sigma_P^2=\sum_{i=1}^N\sum_{j=1}^N w_i Cov(r_i, r_j)w_j=\boldsymbol{w^TPw}$$
   - CAMP Portfolio Return
    $$r_P=\sum_{i=1}^n w_i(r_f+\beta_i(r_m-r_f))$$
   - CAMP Portfolio Beta
