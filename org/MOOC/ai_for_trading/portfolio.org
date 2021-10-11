@@ -210,6 +210,27 @@
      # Optimal value of the objective => problem.value
    #+end_src
 
+*** Two Variables
+    #+begin_src python
+      import cvxpy as cvx
+      import numpy as np
+
+      w = cvx.Variable(2)
+      covariance = np.sqrt(var_a) * np.sqrt(var_b) * correlation_ab
+      P = np.array([[var_a, covariance], [covariance, var_b]])
+      objective = cvx.Minimize(cvx.quad_form(w, P))
+      constraints = [sum(w)==1]
+      problem = cvx.Problem(objective, constraints)
+      result = problem.solve()
+      # Optimal weights: x.value
+    #+end_src
+
+*** More Variables
+    #+begin_src python
+      import cvxpy as cvx
+      import numpy as np
+    #+end_src
+
 *** Useful Functions
     - *cvx.quad_form*: ~cvx.quad_form(w, P)~ represents the $\boldsymbol{w}^T\boldsymbol{P_x}$, the *portfolio variance*.
     - *cvx.norm*: ~cvx.norm(w-b, 2)~ minimize the distance between *w* and another vector *b*, i.e. $||\boldsymbol{x}-\boldsymbol{b}||_2$
