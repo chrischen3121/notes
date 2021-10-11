@@ -211,24 +211,44 @@
    #+end_src
 
 *** Two Variables
+    - Minimize the portfolio variance
     #+begin_src python
       import cvxpy as cvx
       import numpy as np
 
-      w = cvx.Variable(2)
+      x = cvx.Variable(2)
       covariance = np.sqrt(var_a) * np.sqrt(var_b) * correlation_ab
       P = np.array([[var_a, covariance], [covariance, var_b]])
-      objective = cvx.Minimize(cvx.quad_form(w, P))
-      constraints = [sum(w)==1]
+      objective = cvx.Minimize(cvx.quad_form(x, P))
+      constraints = [sum(x)==1]
       problem = cvx.Problem(objective, constraints)
       result = problem.solve()
       # Optimal weights: x.value
     #+end_src
 
 *** More Variables
+    - Objective
+      - Minimize both the portfolio variance
+      - Minimize the distance between the weights of our portfolio and the weights of the index.
+    - To minimize $[\sigma_p^2+\lambda\sqrt{\sum_{i=1}^n(weight_i-indexWeight_i)^2}]$
+    - $\sqrt{\sum_{i=1}^n(weight_i-indexWeight_i)^2}$ also be written as $||\boldsymbol{x}-\boldsymbol{index}||_2$
+      - ~cvx.norm(portfolio_weights-index_weights, p=2)~
     #+begin_src python
       import cvxpy as cvx
       import numpy as np
+
+      # returns: 2D array containing stock return series in each row.
+      # index_weights: 1D numpy array containing weights of the index.
+      # scale: The scaling factor applied to the distance between portfolio and index weights
+      n_stocks = len(returns)
+      cov = np.cov(returns)
+      x = cvx.Variable(n_stocks)
+      portfolio_variance = cvx.quad_form(x, cov)
+      distance_to_index = cvx.norm(x - index_weights, p=2)
+      objective = cvx.Minimize(portfolio_variance + scale * distance_to_index)
+      constraints = [x>=0, sum(x)==1] # long only
+      problem = cvx.Problem(objective, constraints)
+      result = problem.solve()
     #+end_src
 
 *** Useful Functions
@@ -264,6 +284,37 @@
       - *q* = a set of index weights
       - $\lambda$ = a tradeoff parameter
 
+*** Limitations
+    - Estimating portfolio mean
+    - Estimating portfolio variance
+      - Variance may not be a good enough measure of risk.
+	- Using alternative measures of risk
+      - Large matrix(Estimating large numbers of parameters introduces the possibility of aggregating many estimation errors)
+	- Need a long enough historical stock price dataset to produce reliable estimates of covariances.
+	- Example: Estimating a covariance matrix of 50 assets requires at least 5 years of daily data.
+    - Any estimate is noisy.
+      - Using ranks so that you can only keep track of their relative magnitude
+      - Introducing a term in the objective function to penalize turnover. (less trade less reactive to noise)
+      - A method called robust optimization which takes into account CI of estimates.
+    - Single period
+      - multi-period optimization
+    - Transaction costs
+
+* Rebalancing
+** Rebalancing Costs
+   - Transaction costs
+   - Taxes
+   - Time and labor costs
+
+** Portfolio Turnovers
+   - Portfolio Turnover :: The sum total of the changes in the weights on all the assets.
+
+     $$P_{turnover}=sum(\boldsymbol{w_t-w_{t-1}})$$
+
+** Rebalancing Strategies
+   - Schedule-based
+   - Predetermined threshold of total change in the weights
+
 * Summary
   - *Portfolio Expected Return*
   $$\mu_P=\sum_{i=1}^{N}w_i \mu_i=\boldsymbol{w^T\mu}$$
@@ -274,3 +325,8 @@
    $$r_P=\sum_{i=1}^n w_i(r_f+\beta_i(r_m-r_f))$$
   - CAMP Portfolio Beta
    $$\beta_P=\sum_{i=1}^n w_i\beta_i$$
+
+* Reference
+  - Lesson 20
+    - [[https://youtu.be/8u5gBx-fYr8][11. Rebalancing Strategies]]
+    - [[https://youtu.be/UbbZa7-3iuk][12. Limitations of the Classical Approach]]
