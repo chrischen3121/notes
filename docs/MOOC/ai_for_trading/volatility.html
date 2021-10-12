@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-08 Fri 10:00 -->
+<!-- 2021-10-12 Tue 08:45 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Volatility</title>
@@ -224,27 +224,27 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3f23b19">1. Overview</a></li>
-<li><a href="#orge5e053f">2. Uses of Volatility</a></li>
-<li><a href="#org1855cb5">3. Formula</a>
+<li><a href="#org0076fa9">1. Overview</a></li>
+<li><a href="#org3c9084c">2. Uses of Volatility</a></li>
+<li><a href="#org1e014e1">3. Formula</a>
 <ul>
-<li><a href="#org87e2cc8">3.1. Annualized Volatility</a></li>
-<li><a href="#org9b761b8">3.2. Exponentially Weighted Moving Average</a></li>
+<li><a href="#org4ea7434">3.1. Annualized Volatility</a></li>
+<li><a href="#org1007b6f">3.2. Exponentially Weighted Moving Average</a></li>
 </ul>
 </li>
-<li><a href="#org174d02e">4. Modeling Volatility</a>
+<li><a href="#org779c344">4. Modeling Volatility</a>
 <ul>
-<li><a href="#org35e2fdc">4.1. ARCH</a></li>
+<li><a href="#org50d876a">4.1. ARCH</a></li>
 </ul>
 </li>
-<li><a href="#org4e4415c">5. VIX Index</a></li>
-<li><a href="#org1006fd9">6. References</a></li>
+<li><a href="#org8b9aa28">5. VIX Index</a></li>
+<li><a href="#orgdd980b6">6. References</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3f23b19" class="outline-2">
-<h2 id="org3f23b19"><span class="section-number-2">1</span> Overview</h2>
+<div id="outline-container-org0076fa9" class="outline-2">
+<h2 id="org0076fa9"><span class="section-number-2">1</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Volatility is simply the standard deviation of the probability distribution of log returns, and can be used for:
@@ -259,8 +259,8 @@ Volatility is simply the standard deviation of the probability distribution of l
 </div>
 </div>
 
-<div id="outline-container-orge5e053f" class="outline-2">
-<h2 id="orge5e053f"><span class="section-number-2">2</span> Uses of Volatility</h2>
+<div id="outline-container-org3c9084c" class="outline-2">
+<h2 id="org3c9084c"><span class="section-number-2">2</span> Uses of Volatility</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>is often quoted as gauge for fear. e.g. VIX
@@ -286,7 +286,7 @@ An example formula:
 </p>
 
 
-<div id="orgf655e28" class="figure">
+<div id="org60ed685" class="figure">
 <p><img src="../../resources/MOOC/Trading/position_size.png" alt="position_size.png" />
 </p>
 </div></li>
@@ -295,20 +295,20 @@ An example formula:
 </div>
 </div>
 
-<div id="outline-container-org1855cb5" class="outline-2">
-<h2 id="org1855cb5"><span class="section-number-2">3</span> Formula</h2>
+<div id="outline-container-org1e014e1" class="outline-2">
+<h2 id="org1e014e1"><span class="section-number-2">3</span> Formula</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 \[Volatility\ \sigma=\sqrt{\frac{\sum_{i=1}^{n}(r_i - \bar{r})^2}{n-1}}\]
 </p>
 <ul class="org-ul">
-<li>\(\sigma\) is just the sample mean of <b>r</b></li>
+<li>if \(\bar{r}=0\) and \(ddof=0\), \(\sigma\) is just the sample mean of <b>r</b></li>
 <li>\(r_i=ln(p_t / p_{t-1})\)</li>
 </ul>
 </div>
 
-<div id="outline-container-org87e2cc8" class="outline-3">
-<h3 id="org87e2cc8"><span class="section-number-3">3.1</span> Annualized Volatility</h3>
+<div id="outline-container-org4ea7434" class="outline-3">
+<h3 id="org4ea7434"><span class="section-number-3">3.1</span> Annualized Volatility</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 \[\sigma_{year}=\sqrt{n}\sigma_{day}\]
@@ -324,14 +324,14 @@ An example formula:
 </div>
 </div>
 
-<div id="outline-container-org9b761b8" class="outline-3">
-<h3 id="org9b761b8"><span class="section-number-3">3.2</span> Exponentially Weighted Moving Average</h3>
+<div id="outline-container-org1007b6f" class="outline-3">
+<h3 id="org1007b6f"><span class="section-number-3">3.2</span> Exponentially Weighted Moving Average</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 Simplify the volatility formula
 </p>
 <ol class="org-ol">
-<li>\(\sigma_t^2=\frac{1}{n}\sum_{i=1}^{n}(r_{t-i})^2\) <i>(let \(\bar{r}=0\))</i></li>
+<li>simple average \(\sigma_t^2=\frac{1}{n}\sum_{i=1}^{n}(r_{t-i})^2\) <i>(let \(\bar{r}=0\))</i></li>
 <li>weighted average \(\sigma_t^2=\sum_{i=1}^n\alpha_{i}r_{t-i}^2\) <i>(\(\sum_{i=1}^{n}\alpha_i=1\))</i></li>
 <li>exponential: \(\alpha_{i+1}=\lambda\alpha_i\)</li>
 </ol>
@@ -352,12 +352,12 @@ Simplify the volatility formula
 </div>
 </div>
 
-<div id="outline-container-org174d02e" class="outline-2">
-<h2 id="org174d02e"><span class="section-number-2">4</span> Modeling Volatility</h2>
+<div id="outline-container-org779c344" class="outline-2">
+<h2 id="org779c344"><span class="section-number-2">4</span> Modeling Volatility</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org35e2fdc" class="outline-3">
-<h3 id="org35e2fdc"><span class="section-number-3">4.1</span> ARCH</h3>
+<div id="outline-container-org50d876a" class="outline-3">
+<h3 id="org50d876a"><span class="section-number-3">4.1</span> ARCH</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 Autoregressive Conditionally Heteroscedastic
@@ -398,8 +398,8 @@ Generalized ARCH model: to make the current variance dependent on previous estim
 </div>
 
 
-<div id="outline-container-org4e4415c" class="outline-2">
-<h2 id="org4e4415c"><span class="section-number-2">5</span> VIX Index</h2>
+<div id="outline-container-org8b9aa28" class="outline-2">
+<h2 id="org8b9aa28"><span class="section-number-2">5</span> VIX Index</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 VIX index represents the annualized volatility of the S&amp;P 500 Index
@@ -411,8 +411,8 @@ VIX index represents the annualized volatility of the S&amp;P 500 Index
 </div>
 </div>
 
-<div id="outline-container-org1006fd9" class="outline-2">
-<h2 id="org1006fd9"><span class="section-number-2">6</span> References</h2>
+<div id="outline-container-orgdd980b6" class="outline-2">
+<h2 id="orgdd980b6"><span class="section-number-2">6</span> References</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>Lesson 14
