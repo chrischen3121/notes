@@ -1,0 +1,34 @@
+#+TITLE: Asyncio
+#+OPTIONS: H:3 toc:2 num:2 ^:nil
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+* Walk-Through
+  #+begin_src python
+    import asyncio
+    import time
+
+    async def main():
+	print(f"{time.ctime()} Hello!")
+	await asyncio.sleep(1.0)
+	print(f"{time.ctime()} Goodbye!")
+
+    loop = asyncio.get_event_loop()
+    task = loop.create_task(main())
+
+    loop.run_until_complete(task) # asyncio.run() calls run_until_complete()
+    # all other tasks scheduled on the loop will also run while the loop is running.
+
+    # graceful exit
+    pending = asyncio.all_tasks(loop=loop)
+    for task in pending:
+	task.cancel()
+    group = asyncio.gather(*pending, return_exceptions=True)
+    loop.run_until_complete(group)
+    loop.close() # A stopped loop can be restarted, but a closed loop is gone for good.
+    # asyncio.run() will do all of the cancelling, gathering, and waiting for pending tasks to finish up.
+  #+end_src
+
+  - call ~asyncio.get_running_loop()~ inside an ~async def~ function.
+  - ~asyncio.run()~ will do all of the cancelling, gathering, and waiting for pending tasks to finish up.
+  - ~asyncio.run()~ creates a new event loop every time you call it.
+  - simplest implementation is just ~asyncio.run(main())~
