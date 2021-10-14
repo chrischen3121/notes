@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-13 Wed 22:12 -->
+<!-- 2021-10-14 Thu 17:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Asyncio</title>
@@ -202,12 +202,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6ba0279">1. Walk-Through</a></li>
+<li><a href="#org0a5fdfd">1. Walk-Through</a>
+<ul>
+<li><a href="#orgc52e4bc">1.1. Run <i>blocking</i> Functions</a></li>
+</ul>
+</li>
+<li><a href="#org22e9b6b">2. Hierarchy View</a></li>
+<li><a href="#org8adec5d">3. Hints</a></li>
+<li><a href="#org7832fa3">4. Links</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org6ba0279" class="outline-2">
-<h2 id="org6ba0279"><span class="section-number-2">1</span> Walk-Through</h2>
+<div id="outline-container-org0a5fdfd" class="outline-2">
+<h2 id="org0a5fdfd"><span class="section-number-2">1</span> Walk-Through</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
@@ -236,10 +243,159 @@ loop.close<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; b
 </div>
 
 <ul class="org-ul">
-<li>call <code>asyncio.get_running_loop()</code> inside an <code>async def</code> function.</li>
 <li><code>asyncio.run()</code> will do all of the cancelling, gathering, and waiting for pending tasks to finish up.</li>
 <li><code>asyncio.run()</code> creates a new event loop every time you call it.</li>
-<li>simplest implementation is just <code>asyncio.run(main())</code></li>
+</ul>
+</div>
+
+<div id="outline-container-orgc52e4bc" class="outline-3">
+<h3 id="orgc52e4bc"><span class="section-number-3">1.1</span> Run <i>blocking</i> Functions</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Uses <code>loop.run_in_executor</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> time
+<span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">blocking</span><span style="color: #3a81c3;">()</span>:
+    time.sleep<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"{time.ctime()} from a thread!"</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"{time.ctime()} Hello!"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.sleep<span style="color: #3a81c3;">(</span>1.0<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"{time.ctime()} Goodbye!"</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #715ab1;">loop</span> = asyncio.get_event_loop<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">task</span> = loop.create_task<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+
+loop.run_in_executor<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">None</span>, blocking<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">set None to use a new executor instead of a default</span>
+loop.run_until_complete<span style="color: #3a81c3;">(</span>task<span style="color: #3a81c3;">)</span>
+
+<span style="color: #715ab1;">pending</span> = asyncio.all_tasks<span style="color: #3a81c3;">(</span>loop=loop<span style="color: #3a81c3;">)</span>
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">....</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><code>run_in_executor()</code> schedules the executor task to run (it returns a Future).</li>
+<li>The executor task will begin executing only after <code>run_until_complete()</code> is called.</li>
+<li><code>run_in_executor()</code> <i>tasks</i> are not in <i>pending</i> tasks. This will be true of for any call that returns a <b>Future</b> rather than a <b>Task</b>.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org22e9b6b" class="outline-2">
+<h2 id="org22e9b6b"><span class="section-number-2">2</span> Hierarchy View</h2>
+<div class="outline-text-2" id="text-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Concept</th>
+<th scope="col" class="org-left">Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Tools</td>
+<td class="org-left">asyncio.Queue</td>
+</tr>
+
+<tr>
+<td class="org-left">Subprocesses &amp; threads</td>
+<td class="org-left">run_in_executor(), asyncio.subprocess</td>
+</tr>
+
+<tr>
+<td class="org-left">Tasks</td>
+<td class="org-left">asyncio.Task, asyncio.create_task()</td>
+</tr>
+
+<tr>
+<td class="org-left">Futures</td>
+<td class="org-left">asyncio.Future</td>
+</tr>
+
+<tr>
+<td class="org-left">Event loop</td>
+<td class="org-left">asyncio.run(), BaseEventLoop</td>
+</tr>
+
+<tr>
+<td class="org-left">Coroutines</td>
+<td class="org-left">async def, async with, async for, await</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>Network I/O</li>
+</ul>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Concept</th>
+<th scope="col" class="org-left">Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Network: streams</td>
+<td class="org-left">StreamReader, StreamWriter, asyncio.open_connection(), asyncio.start_server()</td>
+</tr>
+
+<tr>
+<td class="org-left">Network: TCP &amp; UDP</td>
+<td class="org-left">Protocol</td>
+</tr>
+
+<tr>
+<td class="org-left">Network: transports</td>
+<td class="org-left">BaseTransport</td>
+</tr>
+</tbody>
+</table>
+<ul class="org-ul">
+<li>The streams API gives you the simplest way to handle socket communication over a network.</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org8adec5d" class="outline-2">
+<h2 id="org8adec5d"><span class="section-number-2">3</span> Hints</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>call <code>asyncio.get_running_loop()</code> inside an <code>async def</code> function.</li>
+<li>If you need to feed data to one or more <b>long-running</b> coroutines, the best way to do that is with <code>asyncio.Queue</code>.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7832fa3" class="outline-2">
+<h2 id="org7832fa3"><span class="section-number-2">4</span> Links</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li><a href="https://www.pythonsheets.com/notes/python-asyncio.html">Asyncio pysheeet</a></li>
 </ul>
 </div>
 </div>

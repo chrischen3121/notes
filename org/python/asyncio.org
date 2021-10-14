@@ -28,7 +28,63 @@
     # asyncio.run() will do all of the cancelling, gathering, and waiting for pending tasks to finish up.
   #+end_src
 
-  - call ~asyncio.get_running_loop()~ inside an ~async def~ function.
   - ~asyncio.run()~ will do all of the cancelling, gathering, and waiting for pending tasks to finish up.
   - ~asyncio.run()~ creates a new event loop every time you call it.
-  - simplest implementation is just ~asyncio.run(main())~
+
+** Run /blocking/ Functions
+  Uses ~loop.run_in_executor~
+  #+begin_src python
+    import time
+    import asyncio
+
+
+    def blocking():
+	time.sleep(1)
+	print(f"{time.ctime()} from a thread!")
+
+
+    async def main():
+	print(f"{time.ctime()} Hello!")
+	await asyncio.sleep(1.0)
+	print(f"{time.ctime()} Goodbye!")
+
+
+    loop = asyncio.get_event_loop()
+    task = loop.create_task(main())
+
+    loop.run_in_executor(None, blocking) # set None to use a new executor instead of a default
+    loop.run_until_complete(task)
+
+    pending = asyncio.all_tasks(loop=loop)
+    # ....
+  #+end_src
+
+  - ~run_in_executor()~ schedules the executor task to run (it returns a Future).
+  - The executor task will begin executing only after ~run_until_complete()~ is called.
+  - ~run_in_executor()~ /tasks/ are not in /pending/ tasks. This will be true of for any call that returns a *Future* rather than a *Task*.
+
+* Hierarchy View
+  | Concept                | Implementation                          |
+  |------------------------+-----------------------------------------|
+  | Tools                  | asyncio.Queue                           |
+  | Subprocesses & threads | run_in_executor(), asyncio.subprocess   |
+  | Tasks                  | asyncio.Task, asyncio.create_task()     |
+  | Futures                | asyncio.Future                          |
+  | Event loop             | asyncio.run(), BaseEventLoop            |
+  | Coroutines             | async def, async with, async for, await |
+
+  - Network I/O
+  | Concept                | Implementation                                                                |
+  |------------------------+-------------------------------------------------------------------------------|
+  | Network: streams       | StreamReader, StreamWriter, asyncio.open_connection(), asyncio.start_server() |
+  | Network: TCP & UDP     | Protocol                                                                      |
+  | Network: transports    | BaseTransport                                                                 |
+  - The streams API gives you the simplest way to handle socket communication over a network.
+
+
+* Hints
+  - call ~asyncio.get_running_loop()~ inside an ~async def~ function.
+  - If you need to feed data to one or more *long-running* coroutines, the best way to do that is with ~asyncio.Queue~.
+
+* Links
+  - [[https://www.pythonsheets.com/notes/python-asyncio.html][Asyncio pysheeet]]
