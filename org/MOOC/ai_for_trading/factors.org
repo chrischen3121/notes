@@ -43,18 +43,28 @@
    $$ratio=\frac{\sum_{i=1}^N|p_i|}{Notional}$$
    - =sum of weights= should be 2 if the leverage ratio you choose is 2.
 
-* Linear Factor Model
-  $$r_i=b_{i1}f_1+b_{i2}f_2+...+b_{iK}f_K+s_i$$
-  $$\boldsymbol{r}=\boldsymbol{Bf+s}$$
+* Factor Model
+  A factor model is a statistical model used to describe *variability* among observed correlated variables in terms
+  of potentially smaller number of unobserved variables called factors. This method is used in several disciplines
+  including biology, psychology, and business, as well as finance.
+
+  In finance, we interested in modeling *the returns of several assets*.
+
+  - Observed Variables: returns.
+  - Unobserved(Latent) Variables: factors returns.
+
+** Linear Factor Model
+   Returns(observed variables) are modeled as linear combinations of *the factors returns* plus *error terms*.
+  $$r_i=b_{i1}f_1+b_{i2}f_2+...+b_{ik}f_k+s_i$$
+  $$\boldsymbol{R}=\boldsymbol{BF+S}$$
   - $r_i$: the return on asset $i$
   - $f_1$: the value of factor return 1
   - $b_{i1}$(stock exposures to factors): the change in the return on asset $i$ per unit change in factor return 1
-  - $K$: the number of factors
-  - $s_i$(/error term/ or /unexplained portion/): the portion of the return on asset i not related to the $K$ factors
-
+  - $k$: the number of factors
+  - $s_i$(/error term/ or /unexplained portion/): the portion of the return on asset $i$ not related to the $k$ factors
 
 ** Terminology
-   - Factor returns (the $f_k s$) may be:
+   - Factor returns (the $f_k$) may be:
      - macro-economic variables
      - returns on *pre-specified portfolios*
      - returns on zero-investment strategies (long and short positions of equal value) giving maximum exposure to fundamental or macro-economic factors
@@ -76,45 +86,63 @@
      - selection return
      - ...
 
-** Assumptions
+** Factor Model Assumptions
    - $Corr(s_i, f_k)=0$ for every $i$ and $k$
    - $Corr(s_i, s_j)=0$ for every $i$ not equal to $j$
    - Residual $s_i$ is specific or "idiosyncratic" to asset $i$
 
    [[https://youtu.be/qEu3m_3eGWk][Video]]
 
-** Matrix
-   $\boldsymbol{r}=\begin{bmatrix}
+** Covariance Matrix of the Asset Returns
+   $\boldsymbol{R}=\begin{bmatrix}
    r_1 \\
    \vdots \\
-   r_N
+   r_n
    \end{bmatrix}$
 
-   $B=\begin{bmatrix}
-   B_{1,1} & \cdots & B_{1,K} \\
+   \boldsymbol{B}=\begin{bmatrix}
+   b_{1,1} & \cdots & b_{1,k} \\
    \vdots & \ddots & \vdots \\
-   B_{N,1} & \cdots & B_{N,K}
+   b_{n,1} & \cdots & b_{n,k}
    \end{bmatrix}$
 
-   $\boldsymbol{f}=\begin{bmatrix}
+   $\boldsymbol{F}=\begin{bmatrix}
    f_1 \\
    \vdots \\
-   f_K
+   f_k
    \end{bmatrix}$
 
-   $\boldsymbol{s}=\begin{bmatrix}
+   $\boldsymbol{S}=\begin{bmatrix}
    s_1 \\
    \vdots \\
-   s_N
+   s_n
    \end{bmatrix}$
-   - N: number of companies
-   - K: number of factors
+   - n: number of companies
+   - k: number of factors
 
-   Calculate the covariance matrix of the asset returns.
-   $$Cov=E[\boldsymbol{r}\boldsymbol{r}^T]=E[(\boldsymbol{Bf+s})(\boldsymbol{Bf+s})^T]=\boldsymbol{BFB}^T+\boldsymbol{S}$$
+   Based on *assumptions*, calculate the covariance matrix of the asset returns -- Matrix$[Cov(r_i, r_j)]$.
+   $$Cov(X,Y)=E[(X-\bar{X})(Y-\bar{Y}))]=E[XY]$$
+   $$Cov(\boldsymbol{RR^T})=E[\boldsymbol{RR^T}]=E[(\boldsymbol{BF+S})(\boldsymbol{BF+S})^T]=\boldsymbol{BFB}^T+\boldsymbol{S}$$
 
    [[../../resources/MOOC/Trading/cov_matrix_factor_model.png]]
    [[https://youtu.be/_qfTLXoifsM][Video]]
+
+
+* Factors
+  Two types of factors
+  - Alpha Factor :: Predictive of mean, drivers of mean returns.
+  - Risk Factor :: Predictive of variance, drivers of volatility.
+
+  Portfolio should be minimally exposed to risk factors. We can try to place *constraints* on $\boldsymbol{B^T F}$
+  that only apply to factors that we think are *drivers of volatility*. However, we don't constrain the factors
+  that are *drivers of mean returns*. So we drop alpha factors from *B* matrix.
+
+  Hence, in practice,
+  - *B* is the *risk factor loading* matrix only.
+  - *F* include risk factors only.
+  - *S* includes all other variance. *S* says nothing explicit about alpha.
+
+  Alpha Factors add to *objective function* in optimization.
 
 * Inspirations
 ** Momentum Indicators

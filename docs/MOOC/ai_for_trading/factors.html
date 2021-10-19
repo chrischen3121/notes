@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-18 Mon 13:52 -->
+<!-- 2021-10-19 Tue 17:51 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Factors</title>
@@ -236,17 +236,19 @@
 <li><a href="#org18bae9d">2.2. Leverage Ratio</a></li>
 </ul>
 </li>
-<li><a href="#org74bbaa6">3. Linear Factor Model</a>
+<li><a href="#orgbab12ed">3. Factor Model</a>
 <ul>
-<li><a href="#org5d4c1fa">3.1. Terminology</a></li>
-<li><a href="#orgce5f274">3.2. Assumptions</a></li>
-<li><a href="#org13a1479">3.3. Matrix</a></li>
+<li><a href="#org74bbaa6">3.1. Linear Factor Model</a></li>
+<li><a href="#org5d4c1fa">3.2. Terminology</a></li>
+<li><a href="#orgd2789fb">3.3. Factor Model Assumptions</a></li>
+<li><a href="#orgdefd887">3.4. Covariance Matrix of the Asset Returns</a></li>
 </ul>
 </li>
-<li><a href="#orgab5ffc9">4. Inspirations</a>
+<li><a href="#org480b471">4. Factors</a></li>
+<li><a href="#orgab5ffc9">5. Inspirations</a>
 <ul>
-<li><a href="#org91d8341">4.1. Momentum Indicators</a></li>
-<li><a href="#org8efe985">4.2. Overlap Studies</a></li>
+<li><a href="#org91d8341">5.1. Momentum Indicators</a></li>
+<li><a href="#org8efe985">5.2. Overlap Studies</a></li>
 </ul>
 </li>
 </ul>
@@ -322,7 +324,7 @@ and further suggest what relative magnitudes of those bets should be.
 <h3 id="orgd89fad2"><span class="section-number-3">2.1</span> Example</h3>
 <div class="outline-text-3" id="text-2-1">
 
-<div id="org21073ee" class="figure">
+<div id="orgde7431e" class="figure">
 <p><img src="../../resources/MOOC/Trading/standardize_factors.png" alt="standardize_factors.png" />
 </p>
 </div>
@@ -343,28 +345,48 @@ Leverage ratio in portfolio is <code>sum of positions/notional</code>.
 </div>
 </div>
 
-<div id="outline-container-org74bbaa6" class="outline-2">
-<h2 id="org74bbaa6"><span class="section-number-2">3</span> Linear Factor Model</h2>
+<div id="outline-container-orgbab12ed" class="outline-2">
+<h2 id="orgbab12ed"><span class="section-number-2">3</span> Factor Model</h2>
 <div class="outline-text-2" id="text-3">
 <p>
-\[r_i=b_{i1}f_1+b_{i2}f_2+...+b_{iK}f_K+s_i\]
-\[\boldsymbol{r}=\boldsymbol{Bf+s}\]
+A factor model is a statistical model used to describe <b>variability</b> among observed correlated variables in terms
+of potentially smaller number of unobserved variables called factors. This method is used in several disciplines
+including biology, psychology, and business, as well as finance.
+</p>
+
+<p>
+In finance, we interested in modeling <b>the returns of several assets</b>.
+</p>
+
+<ul class="org-ul">
+<li>Observed Variables: returns.</li>
+<li>Unobserved(Latent) Variables: factors returns.</li>
+</ul>
+</div>
+
+<div id="outline-container-org74bbaa6" class="outline-3">
+<h3 id="org74bbaa6"><span class="section-number-3">3.1</span> Linear Factor Model</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+ Returns(observed variables) are modeled as linear combinations of <b>the factors returns</b> plus <b>error terms</b>.
+\[r_i=b_{i1}f_1+b_{i2}f_2+...+b_{ik}f_k+s_i\]
+\[\boldsymbol{R}=\boldsymbol{BF+S}\]
 </p>
 <ul class="org-ul">
 <li>\(r_i\): the return on asset \(i\)</li>
 <li>\(f_1\): the value of factor return 1</li>
 <li>\(b_{i1}\)(stock exposures to factors): the change in the return on asset \(i\) per unit change in factor return 1</li>
-<li>\(K\): the number of factors</li>
-<li>\(s_i\)(<i>error term</i> or <i>unexplained portion</i>): the portion of the return on asset i not related to the \(K\) factors</li>
+<li>\(k\): the number of factors</li>
+<li>\(s_i\)(<i>error term</i> or <i>unexplained portion</i>): the portion of the return on asset \(i\) not related to the \(k\) factors</li>
 </ul>
 </div>
-
+</div>
 
 <div id="outline-container-org5d4c1fa" class="outline-3">
-<h3 id="org5d4c1fa"><span class="section-number-3">3.1</span> Terminology</h3>
-<div class="outline-text-3" id="text-3-1">
+<h3 id="org5d4c1fa"><span class="section-number-3">3.2</span> Terminology</h3>
+<div class="outline-text-3" id="text-3-2">
 <ul class="org-ul">
-<li>Factor returns (the \(f_k s\)) may be:
+<li>Factor returns (the \(f_k\)) may be:
 <ul class="org-ul">
 <li>macro-economic variables</li>
 <li>returns on <b>pre-specified portfolios</b></li>
@@ -395,9 +417,9 @@ Leverage ratio in portfolio is <code>sum of positions/notional</code>.
 </div>
 </div>
 
-<div id="outline-container-orgce5f274" class="outline-3">
-<h3 id="orgce5f274"><span class="section-number-3">3.2</span> Assumptions</h3>
-<div class="outline-text-3" id="text-3-2">
+<div id="outline-container-orgd2789fb" class="outline-3">
+<h3 id="orgd2789fb"><span class="section-number-3">3.3</span> Factor Model Assumptions</h3>
+<div class="outline-text-3" id="text-3-3">
 <ul class="org-ul">
 <li>\(Corr(s_i, f_k)=0\) for every \(i\) and \(k\)</li>
 <li>\(Corr(s_i, s_j)=0\) for every \(i\) not equal to \(j\)</li>
@@ -410,48 +432,49 @@ Leverage ratio in portfolio is <code>sum of positions/notional</code>.
 </div>
 </div>
 
-<div id="outline-container-org13a1479" class="outline-3">
-<h3 id="org13a1479"><span class="section-number-3">3.3</span> Matrix</h3>
-<div class="outline-text-3" id="text-3-3">
+<div id="outline-container-orgdefd887" class="outline-3">
+<h3 id="orgdefd887"><span class="section-number-3">3.4</span> Covariance Matrix of the Asset Returns</h3>
+<div class="outline-text-3" id="text-3-4">
 <p>
-\(\boldsymbol{r}=\begin{bmatrix}
+\(\boldsymbol{R}=\begin{bmatrix}
    r_1 \\
    \vdots \\
-   r_N
+   r_n
    \end{bmatrix}\)
 </p>
 
 <p>
-\(B=\begin{bmatrix}
-   B_{1,1} & \cdots & B_{1,K} \\
-   \vdots & \ddots & \vdots \\
-   B_{N,1} & \cdots & B_{N,K}
-   \end{bmatrix}\)
+\boldsymbol{B}=\begin{bmatrix}
+b_{1,1} &amp; &ctdot; &amp; b_{1,k} <br />
+\vdots &amp; \ddots &amp; \vdots <br />
+b_{n,1} &amp; &ctdot; &amp; b_{n,k}
+\end{bmatrix}$
 </p>
 
 <p>
-\(\boldsymbol{f}=\begin{bmatrix}
+\(\boldsymbol{F}=\begin{bmatrix}
    f_1 \\
    \vdots \\
-   f_K
+   f_k
    \end{bmatrix}\)
 </p>
 
 <p>
-\(\boldsymbol{s}=\begin{bmatrix}
+\(\boldsymbol{S}=\begin{bmatrix}
    s_1 \\
    \vdots \\
-   s_N
+   s_n
    \end{bmatrix}\)
 </p>
 <ul class="org-ul">
-<li>N: number of companies</li>
-<li>K: number of factors</li>
+<li>n: number of companies</li>
+<li>k: number of factors</li>
 </ul>
 
 <p>
-Calculate the covariance matrix of the asset returns.
-\[Cov=E[\boldsymbol{r}\boldsymbol{r}^T]=E[(\boldsymbol{Bf+s})(\boldsymbol{Bf+s})^T]=\boldsymbol{BFB}^T+\boldsymbol{S}\]
+Based on <b>assumptions</b>, calculate the covariance matrix of the asset returns &#x2013; Matrix\([Cov(r_i, r_j)]\).
+\[Cov(X,Y)=E[(X-\bar{X})(Y-\bar{Y}))]=E[XY]\]
+\[Cov(\boldsymbol{RR^T})=E[\boldsymbol{RR^T}]=E[(\boldsymbol{BF+S})(\boldsymbol{BF+S})^T]=\boldsymbol{BFB}^T+\boldsymbol{S}\]
 </p>
 
 <p>
@@ -462,13 +485,46 @@ Calculate the covariance matrix of the asset returns.
 </div>
 </div>
 
-<div id="outline-container-orgab5ffc9" class="outline-2">
-<h2 id="orgab5ffc9"><span class="section-number-2">4</span> Inspirations</h2>
+
+<div id="outline-container-org480b471" class="outline-2">
+<h2 id="org480b471"><span class="section-number-2">4</span> Factors</h2>
 <div class="outline-text-2" id="text-4">
+<p>
+Two types of factors
+</p>
+<dl class="org-dl">
+<dt>Alpha Factor</dt><dd>Predictive of mean, drivers of mean returns.</dd>
+<dt>Risk Factor</dt><dd>Predictive of variance, drivers of volatility.</dd>
+</dl>
+
+<p>
+Portfolio should be minimally exposed to risk factors. We can try to place <b>constraints</b> on \(\boldsymbol{B^T F}\)
+that only apply to factors that we think are <b>drivers of volatility</b>. However, we don't constrain the factors
+that are <b>drivers of mean returns</b>. So we drop alpha factors from <b>B</b> matrix.
+</p>
+
+<p>
+Hence, in practice,
+</p>
+<ul class="org-ul">
+<li><b>B</b> is the <b>risk factor loading</b> matrix only.</li>
+<li><b>F</b> include risk factors only.</li>
+<li><b>S</b> includes all other variance. <b>S</b> says nothing explicit about alpha.</li>
+</ul>
+
+<p>
+Alpha Factors add to <b>objective function</b> in optimization.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgab5ffc9" class="outline-2">
+<h2 id="orgab5ffc9"><span class="section-number-2">5</span> Inspirations</h2>
+<div class="outline-text-2" id="text-5">
 </div>
 <div id="outline-container-org91d8341" class="outline-3">
-<h3 id="org91d8341"><span class="section-number-3">4.1</span> Momentum Indicators</h3>
-<div class="outline-text-3" id="text-4-1">
+<h3 id="org91d8341"><span class="section-number-3">5.1</span> Momentum Indicators</h3>
+<div class="outline-text-3" id="text-5-1">
 <ul class="org-ul">
 <li>Moving averages</li>
 <li>Large price movements with volume</li>
@@ -478,14 +534,14 @@ Calculate the covariance matrix of the asset returns.
 </div>
 
 <div id="outline-container-org8efe985" class="outline-3">
-<h3 id="org8efe985"><span class="section-number-3">4.2</span> Overlap Studies</h3>
-<div class="outline-text-3" id="text-4-2">
+<h3 id="org8efe985"><span class="section-number-3">5.2</span> Overlap Studies</h3>
+<div class="outline-text-3" id="text-5-2">
 </div>
 <ul class="org-ul">
 <li><a id="orgbd5fa62"></a>Bollinger Bands<br />
 <div class="outline-text-4" id="text-orgbd5fa62">
 
-<div id="org3f64f56" class="figure">
+<div id="orgcdd5b9b" class="figure">
 <p><img src="../../resources/MOOC/Trading/bollinger_bands.png" alt="bollinger_bands.png" />
 </p>
 </div>
