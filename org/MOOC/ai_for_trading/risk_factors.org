@@ -6,18 +6,6 @@
   The goal of a risk factor model is to measure, control and possibly neutralize a portfolio's exposure to major sources of risk.
    [[../../resources/MOOC/Trading/risk_model_goal.png]]
 
-* Types of Risk Models
-  - Time Series Risk Model
-    - Capital Asset Pricing Model
-    - Fama French 3 Factor Model(multifactor)
-  - Cross-Sectional Risk Model
-  - PCA Risk Model
-
-** CAPM model
-   - Single Factor: $f=r_m-r_f$
-   - Linear Regression Model: $r_i-r_f=\beta_{i,1}(r_m-r_f)+c_i$
-   [[../../resources/MOOC/Trading/CAPM_model.png]]
-
 * Time Series Risk Factor Model
 ** Steps
    1. Calculate the factor return and factor *covariance matrix*.
@@ -75,6 +63,83 @@
    $$Var(r_p)=\boldsymbol{X^T(BFB^T+S)X}$$
    [[../../resources/MOOC/Trading/factor_model_portfolio_var.png]]
 
-
 * Cross-Sectional Risk Model
+  A cross-section means that we use multiple stocks for a single time period in a calculation.
+  A cross-sectional model calculates the *factor exposure* first, and then uses that information
+  to *estimate the factor return*.
+  $$r_i=\beta_{i,k}\times f_k + c_i$$
+  $$Var(r_p)=\boldsymbol{X^T(BFB^T+S)X}$$
+
+** Example
+   Uses Fundamental Factors: *value factor* and *size factor* (3 factors fama french model)
+*** Steps
+   1. Factor exposures $\beta_{i,v}, \beta_{i,s}$
+   1. Stock returns $r_i$
+   1. Estimate factor returns $f_{v,t}, f_{s,t}$ using regression.
+   1. Repeat to get time series $f_v, f_s$ for each day.
+   1. Calculate $Var(f_v)$, $Var(f_s)$, $Cov(f_v, f_s)$
+   1. Specific returns $s_i$
+
+** Cross-Sectional Factors
+*** Categorical Factors
+    Country, Sector, etc.
+*** Fundamental Factors
+
 * PCA Risk Model
+
+* Types of Risk Models
+  - Time Series Risk Model
+    - Capital Asset Pricing Model(single factor)
+    - Fama French 3 Factor Model(multifactor)
+  - Cross-Sectional Risk Model
+  - PCA Risk Model
+
+** CAPM model
+   - Single Factor: $f_m=r_m-r_f$
+   - Linear Regression Model: $r_i-r_f=\beta_{i,1}(r_m-r_f)+c_i$
+   [[../../resources/MOOC/Trading/CAPM_model.png]]
+
+** Fama French Model
+   - 3 Factors: $f_m$ market, $f_s$ size, $f_v$ value
+
+*** Size Factor(SMB)
+    - Hypothesis: small-cap stocks tend to have higher returns
+    - create a theoretical portfolio: long small-cap and short large-cap
+    - the return of the portfolio is the return of the size factor
+    - SMB: Small Minus Big
+    [[../../resources/MOOC/Trading/fama_french_size_factor.png]]
+
+    [[https://youtu.be/FXZuHsn0bx4][Video]]
+
+*** Value Factor(HML)
+    - Hypothesis: stocks that have high book value relative to their market price tend to perform well.
+      - *Value Stocks*: higher book value/market value.
+      - *Growth Stocks*: lower book value/market value
+    - create a theoretical portfolio: long value stocks and short growth stocks
+    - HML: High Minus Low
+    [[../../resources/MOOC/Trading/fama_french_value_factor.png]]
+
+*** 3 Factor Model
+    [[../../resources/MOOC/Trading/fama_3_factor_model1.png]]
+    [[../../resources/MOOC/Trading/fama_3_factor_model2.png]]
+    - $f_m=r_m-r_f$
+    - $f_s=\frac{1}{3}((r_{s,v}+r_{s,n}+r_{s,g}) - (r_{b,v}+r_{b,n}+r_{b,g}))$
+    - $f_v=\frac{1}{2}((r_{s,v}+r_{b,v}) - (r_{s,g}+r_{b,g}))$
+    $$F=\begin{pmatrix}
+    Var(f_m) & Cov(f_m, f_s) & Cov(f_m, f_v) \\
+    Cov(f_s,f_m) & Var(f_s) & Cov(f_s, f_v) \\
+    Cov(f_v,f_m) & Cov(f_v, f_s) & Var(f_v)
+    \end{pmatrix}$$
+    $$B=\begin{pmatrix}
+    \beta_{i,m} & \beta_{i,s} & \beta_{i,v} \\
+    \beta_{j,m} & \beta_{j,s} & \beta_{j,v}
+    \end{pmatrix}$$
+    - Use multiple regression to estimate factor exposures.
+    $$r_i=(\beta_{i,m}\times f_m) + (\beta_{i,s}\times f_s) + (\beta_{i,v}\times f_v)$$
+    $$r_j=(\beta_{j,m}\times f_m) + (\beta_{j,s}\times f_s) + (\beta_{j,v}\times f_v)$$
+    $$S=\begin{pmatrix}
+    Var(s_i) & 0 \\
+    0 & Var(s_j)
+    \end{pmatrix}$$
+    $$s_i=r_{i,actual}-r_{i,estimated}$$
+    $$s_j=r_{j,actual}-r_{j,estimated}$$
