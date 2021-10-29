@@ -1,0 +1,27 @@
+#+TITLE: Elasticsearch
+#+OPTIONS: H:3 toc:2 num:2 ^:nil
+#+AUTHOR: ChrisChen
+#+EMAIL: ChrisChen3121@gmail.com
+* CRUD
+  | Index(Replace) | PUT my_index/_doc/1 {"user":"chris", "comment":"hello"} |
+  | Create         | PUT my_index/_create/1 {...}; POST my_index/_doc {...}  |
+  | Read           | GET my_index/_doc/1                                     |
+  | Update         | POST my_index/_update/1 {...}                           |
+  | Delete         | DELETE my_index/_doc/1                                  |
+
+** 批量接口
+   - Bulk API :: 支持 index, create, update, delete 操作 ~POST _bulk~
+   - mget :: 批量读取 ~GET _mget~
+   - msearch :: 批量搜索 ~POST my_index/_msearch~
+
+* 倒排索引
+** 单词词典(Term Dictionary)
+   记录所有单词以及单词与 *倒排列表* 的关联关系，可使用B+树或哈希拉链法实现。
+
+** 倒排列表(Posting List)
+   记录单词对应的文档集合，每一个文档对应一条倒排索引项
+   - 倒排索引项(Posting)内容
+     - 文档ID
+     - 词频TF：该词在文档中出现的次数，用于相关性评分
+     - 位置：单词在文档中分词的位置，用于语句搜索 (phrase query)
+     - 偏移：记录单词的开始结束位置，实现高亮显示
