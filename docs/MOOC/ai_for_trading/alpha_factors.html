@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-04 Thu 19:56 -->
+<!-- 2021-11-05 Fri 17:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Alpha Factors</title>
@@ -229,16 +229,29 @@
 <li><a href="#orgd5b00f9">1.1. Processing Techniques</a></li>
 <li><a href="#org4b66f7a">1.2. Goal</a></li>
 <li><a href="#org9c2d370">1.3. Alpha Model</a></li>
+<li><a href="#org3e8a006">1.4. Real World Alpha Research Flow</a></li>
 </ul>
 </li>
 <li><a href="#org2196604">2. Ideas</a>
 <ul>
 <li><a href="#org29f4e57">2.1. Academic Papers</a></li>
+<li><a href="#org06a5232">2.2. Fundamental Law of Active Management</a></li>
 </ul>
 </li>
 <li><a href="#org4147131">3. Standardization</a></li>
-<li><a href="#org1f82eb0">4. Evaluation Metrics</a></li>
+<li><a href="#org1f82eb0">4. Evaluation Metrics</a>
+<ul>
+<li><a href="#org8f55c3a">4.1. Factor Returns</a></li>
+<li><a href="#orgb10f4ac">4.2. Sharpe Ratio</a></li>
+<li><a href="#orgc0487e6">4.3. Rank Information Coefficient(rank IC)</a></li>
+<li><a href="#org273d2ad">4.4. Information Ratio</a></li>
+<li><a href="#org58a5082">4.5. Turnover Analysis</a></li>
+<li><a href="#org03e7db3">4.6. Quantile Analysis</a></li>
+<li><a href="#orgaaca35a">4.7. Transfer Coefficient</a></li>
+</ul>
+</li>
 <li><a href="#org1da7c4b">5. Neutralization</a></li>
+<li><a href="#orge2fd40e">6. Conditional Factors</a></li>
 </ul>
 </div>
 </div>
@@ -282,6 +295,17 @@ remaining portfolio returns and volatility are due to alpha factors.
 <p>
 An algorithm that transforms data into numbers associated with each asset.
 </p>
+</div>
+</div>
+<div id="outline-container-org3e8a006" class="outline-3">
+<h3 id="org3e8a006"><span class="section-number-3">1.4</span> Real World Alpha Research Flow</h3>
+<div class="outline-text-3" id="text-1-4">
+<ol class="org-ol">
+<li>Propose alpha factors, then evaluate them.</li>
+<li>Out of sample testing</li>
+<li>Paper trading</li>
+<li>Put into a real portfolio</li>
+</ol>
 </div>
 </div>
 </div>
@@ -328,8 +352,35 @@ An algorithm that transforms data into numbers associated with each asset.
 </div>
 </div>
 </div>
+
+<div id="outline-container-org06a5232" class="outline-3">
+<h3 id="org06a5232"><span class="section-number-3">2.2</span> Fundamental Law of Active Management</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+\[IR=IC\times \sqrt{B}\]
+</p>
+<ul class="org-ul">
+<li>IR: information ratio</li>
+<li>IC: information coefficient</li>
+<li>B: Breadth - is the number of <b>independent</b> trading opportunities annualized.
+<ul class="org-ul">
+<li>Long 30 oil stocks, short 30 semiconductor stocks. 1 bet.</li>
+<li>To maximize number of independent bets, remove exposure to risk factors</li>
+</ul></li>
+</ul>
 </div>
 
+<div id="outline-container-orge7c523c" class="outline-4">
+<h4 id="orge7c523c">Two Ways to Improve Information Ratio</h4>
+<div class="outline-text-4" id="text-orge7c523c">
+<ol class="org-ol">
+<li>Improve alpha factor(IC) <i>very challenging</i></li>
+<li><b>Increase number of trades(breadth)</b> <i>quants' advantage</i></li>
+</ol>
+</div>
+</div>
+</div>
+</div>
 
 <div id="outline-container-org4147131" class="outline-2">
 <h2 id="org4147131"><span class="section-number-2">3</span> Standardization</h2>
@@ -354,6 +405,7 @@ An algorithm that transforms data into numbers associated with each asset.
 </div>
 </div>
 
+
 <div id="outline-container-org1f82eb0" class="outline-2">
 <h2 id="org1f82eb0"><span class="section-number-2">4</span> Evaluation Metrics</h2>
 <div class="outline-text-2" id="text-4">
@@ -365,6 +417,105 @@ An algorithm that transforms data into numbers associated with each asset.
 <li>Quantile analysis</li>
 <li>Turnover analysis</li>
 </ul>
+</div>
+
+<div id="outline-container-org8f55c3a" class="outline-3">
+<h3 id="org8f55c3a"><span class="section-number-3">4.1</span> Factor Returns</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>Return Denominator: \(R_D=\sum_{t=1}^T |\alpha_t|\)</li>
+<li>Leverage Ratio: \(L_R=\frac{positions}{capital}\)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb10f4ac" class="outline-3">
+<h3 id="orgb10f4ac"><span class="section-number-3">4.2</span> Sharpe Ratio</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+\[S_\alpha=\frac{mean(f)}{sample\_std(f)}\times \sqrt{252}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc0487e6" class="outline-3">
+<h3 id="orgc0487e6"><span class="section-number-3">4.3</span> Rank Information Coefficient(rank IC)</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+Rank IC is a useful metric that tells us whether the ranks of our alpha values are correlated with the ranks
+of the future returns.
+</p>
+<ul class="org-ul">
+<li>It these returns are highly correlated, the Rank IC will be close to 1.</li>
+</ul>
+</div>
+<div id="outline-container-org4766a0c" class="outline-4">
+<h4 id="org4766a0c">Steps</h4>
+<div class="outline-text-4" id="text-org4766a0c">
+<ol class="org-ol">
+<li>Raw Alpha Vector</li>
+<li>Ranks of Alpha Vector</li>
+<li>Calculate the <b>Forward Asset Returns</b> and rank them.</li>
+</ol>
+
+<p>
+<a href="https://youtu.be/WKGmog0Nzgo">Video</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org273d2ad" class="outline-3">
+<h3 id="org273d2ad"><span class="section-number-3">4.4</span> Information Ratio</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+The information ratio is the Sharpe ratio applied to the specific return.
+\[IR=\sqrt{252}\times\frac{mean(s)}{std(s)}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org58a5082" class="outline-3">
+<h3 id="org58a5082"><span class="section-number-3">4.5</span> Turnover Analysis</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+<b>Factor Rank Autocorrelation</b> is measuring how stable the ranked alpha vectors are from day to day.
+</p>
+<ul class="org-ul">
+<li>Calculate the correlation between ranked alpha vector(t-1) and ranked alpha vector(t).</li>
+<li>High FRA -&gt; lower turnover</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org03e7db3" class="outline-3">
+<h3 id="org03e7db3"><span class="section-number-3">4.6</span> Quantile Analysis</h3>
+<div class="outline-text-3" id="text-4-6">
+<ul class="org-ul">
+<li>Ideal quantile analysis</li>
+</ul>
+
+<div id="orgc83a9c0" class="figure">
+<p><img src="../../resources/MOOC/Trading/ideal_quantile_analysis.png" alt="ideal_quantile_analysis.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaaca35a" class="outline-3">
+<h3 id="orgaaca35a"><span class="section-number-3">4.7</span> Transfer Coefficient</h3>
+<div class="outline-text-3" id="text-4-7">
+<p>
+The transfer coefficient measures how closely the optimized portfolio weights match the original
+alpha vector.
+</p>
+
+<p>
+If after optimization, the risk model significantly changes the weights for stock so
+that they no longer follow the weights chosen by Alpha Vector. Then we can't expect the
+performance of the alpha factor to carry over into the portfolio.
+</p>
+</div>
 </div>
 </div>
 
@@ -379,6 +530,16 @@ The most significant risk factors are market risk and sector risk
 <li>Neutralize by sector (sector mean)</li>
 <li>Repeat for all sectors in stock universe</li>
 </ol>
+</div>
+</div>
+
+<div id="outline-container-orge2fd40e" class="outline-2">
+<h2 id="orge2fd40e"><span class="section-number-2">6</span> Conditional Factors</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+\[\alpha_a\times \alpha_b\]
+<a href="https://youtu.be/2J1aUwGq6tc">Video</a>
+</p>
 </div>
 </div>
 </div>

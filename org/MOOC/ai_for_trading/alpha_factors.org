@@ -19,6 +19,11 @@
 
 ** Alpha Model
    An algorithm that transforms data into numbers associated with each asset.
+** Real World Alpha Research Flow
+   1. Propose alpha factors, then evaluate them.
+   1. Out of sample testing
+   1. Paper trading
+   1. Put into a real portfolio
 
 * Ideas
 ** Academic Papers
@@ -38,6 +43,17 @@
     - Focus on papers that can be replicated.
     - Check if methodology is practical.
 
+** Fundamental Law of Active Management
+   $$IR=IC\times \sqrt{B}$$
+   - IR: information ratio
+   - IC: information coefficient
+   - B: Breadth - is the number of *independent* trading opportunities annualized.
+     - Long 30 oil stocks, short 30 semiconductor stocks. 1 bet.
+     - To maximize number of independent bets, remove exposure to risk factors
+
+*** Two Ways to Improve Information Ratio
+    1. Improve alpha factor(IC) /very challenging/
+    1. *Increase number of trades(breadth)* /quants' advantage/
 
 * Standardization
   - *Ranking* is a broadly useful method for making data analysis more *robust*.
@@ -50,6 +66,7 @@
     - Rolling window average
     - Weighted moving average: $\alpha_{t,smoothed}=\frac{(T\times \alpha_t)+((T-1)\times \alpha_{t-1})+\cdots+(1\times{\alpha_{t-T+1}})}{T+(T-1)+\cdots+1}$
 
+
 * Evaluation Metrics
   - Factor returns
   - Sharpe ratio
@@ -58,8 +75,51 @@
   - Quantile analysis
   - Turnover analysis
 
+** Factor Returns
+   - Return Denominator: $R_D=\sum_{t=1}^T |\alpha_t|$
+   - Leverage Ratio: $L_R=\frac{positions}{capital}$
+
+** Sharpe Ratio
+   $$S_\alpha=\frac{mean(f)}{sample\_std(f)}\times \sqrt{252}$$
+
+** Rank Information Coefficient(rank IC)
+   Rank IC is a useful metric that tells us whether the ranks of our alpha values are correlated with the ranks
+   of the future returns.
+   - It these returns are highly correlated, the Rank IC will be close to 1.
+*** Steps
+    1. Raw Alpha Vector
+    1. Ranks of Alpha Vector
+    1. Calculate the *Forward Asset Returns* and rank them.
+
+    [[https://youtu.be/WKGmog0Nzgo][Video]]
+
+** Information Ratio
+   The information ratio is the Sharpe ratio applied to the specific return.
+   $$IR=\sqrt{252}\times\frac{mean(s)}{std(s)}$$
+
+** Turnover Analysis
+   *Factor Rank Autocorrelation* is measuring how stable the ranked alpha vectors are from day to day.
+   - Calculate the correlation between ranked alpha vector(t-1) and ranked alpha vector(t).
+   - High FRA -> lower turnover
+
+** Quantile Analysis
+   - Ideal quantile analysis
+   [[../../resources/MOOC/Trading/ideal_quantile_analysis.png]]
+
+** Transfer Coefficient
+   The transfer coefficient measures how closely the optimized portfolio weights match the original
+   alpha vector.
+
+   If after optimization, the risk model significantly changes the weights for stock so
+   that they no longer follow the weights chosen by Alpha Vector. Then we can't expect the
+   performance of the alpha factor to carry over into the portfolio.
+
 * Neutralization
   The most significant risk factors are market risk and sector risk
   1. Neutralize by market (market mean)
   1. Neutralize by sector (sector mean)
   1. Repeat for all sectors in stock universe
+
+* Conditional Factors
+  $$\alpha_a\times \alpha_b$$
+  [[https://youtu.be/2J1aUwGq6tc][Video]]
