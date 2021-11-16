@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-12 Tue 08:45 -->
+<!-- 2021-11-16 Tue 17:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Volatility</title>
@@ -12,16 +12,16 @@
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
-	     margin-bottom: .2em; }
+             margin-bottom: .2em; }
   .subtitle { text-align: center;
-	      font-size: medium;
-	      font-weight: bold;
-	      margin-top:0; }
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
   .todo   { font-family: monospace; color: red; }
   .done   { font-family: monospace; color: green; }
   .priority { font-family: monospace; color: orange; }
   .tag    { background-color: #eee; font-family: monospace;
-	    padding: 2px; font-size: 80%; font-weight: normal; }
+            padding: 2px; font-size: 80%; font-weight: normal; }
   .timestamp { color: #bebebe; }
   .timestamp-kwd { color: #5f9ea0; }
   .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
@@ -196,26 +196,26 @@
 <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css">
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
-	displayAlign: "left",
-	displayIndent: "2em",
+        displayAlign: "left",
+        displayIndent: "2em",
 
-	"HTML-CSS": { scale: 100,
-			linebreaks: { automatic: "false" },
-			webFont: "TeX"
-		       },
-	SVG: {scale: 100,
-	      linebreaks: { automatic: "false" },
-	      font: "TeX"},
-	NativeMML: {scale: 100},
-	TeX: { equationNumbers: {autoNumber: "AMS"},
-	       MultLineWidth: "85%",
-	       TagSide: "left",
-	       TagIndent: ".8em"
-	     }
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "left",
+               TagIndent: ".8em"
+             }
 });
 </script>
 <script type="text/javascript"
-	src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+        src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -286,7 +286,7 @@ An example formula:
 </p>
 
 
-<div id="org60ed685" class="figure">
+<div id="orga450ab6" class="figure">
 <p><img src="../../resources/MOOC/Trading/position_size.png" alt="position_size.png" />
 </p>
 </div></li>
@@ -343,9 +343,9 @@ Simplify the volatility formula
 <span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
 
 <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">ewm_volatility</span><span style="color: #3a81c3;">(</span>prices, l<span style="color: #3a81c3;">)</span>:
-    <span style="color: #715ab1;">log_rets</span> = np.log<span style="color: #3a81c3;">(</span>prices/prices.shift<span style="color: #6c3163;">(</span>1<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
-    <span style="color: #715ab1;">ewm_volatility</span> = np.sqrt<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>log_rets**2<span style="color: #6c3163;">)</span>.ewm<span style="color: #6c3163;">(</span>alpha=1-l<span style="color: #6c3163;">)</span>.mean<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
-    <span style="color: #3a81c3; font-weight: bold;">return</span> ewm_volatility
+<span style="color: #715ab1;">log_rets</span> = np.log<span style="color: #3a81c3;">(</span>prices/prices.shift<span style="color: #6c3163;">(</span>1<span style="color: #6c3163;">)</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">ewm_volatility</span> = np.sqrt<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">(</span>log_rets**2<span style="color: #6c3163;">)</span>.ewm<span style="color: #6c3163;">(</span>alpha=1-l<span style="color: #6c3163;">)</span>.mean<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">return</span> ewm_volatility
 </pre>
 </div>
 </div>
@@ -360,17 +360,17 @@ Simplify the volatility formula
 <h3 id="org50d876a"><span class="section-number-3">4.1</span> ARCH</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
-Autoregressive Conditionally Heteroscedastic
+Autoregressive(AR) Conditionally(C) Heteroscedastic(H)
 </p>
 <ul class="org-ul">
 <li>Autoregressive: the current value is somehow related to the recent past values.</li>
-<li>Heteroscedastic: the variable may have different magnitudes of variability at different time points.
-<ul class="org-ul">
-<li>The magnitude of variability is commonly measured using variance.</li>
-</ul></li>
 <li>Conditional: refers to a constraint we place in the model.
 <ul class="org-ul">
 <li>The constraint limits the heteroscedastic property to be conditionally dependent on the previous values.</li>
+</ul></li>
+<li>Heteroscedastic: the variable may have different magnitudes of variability at different time points.
+<ul class="org-ul">
+<li>The magnitude of variability is commonly measured using variance.</li>
 </ul></li>
 
 <li>ARCH(1) model

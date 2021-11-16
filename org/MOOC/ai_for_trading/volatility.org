@@ -50,19 +50,19 @@
      import numpy as np
 
      def ewm_volatility(prices, l):
-	 log_rets = np.log(prices/prices.shift(1))
-	 ewm_volatility = np.sqrt((log_rets**2).ewm(alpha=1-l).mean())
-	 return ewm_volatility
+     log_rets = np.log(prices/prices.shift(1))
+     ewm_volatility = np.sqrt((log_rets**2).ewm(alpha=1-l).mean())
+     return ewm_volatility
    #+end_src
 
 * Modeling Volatility
 ** ARCH
-   Autoregressive Conditionally Heteroscedastic
+   Autoregressive(AR) Conditionally(C) Heteroscedastic(H)
    - Autoregressive: the current value is somehow related to the recent past values.
-   - Heteroscedastic: the variable may have different magnitudes of variability at different time points.
-     - The magnitude of variability is commonly measured using variance.
    - Conditional: refers to a constraint we place in the model.
      - The constraint limits the heteroscedastic property to be conditionally dependent on the previous values.
+   - Heteroscedastic: the variable may have different magnitudes of variability at different time points.
+     - The magnitude of variability is commonly measured using variance.
 
    - ARCH(1) model
      $$\text{Estimated Current Variance } Var(r_t|r_{t-1})=\alpha_0 + \alpha_1 r_{t-1}^2$$
