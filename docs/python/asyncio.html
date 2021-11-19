@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-19 Fri 09:05 -->
+<!-- 2021-11-19 Fri 18:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Asyncio</title>
@@ -212,9 +212,29 @@
 <li><a href="#orgbb2d9e7">2.1. <code>ensure_future</code> and <code>create_task</code></a></li>
 </ul>
 </li>
-<li><a href="#org48ac321">3. Hierarchy View</a></li>
-<li><a href="#org4afeab5">4. Hints</a></li>
-<li><a href="#orgb00a95a">5. Links</a></li>
+<li><a href="#org702c35b">3. Async Context Manager</a>
+<ul>
+<li><a href="#org6286339">3.1. Class Example</a></li>
+<li><a href="#org0f810ea">3.2. Decorator Example</a></li>
+<li><a href="#orgba83877">3.3. Innovative Way to Wrap Blocking Functions</a></li>
+</ul>
+</li>
+<li><a href="#org06e4f06">4. Async Iterators</a>
+<ul>
+<li><a href="#orgdd88d6c">4.1. Async Generators</a></li>
+<li><a href="#org535fa9b">4.2. Async Comprehensions</a></li>
+</ul>
+</li>
+<li><a href="#org48ac321">5. Hierarchy View</a></li>
+<li><a href="#orgab492e6">6. Startup and Shutdown</a>
+<ul>
+<li><a href="#orga09938e">6.1. Startup</a></li>
+<li><a href="#org8b25090">6.2. Shut Down Gracefully</a></li>
+</ul>
+</li>
+<li><a href="#org108ea6e">7. TCP Server</a></li>
+<li><a href="#org4afeab5">8. Hints</a></li>
+<li><a href="#orgb00a95a">9. Links</a></li>
 </ul>
 </div>
 </div>
@@ -303,6 +323,11 @@ loop.run_until_complete<span style="color: #3a81c3;">(</span>task<span style="co
 <ul class="org-ul">
 <li>Useful APIs: <code>set_result()</code>, <code>result()</code>, <code>cancel()</code>, <code>cancelled()</code>, <code>add_done_callback()</code></li>
 </ul></dd>
+</dl>
+<p>
+Future .
+</p>
+<dl class="org-dl">
 <dt>Task</dt><dd>A subclass of <b>Future</b>, wrapper for coroutine objects. It provides all of he functionality for interaction with the loop. (more common)</dd>
 </dl>
 </div>
@@ -315,15 +340,152 @@ loop.run_until_complete<span style="color: #3a81c3;">(</span>task<span style="co
 <ul class="org-ul">
 <li>If you pass in a coroutine, it will produce a Task instance(scheduled). (just what <code>create_task</code> does)</li>
 <li>If you pass a <b>Future</b> instance (also <b>Task</b> instance), you get the same <b>Future</b> instance.</li>
+<li>The only time when you should be calling <code>ensure_future()</code> is when you are providing an API that accepts either a coroutine or a Future/Task(i.e. Awaitable). &#x2013;Guido</li>
+<li>asyncio.ensure_future() is a helper function intended for framework designers.</li>
 </ul></li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org48ac321" class="outline-2">
-<h2 id="org48ac321"><span class="section-number-2">3</span> Hierarchy View</h2>
+<div id="outline-container-org702c35b" class="outline-2">
+<h2 id="org702c35b"><span class="section-number-2">3</span> Async Context Manager</h2>
 <div class="outline-text-2" id="text-3">
+<p>
+Convenient way to implement <b>setup and teardown</b>, also <b>RAII</b>.
+</p>
+</div>
+<div id="outline-container-org6286339" class="outline-3">
+<h3 id="org6286339"><span class="section-number-3">3.1</span> Class Example</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">Connection</span>:
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">__init__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, host, port<span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">self</span>._host = host
+        <span style="color: #3a81c3; font-weight: bold;">self</span>._port = port
+
+    <span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">__aenter__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">self</span>.conn = <span style="color: #3a81c3; font-weight: bold;">await</span> get_conn<span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.host, <span style="color: #3a81c3; font-weight: bold;">self</span>.port<span style="color: #3a81c3;">)</span>
+        <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3; font-weight: bold;">self</span>.conn
+
+    <span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">__aexit__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, exc_type, exc, tb<span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">await</span> <span style="color: #3a81c3; font-weight: bold;">self</span>.conn.close<span style="color: #3a81c3;">()</span>
+
+<span style="color: #3a81c3; font-weight: bold;">async with</span> Connection<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"localhost"</span>, 9001<span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> conn:
+    ...
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0f810ea" class="outline-3">
+<h3 id="org0f810ea"><span class="section-number-3">3.2</span> Decorator Example</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li>uses <code>@contextlib.asynccontextmanager</code> to create <b>simple</b> async context managers.</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> contextlib <span style="color: #3a81c3; font-weight: bold;">import</span> contextmanager, asynccontextmanager
+
+<span style="color: #ba2f59; font-weight: bold;">@contextmanager</span>
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">web_page</span><span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">data</span> = download_webpage<span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> data
+    update_stats<span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">with</span> web_page<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'google.com'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> data:
+    process<span style="color: #3a81c3;">(</span>data<span style="color: #3a81c3;">)</span>
+
+<span style="color: #ba2f59; font-weight: bold;">@asynccontextmanager</span>
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">async_web_page</span><span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">data</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> download_webpage<span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> data
+    <span style="color: #3a81c3; font-weight: bold;">await</span> update_stats<span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">async with</span> web_page<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'google.com'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> data:
+    process<span style="color: #3a81c3;">(</span>data<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgba83877" class="outline-3">
+<h3 id="orgba83877"><span class="section-number-3">3.3</span> Innovative Way to Wrap Blocking Functions</h3>
+<div class="outline-text-3" id="text-3-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> contextlib <span style="color: #3a81c3; font-weight: bold;">import</span> asynccontextmanager
+
+
+<span style="color: #ba2f59; font-weight: bold;">@asynccontextmanager</span>
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">async_web_page</span><span style="color: #3a81c3;">(</span>url<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">loop</span> = asyncio.get_event_loop<span style="color: #3a81c3;">()</span>
+    <span style="color: #715ab1;">data</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> loop.run_in_executor<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">None</span>, download_webpage, url<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">set None to use ThreadPoolExecutor</span>
+    <span style="color: #3a81c3; font-weight: bold;">yield</span> data
+    <span style="color: #3a81c3; font-weight: bold;">await</span> loop.run_in_executor<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">None</span>, update_stats, url<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">async with</span> web_page<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">'google.com'</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> data:
+    process<span style="color: #3a81c3;">(</span>data<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org06e4f06" class="outline-2">
+<h2 id="org06e4f06"><span class="section-number-2">4</span> Async Iterators</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">class</span> <span style="color: #ba2f59; font-weight: bold;">OneAtATime</span>:
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">__init__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>, redis, keys<span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">self</span>._redis = redis
+        <span style="color: #3a81c3; font-weight: bold;">self</span>._keys = keys
+
+    <span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">__aiter__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">self</span>.ikeys = <span style="color: #3a81c3;">iter</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.keys<span style="color: #3a81c3;">)</span>
+        <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3; font-weight: bold;">self</span>
+
+    <span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">__next__</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span><span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">try</span>:
+            <span style="color: #715ab1;">k</span> = <span style="color: #3a81c3;">next</span><span style="color: #3a81c3;">(</span><span style="color: #3a81c3; font-weight: bold;">self</span>.ikeys<span style="color: #3a81c3;">)</span>
+        <span style="color: #3a81c3; font-weight: bold;">except</span> <span style="color: #ba2f59; font-weight: bold;">StopIteration</span>:
+            <span style="color: #3a81c3; font-weight: bold;">raise</span> <span style="color: #ba2f59; font-weight: bold;">StopAsyncIteration</span>
+        <span style="color: #715ab1;">value</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> redis.get<span style="color: #3a81c3;">(</span>k<span style="color: #3a81c3;">)</span>
+        <span style="color: #3a81c3; font-weight: bold;">return</span> value
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgdd88d6c" class="outline-3">
+<h3 id="orgdd88d6c"><span class="section-number-3">4.1</span> Async Generators</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Async generators are async def functions that have yield keywords inside them.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">one_at_a_time</span><span style="color: #3a81c3;">(</span>redis, keys<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">for</span> k <span style="color: #3a81c3; font-weight: bold;">in</span> keys:
+        <span style="color: #715ab1;">value</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> redis.get<span style="color: #3a81c3;">(</span>k<span style="color: #3a81c3;">)</span>
+        <span style="color: #3a81c3; font-weight: bold;">yield</span> value
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org535fa9b" class="outline-3">
+<h3 id="org535fa9b"><span class="section-number-3">4.2</span> Async Comprehensions</h3>
+<div class="outline-text-3" id="text-4-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3;">[</span>x <span style="color: #3a81c3; font-weight: bold;">async for</span> x <span style="color: #3a81c3; font-weight: bold;">in</span> aiter<span style="color: #3a81c3;">]</span>
+<span style="color: #3a81c3;">{</span>x <span style="color: #3a81c3; font-weight: bold;">async for</span> x <span style="color: #3a81c3; font-weight: bold;">in</span> aiter<span style="color: #3a81c3;">}</span>
+<span style="color: #3a81c3;">{</span>x: x <span style="color: #3a81c3; font-weight: bold;">async for</span> x <span style="color: #3a81c3; font-weight: bold;">in</span> aiter<span style="color: #3a81c3;">}</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48ac321" class="outline-2">
+<h2 id="org48ac321"><span class="section-number-2">5</span> Hierarchy View</h2>
+<div class="outline-text-2" id="text-5">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -411,10 +573,183 @@ loop.run_until_complete<span style="color: #3a81c3;">(</span>task<span style="co
 </div>
 </div>
 
+<div id="outline-container-orgab492e6" class="outline-2">
+<h2 id="orgab492e6"><span class="section-number-2">6</span> Startup and Shutdown</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orga09938e" class="outline-3">
+<h3 id="orga09938e"><span class="section-number-3">6.1</span> Startup</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Standard way is to have a <code>main()</code> coroutine function and call it with <code>asyncio.run()</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8b25090" class="outline-3">
+<h3 id="org8b25090"><span class="section-number-3">6.2</span> Shut Down Gracefully</h3>
+<div class="outline-text-3" id="text-6-2">
+<ol class="org-ol">
+<li>Collect all the still-pending task objects.</li>
+<li>Cancel these tasks (you may choose to handle <code>asyncio.CancelledError</code> in a try/except within the body of the coroutine function).</li>
+<li>Gather all these tasks into a group task.</li>
+<li>Use <code>run_until_complete()</code> on the group task to wait for them to finish. i.e. let the CancelledError be raised and dealt with.</li>
+
+<li><code>asyncio.run()</code> performs these actions for you
+<ul class="org-ul">
+<li>Internally within <code>asyncio.run()</code>, the raised KeyboardInterrupt effectively unblocks a loop.run_until_complete() call and allows the subsequent shutdown sequence to happen.</li>
+</ul></li>
+</ol>
+</div>
+
+
+<div id="outline-container-org15b29d1" class="outline-4">
+<h4 id="org15b29d1">Details</h4>
+<div class="outline-text-4" id="text-org15b29d1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
+
+<span style="color: #715ab1;">loop</span> = asyncio.get_event_loop<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">pendings</span> = asyncio.all_tasks<span style="color: #3a81c3;">()</span>
+<span style="color: #715ab1;">group</span> = asyncio.gather<span style="color: #3a81c3;">(</span>*pendings, return_exceptions=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">results</span> = loop.run_until_complete<span style="color: #3a81c3;">(</span>group<span style="color: #3a81c3;">)</span>
+<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">'Results: {results}'</span><span style="color: #3a81c3;">)</span>
+loop.close<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4ba5611" class="outline-4">
+<h4 id="org4ba5611">Tiny PyPI Package <code>aiorun</code></h4>
+<div class="outline-text-4" id="text-org4ba5611">
+<p>
+<a href="https://github.com/cjrh/aiorun">https://github.com/cjrh/aiorun</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9b53628" class="outline-4">
+<h4 id="org9b53628">Deal with Signals</h4>
+<div class="outline-text-4" id="text-org9b53628">
+<ul class="org-ul">
+<li>SIGINT: KeyboardInterrupt corresponds to the SIGINT signal</li>
+<li>SIGTERM: default signal when you use the kill command in a Unix shell</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
+<span style="color: #3a81c3; font-weight: bold;">from</span> signal <span style="color: #3a81c3; font-weight: bold;">import</span> SIGINT, SIGTERM
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">try</span>:
+        <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
+            <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"&lt;Your app is running&gt;"</span><span style="color: #3a81c3;">)</span>
+            <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.sleep<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">except</span> asyncio.CancelledError:
+        <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">range</span><span style="color: #3a81c3;">(</span>3<span style="color: #3a81c3;">)</span>:
+            <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"&lt;Your app is shutting down...&gt;"</span><span style="color: #3a81c3;">)</span>
+            <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.sleep<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">handler</span><span style="color: #3a81c3;">(</span>sig<span style="color: #3a81c3;">)</span>:
+    loop.stop<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"Got signal: {sig!s}, shutting down."</span><span style="color: #3a81c3;">)</span>
+    loop.remove_signal_handler<span style="color: #3a81c3;">(</span>SIGTERM<span style="color: #3a81c3;">)</span>
+    loop.add_signal_handler<span style="color: #3a81c3;">(</span>SIGINT, <span style="color: #3a81c3; font-weight: bold;">lambda</span>: <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">"__main__"</span>:
+    <span style="color: #715ab1;">loop</span> = asyncio.get_event_loop<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">for</span> sig <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">(</span>SIGTERM, SIGINT<span style="color: #3a81c3;">)</span>:
+        loop.add_signal_handler<span style="color: #3a81c3;">(</span>sig, handler, sig<span style="color: #3a81c3;">)</span>
+    loop.create_task<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+    loop.run_forever<span style="color: #3a81c3;">()</span>
+    <span style="color: #715ab1;">tasks</span> = asyncio.all_tasks<span style="color: #3a81c3;">(</span>loop=loop<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">for</span> t <span style="color: #3a81c3; font-weight: bold;">in</span> tasks:
+        t.cancel<span style="color: #3a81c3;">()</span>
+    <span style="color: #715ab1;">group</span> = asyncio.gather<span style="color: #3a81c3;">(</span>*tasks, return_exceptions=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
+    loop.run_until_complete<span style="color: #3a81c3;">(</span>group<span style="color: #3a81c3;">)</span>
+    loop.close<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>After you receive the first shutdown signal, you want to simply ignore any new signals until exit.</li>
+<li>Simplify with <code>asyncio.run()</code></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
+<span style="color: #3a81c3; font-weight: bold;">from</span> signal <span style="color: #3a81c3; font-weight: bold;">import</span> SIGINT, SIGTERM
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #715ab1;">loop</span> = asyncio.get_running_loop<span style="color: #3a81c3;">()</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">asyncio.run() takes control of the event loop startup, our first opportunity</span>
+    <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">to change signal handling behavior will be in the main() function.</span>
+    <span style="color: #3a81c3; font-weight: bold;">for</span> sig <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">(</span>SIGTERM, SIGINT<span style="color: #3a81c3;">)</span>:
+        loop.add_signal_handler<span style="color: #3a81c3;">(</span>sig, handler, sig<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">try</span>:
+        <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
+            <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"&lt;Your app is running&gt;"</span><span style="color: #3a81c3;">)</span>
+            <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.sleep<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">except</span> asyncio.CancelledError:
+        <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">range</span><span style="color: #3a81c3;">(</span>3<span style="color: #3a81c3;">)</span>:
+            <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"&lt;Your app is shutting down...&gt;"</span><span style="color: #3a81c3;">)</span>
+            <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.sleep<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">handler</span><span style="color: #3a81c3;">(</span>sig<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">loop</span> = asyncio.get_running_loop<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">for</span> task <span style="color: #3a81c3; font-weight: bold;">in</span> asyncio.all_tasks<span style="color: #3a81c3;">(</span>loop=loop<span style="color: #3a81c3;">)</span>:
+        task.cancel<span style="color: #3a81c3;">()</span>
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">'Got signal: {sig!s}, shutting down.'</span><span style="color: #3a81c3;">)</span>
+    loop.remove_signal_handler<span style="color: #3a81c3;">(</span>SIGTERM<span style="color: #3a81c3;">)</span>
+    loop.add_signal_handler<span style="color: #3a81c3;">(</span>SIGINT, <span style="color: #3a81c3; font-weight: bold;">lambda</span>: <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">'__main__'</span>:
+    asyncio.run<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org108ea6e" class="outline-2">
+<h2 id="org108ea6e"><span class="section-number-2">7</span> TCP Server</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
+<span style="color: #3a81c3; font-weight: bold;">from</span> asyncio <span style="color: #3a81c3; font-weight: bold;">import</span> StreamReader, StreamWriter
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">echo</span><span style="color: #3a81c3;">(</span>reader: StreamReader, writer: StreamWriter<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"New Connection"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">try</span>:
+        <span style="color: #3a81c3; font-weight: bold;">while</span> data := <span style="color: #3a81c3; font-weight: bold;">await</span> reader.readline<span style="color: #3a81c3;">()</span>: <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">:= allows for assignment of variables within expressions</span>
+            writer.write<span style="color: #3a81c3;">(</span>data.upper<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+            <span style="color: #3a81c3; font-weight: bold;">await</span> writer.drain<span style="color: #3a81c3;">()</span>
+        <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"Leaving Connection"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">except</span> asyncio.CancelledError:
+        <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"Connection dropped"</span><span style="color: #3a81c3;">)</span>
+        <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">asyncio.create_task(send_log()) # don't do this</span>
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">(</span>host=<span style="color: #2d9574;">"127.0.0.1"</span>, port=8888<span style="color: #3a81c3;">)</span>:
+    <span style="color: #715ab1;">server</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.start_server<span style="color: #3a81c3;">(</span>echo, host, port<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">async with</span> server:
+        <span style="color: #3a81c3; font-weight: bold;">await</span> server.serve_forever<span style="color: #3a81c3;">()</span>
+
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">'__main__'</span>:
+    asyncio.run<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<p>
+Important: Try to avoid creating new tasks inside <code>CancelledError</code> exception handlers. If you must, be sure to also
+await the new task or future inside the scope of the same function.
+</p>
+</div>
+</div>
 
 <div id="outline-container-org4afeab5" class="outline-2">
-<h2 id="org4afeab5"><span class="section-number-2">4</span> Hints</h2>
-<div class="outline-text-2" id="text-4">
+<h2 id="org4afeab5"><span class="section-number-2">8</span> Hints</h2>
+<div class="outline-text-2" id="text-8">
 <ul class="org-ul">
 <li>call <code>asyncio.get_running_loop()</code> inside an <code>async def</code> function.</li>
 <li>If you need to feed data to one or more <b>long-running</b> coroutines, the best way to do that is with <code>asyncio.Queue</code>.</li>
@@ -424,8 +759,8 @@ loop.run_until_complete<span style="color: #3a81c3;">(</span>task<span style="co
 </div>
 
 <div id="outline-container-orgb00a95a" class="outline-2">
-<h2 id="orgb00a95a"><span class="section-number-2">5</span> Links</h2>
-<div class="outline-text-2" id="text-5">
+<h2 id="orgb00a95a"><span class="section-number-2">9</span> Links</h2>
+<div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li><a href="https://www.pythonsheets.com/notes/python-asyncio.html">Asyncio pysheeet</a></li>
 </ul>

@@ -200,6 +200,8 @@ Future .
    1. Use ~run_until_complete()~ on the group task to wait for them to finish. i.e. let the CancelledError be raised and dealt with.
 
    - ~asyncio.run()~ performs these actions for you
+     - Internally within ~asyncio.run()~, the raised KeyboardInterrupt effectively unblocks a loop.run_until_complete() call and allows the subsequent shutdown sequence to happen.
+
 
 *** Details
    #+begin_src python
@@ -215,6 +217,78 @@ Future .
 
 *** Tiny PyPI Package ~aiorun~
     https://github.com/cjrh/aiorun
+
+*** Deal with Signals
+   - SIGINT: KeyboardInterrupt corresponds to the SIGINT signal
+   - SIGTERM: default signal when you use the kill command in a Unix shell
+   #+begin_src python
+     import asyncio
+     from signal import SIGINT, SIGTERM
+
+     async def main():
+         try:
+             while True:
+                 print("<Your app is running>")
+                 await asyncio.sleep(1)
+         except asyncio.CancelledError:
+             for i in range(3):
+                 print("<Your app is shutting down...>")
+                 await asyncio.sleep(1)
+
+     def handler(sig):
+         loop.stop()
+         print(f"Got signal: {sig!s}, shutting down.")
+         loop.remove_signal_handler(SIGTERM)
+         loop.add_signal_handler(SIGINT, lambda: None)
+
+
+     if __name__ == "__main__":
+         loop = asyncio.get_event_loop()
+         for sig in (SIGTERM, SIGINT):
+             loop.add_signal_handler(sig, handler, sig)
+         loop.create_task(main())
+         loop.run_forever()
+         tasks = asyncio.all_tasks(loop=loop)
+         for t in tasks:
+             t.cancel()
+         group = asyncio.gather(*tasks, return_exceptions=True)
+         loop.run_until_complete(group)
+         loop.close()
+   #+end_src
+   - After you receive the first shutdown signal, you want to simply ignore any new signals until exit.
+   - Simplify with ~asyncio.run()~
+   #+begin_src python
+     import asyncio
+     from signal import SIGINT, SIGTERM
+
+
+     async def main():
+         loop = asyncio.get_running_loop()
+         # asyncio.run() takes control of the event loop startup, our first opportunity
+         # to change signal handling behavior will be in the main() function.
+         for sig in (SIGTERM, SIGINT):
+             loop.add_signal_handler(sig, handler, sig)
+         try:
+             while True:
+                 print("<Your app is running>")
+                 await asyncio.sleep(1)
+         except asyncio.CancelledError:
+             for i in range(3):
+                 print("<Your app is shutting down...>")
+                 await asyncio.sleep(1)
+
+     def handler(sig):
+         loop = asyncio.get_running_loop()
+         for task in asyncio.all_tasks(loop=loop):
+             task.cancel()
+         print(f'Got signal: {sig!s}, shutting down.')
+         loop.remove_signal_handler(SIGTERM)
+         loop.add_signal_handler(SIGINT, lambda: None)
+
+     if __name__ == '__main__':
+         asyncio.run(main())
+
+   #+end_src
 
 * TCP Server
   #+begin_src python
