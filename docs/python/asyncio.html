@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-10-14 Thu 17:54 -->
+<!-- 2021-11-19 Fri 09:05 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Asyncio</title>
@@ -12,16 +12,16 @@
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
-	     margin-bottom: .2em; }
+             margin-bottom: .2em; }
   .subtitle { text-align: center;
-	      font-size: medium;
-	      font-weight: bold;
-	      margin-top:0; }
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
   .todo   { font-family: monospace; color: red; }
   .done   { font-family: monospace; color: green; }
   .priority { font-family: monospace; color: orange; }
   .tag    { background-color: #eee; font-family: monospace;
-	    padding: 2px; font-size: 80%; font-weight: normal; }
+            padding: 2px; font-size: 80%; font-weight: normal; }
   .timestamp { color: #bebebe; }
   .timestamp-kwd { color: #5f9ea0; }
   .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
@@ -202,19 +202,24 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0a5fdfd">1. Walk-Through</a>
+<li><a href="#org6ba0279">1. Walk-Through</a>
 <ul>
-<li><a href="#orgc52e4bc">1.1. Run <i>blocking</i> Functions</a></li>
+<li><a href="#org798d65e">1.1. Run <i>blocking</i> Functions</a></li>
 </ul>
 </li>
-<li><a href="#org22e9b6b">2. Hierarchy View</a></li>
-<li><a href="#org8adec5d">3. Hints</a></li>
-<li><a href="#org7832fa3">4. Links</a></li>
+<li><a href="#org128ab50">2. Tasks and Futures</a>
+<ul>
+<li><a href="#orgbb2d9e7">2.1. <code>ensure_future</code> and <code>create_task</code></a></li>
+</ul>
+</li>
+<li><a href="#org48ac321">3. Hierarchy View</a></li>
+<li><a href="#org4afeab5">4. Hints</a></li>
+<li><a href="#orgb00a95a">5. Links</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org0a5fdfd" class="outline-2">
-<h2 id="org0a5fdfd"><span class="section-number-2">1</span> Walk-Through</h2>
+<div id="outline-container-org6ba0279" class="outline-2">
+<h2 id="org6ba0279"><span class="section-number-2">1</span> Walk-Through</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
@@ -248,8 +253,8 @@ loop.close<span style="color: #3a81c3;">()</span> <span style="color: #2aa1ae; b
 </ul>
 </div>
 
-<div id="outline-container-orgc52e4bc" class="outline-3">
-<h3 id="orgc52e4bc"><span class="section-number-3">1.1</span> Run <i>blocking</i> Functions</h3>
+<div id="outline-container-org798d65e" class="outline-3">
+<h3 id="org798d65e"><span class="section-number-3">1.1</span> Run <i>blocking</i> Functions</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Uses <code>loop.run_in_executor</code>
@@ -290,9 +295,35 @@ loop.run_until_complete<span style="color: #3a81c3;">(</span>task<span style="co
 </div>
 </div>
 
-<div id="outline-container-org22e9b6b" class="outline-2">
-<h2 id="org22e9b6b"><span class="section-number-2">2</span> Hierarchy View</h2>
+<div id="outline-container-org128ab50" class="outline-2">
+<h2 id="org128ab50"><span class="section-number-2">2</span> Tasks and Futures</h2>
 <div class="outline-text-2" id="text-2">
+<dl class="org-dl">
+<dt>Future</dt><dd>A <b>Future</b> represents a future completion state of some activity and is managed by the loop.
+<ul class="org-ul">
+<li>Useful APIs: <code>set_result()</code>, <code>result()</code>, <code>cancel()</code>, <code>cancelled()</code>, <code>add_done_callback()</code></li>
+</ul></dd>
+<dt>Task</dt><dd>A subclass of <b>Future</b>, wrapper for coroutine objects. It provides all of he functionality for interaction with the loop. (more common)</dd>
+</dl>
+</div>
+
+<div id="outline-container-orgbb2d9e7" class="outline-3">
+<h3 id="orgbb2d9e7"><span class="section-number-3">2.1</span> <code>ensure_future</code> and <code>create_task</code></h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li><code>asyncio.ensure_future()</code> is not a clear API, leads to misunderstanding about the asyncio library.
+<ul class="org-ul">
+<li>If you pass in a coroutine, it will produce a Task instance(scheduled). (just what <code>create_task</code> does)</li>
+<li>If you pass a <b>Future</b> instance (also <b>Task</b> instance), you get the same <b>Future</b> instance.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48ac321" class="outline-2">
+<h2 id="org48ac321"><span class="section-number-2">3</span> Hierarchy View</h2>
+<div class="outline-text-2" id="text-3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -381,19 +412,20 @@ loop.run_until_complete<span style="color: #3a81c3;">(</span>task<span style="co
 </div>
 
 
-<div id="outline-container-org8adec5d" class="outline-2">
-<h2 id="org8adec5d"><span class="section-number-2">3</span> Hints</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-org4afeab5" class="outline-2">
+<h2 id="org4afeab5"><span class="section-number-2">4</span> Hints</h2>
+<div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li>call <code>asyncio.get_running_loop()</code> inside an <code>async def</code> function.</li>
 <li>If you need to feed data to one or more <b>long-running</b> coroutines, the best way to do that is with <code>asyncio.Queue</code>.</li>
+<li><code>from contextlib import suppress</code> to suppress exceptions: <code>with suppress(asyncio.CancelledError):</code></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org7832fa3" class="outline-2">
-<h2 id="org7832fa3"><span class="section-number-2">4</span> Links</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-orgb00a95a" class="outline-2">
+<h2 id="orgb00a95a"><span class="section-number-2">5</span> Links</h2>
+<div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li><a href="https://www.pythonsheets.com/notes/python-asyncio.html">Asyncio pysheeet</a></li>
 </ul>

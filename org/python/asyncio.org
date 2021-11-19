@@ -8,9 +8,9 @@
     import time
 
     async def main():
-	print(f"{time.ctime()} Hello!")
-	await asyncio.sleep(1.0)
-	print(f"{time.ctime()} Goodbye!")
+        print(f"{time.ctime()} Hello!")
+        await asyncio.sleep(1.0)
+        print(f"{time.ctime()} Goodbye!")
 
     loop = asyncio.get_event_loop()
     task = loop.create_task(main())
@@ -21,7 +21,7 @@
     # graceful exit
     pending = asyncio.all_tasks(loop=loop)
     for task in pending:
-	task.cancel()
+        task.cancel()
     group = asyncio.gather(*pending, return_exceptions=True)
     loop.run_until_complete(group)
     loop.close() # A stopped loop can be restarted, but a closed loop is gone for good.
@@ -39,14 +39,14 @@
 
 
     def blocking():
-	time.sleep(1)
-	print(f"{time.ctime()} from a thread!")
+        time.sleep(1)
+        print(f"{time.ctime()} from a thread!")
 
 
     async def main():
-	print(f"{time.ctime()} Hello!")
-	await asyncio.sleep(1.0)
-	print(f"{time.ctime()} Goodbye!")
+        print(f"{time.ctime()} Hello!")
+        await asyncio.sleep(1.0)
+        print(f"{time.ctime()} Goodbye!")
 
 
     loop = asyncio.get_event_loop()
@@ -62,6 +62,16 @@
   - ~run_in_executor()~ schedules the executor task to run (it returns a Future).
   - The executor task will begin executing only after ~run_until_complete()~ is called.
   - ~run_in_executor()~ /tasks/ are not in /pending/ tasks. This will be true of for any call that returns a *Future* rather than a *Task*.
+
+* Tasks and Futures
+  - Future :: A *Future* represents a future completion state of some activity and is managed by the loop.
+    - Useful APIs: ~set_result()~, ~result()~, ~cancel()~, ~cancelled()~, ~add_done_callback()~
+  - Task :: A subclass of *Future*, wrapper for coroutine objects. It provides all of he functionality for interaction with the loop. (more common)
+
+** ~ensure_future~ and ~create_task~
+   - ~asyncio.ensure_future()~ is not a clear API, leads to misunderstanding about the asyncio library.
+     - If you pass in a coroutine, it will produce a Task instance(scheduled). (just what ~create_task~ does)
+     - If you pass a *Future* instance (also *Task* instance), you get the same *Future* instance.
 
 * Hierarchy View
   | Concept                | Implementation                          |
@@ -85,6 +95,7 @@
 * Hints
   - call ~asyncio.get_running_loop()~ inside an ~async def~ function.
   - If you need to feed data to one or more *long-running* coroutines, the best way to do that is with ~asyncio.Queue~.
+  - ~from contextlib import suppress~ to suppress exceptions: ~with suppress(asyncio.CancelledError):~
 
 * Links
   - [[https://www.pythonsheets.com/notes/python-asyncio.html][Asyncio pysheeet]]
