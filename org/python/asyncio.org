@@ -66,12 +66,110 @@
 * Tasks and Futures
   - Future :: A *Future* represents a future completion state of some activity and is managed by the loop.
     - Useful APIs: ~set_result()~, ~result()~, ~cancel()~, ~cancelled()~, ~add_done_callback()~
+Future .
   - Task :: A subclass of *Future*, wrapper for coroutine objects. It provides all of he functionality for interaction with the loop. (more common)
 
 ** ~ensure_future~ and ~create_task~
    - ~asyncio.ensure_future()~ is not a clear API, leads to misunderstanding about the asyncio library.
      - If you pass in a coroutine, it will produce a Task instance(scheduled). (just what ~create_task~ does)
      - If you pass a *Future* instance (also *Task* instance), you get the same *Future* instance.
+     - The only time when you should be calling ~ensure_future()~ is when you are providing an API that accepts either a coroutine or a Future/Task(i.e. Awaitable). --Guido
+     - asyncio.ensure_future() is a helper function intended for framework designers.
+
+* Async Context Manager
+  Convenient way to implement *setup and teardown*, also *RAII*.
+** Class Example
+  #+begin_src python
+    class Connection:
+        def __init__(self, host, port):
+            self._host = host
+            self._port = port
+
+        async def __aenter__(self):
+            self.conn = await get_conn(self.host, self.port)
+            return self.conn
+
+        async def __aexit__(self, exc_type, exc, tb):
+            await self.conn.close()
+
+    async with Connection("localhost", 9001) as conn:
+        ...
+  #+end_src
+
+** Decorator Example
+  - uses ~@contextlib.asynccontextmanager~ to create *simple* async context managers.
+  #+begin_src python
+    from contextlib import contextmanager, asynccontextmanager
+
+    @contextmanager
+    def web_page(url):
+        data = download_webpage(url)
+        yield data
+        update_stats(url)
+
+    with web_page('google.com') as data:
+        process(data)
+
+    @asynccontextmanager
+    async def async_web_page(url):
+        data = await download_webpage(url)
+        yield data
+        await update_stats(url)
+
+    async with web_page('google.com') as data:
+        process(data)
+  #+end_src
+
+** Innovative Way to Wrap Blocking Functions
+   #+begin_src python
+     from contextlib import asynccontextmanager
+
+
+     @asynccontextmanager
+     async def async_web_page(url):
+         loop = asyncio.get_event_loop()
+         data = await loop.run_in_executor(None, download_webpage, url) # set None to use ThreadPoolExecutor
+         yield data
+         await loop.run_in_executor(None, update_stats, url)
+
+     async with web_page('google.com') as data:
+         process(data)
+   #+end_src
+
+* Async Iterators
+  #+begin_src python
+    class OneAtATime:
+        def __init__(self, redis, keys):
+            self._redis = redis
+            self._keys = keys
+
+        def __aiter__(self):
+            self.ikeys = iter(self.keys)
+            return self
+
+        async def __next__(self):
+            try:
+                k = next(self.ikeys)
+            except StopIteration:
+                raise StopAsyncIteration
+            value = await redis.get(k)
+            return value
+  #+end_src
+
+** Async Generators
+  Async generators are async def functions that have yield keywords inside them.
+  #+begin_src python
+    async def one_at_a_time(redis, keys):
+        for k in keys:
+            value = await redis.get(k)
+            yield value
+  #+end_src
+** Async Comprehensions
+   #+begin_src python
+     [x async for x in aiter]
+     {x async for x in aiter}
+     {x: x async for x in aiter}
+   #+end_src
 
 * Hierarchy View
   | Concept                | Implementation                          |
@@ -91,6 +189,59 @@
   | Network: transports    | BaseTransport                                                                 |
   - The streams API gives you the simplest way to handle socket communication over a network.
 
+* Startup and Shutdown
+** Startup
+   Standard way is to have a ~main()~ coroutine function and call it with ~asyncio.run()~
+
+** Shut Down Gracefully
+   1. Collect all the still-pending task objects.
+   1. Cancel these tasks (you may choose to handle ~asyncio.CancelledError~ in a try/except within the body of the coroutine function).
+   1. Gather all these tasks into a group task.
+   1. Use ~run_until_complete()~ on the group task to wait for them to finish. i.e. let the CancelledError be raised and dealt with.
+
+   - ~asyncio.run()~ performs these actions for you
+
+*** Details
+   #+begin_src python
+     import asyncio
+
+     loop = asyncio.get_event_loop()
+     pendings = asyncio.all_tasks()
+     group = asyncio.gather(*pendings, return_exceptions=True)
+     results = loop.run_until_complete(group)
+     print(f'Results: {results}')
+     loop.close()
+   #+end_src
+
+*** Tiny PyPI Package ~aiorun~
+    https://github.com/cjrh/aiorun
+
+* TCP Server
+  #+begin_src python
+    import asyncio
+    from asyncio import StreamReader, StreamWriter
+
+    async def echo(reader: StreamReader, writer: StreamWriter):
+        print("New Connection")
+        try:
+            while data := await reader.readline(): # := allows for assignment of variables within expressions
+                writer.write(data.upper())
+                await writer.drain()
+            print("Leaving Connection")
+        except asyncio.CancelledError:
+            print("Connection dropped")
+            # asyncio.create_task(send_log()) # don't do this
+
+    async def main(host="127.0.0.1", port=8888):
+        server = await asyncio.start_server(echo, host, port)
+        async with server:
+            await server.serve_forever()
+
+    if __name__ == '__main__':
+        asyncio.run(main())
+  #+end_src
+  Important: Try to avoid creating new tasks inside ~CancelledError~ exception handlers. If you must, be sure to also
+  await the new task or future inside the scope of the same function.
 
 * Hints
   - call ~asyncio.get_running_loop()~ inside an ~async def~ function.
