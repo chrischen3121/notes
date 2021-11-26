@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-26 Fri 11:42 -->
+<!-- 2021-11-26 Fri 12:58 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Asyncio</title>
@@ -231,7 +231,11 @@
 <li><a href="#orgb6b90d6">4.5. <code>asyncpg</code></a></li>
 </ul>
 </li>
-<li><a href="#org6991aac">5. Other Hints</a></li>
+<li><a href="#org6991aac">5. Other Hints</a>
+<ul>
+<li><a href="#org9a45e16">5.1. Asyncio Profilers</a></li>
+</ul>
+</li>
 <li><a href="#orgb00a95a">6. Links</a></li>
 </ul>
 </div>
@@ -1138,8 +1142,44 @@ PostgreSQL built-in support for event updates via the <code>LISTEN</code> and <c
 <li>The process of executing JavaScript to load their actual content, complete HTML output is called rendering.</li>
 </ul>
 </div>
-</div>
 
+<div id="outline-container-org9a45e16" class="outline-3">
+<h3 id="org9a45e16"><span class="section-number-3">5.1</span> Asyncio Profilers</h3>
+<div class="outline-text-3" id="text-5-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> logging
+<span style="color: #3a81c3; font-weight: bold;">from</span> time <span style="color: #3a81c3; font-weight: bold;">import</span> perf_counter
+<span style="color: #3a81c3; font-weight: bold;">from</span> inspect <span style="color: #3a81c3; font-weight: bold;">import</span> iscoroutinefunction
+
+<span style="color: #715ab1;">logger</span> = logging.getLogger<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"perf"</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">aelapsed</span><span style="color: #3a81c3;">(</span>corofn, caption=<span style="color: #2d9574;">""</span><span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">wrapper</span><span style="color: #3a81c3;">(</span>*args, **kwargs<span style="color: #3a81c3;">)</span>:
+        <span style="color: #715ab1;">t0</span> = perf_counter<span style="color: #3a81c3;">()</span>
+        <span style="color: #715ab1;">result</span> = <span style="color: #3a81c3; font-weight: bold;">await</span> corofn<span style="color: #3a81c3;">(</span>*args, **kwargs<span style="color: #3a81c3;">)</span>
+        <span style="color: #715ab1;">delta</span> = <span style="color: #3a81c3;">(</span>perf_counter<span style="color: #6c3163;">()</span> - t0<span style="color: #3a81c3;">)</span> * 1e3
+        logger.info<span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"{caption} Elapsed: {delta:.2f} ms"</span><span style="color: #3a81c3;">)</span>
+        <span style="color: #3a81c3; font-weight: bold;">return</span> result
+
+    <span style="color: #3a81c3; font-weight: bold;">return</span> wrapper
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">aprofiler</span><span style="color: #3a81c3;">(</span>cls, bases, members<span style="color: #3a81c3;">)</span>:
+    <span style="color: #da8b55;">"""The aprofiler() metaclass will make sure that every member</span>
+<span style="color: #da8b55;">    of the class that is a coroutine function will get wrapped in</span>
+<span style="color: #da8b55;">    the aelapsed() decorator.</span>
+<span style="color: #da8b55;">    """</span>
+    <span style="color: #3a81c3; font-weight: bold;">for</span> k, v <span style="color: #3a81c3; font-weight: bold;">in</span> members.items<span style="color: #3a81c3;">()</span>:
+        <span style="color: #3a81c3; font-weight: bold;">if</span> iscoroutinefunction<span style="color: #3a81c3;">(</span>v<span style="color: #3a81c3;">)</span>:
+            <span style="color: #715ab1;">members</span><span style="color: #3a81c3;">[</span>k<span style="color: #3a81c3;">]</span> = aelapsed<span style="color: #3a81c3;">(</span>v, k<span style="color: #3a81c3;">)</span>
+     <span style="color: #3a81c3; font-weight: bold;">return</span> <span style="color: #3a81c3;">type</span>.__new__<span style="color: #3a81c3;">(</span><span style="color: #3a81c3;">type</span>, cls, bases, members<span style="color: #3a81c3;">)</span>
+
+</pre>
+</div>
+</div>
+</div>
+</div>
 
 <div id="outline-container-orgb00a95a" class="outline-2">
 <h2 id="orgb00a95a"><span class="section-number-2">6</span> Links</h2>
