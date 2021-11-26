@@ -389,11 +389,183 @@
       - Queues can be very useful for moving data between those different coroutines and for providing buffering to decouple them.
 
 * Third-party Libraries
+** Twisted
+   Twisted includes a huge number of high-quality protocol implementations. HTTP, XMPP, NNTP, IMAP, SSH, IPC, FTP, DNS, SMTP, POP3.
+   - Support for asyncio in Twisted:
+   #+begin_src python
+     from time import ctime
+     from twisted.internet import asyncioreactor
+
+     asyncioreactor.install()
+     from twisted.internet import reactor, defer, task
+
+
+     async def main():
+         for i in range(5):
+             print(f"{ctime()} Hello {i}")
+             await task.deferLater(reactor, 1, lambda: None)
+
+     if __name__ == '__main__':
+         defer.ensureDeferred(main())
+         reactor.run()
+   #+end_src
+
+** Janus Queue
+   The Janus queue provides a solution for communication between threads and coroutines.
+   It exposes both APIs, a blocking one and an async one.
+   #+begin_src python
+     # janus_demo.py
+     import asyncio
+     import random
+     import time
+     import janus
+
+
+     async def main():
+         loop = asyncio.get_running_loop()
+         queue = janus.Queue(loop=loop)
+         future = loop.run_in_executor(None, data_source, queue)
+         while (data := await queue.async_q.get()) is not None: # None is a sentinel
+             print(f"Got {data} off queue")
+         print("Done.")
+
+
+     def data_source(queue):
+         for i in range(10):
+             r = random.randint(0, 4)
+             time.sleep(r)
+             queue.sync_q.put(r)
+         queue.sync_q.put(None) # put sentinel
+
+
+     asyncio.run(main())
+   #+end_src
+   - It's better to aim for having short executor jobs
+
+** ~aiohttp~
+   - Minimal Http Server
+     #+begin_src python
+       from aiohttp import web
+
+
+       async def hello(request):
+           return web.Response(text="Hello, world")
+
+
+       if __name__ == "__main__":
+           app = web.Application()
+           app.router.add_get("/", hello)
+           web.run_app(app, port=8080)
+     #+end_src
+     - The ~aiohttp~ hided loops, tasks from us, leaving a very clean API.
+
+*** Web Scraping
+    - ~Splash~ for javascript rendering. It can run in a Docker container and provides an API for rendering other sites.
+    - =/codes/newsscraper=
+
+** ZeroMQ
+   - "Smart" Sockets
+   - Management of message passing
+   - Automatic Reconnection Logic (brokerless messaging)
+   - ~PyZMQ~ added support for Asyncio
+
+*** Why to Use ØMQ with Asyncio?
+    - ØMQ provides sockets that are already asynchronous, in a way that is usable with threading
+    - What is the point of using ØMQ with asyncio? The answer is cleaner code.
+
+*** ZeroMQ Patterns
+    - Request-reply :: Connects a set of clients to a set of services. This is a remote procedure call and *task distribution pattern*.
+    - Pub-sub :: Connects a set of publishers to a set of subscribers. This is a *data distribution pattern*.
+    - Pipeline :: Connects nodes in a fan-out/fan-in pattern that can have multiple steps and loops. This is a *parallel task distribution* and *collection pattern*.
+    - Exclusive pair :: Connects two sockets exclusively. This is a pattern for connecting two threads in a process.
+
+*** Work with Asyncio
+    The key thing to understand is that our asyncio code is going to run in a single thread,
+    which means that it's fine to handle different sockets in different coroutines.
+    #+begin_src python
+      # poller_aio.py
+      import asyncio
+
+      import zmq
+      from zmq.asyncio import Context
+
+      context = Context()
+
+
+      async def do_receiver():
+          receiver = context.socket(zmq.PULL)
+          receiver.connect("tcp://localhost:5557")
+          while message := await receiver.recv_json():
+              print(f"Via PULL: {message}")
+
+
+      async def do_subscriber():
+          subscriber = context.socket(zmq.SUB)
+          subscriber.connect("tcp://localhost:5556")
+          subscriber.setsockopt_string(zmq.SUBSCRIBE, "")
+          while message := await subscriber.recv_json():
+              print(f"Via SUB: {message}")
+
+
+      async def main():
+          await asyncio.gather(
+              do_receiver(),
+              do_subscriber(),
+          )
+
+
+      if __name__ == "__main__":
+          asyncio.run(main())
+    #+end_src
+
+*** Case Study: Application Performance Monitoring
+    - Application layer:  A ØMQ "transmitting" socket to send performance metrics to a central server.
+    - Collection layer: The central server will expose a ØMQ socket to collect the data from all the running application instances.
+    - Visualization layer: A web page displays the collected data in a set of charts.
+    - =/codes/perf_monitor=
+
+** ~asyncpg~
+*** Basic Use
+    #+begin_src python
+      import asyncio
+      import asyncpg
+      import datetime
+      from util import Database
+
+
+      async def main():
+          async with Database("test", owner=True) as conn:
+              # conn.execute
+              # conn.fetchval
+              # conn.fetchrow
+              ...
+    #+end_src
+
+*** Advanced Use
+    - Explore ~asyncpg.create_pool~
+
+*** Case Study: Cache Invalidation
+    #+begin_quote
+    There are two hard things in computer science: cache invalidation, naming things, and off-by-one errors.
+    -- Phil Karlton
+    #+end_quote
+    It's common practice to look at design options that can limit excessive
+    interaction with the database. The most common option is to use caching
+    to "remember" previously fetched database results and replay them when asked.
+
+    Strategies:
+    1. Each app instance has an in-memory cache of DB queries.
+    1. When one writes new data to the database, the database alerts all of the connected app instances of the new data.
+    1. Each app instance then updates its internal cache accordingly.
+
+    PostgreSQL built-in support for event updates via the ~LISTEN~ and ~NOTIFY~ commands
 
 * Other Hints
   - call ~asyncio.get_running_loop()~ inside an ~async def~ function.
   - If you need to feed data to one or more *long-running* coroutines, the best way to do that is with ~asyncio.Queue~.
   - ~from contextlib import suppress~ to suppress exceptions: ~with suppress(asyncio.CancelledError):~
+  - The process of executing JavaScript to load their actual content, complete HTML output is called rendering.
+
 
 * Links
   - [[https://www.pythonsheets.com/notes/python-asyncio.html][Asyncio pysheeet]]

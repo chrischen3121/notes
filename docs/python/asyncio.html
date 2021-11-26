@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-22 Mon 11:03 -->
+<!-- 2021-11-26 Fri 11:42 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Asyncio</title>
@@ -219,10 +219,18 @@
 <li><a href="#org128ab50">3.2. Tasks and Futures</a></li>
 <li><a href="#org702c35b">3.3. Async Context Manager</a></li>
 <li><a href="#org06e4f06">3.4. Async Iterators</a></li>
-<li><a href="#orgde1968a">3.5. Stream</a></li>
+<li><a href="#org18f8d6f">3.5. Streams</a></li>
 </ul>
 </li>
-<li><a href="#org108ea6e">4. <span class="todo TODO">TODO</span> TCP Server</a></li>
+<li><a href="#org37972a9">4. Third-party Libraries</a>
+<ul>
+<li><a href="#org28c1cda">4.1. Twisted</a></li>
+<li><a href="#org777b60e">4.2. Janus Queue</a></li>
+<li><a href="#org159b7bc">4.3. <code>aiohttp</code></a></li>
+<li><a href="#orgccf4948">4.4. ZeroMQ</a></li>
+<li><a href="#orgb6b90d6">4.5. <code>asyncpg</code></a></li>
+</ul>
+</li>
 <li><a href="#org6991aac">5. Other Hints</a></li>
 <li><a href="#orgb00a95a">6. Links</a></li>
 </ul>
@@ -775,13 +783,13 @@ Async generators are async def functions that have yield keywords inside them.
 </div>
 </div>
 
-<div id="outline-container-orgde1968a" class="outline-3">
-<h3 id="orgde1968a"><span class="section-number-3">3.5</span> Stream</h3>
+<div id="outline-container-org18f8d6f" class="outline-3">
+<h3 id="org18f8d6f"><span class="section-number-3">3.5</span> Streams</h3>
+<div class="outline-text-3" id="text-3-5">
 </div>
-</div>
-<div id="outline-container-org108ea6e" class="outline-2">
-<h2 id="org108ea6e"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> TCP Server</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-org108ea6e" class="outline-4">
+<h4 id="org108ea6e">TCP Server</h4>
+<div class="outline-text-4" id="text-org108ea6e">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
 <span style="color: #3a81c3; font-weight: bold;">from</span> asyncio <span style="color: #3a81c3; font-weight: bold;">import</span> StreamReader, StreamWriter
@@ -807,9 +815,316 @@ Async generators are async def functions that have yield keywords inside them.
 </pre>
 </div>
 <p>
-Important: Try to avoid creating new tasks inside <code>CancelledError</code> exception handlers. If you must, be sure to also
+Important: Should avoid creating new tasks inside <code>CancelledError</code> exception handlers. If you must, be sure to also
 await the new task or future inside the scope of the same function.
 </p>
+</div>
+</div>
+
+<div id="outline-container-org082b162" class="outline-4">
+<h4 id="org082b162">Message Queue</h4>
+<div class="outline-text-4" id="text-org082b162">
+<p>
+A message queue service is a backend application that receives connections from other
+applications and passes messages between those connected services, often referred to
+as publishers and subscribers.
+</p>
+<ul class="org-ul">
+<li>Broker's Responsibilities
+<ul class="org-ul">
+<li>Maintains persistent socket connections to multiple clients.</li>
+<li>Receives messages from clients with a target channel name.</li>
+<li>Delivers those messages to all other clients subscribed to that same channel name.</li>
+</ul></li>
+<li>Build a Simplest Protocol
+<ol class="org-ol">
+<li>TCP is not a message-based protocol, we need to create our own protocol. (simplest protocol: add size header)</li>
+</ol></li>
+</ul>
+
+<p>
+A toy message queue: <code>/codes/msgqueue</code>
+</p>
+
+<ul class="org-ul">
+<li><b>A key aspect</b> was the realization that sending and receiving data might be best handled in separate coroutines.
+<ul class="org-ul">
+<li>Queues can be very useful for moving data between those different coroutines and for providing buffering to decouple them.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org37972a9" class="outline-2">
+<h2 id="org37972a9"><span class="section-number-2">4</span> Third-party Libraries</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org28c1cda" class="outline-3">
+<h3 id="org28c1cda"><span class="section-number-3">4.1</span> Twisted</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Twisted includes a huge number of high-quality protocol implementations. HTTP, XMPP, NNTP, IMAP, SSH, IPC, FTP, DNS, SMTP, POP3.
+</p>
+<ul class="org-ul">
+<li>Support for asyncio in Twisted:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> time <span style="color: #3a81c3; font-weight: bold;">import</span> ctime
+<span style="color: #3a81c3; font-weight: bold;">from</span> twisted.internet <span style="color: #3a81c3; font-weight: bold;">import</span> asyncioreactor
+
+asyncioreactor.install<span style="color: #3a81c3;">()</span>
+<span style="color: #3a81c3; font-weight: bold;">from</span> twisted.internet <span style="color: #3a81c3; font-weight: bold;">import</span> reactor, defer, task
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">range</span><span style="color: #3a81c3;">(</span>5<span style="color: #3a81c3;">)</span>:
+        <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"{ctime()} Hello {i}"</span><span style="color: #3a81c3;">)</span>
+        <span style="color: #3a81c3; font-weight: bold;">await</span> task.deferLater<span style="color: #3a81c3;">(</span>reactor, 1, <span style="color: #3a81c3; font-weight: bold;">lambda</span>: <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">'__main__'</span>:
+    defer.ensureDeferred<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+    reactor.run<span style="color: #3a81c3;">()</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org777b60e" class="outline-3">
+<h3 id="org777b60e"><span class="section-number-3">4.2</span> Janus Queue</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+The Janus queue provides a solution for communication between threads and coroutines.
+It exposes both APIs, a blocking one and an async one.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">janus_demo.py</span>
+<span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
+<span style="color: #3a81c3; font-weight: bold;">import</span> random
+<span style="color: #3a81c3; font-weight: bold;">import</span> time
+<span style="color: #3a81c3; font-weight: bold;">import</span> janus
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #715ab1;">loop</span> = asyncio.get_running_loop<span style="color: #3a81c3;">()</span>
+    <span style="color: #715ab1;">queue</span> = janus.Queue<span style="color: #3a81c3;">(</span>loop=loop<span style="color: #3a81c3;">)</span>
+    <span style="color: #715ab1;">future</span> = loop.run_in_executor<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">None</span>, data_source, queue<span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #3a81c3;">(</span>data := <span style="color: #3a81c3; font-weight: bold;">await</span> queue.async_q.get<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">is</span> <span style="color: #3a81c3; font-weight: bold;">not</span> <span style="color: #4e3163;">None</span>: <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">None is a sentinel</span>
+        <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"Got {data} off queue"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"Done."</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">data_source</span><span style="color: #3a81c3;">(</span>queue<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">range</span><span style="color: #3a81c3;">(</span>10<span style="color: #3a81c3;">)</span>:
+        <span style="color: #715ab1;">r</span> = random.randint<span style="color: #3a81c3;">(</span>0, 4<span style="color: #3a81c3;">)</span>
+        time.sleep<span style="color: #3a81c3;">(</span>r<span style="color: #3a81c3;">)</span>
+        queue.sync_q.put<span style="color: #3a81c3;">(</span>r<span style="color: #3a81c3;">)</span>
+    queue.sync_q.put<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">put sentinel</span>
+
+
+asyncio.run<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>It's better to aim for having short executor jobs</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org159b7bc" class="outline-3">
+<h3 id="org159b7bc"><span class="section-number-3">4.3</span> <code>aiohttp</code></h3>
+<div class="outline-text-3" id="text-4-3">
+<ul class="org-ul">
+<li><p>
+Minimal Http Server
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> aiohttp <span style="color: #3a81c3; font-weight: bold;">import</span> web
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">hello</span><span style="color: #3a81c3;">(</span>request<span style="color: #3a81c3;">)</span>:
+    <span style="color: #3a81c3; font-weight: bold;">return</span> web.Response<span style="color: #3a81c3;">(</span>text=<span style="color: #2d9574;">"Hello, world"</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">"__main__"</span>:
+    <span style="color: #715ab1;">app</span> = web.Application<span style="color: #3a81c3;">()</span>
+    app.router.add_get<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"/"</span>, hello<span style="color: #3a81c3;">)</span>
+    web.run_app<span style="color: #3a81c3;">(</span>app, port=8080<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>The <code>aiohttp</code> hided loops, tasks from us, leaving a very clean API.</li>
+</ul></li>
+</ul>
+</div>
+
+<div id="outline-container-orgbbe2b8b" class="outline-4">
+<h4 id="orgbbe2b8b">Web Scraping</h4>
+<div class="outline-text-4" id="text-orgbbe2b8b">
+<ul class="org-ul">
+<li><code>Splash</code> for javascript rendering. It can run in a Docker container and provides an API for rendering other sites.</li>
+<li><code>/codes/newsscraper</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgccf4948" class="outline-3">
+<h3 id="orgccf4948"><span class="section-number-3">4.4</span> ZeroMQ</h3>
+<div class="outline-text-3" id="text-4-4">
+<ul class="org-ul">
+<li>"Smart" Sockets</li>
+<li>Management of message passing</li>
+<li>Automatic Reconnection Logic (brokerless messaging)</li>
+<li><code>PyZMQ</code> added support for Asyncio</li>
+</ul>
+</div>
+
+<div id="outline-container-orgec24d4a" class="outline-4">
+<h4 id="orgec24d4a">Why to Use ØMQ with Asyncio?</h4>
+<div class="outline-text-4" id="text-orgec24d4a">
+<ul class="org-ul">
+<li>ØMQ provides sockets that are already asynchronous, in a way that is usable with threading</li>
+<li>What is the point of using ØMQ with asyncio? The answer is cleaner code.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd512495" class="outline-4">
+<h4 id="orgd512495">ZeroMQ Patterns</h4>
+<div class="outline-text-4" id="text-orgd512495">
+<dl class="org-dl">
+<dt>Request-reply</dt><dd>Connects a set of clients to a set of services. This is a remote procedure call and <b>task distribution pattern</b>.</dd>
+<dt>Pub-sub</dt><dd>Connects a set of publishers to a set of subscribers. This is a <b>data distribution pattern</b>.</dd>
+<dt>Pipeline</dt><dd>Connects nodes in a fan-out/fan-in pattern that can have multiple steps and loops. This is a <b>parallel task distribution</b> and <b>collection pattern</b>.</dd>
+<dt>Exclusive pair</dt><dd>Connects two sockets exclusively. This is a pattern for connecting two threads in a process.</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org87a1426" class="outline-4">
+<h4 id="org87a1426">Work with Asyncio</h4>
+<div class="outline-text-4" id="text-org87a1426">
+<p>
+The key thing to understand is that our asyncio code is going to run in a single thread,
+which means that it's fine to handle different sockets in different coroutines.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">poller_aio.py</span>
+<span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
+
+<span style="color: #3a81c3; font-weight: bold;">import</span> zmq
+<span style="color: #3a81c3; font-weight: bold;">from</span> zmq.asyncio <span style="color: #3a81c3; font-weight: bold;">import</span> Context
+
+<span style="color: #715ab1;">context</span> = Context<span style="color: #3a81c3;">()</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">do_receiver</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #715ab1;">receiver</span> = context.socket<span style="color: #3a81c3;">(</span>zmq.PULL<span style="color: #3a81c3;">)</span>
+    receiver.connect<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"tcp://localhost:5557"</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">while</span> message := <span style="color: #3a81c3; font-weight: bold;">await</span> receiver.recv_json<span style="color: #3a81c3;">()</span>:
+        <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"Via PULL: {message}"</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">do_subscriber</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #715ab1;">subscriber</span> = context.socket<span style="color: #3a81c3;">(</span>zmq.SUB<span style="color: #3a81c3;">)</span>
+    subscriber.connect<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"tcp://localhost:5556"</span><span style="color: #3a81c3;">)</span>
+    subscriber.setsockopt_string<span style="color: #3a81c3;">(</span>zmq.SUBSCRIBE, <span style="color: #2d9574;">""</span><span style="color: #3a81c3;">)</span>
+    <span style="color: #3a81c3; font-weight: bold;">while</span> message := <span style="color: #3a81c3; font-weight: bold;">await</span> subscriber.recv_json<span style="color: #3a81c3;">()</span>:
+        <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"Via SUB: {message}"</span><span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.gather<span style="color: #3a81c3;">(</span>
+        do_receiver<span style="color: #6c3163;">()</span>,
+        do_subscriber<span style="color: #6c3163;">()</span>,
+    <span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">"__main__"</span>:
+    asyncio.run<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org79e1852" class="outline-4">
+<h4 id="org79e1852">Case Study: Application Performance Monitoring</h4>
+<div class="outline-text-4" id="text-org79e1852">
+<ul class="org-ul">
+<li>Application layer:  A ØMQ "transmitting" socket to send performance metrics to a central server.</li>
+<li>Collection layer: The central server will expose a ØMQ socket to collect the data from all the running application instances.</li>
+<li>Visualization layer: A web page displays the collected data in a set of charts.</li>
+<li><code>/codes/perf_monitor</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb6b90d6" class="outline-3">
+<h3 id="orgb6b90d6"><span class="section-number-3">4.5</span> <code>asyncpg</code></h3>
+<div class="outline-text-3" id="text-4-5">
+</div>
+<div id="outline-container-orga5fafe9" class="outline-4">
+<h4 id="orga5fafe9">Basic Use</h4>
+<div class="outline-text-4" id="text-orga5fafe9">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
+<span style="color: #3a81c3; font-weight: bold;">import</span> asyncpg
+<span style="color: #3a81c3; font-weight: bold;">import</span> datetime
+<span style="color: #3a81c3; font-weight: bold;">from</span> util <span style="color: #3a81c3; font-weight: bold;">import</span> Database
+
+
+<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
+    <span style="color: #3a81c3; font-weight: bold;">async with</span> Database<span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"test"</span>, owner=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span> <span style="color: #3a81c3; font-weight: bold;">as</span> conn:
+        <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">conn.execute</span>
+        <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">conn.fetchval</span>
+        <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">conn.fetchrow</span>
+        ...
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org86fb558" class="outline-4">
+<h4 id="org86fb558">Advanced Use</h4>
+<div class="outline-text-4" id="text-org86fb558">
+<ul class="org-ul">
+<li>Explore <code>asyncpg.create_pool</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0a347e4" class="outline-4">
+<h4 id="org0a347e4">Case Study: Cache Invalidation</h4>
+<div class="outline-text-4" id="text-org0a347e4">
+<blockquote>
+<p>
+There are two hard things in computer science: cache invalidation, naming things, and off-by-one errors.
+&#x2013; Phil Karlton
+</p>
+</blockquote>
+<p>
+It's common practice to look at design options that can limit excessive
+interaction with the database. The most common option is to use caching
+to "remember" previously fetched database results and replay them when asked.
+</p>
+
+<p>
+Strategies:
+</p>
+<ol class="org-ol">
+<li>Each app instance has an in-memory cache of DB queries.</li>
+<li>When one writes new data to the database, the database alerts all of the connected app instances of the new data.</li>
+<li>Each app instance then updates its internal cache accordingly.</li>
+</ol>
+
+<p>
+PostgreSQL built-in support for event updates via the <code>LISTEN</code> and <code>NOTIFY</code> commands
+</p>
+</div>
+</div>
 </div>
 </div>
 
@@ -820,9 +1135,11 @@ await the new task or future inside the scope of the same function.
 <li>call <code>asyncio.get_running_loop()</code> inside an <code>async def</code> function.</li>
 <li>If you need to feed data to one or more <b>long-running</b> coroutines, the best way to do that is with <code>asyncio.Queue</code>.</li>
 <li><code>from contextlib import suppress</code> to suppress exceptions: <code>with suppress(asyncio.CancelledError):</code></li>
+<li>The process of executing JavaScript to load their actual content, complete HTML output is called rendering.</li>
 </ul>
 </div>
 </div>
+
 
 <div id="outline-container-orgb00a95a" class="outline-2">
 <h2 id="orgb00a95a"><span class="section-number-2">6</span> Links</h2>
