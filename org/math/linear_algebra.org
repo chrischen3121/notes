@@ -42,3 +42,49 @@
    - Distributive over Addition: $\vec{a}(\vec{b}+\vec{c})=\vec{a}\vec{b}+\vec{a}\vec{c}$
    - $\vec{a}\cdot(s\vec{b})=s(\vec{a}\cdot\vec{b})$
    - $\vec{a}\cdot\vec{a}=\left\|\vec{a}\right\|^2$
+
+
+* Matrix
+  Matrices make transformations on vectors, potentially changing their magnitude and direction.
+
+  - Matrix Multiplication isn't commutative, but associative.
+    $$A\cdot B \ne B\cdot A$$
+    $$A\cdot (B \cdot C) = (A\cdot B) \cdot C$$
+
+** Rotation Matrix
+   - 2D
+   $$\begin{bmatrix}
+   \cos\theta & \sin\theta \\
+   -\sin\theta & \cos\theta
+   \end{bmatrix}$$
+   - 3D
+   $$\begin{bmatrix}
+   \cos\theta & \sin\theta & 0 \\
+   -\sin\theta & \cos\theta & 0 \\
+   0 & 0 & 1
+   \end{bmatrix}$$
+
+** Matrix Inverses
+   $$A^{-1}\cdot A=I$$
+   $$A\cdot \mathbf{r} = \mathbf{s}$$
+   $$A^{-1}\cdot A\cdot \mathbf{r}=A^{-1}\cdot\mathbf{s}$$
+   $$I\mathbf{r}=\mathbf=A^{-1}\cdot\mathbf{s}$$
+   - our goal is to find $A^{-1}$
+
+*** Singular
+    If a matrix is singular, that means an inverse doesn't exist.
+
+** Python Code
+   #+begin_src python
+     import numpy as np
+
+     A = [[1, 1, 3],
+          [1, 2, 4],
+          [1, 1, 2]]
+
+     Avin = np.linalg.inv(A)
+     Avin.dot(A) # => Identity Matrix
+
+     s = [5, 8, 9]
+     r = np.linalg.solve(A, s) # => array([10.,  7., -4.])
+   #+end_src

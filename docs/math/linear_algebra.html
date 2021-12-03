@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-29 Mon 15:44 -->
+<!-- 2021-12-03 Fri 14:55 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linear Algebra</title>
@@ -215,7 +215,7 @@
 });
 </script>
 <script type="text/javascript"
-        src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS_HTML"></script>
+        src="https://cdn.bootcdn.net/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -229,6 +229,13 @@
 <li><a href="#orged6eff6">1.1. Addition</a></li>
 <li><a href="#org4beb192">1.2. Magnitudes(Modulus)</a></li>
 <li><a href="#org628a667">1.3. Multiplication(Dot Product)</a></li>
+</ul>
+</li>
+<li><a href="#orge0908ee">2. Matrix</a>
+<ul>
+<li><a href="#org9869315">2.1. Rotation Matrix</a></li>
+<li><a href="#org3ad05fe">2.2. Matrix Inverses</a></li>
+<li><a href="#org5e1cfad">2.3. Python Code</a></li>
 </ul>
 </li>
 </ul>
@@ -288,7 +295,7 @@
 <h4 id="orgcc415b4">Vector Projection</h4>
 <div class="outline-text-4" id="text-orgcc415b4">
 
-<div id="org3933df5" class="figure">
+<div id="org91dbe20" class="figure">
 <p><img src="../resources/math/LinearAlgebra/scale_projection.png" alt="scale_projection.png" />
 </p>
 </div>
@@ -322,6 +329,91 @@
 <li>\(\vec{a}\cdot(s\vec{b})=s(\vec{a}\cdot\vec{b})\)</li>
 <li>\(\vec{a}\cdot\vec{a}=\left\|\vec{a}\right\|^2\)</li>
 </ul>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge0908ee" class="outline-2">
+<h2 id="orge0908ee"><span class="section-number-2">2</span> Matrix</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Matrices make transformations on vectors, potentially changing their magnitude and direction.
+</p>
+
+<ul class="org-ul">
+<li>Matrix Multiplication isn't commutative, but associative.
+\[A\cdot B \ne B\cdot A\]
+\[A\cdot (B \cdot C) = (A\cdot B) \cdot C\]</li>
+</ul>
+</div>
+
+<div id="outline-container-org9869315" class="outline-3">
+<h3 id="org9869315"><span class="section-number-3">2.1</span> Rotation Matrix</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>2D</li>
+</ul>
+<p>
+\[\begin{bmatrix}
+   \cos\theta & \sin\theta \\
+   -\sin\theta & \cos\theta
+   \end{bmatrix}\]
+</p>
+<ul class="org-ul">
+<li>3D</li>
+</ul>
+<p>
+\[\begin{bmatrix}
+   \cos\theta & \sin\theta & 0 \\
+   -\sin\theta & \cos\theta & 0 \\
+   0 & 0 & 1
+   \end{bmatrix}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3ad05fe" class="outline-3">
+<h3 id="org3ad05fe"><span class="section-number-3">2.2</span> Matrix Inverses</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+\[A^{-1}\cdot A=I\]
+\[A\cdot \mathbf{r} = \mathbf{s}\]
+\[A^{-1}\cdot A\cdot \mathbf{r}=A^{-1}\cdot\mathbf{s}\]
+\[I\mathbf{r}=\mathbf=A^{-1}\cdot\mathbf{s}\]
+</p>
+<ul class="org-ul">
+<li>our goal is to find \(A^{-1}\)</li>
+</ul>
+</div>
+
+<div id="outline-container-org1c5d901" class="outline-4">
+<h4 id="org1c5d901">Singular</h4>
+<div class="outline-text-4" id="text-org1c5d901">
+<p>
+If a matrix is singular, that means an inverse doesn't exist.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5e1cfad" class="outline-3">
+<h3 id="org5e1cfad"><span class="section-number-3">2.3</span> Python Code</h3>
+<div class="outline-text-3" id="text-2-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+
+<span style="color: #715ab1;">A</span> = <span style="color: #3a81c3;">[</span><span style="color: #6c3163;">[</span>1, 1, 3<span style="color: #6c3163;">]</span>,
+     <span style="color: #6c3163;">[</span>1, 2, 4<span style="color: #6c3163;">]</span>,
+     <span style="color: #6c3163;">[</span>1, 1, 2<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">]</span>
+
+<span style="color: #715ab1;">Avin</span> = np.linalg.inv<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</span>
+Avin.dot<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; Identity Matrix</span>
+
+<span style="color: #715ab1;">s</span> = <span style="color: #3a81c3;">[</span>5, 8, 9<span style="color: #3a81c3;">]</span>
+<span style="color: #715ab1;">r</span> = np.linalg.solve<span style="color: #3a81c3;">(</span>A, s<span style="color: #3a81c3;">)</span> <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">=&gt; array([10.,  7., -4.])</span>
+</pre>
 </div>
 </div>
 </div>
