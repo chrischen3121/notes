@@ -466,7 +466,42 @@ share files by way of the group mechanism, create separate groups for that purpo
   - =/etc/crontab=, a file that defines when automated jobs will run
   - =/etc/fstab=, a table of storage devices and their associated mount points1
 
-* NFS
+* Logging
+** Tasks
+   - Collecting logs from a variety of sources
+   - Providing a structured interface for querying, analyzing, filtering, and monitoring messages
+   - Managing the retention and expiration of messages so that information is kept as long as it is potentially useful or legally required,
+     but not indefinitely
+
+** Syslog
+   - Rudimentary
+   - Message collection only
+   - Sorts messages and saves them to files or forwards them to another host over the network.
+
+** Systemd Journal
+   The journal collects messages, stores them in an indexed and compressed binary format,
+   and furnishes a command-line interface for viewing and filtering logs.
+   - ~journalctl~: view logs
+   - ~systemd-journald~: a logging daemon, collects messages from:
+     - =/dev/log= socket :: to harvest messages from software that submits messages according to syslog conventions
+     - =/dev/kmsg= :: to collect messages from the Linux kernel
+     - =/run/systemd/journal/stdout= :: to service software that writes log messages to standard output
+     - =/run/systemd/journal/socket= :: *to service software that submits messages through the systemd journal API*
+     - Audit messages from the kernel’s auditd daemon
+   - ~systemd-journal-remote~ utilities, to stream serialized journal messages over the network to a remote journal.
+     - ~sudo apt install systemd-journal-remote~
+
+** Centralized Log Cluster
+   [[../resources/os/CentralizedLogCluster.png]]
+
+** Locations
+   [[../resources/os/LogLocations.png]]
+   - It's often helpful to define =/var/log= as a separate disk partition or filesystem
+   - ~last~ command to decode =wtmp=
+   - ~lastlog~ command to show =lastlog=
+
+
+
 * LDAP
   | Attribute   | Stands for        | Description                                     |
   |-------------+-------------------+-------------------------------------------------|
@@ -680,7 +715,7 @@ share files by way of the group mechanism, create separate groups for that purpo
 ** command currying
    #+BEGIN_SRC bash
      function ssh {
-	 /usr/bin/ssh -p 7988 $*
+     /usr/bin/ssh -p 7988 $*
      }
      # same as
      alias ssh="/usr/bin/ssh -p 7988"
@@ -689,15 +724,15 @@ share files by way of the group mechanism, create separate groups for that purpo
 ** loop
    #+BEGIN_SRC bash
      for var in $*; do
-	 echo $var
+     echo $var
      done
 
      for ((i=0; i < $CPU_COUNT; i++)); do
-	 echo $i
+     echo $i
      done
 
      while read line; do
-	 echo $line
+     echo $line
      done
    #+END_SRC
 
@@ -705,26 +740,26 @@ share files by way of the group mechanism, create separate groups for that purpo
    #+BEGIN_SRC bash
      #!/bin/bash
      function show_usage {
-	 echo "Usage: $0 source_dir dest_dir"
-	 exit 1
+     echo "Usage: $0 source_dir dest_dir"
+     exit 1
      }
 
      # Main starts here
      if [ $# -ne 2 ]; then
-	 show_usage
+     show_usage
      else # There are two arguments
-	 if [ -d $1]; then
-	     source_dir=$1
-	 else
-	     echo "Invalid source directory"
-	     show_usage
-	 fi
-	 if [ -d $2]; then
-	     dest_dir=$2
-	 else
-	     echo "Invalid dest directory"
-	     show_usage
-	 fi
+     if [ -d $1]; then
+         source_dir=$1
+     else
+         echo "Invalid source directory"
+         show_usage
+     fi
+     if [ -d $2]; then
+         dest_dir=$2
+     else
+         echo "Invalid dest directory"
+         show_usage
+     fi
      fi
    #+END_SRC
 
@@ -747,7 +782,7 @@ share files by way of the group mechanism, create separate groups for that purpo
      done
      # finally
      find . -type f -name '*.log ' | grep -v .do-not-touch | while read fname; do
-	 echo mv $fname ${fname/.log/.LOG/}; done | bash -x
+     echo mv $fname ${fname/.log/.LOG/}; done | bash -x
    #+END_SRC
    *bash -x* prints each command before executing it. Use *fc* to transfer last command to editor.
 
@@ -771,11 +806,11 @@ share files by way of the group mechanism, create separate groups for that purpo
 *** *case* clause
     #+BEGIN_SRC bash
       case $message_level in
-	  0) message_level_text="Error" ;;
-	  1) message_level_text="Warning" ;;
-	  2) message_level_text="Info" ;;
-	  3) message_level_text="Debug" ;;
-	  ,*) message_level_text="Other"
+      0) message_level_text="Error" ;;
+      1) message_level_text="Warning" ;;
+      2) message_level_text="Info" ;;
+      3) message_level_text="Debug" ;;
+      ,*) message_level_text="Other"
       esac
     #+END_SRC
 
@@ -805,15 +840,15 @@ share files by way of the group mechanism, create separate groups for that purpo
 *** Loops
     #+BEGIN_SRC bash
       for var in stuff; do
-	  ...
+      ...
       done
 
       while cond; do
-	  ...
+      ...
       done
 
       for ((i=0; i < count; i++)); do
-	  ...
+      ...
       done
     #+END_SRC
 *** $(())
