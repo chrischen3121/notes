@@ -477,22 +477,75 @@ share files by way of the group mechanism, create separate groups for that purpo
    - Rudimentary
    - Message collection only
    - Sorts messages and saves them to files or forwards them to another host over the network.
+   - New implementation is ~rsyslogd~ origin daemon is ~syslogd~
+   - Programs that are syslog aware write log entries to the special file =/dev/log=, a UNIX domain socket.
+   - A HUP signal causes ~rsyslogd~ to close all open log files, which is useful for *rotating* (renaming and restarting) logs
+     - rsyslogd's PID is in =/var/run/syslogd.pid=
+     - ~sudo kill -HUP `/bin/cat /var/run/syslogd.pid`~
+
+*** Purposes
+    - to liberate programmers from the tedious mechanics of writing log files
+    - to give administrators control of logging
+
+*** Configurations
+    - Configuration files: =/etc/rsyslog.conf= + =/etc/rsyslog.d/*.conf=
+    - rsyslog understands three configuration syntaxes:
+      - *sysklogd* format: ~facility.severity    actions~
+        - ~*~ and ~none~, meaning all or nothing, respectively.
+      - Legacy rsyslog directives, which always begin with a $ sign.
+      - RainerScript (less common) but useful *for filtering and rule development*
+    - Modules: All inputs and outputs are configured through modules
+      - prefix *im* are input modules
+      - prefix *om* are output modules
+      - prefix *mm* are message modifiers
+
+    [[../resources/os/SyslogFacilityNames.png]]
+
+    [[../resources/os/SyslogSeverity.png]]
+
+    [[../resources/os/SyslogActions.png]]
+
+*** Test
+    The ~logger~ command is useful for submitting log entries.
 
 ** Systemd Journal
    The journal collects messages, stores them in an indexed and compressed binary format,
    and furnishes a command-line interface for viewing and filtering logs.
-   - ~journalctl~: view logs
-   - ~systemd-journald~: a logging daemon, collects messages from:
-     - =/dev/log= socket :: to harvest messages from software that submits messages according to syslog conventions
-     - =/dev/kmsg= :: to collect messages from the Linux kernel
-     - =/run/systemd/journal/stdout= :: to service software that writes log messages to standard output
-     - =/run/systemd/journal/socket= :: *to service software that submits messages through the systemd journal API*
-     - Audit messages from the kernel’s auditd daemon
    - ~systemd-journal-remote~ utilities, to stream serialized journal messages over the network to a remote journal.
      - ~sudo apt install systemd-journal-remote~
+*** ~journalctl~
+    ~journalctl~ is a tool to view logs.
+
+    To allow normal users to read from the journal without needing sudo permissions, add them to
+    the systemd-journal UNIX group.
+
+    - Useful options: ~--disk-usage~, ~--list-boots~, others in ~tldr~
+
+*** ~systemd-journald~
+    A logging daemon, collects messages from:
+    - =/dev/log= socket :: to harvest messages from software that submits messages according to syslog conventions
+    - =/dev/kmsg= :: to collect messages from the Linux kernel
+    - =/run/systemd/journal/stdout= :: to service software that writes log messages to standard output
+    - =/run/systemd/journal/socket= :: *to service software that submits messages through the systemd journal API*
+    - Audit messages from the kernel’s auditd daemon
+    - Configurations
+      - Default configuration file =/etc/systemd/journald.conf= (not editable)
+      - Add your customized configurations to the =/etc/systemd/journald.conf.d=
+      - [[https://www.freedesktop.org/software/systemd/man/journald.conf.html][reference]]
+
+*** ~systemd-journal-remote~
+    The utilities are used to stream serialized journal messages over the network to a remote journal.
+     - ~sudo apt install systemd-journal-remote~
+*** Forward Messages to ~syslog~
+    - The systemd journal can forward messages to another socket (typically =/run/systemd/journal/syslog=) (Debian and Ubuntu)
+    - Alternatively, syslog can consume messages directly from the journal API, in the same manner as the journalctl command. (Red Hat and CentOS)
+
+    To determine which type of integration has been configured on your system, inspect the ~ForwardToSyslog~
+    option in =journald.conf=. ~yes~ for socket-forwarding.
 
 ** Centralized Log Cluster
    [[../resources/os/CentralizedLogCluster.png]]
+   - The ELK stack
 
 ** Locations
    [[../resources/os/LogLocations.png]]
@@ -500,7 +553,29 @@ share files by way of the group mechanism, create separate groups for that purpo
    - ~last~ command to decode =wtmp=
    - ~lastlog~ command to show =lastlog=
 
+** ~logrotate~
+   - ~logrotate~ is normally run out of cron once a day.
+   - Configuration file: =/etc/logrotate.d=
+   - Alternatively, a simpler program called ~savelog~ that manages rotation for individual files.
 
+** Designing Log Strategy
+   Answers four questions:
+   - How many systems and applications will be included?
+   - What type of storage infrastructure is available?
+   - How long must logs be retained?
+   - What types of events are important?
+
+   For most applications, consider capturing at least the following information:
+   - Username or user ID
+   - Event success or failure
+   - Source address for network events
+   - Date and time (NTP)
+   - Sensitive data added, altered, or removed
+   - Event details
+
+   Suggestions:
+   - 20 servers is a reasonable threshold for considering centralization
+   - Include log files in a monitoring solution that alerts you if a log file stops growing.
 
 * LDAP
   | Attribute   | Stands for        | Description                                     |

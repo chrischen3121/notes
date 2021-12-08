@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-12-07 Tue 20:49 -->
+<!-- 2021-12-08 Wed 18:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux Administration</title>
@@ -295,9 +295,11 @@
 <li><a href="#org32c7637">7.3. Systemd Journal</a></li>
 <li><a href="#orga966077">7.4. Centralized Log Cluster</a></li>
 <li><a href="#org35a2174">7.5. Locations</a></li>
+<li><a href="#org87f40e1">7.6. <code>logrotate</code></a></li>
+<li><a href="#org96f82da">7.7. Designing Log Strategy</a></li>
 </ul>
 </li>
-<li><a href="#orge6d9acc">8. LDAP</a>
+<li><a href="#org35ff977">8. LDAP</a>
 <ul>
 <li><a href="#org7185f80">8.1. openldap</a></li>
 <li><a href="#orgc836d2e">8.2. 389 Directory Server</a></li>
@@ -503,8 +505,8 @@ similar to multiuser mode, but with no GUI running on the console
 </li>
 </ul>
 </div>
-<div id="outline-container-orgdb61692" class="outline-4">
-<h4 id="orgdb61692"><span class="section-number-4">3.3.2</span> Implementations</h4>
+<div id="outline-container-org3f8c3ac" class="outline-4">
+<h4 id="org3f8c3ac"><span class="section-number-4">3.3.2</span> Implementations</h4>
 <div class="outline-text-4" id="text-3-3-2">
 </div>
 <ul class="org-ul">
@@ -1185,8 +1187,8 @@ startup files, etc.).
 <h3 id="orga31cb33"><span class="section-number-3">4.8</span> Centralizing account management</h3>
 <div class="outline-text-3" id="text-4-8">
 </div>
-<div id="outline-container-orgc9cd698" class="outline-4">
-<h4 id="orgc9cd698"><span class="section-number-4">4.8.1</span> LDAP</h4>
+<div id="outline-container-org08408a0" class="outline-4">
+<h4 id="org08408a0"><span class="section-number-4">4.8.1</span> LDAP</h4>
 </div>
 <div id="outline-container-orgf4fa455" class="outline-4">
 <h4 id="orgf4fa455"><span class="section-number-4">4.8.2</span> Identity management systems</h4>
@@ -1233,8 +1235,8 @@ PAM and Kerberos generally work together
 <div id="outline-container-org2b46da7" class="outline-4">
 <h4 id="org2b46da7"><span class="section-number-4">4.10.2</span> RBAC</h4>
 </div>
-<div id="outline-container-org9edb7e1" class="outline-4">
-<h4 id="org9edb7e1"><span class="section-number-4">4.10.3</span> Implementations</h4>
+<div id="outline-container-org1b742b6" class="outline-4">
+<h4 id="org1b742b6"><span class="section-number-4">4.10.3</span> Implementations</h4>
 <div class="outline-text-4" id="text-4-10-3">
 </div>
 <ul class="org-ul">
@@ -1857,7 +1859,75 @@ but not indefinitely</li>
 <li>Rudimentary</li>
 <li>Message collection only</li>
 <li>Sorts messages and saves them to files or forwards them to another host over the network.</li>
+<li>New implementation is <code>rsyslogd</code> origin daemon is <code>syslogd</code></li>
+<li>Programs that are syslog aware write log entries to the special file <code>/dev/log</code>, a UNIX domain socket.</li>
+<li>A HUP signal causes <code>rsyslogd</code> to close all open log files, which is useful for <b>rotating</b> (renaming and restarting) logs
+<ul class="org-ul">
+<li>rsyslogd's PID is in <code>/var/run/syslogd.pid</code></li>
+<li><code>sudo kill -HUP `/bin/cat /var/run/syslogd.pid`</code></li>
+</ul></li>
 </ul>
+</div>
+
+<div id="outline-container-org2fd9c16" class="outline-4">
+<h4 id="org2fd9c16"><span class="section-number-4">7.2.1</span> Purposes</h4>
+<div class="outline-text-4" id="text-7-2-1">
+<ul class="org-ul">
+<li>to liberate programmers from the tedious mechanics of writing log files</li>
+<li>to give administrators control of logging</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org94d8231" class="outline-4">
+<h4 id="org94d8231"><span class="section-number-4">7.2.2</span> Configurations</h4>
+<div class="outline-text-4" id="text-7-2-2">
+<ul class="org-ul">
+<li>Configuration files: <code>/etc/rsyslog.conf</code> + <code>/etc/rsyslog.d/*.conf</code></li>
+<li>rsyslog understands three configuration syntaxes:
+<ul class="org-ul">
+<li><b>sysklogd</b> format: <code>facility.severity    actions</code>
+<ul class="org-ul">
+<li><code>*</code> and <code>none</code>, meaning all or nothing, respectively.</li>
+</ul></li>
+<li>Legacy rsyslog directives, which always begin with a $ sign.</li>
+<li>RainerScript (less common) but useful <b>for filtering and rule development</b></li>
+</ul></li>
+<li>Modules: All inputs and outputs are configured through modules
+<ul class="org-ul">
+<li>prefix <b>im</b> are input modules</li>
+<li>prefix <b>om</b> are output modules</li>
+<li>prefix <b>mm</b> are message modifiers</li>
+</ul></li>
+</ul>
+
+
+<div id="orgeffe4b3" class="figure">
+<p><img src="../resources/os/SyslogFacilityNames.png" alt="SyslogFacilityNames.png" />
+</p>
+</div>
+
+
+<div id="orgfe8da6a" class="figure">
+<p><img src="../resources/os/SyslogSeverity.png" alt="SyslogSeverity.png" />
+</p>
+</div>
+
+
+<div id="org2c8ecdd" class="figure">
+<p><img src="../resources/os/SyslogActions.png" alt="SyslogActions.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4d63524" class="outline-4">
+<h4 id="org4d63524"><span class="section-number-4">7.2.3</span> Test</h4>
+<div class="outline-text-4" id="text-7-2-3">
+<p>
+The <code>logger</code> command is useful for submitting log entries.
+</p>
+</div>
 </div>
 </div>
 
@@ -1869,20 +1939,76 @@ The journal collects messages, stores them in an indexed and compressed binary f
 and furnishes a command-line interface for viewing and filtering logs.
 </p>
 <ul class="org-ul">
-<li><code>journalctl</code>: view logs</li>
-<li><code>systemd-journald</code>: a logging daemon, collects messages from:
+<li><code>systemd-journal-remote</code> utilities, to stream serialized journal messages over the network to a remote journal.
+<ul class="org-ul">
+<li><code>sudo apt install systemd-journal-remote</code></li>
+</ul></li>
+</ul>
+</div>
+<div id="outline-container-orgd565085" class="outline-4">
+<h4 id="orgd565085"><span class="section-number-4">7.3.1</span> <code>journalctl</code></h4>
+<div class="outline-text-4" id="text-7-3-1">
+<p>
+<code>journalctl</code> is a tool to view logs.
+</p>
+
+<p>
+To allow normal users to read from the journal without needing sudo permissions, add them to
+the systemd-journal UNIX group.
+</p>
+
+<ul class="org-ul">
+<li>Useful options: <code>--disk-usage</code>, <code>--list-boots</code>, others in <code>tldr</code></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org06b63d1" class="outline-4">
+<h4 id="org06b63d1"><span class="section-number-4">7.3.2</span> <code>systemd-journald</code></h4>
+<div class="outline-text-4" id="text-7-3-2">
+<p>
+A logging daemon, collects messages from:
+</p>
 <dl class="org-dl">
 <dt><code>/dev/log</code> socket</dt><dd>to harvest messages from software that submits messages according to syslog conventions</dd>
 <dt><code>/dev/kmsg</code></dt><dd>to collect messages from the Linux kernel</dd>
 <dt><code>/run/systemd/journal/stdout</code></dt><dd>to service software that writes log messages to standard output</dd>
 <dt><code>/run/systemd/journal/socket</code></dt><dd><b>to service software that submits messages through the systemd journal API</b></dd>
 <dt>(no term)</dt><dd>Audit messages from the kernel’s auditd daemon</dd>
-</dl></li>
-<li><code>systemd-journal-remote</code> utilities, to stream serialized journal messages over the network to a remote journal.
+<dt>(no term)</dt><dd>Configurations
+<ul class="org-ul">
+<li>Default configuration file <code>/etc/systemd/journald.conf</code> (not editable)</li>
+<li>Add your customized configurations to the <code>/etc/systemd/journald.conf.d</code></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/journald.conf.html">reference</a></li>
+</ul></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgce75db3" class="outline-4">
+<h4 id="orgce75db3"><span class="section-number-4">7.3.3</span> <code>systemd-journal-remote</code></h4>
+<div class="outline-text-4" id="text-7-3-3">
+<p>
+The utilities are used to stream serialized journal messages over the network to a remote journal.
+</p>
 <ul class="org-ul">
 <li><code>sudo apt install systemd-journal-remote</code></li>
-</ul></li>
 </ul>
+</div>
+</div>
+<div id="outline-container-org694cb37" class="outline-4">
+<h4 id="org694cb37"><span class="section-number-4">7.3.4</span> Forward Messages to <code>syslog</code></h4>
+<div class="outline-text-4" id="text-7-3-4">
+<ul class="org-ul">
+<li>The systemd journal can forward messages to another socket (typically <code>/run/systemd/journal/syslog</code>) (Debian and Ubuntu)</li>
+<li>Alternatively, syslog can consume messages directly from the journal API, in the same manner as the journalctl command. (Red Hat and CentOS)</li>
+</ul>
+
+<p>
+To determine which type of integration has been configured on your system, inspect the <code>ForwardToSyslog</code>
+option in <code>journald.conf</code>. <code>yes</code> for socket-forwarding.
+</p>
+</div>
 </div>
 </div>
 
@@ -1890,10 +2016,13 @@ and furnishes a command-line interface for viewing and filtering logs.
 <h3 id="orga966077"><span class="section-number-3">7.4</span> Centralized Log Cluster</h3>
 <div class="outline-text-3" id="text-7-4">
 
-<div id="orgc0db366" class="figure">
+<div id="org882bad1" class="figure">
 <p><img src="../resources/os/CentralizedLogCluster.png" alt="CentralizedLogCluster.png" />
 </p>
 </div>
+<ul class="org-ul">
+<li>The ELK stack</li>
+</ul>
 </div>
 </div>
 
@@ -1901,7 +2030,7 @@ and furnishes a command-line interface for viewing and filtering logs.
 <h3 id="org35a2174"><span class="section-number-3">7.5</span> Locations</h3>
 <div class="outline-text-3" id="text-7-5">
 
-<div id="org8fd09e8" class="figure">
+<div id="orga927755" class="figure">
 <p><img src="../resources/os/LogLocations.png" alt="LogLocations.png" />
 </p>
 </div>
@@ -1912,12 +2041,56 @@ and furnishes a command-line interface for viewing and filtering logs.
 </ul>
 </div>
 </div>
+
+<div id="outline-container-org87f40e1" class="outline-3">
+<h3 id="org87f40e1"><span class="section-number-3">7.6</span> <code>logrotate</code></h3>
+<div class="outline-text-3" id="text-7-6">
+<ul class="org-ul">
+<li><code>logrotate</code> is normally run out of cron once a day.</li>
+<li>Configuration file: <code>/etc/logrotate.d</code></li>
+<li>Alternatively, a simpler program called <code>savelog</code> that manages rotation for individual files.</li>
+</ul>
+</div>
 </div>
 
+<div id="outline-container-org96f82da" class="outline-3">
+<h3 id="org96f82da"><span class="section-number-3">7.7</span> Designing Log Strategy</h3>
+<div class="outline-text-3" id="text-7-7">
+<p>
+Answers four questions:
+</p>
+<ul class="org-ul">
+<li>How many systems and applications will be included?</li>
+<li>What type of storage infrastructure is available?</li>
+<li>How long must logs be retained?</li>
+<li>What types of events are important?</li>
+</ul>
 
+<p>
+For most applications, consider capturing at least the following information:
+</p>
+<ul class="org-ul">
+<li>Username or user ID</li>
+<li>Event success or failure</li>
+<li>Source address for network events</li>
+<li>Date and time (NTP)</li>
+<li>Sensitive data added, altered, or removed</li>
+<li>Event details</li>
+</ul>
 
-<div id="outline-container-orge6d9acc" class="outline-2">
-<h2 id="orge6d9acc"><span class="section-number-2">8</span> LDAP</h2>
+<p>
+Suggestions:
+</p>
+<ul class="org-ul">
+<li>20 servers is a reasonable threshold for considering centralization</li>
+<li>Include log files in a monitoring solution that alerts you if a log file stops growing.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org35ff977" class="outline-2">
+<h2 id="org35ff977"><span class="section-number-2">8</span> LDAP</h2>
 <div class="outline-text-2" id="text-8">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -2887,7 +3060,7 @@ forms <b>${#array_name[*]}</b> and <b>${#array_name[@]}</b> yield the number of 
 <h3 id="orgfdf1acf"><span class="section-number-3">13.1</span> Performance Tools</h3>
 <div class="outline-text-3" id="text-13-1">
 
-<div id="org026fda4" class="figure">
+<div id="org0c6beb7" class="figure">
 <p><img src="../resources/os/perftools.png" alt="perftools.png" />
 </p>
 </div>
