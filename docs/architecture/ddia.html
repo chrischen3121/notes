@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-12-06 Mon 16:29 -->
+<!-- 2021-12-08 Wed 20:04 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Designing Data-Intensive Applications</title>
@@ -350,7 +350,74 @@ As the system grows (in data volume, traffic volume, or complexity), there
 should be reasonable ways of dealing with that growth.
 </p>
 </div>
+
+<div id="outline-container-org11f459d" class="outline-4">
+<h4 id="org11f459d">Describing Load</h4>
+<div class="outline-text-4" id="text-org11f459d">
+<p>
+Load parameter Example:
+</p>
+<ul class="org-ul">
+<li>Requests per second</li>
+<li>The ratio of reads to writes in a database</li>
+<li>The hit rate on a cache</li>
+<li>The number of simultaneously active users in a chat room</li>
+<li>Twitter: The distribution of followers per user (maybe weighted by how often those users tweet) is a key load parameter
+for discussing scalability, since it determines the fan-out load.</li>
+</ul>
 </div>
+</div>
+
+<div id="outline-container-org0e99c0e" class="outline-4">
+<h4 id="org0e99c0e">Describing Performance</h4>
+<div class="outline-text-4" id="text-org0e99c0e">
+</div>
+<ul class="org-ul">
+<li><a id="org777c53a"></a>Look at it in two ways<br />
+<div class="outline-text-5" id="text-org777c53a">
+<ul class="org-ul">
+<li>When you increase a load parameter and keep the system resources unchanged, how is the performance of your system affected?</li>
+<li>When you increase a load parameter, how much do you need to increase the resources if you want to keep performance unchanged?</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgdbbc488"></a>Performance Examples<br />
+<div class="outline-text-5" id="text-orgdbbc488">
+<dl class="org-dl">
+<dt>Throughput</dt><dd>The number of records we can process per second, or the total time it takes to run a job on a dataset of a certain size. (Important for batch processing system)</dd>
+<dt>Response Time</dt><dd>The time between a client sending a request and receiving a response. (Important for online systems)</dd>
+<dt>Latency</dt><dd>Latency is the duration that a request is waiting to be handled—during which it is latent, awaiting service.
+<ul class="org-ul">
+<li>The causes of outliers: context switch, the loss of a network packet, a garbage collection pause, a page fault forcing a read from disk, etc.</li>
+<li>Amazon describes response time requirements for internal services in terms of the 99.9th percentile,
+even though it only affects 1 in 1,000 requests. This is because the customers with the slowest requests
+are often those who have the most data on their accounts</li>
+<li>Reducing response times at very high percentiles is difficult because they are easily affected by random
+events outside of your control, and the benefits are diminishing.</li>
+</ul></dd>
+</dl>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgdbf981d" class="outline-4">
+<h4 id="orgdbf981d">Coping with Load</h4>
+<div class="outline-text-4" id="text-orgdbf981d">
+<p>
+Recommended Practices
+</p>
+<ul class="org-ul">
+<li>keep your database on a single node (scale up) until scaling cost or high-availability
+requirements forced you to make it distributed.</li>
+<li>An architecture that scales well for a particular application is built around assumptions
+of which operations will be common and which will be rare—the load parameters.</li>
+</ul>
+</div>
+</div>
+</div>
+
 
 <div id="outline-container-orgfe1cf21" class="outline-3">
 <h3 id="orgfe1cf21"><span class="section-number-3">1.6</span> Maintainability</h3>
@@ -367,7 +434,7 @@ they should all be able to work on it productively.
 <h3 id="orgf4e85c6"><span class="section-number-3">1.7</span> A Simple Architecture</h3>
 <div class="outline-text-3" id="text-1-7">
 
-<div id="org5b258aa" class="figure">
+<div id="orgfbaf866" class="figure">
 <p><img src="../resources/DDIA/simple_data_system_architecture.png" alt="simple_data_system_architecture.png" />
 </p>
 </div>
