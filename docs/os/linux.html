@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-<!-- 2021-12-08 Wed 18:09 -->
+<!-- 2021-12-27 Mon 13:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux Administration</title>
@@ -299,7 +299,7 @@
 <li><a href="#org96f82da">7.7. Designing Log Strategy</a></li>
 </ul>
 </li>
-<li><a href="#org35ff977">8. LDAP</a>
+<li><a href="#org5647826">8. LDAP</a>
 <ul>
 <li><a href="#org7185f80">8.1. openldap</a></li>
 <li><a href="#orgc836d2e">8.2. 389 Directory Server</a></li>
@@ -307,9 +307,11 @@
 <li><a href="#org16cc6ae">8.4. ldapsearch</a></li>
 </ul>
 </li>
-<li><a href="#orgf0f91fc">9. Networking</a>
+<li><a href="#org784129f">9. Network</a>
 <ul>
-<li><a href="#org98f913b">9.1. Troubleshooting</a></li>
+<li><a href="#org6b09767">9.1. DNS</a></li>
+<li><a href="#org4aa778d">9.2. DNS Processing</a></li>
+<li><a href="#org98f913b">9.3. Troubleshooting</a></li>
 </ul>
 </li>
 <li><a href="#org4d70424">10. Text Processing</a>
@@ -505,8 +507,8 @@ similar to multiuser mode, but with no GUI running on the console
 </li>
 </ul>
 </div>
-<div id="outline-container-org3f8c3ac" class="outline-4">
-<h4 id="org3f8c3ac"><span class="section-number-4">3.3.2</span> Implementations</h4>
+<div id="outline-container-orgbe6594d" class="outline-4">
+<h4 id="orgbe6594d"><span class="section-number-4">3.3.2</span> Implementations</h4>
 <div class="outline-text-4" id="text-3-3-2">
 </div>
 <ul class="org-ul">
@@ -1187,8 +1189,8 @@ startup files, etc.).
 <h3 id="orga31cb33"><span class="section-number-3">4.8</span> Centralizing account management</h3>
 <div class="outline-text-3" id="text-4-8">
 </div>
-<div id="outline-container-org08408a0" class="outline-4">
-<h4 id="org08408a0"><span class="section-number-4">4.8.1</span> LDAP</h4>
+<div id="outline-container-orgd5d6c90" class="outline-4">
+<h4 id="orgd5d6c90"><span class="section-number-4">4.8.1</span> LDAP</h4>
 </div>
 <div id="outline-container-orgf4fa455" class="outline-4">
 <h4 id="orgf4fa455"><span class="section-number-4">4.8.2</span> Identity management systems</h4>
@@ -1235,8 +1237,8 @@ PAM and Kerberos generally work together
 <div id="outline-container-org2b46da7" class="outline-4">
 <h4 id="org2b46da7"><span class="section-number-4">4.10.2</span> RBAC</h4>
 </div>
-<div id="outline-container-org1b742b6" class="outline-4">
-<h4 id="org1b742b6"><span class="section-number-4">4.10.3</span> Implementations</h4>
+<div id="outline-container-org54f747d" class="outline-4">
+<h4 id="org54f747d"><span class="section-number-4">4.10.3</span> Implementations</h4>
 <div class="outline-text-4" id="text-4-10-3">
 </div>
 <ul class="org-ul">
@@ -1879,8 +1881,8 @@ but not indefinitely</li>
 </div>
 </div>
 
-<div id="outline-container-org94d8231" class="outline-4">
-<h4 id="org94d8231"><span class="section-number-4">7.2.2</span> Configurations</h4>
+<div id="outline-container-org8903bf8" class="outline-4">
+<h4 id="org8903bf8"><span class="section-number-4">7.2.2</span> Configurations</h4>
 <div class="outline-text-4" id="text-7-2-2">
 <ul class="org-ul">
 <li>Configuration files: <code>/etc/rsyslog.conf</code> + <code>/etc/rsyslog.d/*.conf</code></li>
@@ -1902,22 +1904,26 @@ but not indefinitely</li>
 </ul>
 
 
-<div id="orgeffe4b3" class="figure">
+<div id="orge22cdbf" class="figure">
 <p><img src="../resources/os/SyslogFacilityNames.png" alt="SyslogFacilityNames.png" />
 </p>
 </div>
 
 
-<div id="orgfe8da6a" class="figure">
+<div id="orgbe65353" class="figure">
 <p><img src="../resources/os/SyslogSeverity.png" alt="SyslogSeverity.png" />
 </p>
 </div>
 
 
-<div id="org2c8ecdd" class="figure">
+<div id="org19f1820" class="figure">
 <p><img src="../resources/os/SyslogActions.png" alt="SyslogActions.png" />
 </p>
 </div>
+
+<pre class="example" id="org600bee6">
+auth.*  /var/log/auth.log
+</pre>
 </div>
 </div>
 
@@ -1938,13 +1944,8 @@ The <code>logger</code> command is useful for submitting log entries.
 The journal collects messages, stores them in an indexed and compressed binary format,
 and furnishes a command-line interface for viewing and filtering logs.
 </p>
-<ul class="org-ul">
-<li><code>systemd-journal-remote</code> utilities, to stream serialized journal messages over the network to a remote journal.
-<ul class="org-ul">
-<li><code>sudo apt install systemd-journal-remote</code></li>
-</ul></li>
-</ul>
 </div>
+
 <div id="outline-container-orgd565085" class="outline-4">
 <h4 id="orgd565085"><span class="section-number-4">7.3.1</span> <code>journalctl</code></h4>
 <div class="outline-text-4" id="text-7-3-1">
@@ -1974,15 +1975,23 @@ A logging daemon, collects messages from:
 <dt><code>/dev/kmsg</code></dt><dd>to collect messages from the Linux kernel</dd>
 <dt><code>/run/systemd/journal/stdout</code></dt><dd>to service software that writes log messages to standard output</dd>
 <dt><code>/run/systemd/journal/socket</code></dt><dd><b>to service software that submits messages through the systemd journal API</b></dd>
-<dt>(no term)</dt><dd>Audit messages from the kernel’s auditd daemon</dd>
-<dt>(no term)</dt><dd>Configurations
+
+<dt>kernel audited</dt><dd>Audit messages from the kernel's audited daemon</dd>
+</dl>
+</div>
+
+
+<ul class="org-ul">
+<li><a id="org22aa1f5"></a>Configurations<br />
+<div class="outline-text-5" id="text-org22aa1f5">
 <ul class="org-ul">
 <li>Default configuration file <code>/etc/systemd/journald.conf</code> (not editable)</li>
 <li>Add your customized configurations to the <code>/etc/systemd/journald.conf.d</code></li>
 <li><a href="https://www.freedesktop.org/software/systemd/man/journald.conf.html">reference</a></li>
-</ul></dd>
-</dl>
+</ul>
 </div>
+</li>
+</ul>
 </div>
 
 <div id="outline-container-orgce75db3" class="outline-4">
@@ -2016,7 +2025,7 @@ option in <code>journald.conf</code>. <code>yes</code> for socket-forwarding.
 <h3 id="orga966077"><span class="section-number-3">7.4</span> Centralized Log Cluster</h3>
 <div class="outline-text-3" id="text-7-4">
 
-<div id="org882bad1" class="figure">
+<div id="orgb0c3291" class="figure">
 <p><img src="../resources/os/CentralizedLogCluster.png" alt="CentralizedLogCluster.png" />
 </p>
 </div>
@@ -2030,7 +2039,7 @@ option in <code>journald.conf</code>. <code>yes</code> for socket-forwarding.
 <h3 id="org35a2174"><span class="section-number-3">7.5</span> Locations</h3>
 <div class="outline-text-3" id="text-7-5">
 
-<div id="orga927755" class="figure">
+<div id="org2e24551" class="figure">
 <p><img src="../resources/os/LogLocations.png" alt="LogLocations.png" />
 </p>
 </div>
@@ -2089,8 +2098,8 @@ Suggestions:
 </div>
 </div>
 
-<div id="outline-container-org35ff977" class="outline-2">
-<h2 id="org35ff977"><span class="section-number-2">8</span> LDAP</h2>
+<div id="outline-container-org5647826" class="outline-2">
+<h2 id="org5647826"><span class="section-number-2">8</span> LDAP</h2>
 <div class="outline-text-2" id="text-8">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -2200,14 +2209,101 @@ command-line tool
 </div>
 </div>
 </div>
-<div id="outline-container-orgf0f91fc" class="outline-2">
-<h2 id="orgf0f91fc"><span class="section-number-2">9</span> Networking</h2>
+<div id="outline-container-org784129f" class="outline-2">
+<h2 id="org784129f"><span class="section-number-2">9</span> Network</h2>
 <div class="outline-text-2" id="text-9">
 </div>
+<div id="outline-container-org6b09767" class="outline-3">
+<h3 id="org6b09767"><span class="section-number-3">9.1</span> DNS</h3>
+<div class="outline-text-3" id="text-9-1">
+<dl class="org-dl">
+<dt>BIND</dt><dd>Berkeley Internet Name Domain. Most common DNS implementation.</dd>
+</dl>
+</div>
+
+<div id="outline-container-orgbb2d1ea" class="outline-4">
+<h4 id="orgbb2d1ea"><span class="section-number-4">9.1.1</span> Configuration</h4>
+<div class="outline-text-4" id="text-9-1-1">
+</div>
+<ul class="org-ul">
+<li><a id="org08517cc"></a><code>/etc/resolv.conf</code><br />
+<div class="outline-text-5" id="text-org08517cc">
+<pre class="example" id="org56d6259">
+search abc.com edf.com
+nameserver x.x.x.x
+nameserver x.x.x.x
+</pre>
+<ul class="org-ul">
+<li>The <b>search</b> line lists the domains to query if a hostname is not fully qualified.</li>
+</ul>
+</div>
+</li>
+
+<li><a id="org82a1b15"></a><code>/etc/nsswitch.conf</code><br />
+<div class="outline-text-5" id="text-org82a1b15">
+<p>
+To specify how hostname-to-IP-address mappings should be performed
+and whether DNS should be tried first, last, or not at all.
+</p>
+
+<p>
+if no switch file is present, the default is <code>hosts: dns [!UNAVAIL=return] files</code>
+</p>
+<ul class="org-ul">
+<li>The <code>!UNAVAIL</code> clause means that if DNS is available but a name is not found there, the lookup
+attempt should fail rather than continuing to the next entry</li>
+<li>If no name server is running (as might be the case during boot), the lookup process does consult
+the hosts file.</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4aa778d" class="outline-3">
+<h3 id="org4aa778d"><span class="section-number-3">9.2</span> DNS Processing</h3>
+<div class="outline-text-3" id="text-9-2">
+
+<div id="org014db35" class="figure">
+<p><img src="../resources/os/DNSProcessing.png" alt="DNSProcessing.png" />
+</p>
+</div>
+<ul class="org-ul">
+<li><code>dig +trace</code></li>
+</ul>
+</div>
+</div>
+
 <div id="outline-container-org98f913b" class="outline-3">
-<h3 id="org98f913b"><span class="section-number-3">9.1</span> Troubleshooting</h3>
+<h3 id="org98f913b"><span class="section-number-3">9.3</span> Troubleshooting</h3>
+<div class="outline-text-3" id="text-9-3">
+</div>
+<div id="outline-container-org165bfca" class="outline-4">
+<h4 id="org165bfca"><span class="section-number-4">9.3.1</span> Tools</h4>
+<div class="outline-text-4" id="text-9-3-1">
+<ul class="org-ul">
+<li><code>nslookup</code>, <code>host</code>: simple and have pretty output.</li>
+<li><code>dig</code>, <code>drill</code>: to get all the details.</li>
+<li><code>delv</code>: new and will eventually replace drill for DNSSEC debugging.</li>
+</ul>
 </div>
 </div>
+
+<div id="outline-container-org070f3d6" class="outline-4">
+<h4 id="org070f3d6"><span class="section-number-4">9.3.2</span> An Example</h4>
+<div class="outline-text-4" id="text-9-3-2">
+<div class="org-src-container">
+<pre class="src src-bash">dig @a.root-servers.net viawest.com soa <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">start-of-authority(SOA)</span>
+dig @ns1.viawest.net viawest.com so
+dig @ns1.viawest.net www.viawest.com ANY
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
 <div id="outline-container-org4d70424" class="outline-2">
 <h2 id="org4d70424"><span class="section-number-2">10</span> Text Processing</h2>
 <div class="outline-text-2" id="text-10">
@@ -3060,7 +3156,7 @@ forms <b>${#array_name[*]}</b> and <b>${#array_name[@]}</b> yield the number of 
 <h3 id="orgfdf1acf"><span class="section-number-3">13.1</span> Performance Tools</h3>
 <div class="outline-text-3" id="text-13-1">
 
-<div id="org0c6beb7" class="figure">
+<div id="orgb2881dd" class="figure">
 <p><img src="../resources/os/perftools.png" alt="perftools.png" />
 </p>
 </div>

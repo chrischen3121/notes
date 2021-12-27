@@ -505,14 +505,17 @@ share files by way of the group mechanism, create separate groups for that purpo
 
     [[../resources/os/SyslogActions.png]]
 
+    #+begin_example
+      auth.*  /var/log/auth.log
+    #+end_example
+
 *** Test
     The ~logger~ command is useful for submitting log entries.
 
 ** Systemd Journal
    The journal collects messages, stores them in an indexed and compressed binary format,
    and furnishes a command-line interface for viewing and filtering logs.
-   - ~systemd-journal-remote~ utilities, to stream serialized journal messages over the network to a remote journal.
-     - ~sudo apt install systemd-journal-remote~
+
 *** ~journalctl~
     ~journalctl~ is a tool to view logs.
 
@@ -527,11 +530,14 @@ share files by way of the group mechanism, create separate groups for that purpo
     - =/dev/kmsg= :: to collect messages from the Linux kernel
     - =/run/systemd/journal/stdout= :: to service software that writes log messages to standard output
     - =/run/systemd/journal/socket= :: *to service software that submits messages through the systemd journal API*
-    - Audit messages from the kernel’s auditd daemon
-    - Configurations
-      - Default configuration file =/etc/systemd/journald.conf= (not editable)
-      - Add your customized configurations to the =/etc/systemd/journald.conf.d=
-      - [[https://www.freedesktop.org/software/systemd/man/journald.conf.html][reference]]
+
+    - kernel audited :: Audit messages from the kernel's audited daemon
+
+
+**** Configurations
+     - Default configuration file =/etc/systemd/journald.conf= (not editable)
+     - Add your customized configurations to the =/etc/systemd/journald.conf.d=
+     - [[https://www.freedesktop.org/software/systemd/man/journald.conf.html][reference]]
 
 *** ~systemd-journal-remote~
     The utilities are used to stream serialized journal messages over the network to a remote journal.
@@ -614,8 +620,46 @@ share files by way of the group mechanism, create separate groups for that purpo
 ** phpLDAPadmin
 ** ldapsearch
    command-line tool
-* Networking
+* Network
+** DNS
+   - BIND :: Berkeley Internet Name Domain. Most common DNS implementation.
+
+*** Configuration
+**** =/etc/resolv.conf=
+      #+begin_example
+        search abc.com edf.com
+        nameserver x.x.x.x
+        nameserver x.x.x.x
+      #+end_example
+      - The *search* line lists the domains to query if a hostname is not fully qualified.
+
+**** =/etc/nsswitch.conf=
+     To specify how hostname-to-IP-address mappings should be performed
+     and whether DNS should be tried first, last, or not at all.
+
+     if no switch file is present, the default is ~hosts: dns [!UNAVAIL=return] files~
+     - The ~!UNAVAIL~ clause means that if DNS is available but a name is not found there, the lookup
+       attempt should fail rather than continuing to the next entry
+     -  If no name server is running (as might be the case during boot), the lookup process does consult
+       the hosts file.
+
+** DNS Processing
+   [[../resources/os/DNSProcessing.png]]
+   - ~dig +trace~
+
 ** Troubleshooting
+*** Tools
+   - ~nslookup~, ~host~: simple and have pretty output.
+   - ~dig~, ~drill~: to get all the details.
+   - ~delv~: new and will eventually replace drill for DNSSEC debugging.
+
+*** An Example
+    #+begin_src bash
+      dig @a.root-servers.net viawest.com soa # start-of-authority(SOA)
+      dig @ns1.viawest.net viawest.com so
+      dig @ns1.viawest.net www.viawest.com ANY
+    #+end_src
+
 * Text Processing
    - =cut=: separate lines into fields
    - =sort=: sort lines
