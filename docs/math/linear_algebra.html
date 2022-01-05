@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-12-14 Tue 11:43 -->
+<!-- 2022-01-04 Tue 11:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linear Algebra</title>
@@ -224,36 +224,54 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7c44fb5">1. Vector</a>
+<li><a href="#org53fae67">1. Concepts</a></li>
+<li><a href="#org7c44fb5">2. Vector</a>
 <ul>
-<li><a href="#orged6eff6">1.1. Addition</a></li>
-<li><a href="#org4beb192">1.2. Magnitudes(Modulus)</a></li>
-<li><a href="#org628a667">1.3. Multiplication(Dot Product)</a></li>
+<li><a href="#orged6eff6">2.1. Addition</a></li>
+<li><a href="#org4beb192">2.2. Magnitudes(Modulus)</a></li>
+<li><a href="#org628a667">2.3. Multiplication(Dot Product)</a></li>
 </ul>
 </li>
-<li><a href="#orge0908ee">2. Matrix</a>
+<li><a href="#orge0908ee">3. Matrix</a>
 <ul>
-<li><a href="#org9869315">2.1. Rotation Matrix</a></li>
-<li><a href="#org3ad05fe">2.2. Matrix Inverses</a></li>
-<li><a href="#org5e1cfad">2.3. Python Code</a></li>
-<li><a href="#org9dfccfe">2.4. Dot Product</a></li>
+<li><a href="#org9869315">3.1. Rotation Matrix</a></li>
+<li><a href="#org1354461">3.2. Determinants</a></li>
+<li><a href="#org3ad05fe">3.3. Matrix Inverses</a></li>
+<li><a href="#org5e1cfad">3.4. Python Code</a></li>
+<li><a href="#org9dfccfe">3.5. Dot Product</a></li>
 </ul>
 </li>
-<li><a href="#org04b31ad">3. Basis Transformation</a></li>
+<li><a href="#org04b31ad">4. Basis Transformation</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org7c44fb5" class="outline-2">
-<h2 id="org7c44fb5"><span class="section-number-2">1</span> Vector</h2>
+<div id="outline-container-org53fae67" class="outline-2">
+<h2 id="org53fae67"><span class="section-number-2">1</span> Concepts</h2>
 <div class="outline-text-2" id="text-1">
+<dl class="org-dl">
+<dt>Linear Combinations</dt><dd>\(a\vec{v}+b\vec{w}\) is the linear combination of \(\vec{v}\) and \(\vec{w}\), \(a\) and \(b\) are scalars.</dd>
+<dt>Span</dt><dd>The "span" of \(\vec{v}\) and \(\vec{w}\) is the set of <b>all</b> their linear combinations.</dd>
+<dt>Linearly Dependent</dt><dd>one of the vectors can be expressed as a linear combination of the others since it's already in the span of the others. i.e. \(\exists{a}\exists{b} | \vec{u} = a\vec{v} + b\vec{w}\)</dd>
+<dt>Linearly Independent</dt><dd>\(\forall{a}\forall{b} | \vec{u}\ne a\vec{v}+b\vec{w}\)
+<ul class="org-ul">
+<li>Definitions treats all vectors equally: \(a\vec{v}+b\vec{w}+c\vec{u}=\vec{0}\) if the only solution is \(a=b=c=0\)</li>
+</ul></dd>
+<dt>Basis</dt><dd>The <b>basis</b> of a vector space is a set of <b>linearly independent</b> vectors that <b>span</b> the full space.</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org7c44fb5" class="outline-2">
+<h2 id="org7c44fb5"><span class="section-number-2">2</span> Vector</h2>
+<div class="outline-text-2" id="text-2">
 </div>
 <div id="outline-container-orged6eff6" class="outline-3">
-<h3 id="orged6eff6"><span class="section-number-3">1.1</span> Addition</h3>
-<div class="outline-text-3" id="text-1-1">
+<h3 id="orged6eff6"><span class="section-number-3">2.1</span> Addition</h3>
+<div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>Commutative: \(\vec{a}+\vec{b}=\vec{b}+\vec{a}\)</li>
 <li>Associativity: \((\vec{a}+\vec{b}) + \vec{c}=\vec{a} + (\vec{b} + \vec{c})\)</li>
-<li>Additive Identity: There exists an element \(\vec{0}\) such that \(\vec{a}+\vec{0}=\vec{a}\)</li>
+<li>Additive Identity: There exists an element \(\vec{0}\) such that   \(\vec{a}+\vec{0}=\vec{a}\)</li>
 <li>Additive Inverse: \(\forall{\vec{a}}\exists{\vec{b}}\vec{a}+\vec{b}=\vec{0}\)</li>
 <li>Multiplicative Identity: \(\forall{\vec{a}}\vec{1}\vec{a}=\vec{a}\)</li>
 <li>Distributive: \(s(\vec{a}+\vec{b})=s\vec{a}+s\vec{b}\)</li>
@@ -262,8 +280,8 @@
 </div>
 
 <div id="outline-container-org4beb192" class="outline-3">
-<h3 id="org4beb192"><span class="section-number-3">1.2</span> Magnitudes(Modulus)</h3>
-<div class="outline-text-3" id="text-1-2">
+<h3 id="org4beb192"><span class="section-number-3">2.2</span> Magnitudes(Modulus)</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 \[\vec{a} = \begin{bmatrix}x \\ y\end{bmatrix}\]
 \[\left\|\vec{a}\right\|=\sqrt{x^2+y^2}\]
@@ -275,8 +293,8 @@
 </div>
 
 <div id="outline-container-org628a667" class="outline-3">
-<h3 id="org628a667"><span class="section-number-3">1.3</span> Multiplication(Dot Product)</h3>
-<div class="outline-text-3" id="text-1-3">
+<h3 id="org628a667"><span class="section-number-3">2.3</span> Multiplication(Dot Product)</h3>
+<div class="outline-text-3" id="text-2-3">
 </div>
 <div id="outline-container-org13f65d3" class="outline-4">
 <h4 id="org13f65d3">Geometric Meaning</h4>
@@ -297,7 +315,7 @@
 <h4 id="orgcc415b4">Vector Projection</h4>
 <div class="outline-text-4" id="text-orgcc415b4">
 
-<div id="orgc6c88cd" class="figure">
+<div id="org2a0d39c" class="figure">
 <p><img src="../resources/math/LinearAlgebra/scale_projection.png" alt="scale_projection.png" />
 </p>
 </div>
@@ -340,8 +358,8 @@
 </div>
 
 <div id="outline-container-orge0908ee" class="outline-2">
-<h2 id="orge0908ee"><span class="section-number-2">2</span> Matrix</h2>
-<div class="outline-text-2" id="text-2">
+<h2 id="orge0908ee"><span class="section-number-2">3</span> Matrix</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 Matrices make transformations on vectors, potentially changing their magnitude and direction.
 </p>
@@ -354,8 +372,8 @@ Matrices make transformations on vectors, potentially changing their magnitude a
 </div>
 
 <div id="outline-container-org9869315" class="outline-3">
-<h3 id="org9869315"><span class="section-number-3">2.1</span> Rotation Matrix</h3>
-<div class="outline-text-3" id="text-2-1">
+<h3 id="org9869315"><span class="section-number-3">3.1</span> Rotation Matrix</h3>
+<div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
 <li>2D</li>
 </ul>
@@ -378,9 +396,33 @@ Matrices make transformations on vectors, potentially changing their magnitude a
 </div>
 </div>
 
+<div id="outline-container-org1354461" class="outline-3">
+<h3 id="org1354461"><span class="section-number-3">3.2</span> Determinants</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li>2D</li>
+</ul>
+<p>
+\[A=\begin{bmatrix} a & b \\
+   c & d
+   \end{bmatrix}\]
+The determinant is the area \(|A|=ad-bc\)
+</p>
+<ul class="org-ul">
+<li>3D</li>
+</ul>
+<p>
+\[A=\begin{bmatrix} a & b & c \\
+   d & e & f \\
+   g & h & i \end{bmatrix}\]
+\[|A|=a\begin{bmatrix}e & f \\ h & i\end{bmatrix}+b\begin{bmatrix}d & f \\ g & i\end{bmatrix}+c\begin{bmatrix}d & e \\ g & h\end{bmatrix}\]
+</p>
+</div>
+</div>
+
 <div id="outline-container-org3ad05fe" class="outline-3">
-<h3 id="org3ad05fe"><span class="section-number-3">2.2</span> Matrix Inverses</h3>
-<div class="outline-text-3" id="text-2-2">
+<h3 id="org3ad05fe"><span class="section-number-3">3.3</span> Matrix Inverses</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 \[A^{-1}\cdot A=I\]
 \[A\cdot \mathbf{r} = \mathbf{s}\]
@@ -388,6 +430,7 @@ Matrices make transformations on vectors, potentially changing their magnitude a
 \[I\mathbf{r}=A^{-1}\cdot\mathbf{s}\]
 </p>
 <ul class="org-ul">
+<li>\(\mathbf{r}\cdot A = \mathbf{s}\) inverse: \(\mathbf{s}\cdot A^{-1} = \mathbf{r}\)</li>
 <li>our goal is to find \(A^{-1}\)</li>
 </ul>
 </div>
@@ -403,8 +446,8 @@ If a matrix is singular, that means an inverse doesn't exist.
 </div>
 
 <div id="outline-container-org5e1cfad" class="outline-3">
-<h3 id="org5e1cfad"><span class="section-number-3">2.3</span> Python Code</h3>
-<div class="outline-text-3" id="text-2-3">
+<h3 id="org5e1cfad"><span class="section-number-3">3.4</span> Python Code</h3>
+<div class="outline-text-3" id="text-3-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
 
@@ -422,8 +465,8 @@ Avin.dot<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</
 </div>
 </div>
 <div id="outline-container-org9dfccfe" class="outline-3">
-<h3 id="org9dfccfe"><span class="section-number-3">2.4</span> Dot Product</h3>
-<div class="outline-text-3" id="text-2-4">
+<h3 id="org9dfccfe"><span class="section-number-3">3.5</span> Dot Product</h3>
+<div class="outline-text-3" id="text-3-5">
 <ul class="org-ul">
 <li>Einstein's summation notation for \(\mathbf{C=AB}\)
 \[c_{ik}=a_{ij} b_{jk}\]</li>
@@ -435,16 +478,17 @@ Avin.dot<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</
 </div>
 </div>
 </div>
+
 <div id="outline-container-org04b31ad" class="outline-2">
-<h2 id="org04b31ad"><span class="section-number-2">3</span> Basis Transformation</h2>
-<div class="outline-text-2" id="text-3">
+<h2 id="org04b31ad"><span class="section-number-2">4</span> Basis Transformation</h2>
+<div class="outline-text-2" id="text-4">
 <p>
-\[\mathbf{B}\cdot\begin{bmatrix} x_{b^\prime} \\ y_{b^\prime} \end{bmatrix}=\begin{bmatrix} x_b \\ y_b \end{bmatrix}\]
-\[\mathbf{B^{-1}}\cdot \begin{bmatrix} x_b \\ y_b \end{bmatrix}=\begin{bmatrix} x_{b^\prime} \\ y_{b^\prime} \end{bmatrix}\]
+\[\mathbf{B}\cdot\begin{bmatrix} x_{new} \\ y_{new} \end{bmatrix}=\begin{bmatrix} x_{old} \\ y_{old} \end{bmatrix}\]
+\[\mathbf{B^{-1}}\cdot \begin{bmatrix} x_{old} \\ y_{old} \end{bmatrix}=\begin{bmatrix} x_{new} \\ y_{new} \end{bmatrix}\]
 </p>
 <ul class="org-ul">
 <li>\(B\) is the new basis written in old basis language.</li>
-<li>\(B^{-1}\) is the new old written in new basis language.</li>
+<li>\(B^{-1}\) is the old basis written in new basis language.</li>
 </ul>
 </div>
 </div>
