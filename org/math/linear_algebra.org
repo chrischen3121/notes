@@ -29,17 +29,16 @@
     - Cosine Rule: $c^2=a^2+b^2-2ab\cos{\theta}$
       $$\left\|\vec{x}-\vec{y}\right\|^2=\left\|\vec{x}\right\|^2 + \left\|\vec{y}\right\|^2 - 2\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}$$
       $$\because\left\|\vec{x}\right\|^2 = \vec{x}\cdot\vec{x}\mathbf{\ and\ }(\vec{x}-\vec{y})\cdot(\vec{x}-\vec{y})=\vec{x}\cdot\vec{x}+\vec{y}\cdot\vec{y}-2\vec{x}\cdot\vec{y} \mathbf{\ Distributive Rule}$$
-      $$\vec{x}\cdot\vec{y}=\left\|\vec{x}\right\|\times\mathbf{projection\ y\ on\ x}=\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}$$
-      $$\frac{\vec{x}\cdot\vec{y}}{\left\|\vec{x}\right\|}=\left\|\vec{y}\right\|\cos\theta \text{(scaler projection)}$$
-    - $\left\|\vec{y}\right\|\cos{\theta}$ is the *scaler projection* of $\vec{y}$ on $\vec{x}$
+      $$\vec{x}\cdot\vec{y}=\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}=\left\|\vec{x}\right\|\times\mathbf{projection\ y\ on\ x}$$
+      $$\frac{\vec{x}\cdot\vec{y}}{\left\|\vec{x}\right\|}=\left\|\vec{y}\right\|\cos\theta \text{(scalar projection)}$$
+    - $\left\|\vec{y}\right\|\cos{\theta}$ is the *scalar projection* of $\vec{y}$ on $\vec{x}$
     - Dot product is also called *projection product*.
 
 *** Vector Projection
     [[../resources/math/LinearAlgebra/scale_projection.png]]
-    - The *scaler projection* is the size of the green vector.
-      - $\frac{\vec{s}\cdot\vec{r}}{\left\|\vec{r}\right\|}$
+    - The *scalar projection* is the size of the green vector. $\frac{\vec{s}\cdot\vec{r}}{\left\|\vec{r}\right\|}$
     - The *vector projection* is the green vector and can be calculated
-      $$\mathbf{vector\ projection}=\mathbf{scaler\ projection}\times\frac{\vec{r}}{\left\|\vec{r}\right\|}=\frac{\vec{s}\cdot\vec{r}}{\left\|\vec{r}\right\|}\times\frac{\vec{r}}{\left\|\vec{r}\right\|}=\frac{\vec{s}\cdot\vec{r}}{\vec{r}\cdot\vec{r}}\cdot \vec{r}$$
+      $$\mathbf{vector\ projection}=\mathbf{scalar\ projection}\times\frac{\vec{r}}{\left\|\vec{r}\right\|}=\frac{\vec{s}\cdot\vec{r}}{\left\|\vec{r}\right\|}\times\frac{\vec{r}}{\left\|\vec{r}\right\|}=\frac{\vec{s}\cdot\vec{r}}{\vec{r}\cdot\vec{r}}\cdot \vec{r}$$
       - $\frac{\vec{r}}{\left\|\vec{r}\right\|}$ is the unit length of $\vec{r}$
       - $\frac{\vec{s}\cdot\vec{r}}{\vec{r}\cdot\vec{r}}$ is the new coordinate of $\vec{s}$ on $\vec{r}$
 
@@ -131,3 +130,56 @@
   $$\mathbf{B^{-1}}\cdot \begin{bmatrix} x_{old} \\ y_{old} \end{bmatrix}=\begin{bmatrix} x_{new} \\ y_{new} \end{bmatrix}$$
   - $B$ is the new basis written in old basis language.
   - $B^{-1}$ is the old basis written in new basis language.
+
+* Python Code
+  #+begin_src python
+    import numpy as np
+    import scipy
+
+    # create matrix
+    A = np.array([[1, 2], [3, 4], [5, 6]])
+
+    # create vector
+    v = np.array([[1], [2], [3]])
+    v = np.array([[1, 2, 3]]).T
+    v = np.array([1, 2, 3]).reshape(3, 1)
+    v = np.array([1, 2, 3]).reshape(-1, 1)
+
+    # dot product
+    A.T @ v
+    A.T.dot(v)
+    np.dot(A.T, v)
+  #+end_src
+
+** Convenience Constructors
+   - ~np.zeros~, ~np.ones~
+   - ~np.random.rand~: 0 to 1, taken from a uniform distribution
+   - ~np.random.randn~: from a normal distribution with zero mean and unit variance
+
+** ~scipy.linalg~
+   #+begin_src python
+     from scipy import linalg
+     import numpy as np
+
+     v = np.array([1, 2, 3]).reshape(-1, 1)
+
+
+     # Magnitude (length of a vector) sqrt(x**2+y**2)
+     magnitude = linalg.norm(v)
+
+     # Scalar projection
+     x = np.array([2, 3])
+     y = np.array([4, 5])
+     scalar_proj_y_on_x = np.dot(x, y) / linalg.norm(x)
+
+     # Vector projection
+     vector_proj_y_on_x = np.dot(np.dot(x, y)/np.dot(x,x), x)
+
+     # inverse matrix
+     A = np.array([[1, 1, 3], [1, 2, 4], [1, 1, 2]])
+     Ainv = linalg.inv(A)
+
+     # solve
+     y = np.array([5, 8, 5]).reshape(-1, 1)
+     x = linalg.solve(A, y)
+   #+end_src

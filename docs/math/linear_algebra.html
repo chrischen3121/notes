@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-01-12 Wed 09:11 -->
+<!-- 2022-01-13 Thu 16:34 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linear Algebra</title>
@@ -237,11 +237,17 @@
 <li><a href="#org9869315">3.1. Rotation Matrix</a></li>
 <li><a href="#org1354461">3.2. Determinants</a></li>
 <li><a href="#org3ad05fe">3.3. Matrix Inverses</a></li>
-<li><a href="#org5e1cfad">3.4. Python Code</a></li>
+<li><a href="#org5522f99">3.4. Python Code</a></li>
 <li><a href="#org9dfccfe">3.5. Dot Product</a></li>
 </ul>
 </li>
 <li><a href="#org04b31ad">4. Basis Transformation</a></li>
+<li><a href="#org17f125e">5. Python Code</a>
+<ul>
+<li><a href="#org5882e69">5.1. Convenience Constructors</a></li>
+<li><a href="#orgcff30a2">5.2. <code>scipy.linalg</code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -303,9 +309,9 @@
 <li>Cosine Rule: \(c^2=a^2+b^2-2ab\cos{\theta}\)
 \[\left\|\vec{x}-\vec{y}\right\|^2=\left\|\vec{x}\right\|^2 + \left\|\vec{y}\right\|^2 - 2\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}\]
 \[\because\left\|\vec{x}\right\|^2 = \vec{x}\cdot\vec{x}\mathbf{\ and\ }(\vec{x}-\vec{y})\cdot(\vec{x}-\vec{y})=\vec{x}\cdot\vec{x}+\vec{y}\cdot\vec{y}-2\vec{x}\cdot\vec{y} \mathbf{\ Distributive Rule}\]
-\[\vec{x}\cdot\vec{y}=\left\|\vec{x}\right\|\times\mathbf{projection\ y\ on\ x}=\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}\]
-\[\frac{\vec{x}\cdot\vec{y}}{\left\|\vec{x}\right\|}=\left\|\vec{y}\right\|\cos\theta \text{(scaler projection)}\]</li>
-<li>\(\left\|\vec{y}\right\|\cos{\theta}\) is the <b>scaler projection</b> of \(\vec{y}\) on \(\vec{x}\)</li>
+\[\vec{x}\cdot\vec{y}=\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}=\left\|\vec{x}\right\|\times\mathbf{projection\ y\ on\ x}\]
+\[\frac{\vec{x}\cdot\vec{y}}{\left\|\vec{x}\right\|}=\left\|\vec{y}\right\|\cos\theta \text{(scalar projection)}\]</li>
+<li>\(\left\|\vec{y}\right\|\cos{\theta}\) is the <b>scalar projection</b> of \(\vec{y}\) on \(\vec{x}\)</li>
 <li>Dot product is also called <b>projection product</b>.</li>
 </ul>
 </div>
@@ -315,17 +321,14 @@
 <h4 id="orgcc415b4">Vector Projection</h4>
 <div class="outline-text-4" id="text-orgcc415b4">
 
-<div id="org7f09b49" class="figure">
+<div id="orgc3ae196" class="figure">
 <p><img src="../resources/math/LinearAlgebra/scale_projection.png" alt="scale_projection.png" />
 </p>
 </div>
 <ul class="org-ul">
-<li>The <b>scaler projection</b> is the size of the green vector.
-<ul class="org-ul">
-<li>\(\frac{\vec{s}\cdot\vec{r}}{\left\|\vec{r}\right\|}\)</li>
-</ul></li>
+<li>The <b>scalar projection</b> is the size of the green vector. \(\frac{\vec{s}\cdot\vec{r}}{\left\|\vec{r}\right\|}\)</li>
 <li>The <b>vector projection</b> is the green vector and can be calculated
-\[\mathbf{vector\ projection}=\mathbf{scaler\ projection}\times\frac{\vec{r}}{\left\|\vec{r}\right\|}=\frac{\vec{s}\cdot\vec{r}}{\left\|\vec{r}\right\|}\times\frac{\vec{r}}{\left\|\vec{r}\right\|}=\frac{\vec{s}\cdot\vec{r}}{\vec{r}\cdot\vec{r}}\cdot \vec{r}\]
+\[\mathbf{vector\ projection}=\mathbf{scalar\ projection}\times\frac{\vec{r}}{\left\|\vec{r}\right\|}=\frac{\vec{s}\cdot\vec{r}}{\left\|\vec{r}\right\|}\times\frac{\vec{r}}{\left\|\vec{r}\right\|}=\frac{\vec{s}\cdot\vec{r}}{\vec{r}\cdot\vec{r}}\cdot \vec{r}\]
 <ul class="org-ul">
 <li>\(\frac{\vec{r}}{\left\|\vec{r}\right\|}\) is the unit length of \(\vec{r}\)</li>
 <li>\(\frac{\vec{s}\cdot\vec{r}}{\vec{r}\cdot\vec{r}}\) is the new coordinate of \(\vec{s}\) on \(\vec{r}\)</li>
@@ -343,9 +346,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgf9c16cc" class="outline-4">
-<h4 id="orgf9c16cc">Rules</h4>
-<div class="outline-text-4" id="text-orgf9c16cc">
+<div id="outline-container-orgef1c11e" class="outline-4">
+<h4 id="orgef1c11e">Rules</h4>
+<div class="outline-text-4" id="text-orgef1c11e">
 <ul class="org-ul">
 <li>Commutative</li>
 <li>Distributive over Addition: \(\vec{a}(\vec{b}+\vec{c})=\vec{a}\vec{b}+\vec{a}\vec{c}\)</li>
@@ -408,7 +411,7 @@ The determinant is the area(2D)/volume(3D) of the matrix. <a href="https://youtu
 <h4 id="orgf6b32b1">2D</h4>
 <div class="outline-text-4" id="text-orgf6b32b1">
 
-<div id="org1200ab0" class="figure">
+<div id="org2ba097f" class="figure">
 <p><img src="../resources/math/LinearAlgebra/2D_determinant.png" alt="2D_determinant.png" />
 </p>
 </div>
@@ -434,9 +437,9 @@ The determinant is the area \(det(A)=ad-bc\)
 </div>
 </div>
 
-<div id="outline-container-orgb4a5d14" class="outline-4">
-<h4 id="orgb4a5d14">Rules</h4>
-<div class="outline-text-4" id="text-orgb4a5d14">
+<div id="outline-container-orgc58a51c" class="outline-4">
+<h4 id="orgc58a51c">Rules</h4>
+<div class="outline-text-4" id="text-orgc58a51c">
 <ul class="org-ul">
 <li>The determinant is 0 means the transformation takes the basis vectors into vectors that are <b>linearly dependent</b>.</li>
 <li>\(det(AB)=det(A)det(B)\)</li>
@@ -470,8 +473,8 @@ If a matrix is singular, that means an inverse doesn't exist.
 </div>
 </div>
 
-<div id="outline-container-org5e1cfad" class="outline-3">
-<h3 id="org5e1cfad"><span class="section-number-3">3.4</span> Python Code</h3>
+<div id="outline-container-org5522f99" class="outline-3">
+<h3 id="org5522f99"><span class="section-number-3">3.4</span> Python Code</h3>
 <div class="outline-text-3" id="text-3-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
@@ -515,6 +518,75 @@ Avin.dot<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</
 <li>\(B\) is the new basis written in old basis language.</li>
 <li>\(B^{-1}\) is the old basis written in new basis language.</li>
 </ul>
+</div>
+</div>
+
+<div id="outline-container-org17f125e" class="outline-2">
+<h2 id="org17f125e"><span class="section-number-2">5</span> Python Code</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+<span style="color: #3a81c3; font-weight: bold;">import</span> scipy
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">create matrix</span>
+<span style="color: #715ab1;">A</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">[</span>1, 2<span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span>3, 4<span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span>5, 6<span style="color: #2d9574;">]</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">create vector</span>
+<span style="color: #715ab1;">v</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">[</span>1<span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span>2<span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span>3<span style="color: #2d9574;">]</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">v</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">[</span>1, 2, 3<span style="color: #2d9574;">]</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.T
+<span style="color: #715ab1;">v</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>1, 2, 3<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.reshape<span style="color: #3a81c3;">(</span>3, 1<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">v</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>1, 2, 3<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.reshape<span style="color: #3a81c3;">(</span>-1, 1<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">dot product</span>
+A.T @ v
+A.T.dot<span style="color: #3a81c3;">(</span>v<span style="color: #3a81c3;">)</span>
+np.dot<span style="color: #3a81c3;">(</span>A.T, v<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org5882e69" class="outline-3">
+<h3 id="org5882e69"><span class="section-number-3">5.1</span> Convenience Constructors</h3>
+<div class="outline-text-3" id="text-5-1">
+<ul class="org-ul">
+<li><code>np.zeros</code>, <code>np.ones</code></li>
+<li><code>np.random.rand</code>: 0 to 1, taken from a uniform distribution</li>
+<li><code>np.random.randn</code>: from a normal distribution with zero mean and unit variance</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcff30a2" class="outline-3">
+<h3 id="orgcff30a2"><span class="section-number-3">5.2</span> <code>scipy.linalg</code></h3>
+<div class="outline-text-3" id="text-5-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">from</span> scipy <span style="color: #3a81c3; font-weight: bold;">import</span> linalg
+<span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
+
+<span style="color: #715ab1;">v</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>1, 2, 3<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.reshape<span style="color: #3a81c3;">(</span>-1, 1<span style="color: #3a81c3;">)</span>
+
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Magnitude (length of a vector) sqrt(x**2+y**2)</span>
+<span style="color: #715ab1;">magnitude</span> = linalg.norm<span style="color: #3a81c3;">(</span>v<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Scalar projection</span>
+<span style="color: #715ab1;">x</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>2, 3<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">y</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>4, 5<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">scalar_proj_y_on_x</span> = np.dot<span style="color: #3a81c3;">(</span>x, y<span style="color: #3a81c3;">)</span> / linalg.norm<span style="color: #3a81c3;">(</span>x<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">Vector projection</span>
+<span style="color: #715ab1;">vector_proj_y_on_x</span> = np.dot<span style="color: #3a81c3;">(</span>np.dot<span style="color: #6c3163;">(</span>x, y<span style="color: #6c3163;">)</span>/np.dot<span style="color: #6c3163;">(</span>x,x<span style="color: #6c3163;">)</span>, x<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">inverse matrix</span>
+<span style="color: #715ab1;">A</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span><span style="color: #2d9574;">[</span>1, 1, 3<span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span>1, 2, 4<span style="color: #2d9574;">]</span>, <span style="color: #2d9574;">[</span>1, 1, 2<span style="color: #2d9574;">]</span><span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">Ainv</span> = linalg.inv<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</span>
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">solve</span>
+<span style="color: #715ab1;">y</span> = np.array<span style="color: #3a81c3;">(</span><span style="color: #6c3163;">[</span>5, 8, 5<span style="color: #6c3163;">]</span><span style="color: #3a81c3;">)</span>.reshape<span style="color: #3a81c3;">(</span>-1, 1<span style="color: #3a81c3;">)</span>
+<span style="color: #715ab1;">x</span> = linalg.solve<span style="color: #3a81c3;">(</span>A, y<span style="color: #3a81c3;">)</span>
+</pre>
+</div>
+</div>
 </div>
 </div>
 </div>
