@@ -72,65 +72,15 @@
    1. Cancel these tasks (you may choose to handle ~asyncio.CancelledError~ in a try/except within the body of the coroutine function).
    1. Gather all these tasks into a group task.
    1. Use ~run_until_complete()~ on the group task to wait for them to finish. i.e. let the CancelledError be raised and dealt with.
-
-   - ~asyncio.run()~ performs these actions for you
-     - Internally within ~asyncio.run()~, the raised KeyboardInterrupt effectively unblocks a loop.run_until_complete() call and allows the subsequent shutdown sequence to happen.
-
-
-*** Details
-   #+begin_src python
-     import asyncio
-
-     loop = asyncio.get_event_loop()
-     pendings = asyncio.all_tasks()
-     group = asyncio.gather(*pendings, return_exceptions=True)
-     results = loop.run_until_complete(group)
-     print(f'Results: {results}')
-     loop.close()
-   #+end_src
+   1. Internally within ~asyncio.run()~, the raised KeyboardInterrupt effectively unblocks a loop.run_until_complete() call and allows the subsequent shutdown sequence to happen.
 
 *** Tiny PyPI Package ~aiorun~
     https://github.com/cjrh/aiorun
+    The ~run()~ function will handle *everything* that normally needs to be done during the shutdown sequence of the application.
 
 *** Deal with Signals
    - SIGINT: KeyboardInterrupt corresponds to the SIGINT signal
    - SIGTERM: default signal when you use the kill command in a Unix shell
-   #+begin_src python
-     import asyncio
-     from signal import SIGINT, SIGTERM
-
-     async def main():
-         try:
-             while True:
-                 print("<Your app is running>")
-                 await asyncio.sleep(1)
-         except asyncio.CancelledError:
-             for i in range(3):
-                 print("<Your app is shutting down...>")
-                 await asyncio.sleep(1)
-
-     def handler(sig):
-         loop.stop()
-         print(f"Got signal: {sig!s}, shutting down.")
-         loop.remove_signal_handler(SIGTERM)
-         loop.add_signal_handler(SIGINT, lambda: None)
-
-
-     if __name__ == "__main__":
-         loop = asyncio.get_event_loop()
-         for sig in (SIGTERM, SIGINT):
-             loop.add_signal_handler(sig, handler, sig)
-         loop.create_task(main())
-         loop.run_forever()
-         tasks = asyncio.all_tasks(loop=loop)
-         for t in tasks:
-             t.cancel()
-         group = asyncio.gather(*tasks, return_exceptions=True)
-         loop.run_until_complete(group)
-         loop.close()
-   #+end_src
-   - After you receive the first shutdown signal, you want to simply ignore any new signals until exit.
-   - Simplify with ~asyncio.run()~
    #+begin_src python
      import asyncio
      from signal import SIGINT, SIGTERM
@@ -163,25 +113,14 @@
          asyncio.run(main())
 
    #+end_src
+   - After you receive the first shutdown signal, you want to simply ignore any new signals until exit.
+   - Simplify with ~asyncio.run()~
 
 *** Waiting for the Executor During Shutdown
-    In *Python 3.9*, the asyncio.run() function has been improved to correctly wait for executor shutdown
-    - Option 1: wrap the executor call inside a coroutine
-    #+begin_src python
-      def blocking():
-          time.sleep(2.0)
+    In *Python 3.9*, the ~asyncio.run()~ function has been improved to correctly wait for executor shutdown.
 
-      async def main():
-          loop = asyncio.get_running_loop()
-          future = loop.run_in_executor(None, blocking)
-          try:
-              await asyncio.sleep(1.0)
-          finally:
-              await future
-
-      asyncio.run(main())
-    #+end_src
-    - Option 2: add the executor future to the gathered tasks
+    Options before 3.9:
+    - Option 1: add the executor future to the gathered tasks
     #+begin_src python
       async def main():
           loop = asyncio.get_running_loop()
@@ -191,7 +130,7 @@
 
       asyncio.run(main())
     #+end_src
-    - Option 3: bring your own loop and your own executor
+    - Option 2: bring your own loop and your own executor
     #+begin_src python
       async def main():
           await asyncio.sleep(1.0)
@@ -239,15 +178,14 @@
 ** Tasks and Futures
    - Future :: A *Future* represents a future completion state of some activity and is managed by the loop.
      - Useful APIs: ~set_result()~, ~result()~, ~cancel()~, ~cancelled()~, ~add_done_callback()~
- Future .
-   - Task :: A subclass of *Future*, wrapper for coroutine objects. It provides all of he functionality for interaction with the loop. (more common)
+   - Task :: A subclass of *Future*, wrapper for coroutine objects. It provides all of the functionality for interaction with the loop. (more common)
 
-*** ~ensure_future~ and ~create_task~
+*** Task Related Functions: ~ensure_future~ and ~create_task~
     - ~asyncio.ensure_future()~ is not a clear API, leads to misunderstanding about the asyncio library.
       - If you pass in a coroutine, it will produce a Task instance(scheduled). (just what ~create_task~ does)
       - If you pass a *Future* instance (also *Task* instance), you get the same *Future* instance.
-      - The only time when you should be calling ~ensure_future()~ is when you are providing an API that accepts either a coroutine or a Future/Task(i.e. Awaitable). --Guido
-      - asyncio.ensure_future() is a helper function intended for framework designers.
+      - The only time when you should be calling ~ensure_future()~ is when you are *providing an API* that accepts either a coroutine or a Future/Task(i.e. Awaitable). --Guido
+      - ~asyncio.ensure_future()~ is a helper function intended for *framework* designers.
 
 ** Async Context Manager
    Convenient way to implement *setup and teardown*, also *RAII*.

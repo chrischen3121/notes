@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-11-26 Fri 12:58 -->
+<!-- 2022-01-14 Fri 17:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Asyncio</title>
@@ -338,30 +338,8 @@ Standard way is to have a <code>main()</code> coroutine function and call it wit
 <li>Cancel these tasks (you may choose to handle <code>asyncio.CancelledError</code> in a try/except within the body of the coroutine function).</li>
 <li>Gather all these tasks into a group task.</li>
 <li>Use <code>run_until_complete()</code> on the group task to wait for them to finish. i.e. let the CancelledError be raised and dealt with.</li>
-
-<li><code>asyncio.run()</code> performs these actions for you
-<ul class="org-ul">
 <li>Internally within <code>asyncio.run()</code>, the raised KeyboardInterrupt effectively unblocks a loop.run_until_complete() call and allows the subsequent shutdown sequence to happen.</li>
-</ul></li>
 </ol>
-</div>
-
-
-<div id="outline-container-org15b29d1" class="outline-4">
-<h4 id="org15b29d1">Details</h4>
-<div class="outline-text-4" id="text-org15b29d1">
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
-
-<span style="color: #715ab1;">loop</span> = asyncio.get_event_loop<span style="color: #3a81c3;">()</span>
-<span style="color: #715ab1;">pendings</span> = asyncio.all_tasks<span style="color: #3a81c3;">()</span>
-<span style="color: #715ab1;">group</span> = asyncio.gather<span style="color: #3a81c3;">(</span>*pendings, return_exceptions=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
-<span style="color: #715ab1;">results</span> = loop.run_until_complete<span style="color: #3a81c3;">(</span>group<span style="color: #3a81c3;">)</span>
-<span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">'Results: {results}'</span><span style="color: #3a81c3;">)</span>
-loop.close<span style="color: #3a81c3;">()</span>
-</pre>
-</div>
-</div>
 </div>
 
 <div id="outline-container-org4ba5611" class="outline-4">
@@ -369,6 +347,7 @@ loop.close<span style="color: #3a81c3;">()</span>
 <div class="outline-text-4" id="text-org4ba5611">
 <p>
 <a href="https://github.com/cjrh/aiorun">https://github.com/cjrh/aiorun</a>
+The <code>run()</code> function will handle <b>everything</b> that normally needs to be done during the shutdown sequence of the application.
 </p>
 </div>
 </div>
@@ -379,45 +358,6 @@ loop.close<span style="color: #3a81c3;">()</span>
 <ul class="org-ul">
 <li>SIGINT: KeyboardInterrupt corresponds to the SIGINT signal</li>
 <li>SIGTERM: default signal when you use the kill command in a Unix shell</li>
-</ul>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
-<span style="color: #3a81c3; font-weight: bold;">from</span> signal <span style="color: #3a81c3; font-weight: bold;">import</span> SIGINT, SIGTERM
-
-<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
-    <span style="color: #3a81c3; font-weight: bold;">try</span>:
-        <span style="color: #3a81c3; font-weight: bold;">while</span> <span style="color: #4e3163;">True</span>:
-            <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"&lt;Your app is running&gt;"</span><span style="color: #3a81c3;">)</span>
-            <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.sleep<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
-    <span style="color: #3a81c3; font-weight: bold;">except</span> asyncio.CancelledError:
-        <span style="color: #3a81c3; font-weight: bold;">for</span> i <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">range</span><span style="color: #3a81c3;">(</span>3<span style="color: #3a81c3;">)</span>:
-            <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span><span style="color: #2d9574;">"&lt;Your app is shutting down...&gt;"</span><span style="color: #3a81c3;">)</span>
-            <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.sleep<span style="color: #3a81c3;">(</span>1<span style="color: #3a81c3;">)</span>
-
-<span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">handler</span><span style="color: #3a81c3;">(</span>sig<span style="color: #3a81c3;">)</span>:
-    loop.stop<span style="color: #3a81c3;">()</span>
-    <span style="color: #3a81c3; font-weight: bold;">print</span><span style="color: #3a81c3;">(</span>f<span style="color: #2d9574;">"Got signal: {sig!s}, shutting down."</span><span style="color: #3a81c3;">)</span>
-    loop.remove_signal_handler<span style="color: #3a81c3;">(</span>SIGTERM<span style="color: #3a81c3;">)</span>
-    loop.add_signal_handler<span style="color: #3a81c3;">(</span>SIGINT, <span style="color: #3a81c3; font-weight: bold;">lambda</span>: <span style="color: #4e3163;">None</span><span style="color: #3a81c3;">)</span>
-
-
-<span style="color: #3a81c3; font-weight: bold;">if</span> <span style="color: #3a81c3;">__name__</span> == <span style="color: #2d9574;">"__main__"</span>:
-    <span style="color: #715ab1;">loop</span> = asyncio.get_event_loop<span style="color: #3a81c3;">()</span>
-    <span style="color: #3a81c3; font-weight: bold;">for</span> sig <span style="color: #3a81c3; font-weight: bold;">in</span> <span style="color: #3a81c3;">(</span>SIGTERM, SIGINT<span style="color: #3a81c3;">)</span>:
-        loop.add_signal_handler<span style="color: #3a81c3;">(</span>sig, handler, sig<span style="color: #3a81c3;">)</span>
-    loop.create_task<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
-    loop.run_forever<span style="color: #3a81c3;">()</span>
-    <span style="color: #715ab1;">tasks</span> = asyncio.all_tasks<span style="color: #3a81c3;">(</span>loop=loop<span style="color: #3a81c3;">)</span>
-    <span style="color: #3a81c3; font-weight: bold;">for</span> t <span style="color: #3a81c3; font-weight: bold;">in</span> tasks:
-        t.cancel<span style="color: #3a81c3;">()</span>
-    <span style="color: #715ab1;">group</span> = asyncio.gather<span style="color: #3a81c3;">(</span>*tasks, return_exceptions=<span style="color: #4e3163;">True</span><span style="color: #3a81c3;">)</span>
-    loop.run_until_complete<span style="color: #3a81c3;">(</span>group<span style="color: #3a81c3;">)</span>
-    loop.close<span style="color: #3a81c3;">()</span>
-</pre>
-</div>
-<ul class="org-ul">
-<li>After you receive the first shutdown signal, you want to simply ignore any new signals until exit.</li>
-<li>Simplify with <code>asyncio.run()</code></li>
 </ul>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> asyncio
@@ -452,6 +392,10 @@ loop.close<span style="color: #3a81c3;">()</span>
 
 </pre>
 </div>
+<ul class="org-ul">
+<li>After you receive the first shutdown signal, you want to simply ignore any new signals until exit.</li>
+<li>Simplify with <code>asyncio.run()</code></li>
+</ul>
 </div>
 </div>
 
@@ -459,28 +403,14 @@ loop.close<span style="color: #3a81c3;">()</span>
 <h4 id="org4632332">Waiting for the Executor During Shutdown</h4>
 <div class="outline-text-4" id="text-org4632332">
 <p>
-In <b>Python 3.9</b>, the asyncio.run() function has been improved to correctly wait for executor shutdown
+In <b>Python 3.9</b>, the <code>asyncio.run()</code> function has been improved to correctly wait for executor shutdown.
+</p>
+
+<p>
+Options before 3.9:
 </p>
 <ul class="org-ul">
-<li>Option 1: wrap the executor call inside a coroutine</li>
-</ul>
-<div class="org-src-container">
-<pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">def</span> <span style="color: #6c3163; font-weight: bold;">blocking</span><span style="color: #3a81c3;">()</span>:
-    time.sleep<span style="color: #3a81c3;">(</span>2.0<span style="color: #3a81c3;">)</span>
-
-<span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
-    <span style="color: #715ab1;">loop</span> = asyncio.get_running_loop<span style="color: #3a81c3;">()</span>
-    <span style="color: #715ab1;">future</span> = loop.run_in_executor<span style="color: #3a81c3;">(</span><span style="color: #4e3163;">None</span>, blocking<span style="color: #3a81c3;">)</span>
-    <span style="color: #3a81c3; font-weight: bold;">try</span>:
-        <span style="color: #3a81c3; font-weight: bold;">await</span> asyncio.sleep<span style="color: #3a81c3;">(</span>1.0<span style="color: #3a81c3;">)</span>
-    <span style="color: #3a81c3; font-weight: bold;">finally</span>:
-        <span style="color: #3a81c3; font-weight: bold;">await</span> future
-
-asyncio.run<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163;">()</span><span style="color: #3a81c3;">)</span>
-</pre>
-</div>
-<ul class="org-ul">
-<li>Option 2: add the executor future to the gathered tasks</li>
+<li>Option 1: add the executor future to the gathered tasks</li>
 </ul>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
@@ -493,7 +423,7 @@ asyncio.run<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163
 </pre>
 </div>
 <ul class="org-ul">
-<li>Option 3: bring your own loop and your own executor</li>
+<li>Option 2: bring your own loop and your own executor</li>
 </ul>
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">async def</span> <span style="color: #6c3163; font-weight: bold;">main</span><span style="color: #3a81c3;">()</span>:
@@ -627,25 +557,20 @@ asyncio.run<span style="color: #3a81c3;">(</span>main<span style="color: #6c3163
 <ul class="org-ul">
 <li>Useful APIs: <code>set_result()</code>, <code>result()</code>, <code>cancel()</code>, <code>cancelled()</code>, <code>add_done_callback()</code></li>
 </ul></dd>
-</dl>
-<p>
-Future .
-</p>
-<dl class="org-dl">
-<dt>Task</dt><dd>A subclass of <b>Future</b>, wrapper for coroutine objects. It provides all of he functionality for interaction with the loop. (more common)</dd>
+<dt>Task</dt><dd>A subclass of <b>Future</b>, wrapper for coroutine objects. It provides all of the functionality for interaction with the loop. (more common)</dd>
 </dl>
 </div>
 
-<div id="outline-container-orgbb2d9e7" class="outline-4">
-<h4 id="orgbb2d9e7"><code>ensure_future</code> and <code>create_task</code></h4>
-<div class="outline-text-4" id="text-orgbb2d9e7">
+<div id="outline-container-org1c273eb" class="outline-4">
+<h4 id="org1c273eb">Task Related Functions: <code>ensure_future</code> and <code>create_task</code></h4>
+<div class="outline-text-4" id="text-org1c273eb">
 <ul class="org-ul">
 <li><code>asyncio.ensure_future()</code> is not a clear API, leads to misunderstanding about the asyncio library.
 <ul class="org-ul">
 <li>If you pass in a coroutine, it will produce a Task instance(scheduled). (just what <code>create_task</code> does)</li>
 <li>If you pass a <b>Future</b> instance (also <b>Task</b> instance), you get the same <b>Future</b> instance.</li>
-<li>The only time when you should be calling <code>ensure_future()</code> is when you are providing an API that accepts either a coroutine or a Future/Task(i.e. Awaitable). &#x2013;Guido</li>
-<li>asyncio.ensure_future() is a helper function intended for framework designers.</li>
+<li>The only time when you should be calling <code>ensure_future()</code> is when you are <b>providing an API</b> that accepts either a coroutine or a Future/Task(i.e. Awaitable). &#x2013;Guido</li>
+<li><code>asyncio.ensure_future()</code> is a helper function intended for <b>framework</b> designers.</li>
 </ul></li>
 </ul>
 </div>
