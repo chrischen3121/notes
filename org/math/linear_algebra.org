@@ -29,13 +29,16 @@
 
 ** Multiplication(Dot Product)
 *** Geometric Meaning
-    - Cosine Rule: $c^2=a^2+b^2-2ab\cos{\theta}$
-      $$\left\|\vec{x}-\vec{y}\right\|^2=\left\|\vec{x}\right\|^2 + \left\|\vec{y}\right\|^2 - 2\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}$$
-      $$\because\left\|\vec{x}\right\|^2 = \vec{x}\cdot\vec{x}\mathbf{\ and\ }(\vec{x}-\vec{y})\cdot(\vec{x}-\vec{y})=\vec{x}\cdot\vec{x}+\vec{y}\cdot\vec{y}-2\vec{x}\cdot\vec{y} \mathbf{\ Distributive Rule}$$
-      $$\vec{x}\cdot\vec{y}=\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}=\left\|\vec{x}\right\|\times\mathbf{projection\ y\ on\ x}$$
-      $$\frac{\vec{x}\cdot\vec{y}}{\left\|\vec{x}\right\|}=\left\|\vec{y}\right\|\cos\theta \text{(scalar projection)}$$
+    Cosine Rule: $c^2=a^2+b^2-2ab\cos{\theta}$
+    $$\left\|\vec{x}-\vec{y}\right\|^2=\left\|\vec{x}\right\|^2 + \left\|\vec{y}\right\|^2 - 2\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}$$
+    $$\because\left\|\vec{x}\right\|^2 = \vec{x}\cdot\vec{x}\mathbf{\ and\ }(\vec{x}-\vec{y})\cdot(\vec{x}-\vec{y})=\vec{x}\cdot\vec{x}+\vec{y}\cdot\vec{y}-2\vec{x}\cdot\vec{y} \mathbf{\ Distributive Rule}$$
+    $$\vec{x}\cdot\vec{y}=\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}=\left\|\vec{x}\right\|\times\mathbf{projection\ y\ on\ x}$$
+    $$\frac{\vec{x}\cdot\vec{y}}{\left\|\vec{x}\right\|}=\left\|\vec{y}\right\|\cos\theta \text{(scalar projection)}$$
+
     - $\left\|\vec{y}\right\|\cos{\theta}$ is the *scalar projection* of $\vec{y}$ on $\vec{x}$
+    - Dot product = (Length of projected $\vec{y}$ on $\vec{x}$) * (Length of $\vec{x}$)
     - Dot product is also called *projection product*.
+    - When the vectors are Perpendicular, meaning dot product is 0. (scalar projection is 0)
 
 *** Vector Projection
     [[../resources/math/LinearAlgebra/scale_projection.png]]
@@ -120,6 +123,7 @@
      s = [5, 8, 9]
      r = np.linalg.solve(A, s) # => array([10.,  7., -4.])
    #+end_src
+
 ** Dot Product
    - Einstein's summation notation for $\mathbf{C=AB}$
      $$c_{ik}=a_{ij} b_{jk}$$
@@ -128,11 +132,32 @@
    - Matrix: $\mathbf{R'=AR}$
      $$R^\prime_{ia}=A_{ij}R_{ja}$$
 
+** TODO Cross Product
+
 * Basis Transformation
   $$\mathbf{B}\cdot\begin{bmatrix} x_{new} \\ y_{new} \end{bmatrix}=\begin{bmatrix} x_{old} \\ y_{old} \end{bmatrix}$$
   $$\mathbf{B^{-1}}\cdot \begin{bmatrix} x_{old} \\ y_{old} \end{bmatrix}=\begin{bmatrix} x_{new} \\ y_{new} \end{bmatrix}$$
   - $B$ is the new basis written in old basis language.
   - $B^{-1}$ is the old basis written in new basis language.
+
+** The Gram–Schmidt process
+   The process to construct an orthonormal basis.
+
+   - Given an linearly independent vector set V
+   $$V=\{v_1, v_2, \cdots, v_n\}$$
+*** $e_1$
+    $$e_1=\frac{v_1}{|v_1|}$$
+
+*** $e_2$
+    $$v_2=\frac{v_2\cdot e_1}{|e_1|}\frac{e_1}{|e_1|}+u_2$$
+    - $u_2$ is perpendicular to $e_1$
+    $$u_2=v_2-(v_2\cdot e_1)e_1$$
+    $$e_2=\frac{u_2}{|u_2|}$$
+
+*** $e_3$
+    $$u_3=v_3-(v_3\cdot e_1)e_1-(v_3\cdot e_2)e_2$$
+    - $u_3$ is perpendicular to the plane($e_1$, $e_2$)
+    $$e_3=\frac{u_3}{|u_3|}$$
 
 * Python Code
   #+begin_src python
@@ -178,11 +203,16 @@
      # Vector projection
      vector_proj_y_on_x = np.dot(np.dot(x, y)/np.dot(x,x), x)
 
-     # inverse matrix
+     # Inverse matrix
      A = np.array([[1, 1, 3], [1, 2, 4], [1, 1, 2]])
      Ainv = linalg.inv(A)
 
-     # solve
+     # Cross product
+     v1 = [1, 1, 3]
+     v2 = [1, 2, 4]
+     v3 = np.cross(v1, v2) # v3 is a vector perpendicular to both v1 and v2 (right-hand rule)
+
+     # Solve
      y = np.array([5, 8, 5]).reshape(-1, 1)
      x = linalg.solve(A, y)
    #+end_src

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-01-14 Fri 15:18 -->
+<!-- 2022-01-19 Wed 17:20 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linear Algebra</title>
@@ -237,12 +237,17 @@
 <li><a href="#org9869315">3.1. Rotation Matrix</a></li>
 <li><a href="#org1354461">3.2. Determinants</a></li>
 <li><a href="#org3ad05fe">3.3. Matrix Inverses</a></li>
-<li><a href="#org17f125e">3.4. Python Code</a></li>
+<li><a href="#orge86ca0c">3.4. Python Code</a></li>
 <li><a href="#org9dfccfe">3.5. Dot Product</a></li>
+<li><a href="#orge9d2f15">3.6. <span class="todo TODO">TODO</span> Cross Product</a></li>
 </ul>
 </li>
-<li><a href="#org04b31ad">4. Basis Transformation</a></li>
-<li><a href="#org45360a7">5. Python Code</a>
+<li><a href="#org04b31ad">4. Basis Transformation</a>
+<ul>
+<li><a href="#org2764032">4.1. The Gram–Schmidt process</a></li>
+</ul>
+</li>
+<li><a href="#org8c4f5b9">5. Python Code</a>
 <ul>
 <li><a href="#org5882e69">5.1. Convenience Constructors</a></li>
 <li><a href="#orgcff30a2">5.2. <code>scipy.linalg</code></a></li>
@@ -263,8 +268,9 @@
 <li>Definitions treats all vectors equally: \(a\vec{v}+b\vec{w}+c\vec{u}=\vec{0}\) if the only solution is \(a=b=c=0\)</li>
 </ul></dd>
 <dt>Basis</dt><dd>The <b>basis</b> of a vector space is a set of <b>linearly independent</b> vectors that <b>span</b> the full space.</dd>
-<dt>Rank</dt><dd>The number of dimensions in the output of a linear transformation.</dd>
+<dt>Rank</dt><dd>The number of dimensions in the output of a linear transformation. i.e. in the column space.</dd>
 <dt>Column Space</dt><dd>"Column Space" of \(A\) is the set of all possible outputs \(A\vec{v}\)</dd>
+<dt>Null Space / Kernel</dt><dd>The set of vectors that lands on <b>the origin</b> in a linear transformation is called the "null space" or the "kernel".</dd>
 </dl>
 </div>
 </div>
@@ -307,14 +313,19 @@
 <div id="outline-container-org13f65d3" class="outline-4">
 <h4 id="org13f65d3">Geometric Meaning</h4>
 <div class="outline-text-4" id="text-org13f65d3">
-<ul class="org-ul">
-<li>Cosine Rule: \(c^2=a^2+b^2-2ab\cos{\theta}\)
+<p>
+Cosine Rule: \(c^2=a^2+b^2-2ab\cos{\theta}\)
 \[\left\|\vec{x}-\vec{y}\right\|^2=\left\|\vec{x}\right\|^2 + \left\|\vec{y}\right\|^2 - 2\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}\]
 \[\because\left\|\vec{x}\right\|^2 = \vec{x}\cdot\vec{x}\mathbf{\ and\ }(\vec{x}-\vec{y})\cdot(\vec{x}-\vec{y})=\vec{x}\cdot\vec{x}+\vec{y}\cdot\vec{y}-2\vec{x}\cdot\vec{y} \mathbf{\ Distributive Rule}\]
 \[\vec{x}\cdot\vec{y}=\left\|\vec{x}\right\|\left\|\vec{y}\right\|\cos{\theta}=\left\|\vec{x}\right\|\times\mathbf{projection\ y\ on\ x}\]
-\[\frac{\vec{x}\cdot\vec{y}}{\left\|\vec{x}\right\|}=\left\|\vec{y}\right\|\cos\theta \text{(scalar projection)}\]</li>
+\[\frac{\vec{x}\cdot\vec{y}}{\left\|\vec{x}\right\|}=\left\|\vec{y}\right\|\cos\theta \text{(scalar projection)}\]
+</p>
+
+<ul class="org-ul">
 <li>\(\left\|\vec{y}\right\|\cos{\theta}\) is the <b>scalar projection</b> of \(\vec{y}\) on \(\vec{x}\)</li>
+<li>Dot product = (Length of projected \(\vec{y}\) on \(\vec{x}\)) * (Length of \(\vec{x}\))</li>
 <li>Dot product is also called <b>projection product</b>.</li>
+<li>When the vectors are Perpendicular, meaning dot product is 0. (scalar projection is 0)</li>
 </ul>
 </div>
 </div>
@@ -323,7 +334,7 @@
 <h4 id="orgcc415b4">Vector Projection</h4>
 <div class="outline-text-4" id="text-orgcc415b4">
 
-<div id="org5386e4c" class="figure">
+<div id="orga46b6c6" class="figure">
 <p><img src="../resources/math/LinearAlgebra/scale_projection.png" alt="scale_projection.png" />
 </p>
 </div>
@@ -348,9 +359,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgc58a51c" class="outline-4">
-<h4 id="orgc58a51c">Rules</h4>
-<div class="outline-text-4" id="text-orgc58a51c">
+<div id="outline-container-org2aedb85" class="outline-4">
+<h4 id="org2aedb85">Rules</h4>
+<div class="outline-text-4" id="text-org2aedb85">
 <ul class="org-ul">
 <li>Commutative</li>
 <li>Distributive over Addition: \(\vec{a}(\vec{b}+\vec{c})=\vec{a}\vec{b}+\vec{a}\vec{c}\)</li>
@@ -413,7 +424,7 @@ The determinant is the area(2D)/volume(3D) of the matrix. <a href="https://youtu
 <h4 id="orgf6b32b1">2D</h4>
 <div class="outline-text-4" id="text-orgf6b32b1">
 
-<div id="orgcf0e9d4" class="figure">
+<div id="org2a6537a" class="figure">
 <p><img src="../resources/math/LinearAlgebra/2D_determinant.png" alt="2D_determinant.png" />
 </p>
 </div>
@@ -439,9 +450,9 @@ The determinant is the area \(det(A)=ad-bc\)
 </div>
 </div>
 
-<div id="outline-container-orgd830330" class="outline-4">
-<h4 id="orgd830330">Rules</h4>
-<div class="outline-text-4" id="text-orgd830330">
+<div id="outline-container-org4d2c037" class="outline-4">
+<h4 id="org4d2c037">Rules</h4>
+<div class="outline-text-4" id="text-org4d2c037">
 <ul class="org-ul">
 <li>The determinant is 0 means the transformation takes the basis vectors into vectors that are <b>linearly dependent</b>.</li>
 <li>\(det(AB)=det(A)det(B)\)</li>
@@ -475,8 +486,8 @@ If a matrix is singular, that means an inverse doesn't exist.
 </div>
 </div>
 
-<div id="outline-container-org17f125e" class="outline-3">
-<h3 id="org17f125e"><span class="section-number-3">3.4</span> Python Code</h3>
+<div id="outline-container-orge86ca0c" class="outline-3">
+<h3 id="orge86ca0c"><span class="section-number-3">3.4</span> Python Code</h3>
 <div class="outline-text-3" id="text-3-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
@@ -494,6 +505,7 @@ Avin.dot<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</
 </div>
 </div>
 </div>
+
 <div id="outline-container-org9dfccfe" class="outline-3">
 <h3 id="org9dfccfe"><span class="section-number-3">3.5</span> Dot Product</h3>
 <div class="outline-text-3" id="text-3-5">
@@ -506,6 +518,10 @@ Avin.dot<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</
 \[R^\prime_{ia}=A_{ij}R_{ja}\]</li>
 </ul>
 </div>
+</div>
+
+<div id="outline-container-orge9d2f15" class="outline-3">
+<h3 id="orge9d2f15"><span class="section-number-3">3.6</span> <span class="todo TODO">TODO</span> Cross Product</h3>
 </div>
 </div>
 
@@ -521,10 +537,65 @@ Avin.dot<span style="color: #3a81c3;">(</span>A<span style="color: #3a81c3;">)</
 <li>\(B^{-1}\) is the old basis written in new basis language.</li>
 </ul>
 </div>
+
+<div id="outline-container-org2764032" class="outline-3">
+<h3 id="org2764032"><span class="section-number-3">4.1</span> The Gram–Schmidt process</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+The process to construct an orthonormal basis.
+</p>
+
+<ul class="org-ul">
+<li>Given an linearly independent vector set V</li>
+</ul>
+<p>
+\[V=\{v_1, v_2, \cdots, v_n\}\]
+</p>
+</div>
+<div id="outline-container-org8377c69" class="outline-4">
+<h4 id="org8377c69">\(e_1\)</h4>
+<div class="outline-text-4" id="text-org8377c69">
+<p>
+\[e_1=\frac{v_1}{|v_1|}\]
+</p>
+</div>
 </div>
 
-<div id="outline-container-org45360a7" class="outline-2">
-<h2 id="org45360a7"><span class="section-number-2">5</span> Python Code</h2>
+<div id="outline-container-org3e9c585" class="outline-4">
+<h4 id="org3e9c585">\(e_2\)</h4>
+<div class="outline-text-4" id="text-org3e9c585">
+<p>
+\[v_2=\frac{v_2\cdot e_1}{|e_1|}\frac{e_1}{|e_1|}+u_2\]
+</p>
+<ul class="org-ul">
+<li>\(u_2\) is perpendicular to \(e_1\)</li>
+</ul>
+<p>
+\[u_2=v_2-(v_2\cdot e_1)e_1\]
+\[e_2=\frac{u_2}{|u_2|}\]
+</p>
+</div>
+</div>
+
+<div id="outline-container-org79a849b" class="outline-4">
+<h4 id="org79a849b">\(e_3\)</h4>
+<div class="outline-text-4" id="text-org79a849b">
+<p>
+\[u_3=v_3-(v_3\cdot e_1)e_1-(v_3\cdot e_2)e_2\]
+</p>
+<ul class="org-ul">
+<li>\(u_3\) is perpendicular to the plane(\(e_1\), \(e_2\))</li>
+</ul>
+<p>
+\[e_3=\frac{u_3}{|u_3|}\]
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8c4f5b9" class="outline-2">
+<h2 id="org8c4f5b9"><span class="section-number-2">5</span> Python Code</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #3a81c3; font-weight: bold;">import</span> numpy <span style="color: #3a81c3; font-weight: bold;">as</span> np
