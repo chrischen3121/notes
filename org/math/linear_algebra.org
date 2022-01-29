@@ -19,7 +19,7 @@
 ** Addition
    - Commutative: $\vec{a}+\vec{b}=\vec{b}+\vec{a}$
    - Associativity: $(\vec{a}+\vec{b}) + \vec{c}=\vec{a} + (\vec{b} + \vec{c})$
-   - Additive Identity: There exists an element $\vec{0}$ such that   $\vec{a}+\vec{0}=\vec{a}$
+   - Additive Identity: There exists an element $\vec{0}$ such that $\vec{a}+\vec{0}=\vec{a}$
    - Additive Inverse: $\forall{\vec{a}}\exists{\vec{b}}\vec{a}+\vec{b}=\vec{0}$
    - Multiplicative Identity: $\forall{\vec{a}}\vec{1}\vec{a}=\vec{a}$
    - Distributive: $s(\vec{a}+\vec{b})=s\vec{a}+s\vec{b}$
@@ -27,7 +27,7 @@
 ** Magnitudes(Modulus)
    $$\vec{a} = \begin{bmatrix}x \\ y\end{bmatrix}$$
    $$\left\|\vec{a}\right\|=\sqrt{x^2+y^2}$$
-   - $\left\|\vec{a}\right\|$ is the length of a vector.
+   - $\left\|\vec{a}\right\|$ is the *length* of a vector.
 
 ** Multiplication(Dot Product)
 *** Geometric Meaning
@@ -80,7 +80,7 @@
    \end{bmatrix}$$
 
 ** Determinants
-   The determinant is the area(2D)/volume(3D) of the matrix. [[https://youtu.be/Ip3X9LOh2dk?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab][Video]]
+   The determinant represents the scale factor by which *areas* are transformed by the Matrix.  [[https://youtu.be/Ip3X9LOh2dk?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab][Video]]
 
 *** 2D
    [[../resources/math/LinearAlgebra/2D_determinant.png]]
@@ -135,6 +135,37 @@
      $$R^\prime_{ia}=A_{ij}R_{ja}$$
 
 ** TODO Cross Product
+
+* Eigenvectors
+  $$\mathbf{A}\vec{v}=\lambda\vec{v}$$
+  $$\mathbf{A}\vec{v}-\lambda \mathbf{I} \vec{v}=\vec{0}$$
+  $$(\mathbf{A}-\lambda \mathbf{I})\vec{v}=\vec{0}$$
+  $det(\mathbf{A}-\lambda \mathbf{I})$ should be 0 to transform a non-zero $\vec{v}$ into $\vec{0}$
+
+** Example
+   To calculate $A^{10}$, we could use the eigenbasis.
+   $$A=\begin{bmatrix}3 & 1 \\ 0 & 2\end{bmatrix}$$
+*** Find Eigenvalues
+    $$(3-\lambda)(2-\lambda) - 1\times 0 = 0$$
+    - The eigenvalues are (3, 2)
+    - Tricky way to find eigenvalues
+      $$m=\frac{\lambda_1+\lambda_2}{2}=\frac{a+d}{2}$$
+      $$p=\lambda_1 \lambda_2=det(\mathbf{A})=ad-bc$$
+      $$\lambda=m\pm\sqrt{m^2-p}$$
+
+*** Find Eigenvectors
+   - $@\lambda=3$
+     $$\begin{bmatrix}3-3 & 1 \\ 0 & 2-3 \end{bmatrix}\begin{bmatrix}x_1 \\ x_2\end{bmatrix}=\begin{bmatrix}x_2 \\ -x_2\end{bmatrix}=\begin{bmatrix}0 \\ 0\end{bmatrix}$$
+     $x_1$ can be any real number.
+   - $@\lambda=2$
+     $$\begin{bmatrix}3-2 & 1 \\ 0 & 2-2 \end{bmatrix}\begin{bmatrix}x_1 \\ x_2\end{bmatrix}=\begin{bmatrix}x_1+x_2 \\ 0\end{bmatrix}=\begin{bmatrix}0 \\ 0\end{bmatrix}$$
+     $x_1 + x_2$ must be 0.
+*** Use Eigenbasis
+   - Choose eigenvectors: $C=\begin{bmatrix}1 & 1\\ 0 & -1\end{bmatrix}$
+   - Diagonal matrix: $D=\begin{bmatrix}3 & 0 \\ 0 & 2\end{bmatrix}$
+
+     $$A^{10}=CD^{10}C^{-1}$$
+
 
 * Basis Transformation
   $$\mathbf{B}\cdot\begin{bmatrix} x_{new} \\ y_{new} \end{bmatrix}=\begin{bmatrix} x_{old} \\ y_{old} \end{bmatrix}$$
@@ -217,4 +248,11 @@
      # Solve
      y = np.array([5, 8, 5]).reshape(-1, 1)
      x = linalg.solve(A, y)
+   #+end_src
+   - Eigenvalues
+   #+begin_src python
+     import numpy as np
+     from scipy import linalg
+     T = np.array([[1, 1], [0, 2]])
+     lambda1, lambda2 = linalg.eigvals(T) #=>array([1.+0.j, 2.+0.j])
    #+end_src
