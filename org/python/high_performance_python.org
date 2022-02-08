@@ -36,7 +36,7 @@
    - When to use: The task requires mainly linear algebra and matrix manipulations.
      1. Ensure that the memory use of the problem will fit within the GPU.
      1. Evaluate whether the algorithm requires a lot of branching conditions.(GPU's memory is limited)
-     1. Evaluate how much data needs to be moved between the GPU and the CPU.
+     1. *Evaluate how much data needs to be moved between the GPU and the CPU.*
    - Drawbacks: Communicates through the PCI bus, which is much slower than the frontside bus
 
 * Profiling
@@ -47,14 +47,15 @@
 *** ~timefn~ decorator
    #+BEGIN_SRC python
      def timefn(fn):
-	 @wraps(fn)
-	 def measure_time(*args, **kwargs):
-	     t1 = time.time()
-	     result = fn(*args, **kwargs)
-	     t2 = time.time()
-	     print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
-	     return result
-	 return measure_time
+         @wraps(fn)
+         def measure_time(*args, **kwargs):
+             t1 = time.time()
+             result = fn(*args, **kwargs)
+             t2 = time.time()
+             print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
+             return result
+
+         return measure_time
    #+END_SRC
 
 *** bulit-in ~timeit~ module
@@ -107,7 +108,7 @@
 
 *** ~perf~
     1. ~sudo apt install linux-tools-generic~
-    1. Tweeking ~/proc/sys/kernel/perf_event_paranoid~ to -1
+    1. Tweeking ~/proc/sys/kernel/perf_event_paranoid~ to -1 (Allow use of almost all events by all users Ignore mlock limit)
     1. ~perf stat -e cycles,instructions,cache-references,cache-misses,... python test.py~
 
     Performance Counter Descriptions:
@@ -115,7 +116,7 @@
     - The difference between =instructions= and =cycles= gives us an indication of how well our code is vectorizing and pipelining.
     - =cs=: context switches
     - =migrations=: tell us about how the program is halted in order to wait for a kernel operation to finish (such as I/O).
-    - =migrations= happen when the program is halted and resumed on a different CPU than the one it was on before
+      - =migrations= happen when the program is halted and resumed on a different CPU than the one it was on before
     - =faults=: page-fault.
     - =cache-references= increases whenever we reference data that is in our cache(L1/L2/L3). If we do not already have this data in the cache and need to fetch it from RAM, this counts as a =cache-miss=
     - A =branch= is a time in the code where the execution flow changes.
@@ -125,9 +126,9 @@
 
     Terms:
 
-    - *Pipelining* :: With pipelining, the CPU is able to run the current operation while fetching and preparing the next one. When memory is allocated, the kernel doesn’t do much except give the program a reference to memory.
-    - *Minor Page Fault Interrupt* :: When memory is allocated, the kernel doesn’t do much except give the program a reference to memory. Later, however, when the memory is first used, the operating system throws a minor page fault interrupt, which pauses the program that is being run and properly allocates the memory. This is called a /lazy allocation system/.
-    - *Major Page Fault* :: which happens when the program requests data from a device (disk, network, etc.) that hasn’t been read yet.
+    - *Pipelining* :: With pipelining, the CPU is able to run the current operation while fetching and preparing the next one.
+    - *Minor Page Fault Interrupt* :: When memory is allocated, the kernel doesn't do much except give the program a reference to memory. Later, however, when the memory is first used, the operating system throws a minor page fault interrupt, which pauses the program that is being run and properly allocates the memory. This is called a /lazy allocation system/.
+    - *Major Page Fault* :: which happens when the program requests data from a device (disk, network, etc.) that hasn't been read yet.
 
 *** ipython magic ~%memit~
     - ~%load_ext memory_profiler~
@@ -142,8 +143,8 @@
    Add it to the start of our module while unit testing
    #+BEGIN_SRC python
      if 'line_profiler' not in dir() and 'profile' not in dir():
-	 def profile(func):
-	     return func
+     def profile(func):
+         return func
    #+END_SRC
 
 *** Introspecting an Existing Process with ~PySpy~
@@ -170,18 +171,17 @@
     - ~dozer~
 ** Practical Points
    - Disable Turbo Boost in the BIOS.
-   - Disable the operating system’s ability to override the SpeedStep(in BIOS).
+   - Disable the operating system's ability to override the SpeedStep(in BIOS).
    - Use only AC power (never battery power).
    - Disable background tools like backups and Dropbox while running experiments.
    - Run the experiments many times to obtain a stable measurement.
    - Possibly drop to run level 1 (Unix) so that no other tasks are running.
    - Reboot and rerun the experiments to double-confirm the results.
-   - Unit testing a complicated section of code that generates a large numerical output may be
-   difficult. Do not be afraid to output a text file of results to run through ~diff~ or to use
-   a pickled object.
+   - Unit testing a complicated section of code that generates a large numerical output may be difficult.
+     Do not be afraid to output a text file of results to run through ~diff~ or to use a pickled object.
 
 * Lists and Tuples
-  - Python array stores data in buckets by reference, opposed to numpy arrays.
+  - Python array stores data in buckets *by reference*, opposed to numpy arrays.
 
 ** Lists
    - lists also store how large they are, so of the six allocated blocks, only five are usable.
@@ -207,7 +207,7 @@
 
 * Dictionaries and Sets
 ** Hashable Type
-   - should implement ~__hash__~, ~__eq__~, ~__cmp_-~
+   - should implement ~__hash__~, ~__eq__~, ~__cmp__~
    - User-defined classes have default hash and comparison functions using the object's placement in memory.(given by ~id~ function)
 
 ** Key to Array Index
@@ -217,14 +217,14 @@
    #+BEGIN_SRC python
      # pseudocode of finding index
      def index_sequence(key, mask=0b111, PERTURB_SHIFT=5):
-	 perturb = hash(key)  # hashing
-	 i = perturb & mask  # masking
-	 yield i
-	 # probing
-	 while True:
-	     perturb >>= PERTURB_SHIFT  # use high-order bits
-	     i = (i * 5 + perturb + 1) & mask  # simple linear function and masking again
-	     yield i
+         perturb = hash(key)  # hashing
+         i = perturb & mask  # masking
+         yield i
+         # probing
+         while True:
+             perturb >>= PERTURB_SHIFT  # use high-order bits
+             i = (i * 5 + perturb + 1) & mask  # simple linear function and masking again
+             yield i
    #+END_SRC
 
 *** Finding a Element
@@ -250,14 +250,13 @@
     - Knowing up front *what range of values will be used* and *how large the dictionary will be* helps in making a good selection
 
 ** Dictionary
-   - Optimization: Python first appends the key/value data into a standard array and
-   then stores only the index into this array in the hash table. The array also helps
-   keep the insertion order of items.
-   - How well distributed the data is throughout the hash table is called the *load factor* and is related to the *entropy* of the hash function
+   - Optimization: Python first appends the key/value data into a standard array and then stores only the index into this array
+     in the hash table. The array also helps keep the insertion order of items.
+   - How well distributed the data throughout the hash table is called the *load factor* and is related to the *entropy* of the hash function
    - By default, the smallest size of a dictionary or set is 8, and it will resize by 3x if the dictionary is more than two-thirds full. (possible sizes: 8->18->39->81->165->...)
 
 ** Namespace Management
-   - *Namespace Management* heavily uses dictionaries to do its lookups.
+   *Namespace Management* heavily uses dictionaries to do its lookups.
 
    The steps to look for a variable/function/module
 
@@ -269,38 +268,38 @@
 
 
      def test1(x):
-	 """
-	 >>> %timeit test1(123456)
-	 94 µs ± 387 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+         """
+         >>> %timeit test1(123456)
+         94 µs ± 387 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
-	 18 LOAD_GLOBAL              1 (math)
-	 20 LOAD_METHOD              2 (sin)
-	 22 LOAD_FAST                0 (x)
-	 24 CALL_METHOD              1
+         18 LOAD_GLOBAL              1 (math)
+         20 LOAD_METHOD              2 (sin)
+         22 LOAD_FAST                0 (x)
+         24 CALL_METHOD              1
 
-	 """
-	 res = 1
-	 for _ in range(1000):
-	     res += math.sin(x)
-	 return res
+         """
+         res = 1
+         for _ in range(1000):
+             res += math.sin(x)
+         return res
 
 
      def test2(x):
-	 """
-	 >>> %timeit test2(123456)
-	 72.5 µs ± 2.66 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+         """
+         >>> %timeit test2(123456)
+         72.5 µs ± 2.66 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
-	 22 LOAD_FAST                2 (res)
-	 24 LOAD_FAST                1 (sin)
-	 26 LOAD_FAST                0 (x)
-	 28 CALL_FUNCTION            1
+         22 LOAD_FAST                2 (res)
+         24 LOAD_FAST                1 (sin)
+         26 LOAD_FAST                0 (x)
+         28 CALL_FUNCTION            1
 
-	 """
-	 sin = math.sin
-	 res = 1
-	 for _ in range(1000):
-	     res += sin(x)
-	 return res
+         """
+         sin = math.sin
+         res = 1
+         for _ in range(1000):
+             res += sin(x)
+         return res
    #+END_SRC
 * Iterators and Generators
 ** Iterator
@@ -309,17 +308,17 @@
    #+BEGIN_SRC python
      # The Python loop
      for i in object:
-	 do_work(i)
+         do_work(i)
 
      # Is equivalent to
      object_iterator = iter(object)
      while True:
-	 try:
-	     i = next(object_iterator)
-	 except StopIteration:
-	     break
-	 else:
-	     do_work(i)
+         try:
+             i = next(object_iterator)
+         except StopIteration:
+             break
+         else:
+             do_work(i)
    #+END_SRC
 
 ** Lazy Generator Evaluation
@@ -335,47 +334,47 @@
 
 
      def read_fake_data(filename: str = "fake") -> Generator[_ENTRY_TYPE, None, None]:
-	 for timestamp in count():
-	     if randint(0, 7 * 60 * 60 * 24 - 1) == 1:
-		 value = normalvariate(0, 1)
-	     else:
-		 value = 100
-		 yield datetime.fromtimestamp(timestamp), value
+         for timestamp in count():
+             if randint(0, 7 * 60 * 60 * 24 - 1) == 1:
+                 value = normalvariate(0, 1)
+             else:
+                 value = 100
+             yield datetime.fromtimestamp(timestamp), value
 
 
      def groupby_day(iterable: Iterable[_ENTRY_TYPE]) -> Generator[List[_ENTRY_TYPE], None, None]:
-	 for day, data_group in groupby(iterable, lambda row: row[0].day):
-	     yield list(data_group)
+         for day, data_group in groupby(iterable, lambda row: row[0].day):
+             yield list(data_group)
 
 
      def is_normal(data: List[_ENTRY_TYPE], threshold: float = 1e-3) -> bool:
-	 _, values = zip(*data)
-	 k2, p_value = normaltest(values)
-	 if p_value < threshold:
-	     return False
-	 return True
+         _, values = zip(*data)
+         k2, p_value = normaltest(values)
+         if p_value < threshold:
+             return False
+         return True
 
 
      def filter_anomalous_groups(
-	 data: Iterable[_ENTRY_TYPE],
+         data: Iterable[_ENTRY_TYPE],
      ) -> Generator[List[_ENTRY_TYPE], None, None]:
-	 yield from filterfalse(is_normal, data)
+         yield from filterfalse(is_normal, data)
 
 
      def filter_anomalous_data(data: Iterable[_ENTRY_TYPE]) -> Generator[List[_ENTRY_TYPE], None, None]:
-	 data_group = groupby_day(data)
-	 yield from filter_anomalous_groups(data_group)
+         data_group = groupby_day(data)
+         yield from filter_anomalous_groups(data_group)
 
 
      if __name__ == "__main__":
-	 data = read_fake_data("fake")
-	 anomaly_generator = filter_anomalous_data(data)
-	 first_five_anomalies = islice(anomaly_generator, 5)
+         data = read_fake_data("fake")
+         anomaly_generator = filter_anomalous_data(data)
+         first_five_anomalies = islice(anomaly_generator, 5)
 
-	 for data_anomaly in first_five_anomalies:
-	     start_date = data_anomaly[0][0]
-	     end_date = data_anomaly[-1][0]
-	     print(f"Anomaly from {start_date} - {end_date}")
+         for data_anomaly in first_five_anomalies:
+             start_date = data_anomaly[0][0]
+             end_date = data_anomaly[-1][0]
+             print(f"Anomaly from {start_date} - {end_date}")
    #+END_SRC
 
 ** Useful Itertools
@@ -406,59 +405,64 @@
    efficiently in memory.
 
 ** ~numpy~
-   - ~numpy~ gives us memory locality and vectorized operations.
+   - ~numpy~ gives us *memory locality* and *vectorized operations*.
 
 *** Comparison with Built-in Module
    #+BEGIN_SRC python
      from array import array
      import numpy
 
+
      def norm_square_list(vector):
-	 """
-	 >>> vector = list(range(1_000_000))
-	 >>> %timeit norm_square_list(vector)
-	 85.5 ms ± 1.65 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
-	 """
-	 norm = 0
-	 for v in vector:
-	     norm += v * v
-	 return norm
+         """
+         >>> vector = list(range(1_000_000))
+         >>> %timeit norm_square_list(vector)
+         85.5 ms ± 1.65 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+         """
+         norm = 0
+         for v in vector:
+             norm += v * v
+         return norm
+
 
      def norm_square_list_comprehension(vector):
-	 """
-	 >>> vector = list(range(1_000_000))
-	 >>> %timeit norm_square_list_comprehension(vector)
-	 80.3 ms ± 1.37 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
-	 """
-	 return sum([v * v for v in vector])
+         """
+         >>> vector = list(range(1_000_000))
+         >>> %timeit norm_square_list_comprehension(vector)
+         80.3 ms ± 1.37 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+         """
+         return sum([v * v for v in vector])
+
 
      def norm_square_array(vector):
-	 """
-	 >>> vector_array = array('l', range(1_000_000))
-	 >>> %timeit norm_square_array(vector_array)
-	 101 ms ± 4.69 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
-	 """
-	 norm = 0
-	 for v in vector:
-	     norm += v * v
-	 return norm
+         """
+         >>> vector_array = array('l', range(1_000_000))
+         >>> %timeit norm_square_array(vector_array)
+         101 ms ± 4.69 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+         """
+         norm = 0
+         for v in vector:
+             norm += v * v
+         return norm
+
 
      def norm_square_numpy(vector):
-	 """
-	 >>> vector_np = numpy.arange(1_000_000)
-	 >>> %timeit norm_square_numpy(vector_np)
-	 3.22 ms ± 136 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
-	 """
-	 return numpy.sum(vector * vector)
+         """
+         >>> vector_np = numpy.arange(1_000_000)
+         >>> %timeit norm_square_numpy(vector_np)
+         3.22 ms ± 136 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+         """
+         return numpy.sum(vector * vector)
+
 
      def norm_square_numpy_dot(vector):
-	 """
-	 >>> vector_np = numpy.arange(1_000_000)
-	 >>> %timeit norm_square_numpy_dot(vector_np)
-	 960 µs ± 41.1 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
-	 """
-	 # we don’t need to store the intermediate value of vector * vector as in norm_square_numpy
-	 return numpy.dot(vector, vector)
+         """
+         >>> vector_np = numpy.arange(1_000_000)
+         >>> %timeit norm_square_numpy_dot(vector_np)
+         960 µs ± 41.1 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+         """
+         # we don't need to store the intermediate value of vector * vector as in norm_square_numpy
+         return numpy.dot(vector, vector)
    #+END_SRC
 
 *** In-Place Operations
@@ -479,8 +483,8 @@
       output_array = np.zeros(len(input_array))
 
       def double_all(array, output):
-	  for idx, value in enumerate(array):
-	      output[idx] = value * 2
+          for idx, value in enumerate(array):
+              output[idx] = value * 2
 
       # %timeit double_all(input_array, output_array)
       # 25.3 ms ± 774 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
@@ -491,20 +495,19 @@
 
       @jit()
       def double_all_jit(array, output):
-	  for idx, value in enumerate(array):
-	      output[idx] = value * 2
+          for idx, value in enumerate(array):
+              output[idx] = value * 2
 
       # %timeit double_all_jit(input_array, output_array)
       # 44.2 µs ± 299 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
-
 
       # The nopython specifier means that if Numba cannot compile all of the code, it will fail.
       # Adding parallel enables support for prange
       @jit(nopython=True, parallel=True, nogil=True)
       def double_all_jit_in_parallel(array, output):
-	  len_array = len(array)
-	  for idx in prange(len_array):
-	      output[idx] = array[idx] * 2
+          len_array = len(array)
+          for idx in prange(len_array):
+              output[idx] = array[idx] * 2
 
       # %timeit double_all_jit_in_parallel(input_array, output_array)
       # 14.4 µs ± 238 ns per loop (mean ± std. dev. of 7 runs, 100000 loops each)
@@ -564,10 +567,12 @@
    - reducing the amount of work that the CPU had to do.
 
 * Compiling to Bytecode
-** All Routes
-   - C-based compiling: Cython
-   - LLVM-based compiling: Numba
-   - just-in-time compiler: PyPy
+  - Using Python API for C
+  - C-based compiling: Cython
+  - LLVM-based compiling: Numba
+  - just-in-time compiler: PyPy
+
+** TODO Python API
 
 ** Cython
    #+BEGIN_SRC python
@@ -600,15 +605,15 @@
 *** Type Annotation
     #+BEGIN_SRC python
       def add(int x, int y):
-	  cdef unsigned int x, y
-	  return x + y
+          cdef unsigned int x, y
+          return x + y
     #+END_SRC
 
 *** Cython Flags
     #+BEGIN_SRC python
       #cython: boundscheck=False
       def test(...):
-	  ...
+          ...
     #+END_SRC
 
 *** Parallelizing on One Machine
@@ -623,23 +628,23 @@
       cimport numpy as np
 
       def calculate_z(int maxiter, double complex[:] zs, double complex[:] cs):
-	  """Calculate output list using Julia update rule"""
-	  # using [] to annotate the buffer protocol, single colon indicates one-dimensional data
-	  cdef unsigned int i, length
-	  cdef double complex z, c
-	  cdef int[:] output = np.empty(len(zs), dtype=np.int32) # annotate output
-	  length = len(zs)
+          """Calculate output list using Julia update rule"""
+          # using [] to annotate the buffer protocol, single colon indicates one-dimensional data
+          cdef unsigned int i, length
+          cdef double complex z, c
+          cdef int[:] output = np.empty(len(zs), dtype=np.int32) # annotate output
+          length = len(zs)
 
-	  with nogil: # disable GIL
-	      for i in prange(length, schedule="guided"): # guided scheduling
-		  # parallelizing in prange block
-		  z = zs[i]
-		  c = cs[i]
-		  output[i] = 0
-		  while output[i] < maxiter and (z.real * z.real + z.imag * z.imag) < 4:
-		      z = z * z + c
-		      output[i] += 1
-	  return output
+          with nogil: # disable GIL
+              for i in prange(length, schedule="guided"): # guided scheduling
+                  # parallelizing in prange block
+                  z = zs[i]
+                  c = cs[i]
+                  output[i] = 0
+                  while output[i] < maxiter and (z.real * z.real + z.imag * z.imag) < 4:
+                      z = z * z + c
+                      output[i] += 1
+              return output
     #+END_SRC
     In setup.py
     #+BEGIN_SRC python
@@ -651,18 +656,18 @@
       from Cython.Build import cythonize
 
       ext_modules = [
-	  Extension(
-	      "cythonfn", ["cythonfn.pyx"], extra_compile_args=["-fopenmp"], extra_link_args=["-fopenmp"]
-	  )  # Adding the OpenMP compiler flags and linker flags to setup.py for Cython
+          Extension(
+              "cythonfn", ["cythonfn.pyx"], extra_compile_args=["-fopenmp"], extra_link_args=["-fopenmp"]
+          )  # Adding the OpenMP compiler flags and linker flags to setup.py for Cython
       ]
 
 
       setup(
-	  ext_modules=cythonize(
-	      ext_modules,
-	      compiler_directives={"language_level": "3"},
-	  ),
-	  include_dirs=[np.get_include()],
+          ext_modules=cythonize(
+              ext_modules,
+              compiler_directives={"language_level": "3"},
+          ),
+          include_dirs=[np.get_include()],
       )
     #+END_SRC
     - Choosing scheduling approaches: ~static~, ~dynamic~, ~guided~
@@ -682,7 +687,7 @@
 *** C =.so=
     #+BEGIN_SRC c
       int add_two(int a, int b) {
-	return a + b;
+        return a + b;
       }
     #+END_SRC
     1. ~gcc -O3 -std=gnu11 -c libtest.c~
@@ -705,20 +710,20 @@
 
 
       def add_two_in_python(a: int, b: int) -> int:
-	  # First we convert the Python types into the relevant C types
-	  a = TYPE_INT(a)
-	  b = TYPE_INT(b)
-	  res = _libtest.add_two(a, b)
-	  return res
+          # First we convert the Python types into the relevant C types
+          a = TYPE_INT(a)
+          b = TYPE_INT(b)
+          res = _libtest.add_two(a, b)
+          return res
     #+END_SRC
     - C structure
       #+BEGIN_SRC python
-	from ctypes import Structure, c_int
+        from ctypes import Structure, c_int
 
-	class cPoint(Structure):
-	    _fields_ = ("x", c_int), ("y", c_int)
+        class cPoint(Structure):
+            _fields_ = ("x", c_int), ("y", c_int)
 
-	point = cPoint(10, 5)
+        point = cPoint(10, 5)
       #+END_SRC
 
 ** Other Tools
