@@ -120,12 +120,78 @@
 
 *** Simplicity
     Make it easy for new engineers to understand the system, by removing as much complexity as possible from the system.
+    - Complexities
+      - Explosion of the state space
+      - Tight coupling of modules
+      - Tangled dependencies
+      - Inconsistent naming and terminology
+      - etc...
 
 *** Evolvability
     Make it easy for engineers to make changes to the system in the future, adapting it for unanticipated use cases as requirements change.
 
 ** A Simple Architecture
    [[../resources/DDIA/simple_data_system_architecture.png]]
+
+
+* Data Models
+  - The advantage of using an *ID* is that because it has no meaning to humans, it *never needs to change*.
+
+** Relational Model
+   - The roots of relational databases lie in business data processing.
+   - Schema-on-write (where the schema is explicit and the database ensures all written data conforms to it)
+
+** Document Model
+   - Support *self-contained* document
+   - Many-to-one and many-to-many relationships don't fit nicely into document model
+   - Better performance due to *locality*
+   - The application need to do additional work to keep the denormalized data consistent and emulate the join operation.
+   - Schema-on-read (the structure of the data is implicit, and only interpreted when the data is read)
+
+*** When to Use
+    - There are many different types of objects, and it is not practical to put each type of object in its own table.
+    - The structure of the data is determined by external systems over which you have no control and which may change at any time.
+    - When your application has mostly one-to-many relationships (tree-structured data) or no relationships between records
+
+** Graph-Like Data Models
+   - Graphs are good for *evolvability*.
+   - Property Graph Model (Neo4j, Titan and InfiniteGraph)
+   - Triple-Store Model (Datomic, AllegroGraph)
+   - Query Lanaguages (Cypher, SPARQL, and Datalog)
+
+** Other Models
+   - GenBank for genome data
+   - Large Hadron Collider (LHC) for particle physicists
+   - Full-text search
+
+** Query Languages
+   - Declarative
+     - Hides implementation details of the database engine
+   - Imperative
+
+*** MapReduce in MongoDB
+    #+begin_src js
+      db.users.mapReduce(
+          function map() {
+              var age = this.age;
+              emit(age, this.height); // emit(key, value)
+          },
+          function reduce(key, values) {
+              return Array.avg(values);
+          },
+          {
+              query: { gender: "male"},
+              out: "AvgHeightReport"
+          }
+      );
+    #+end_src
+    - ~map~ and ~reduce~ functions should be pure functions (no side effect). This allow the database to run the functions anywhere, in any order, and rerun them on failure.
+
+
+** Summary
+   - Document databases target use cases where data comes in self-contained documents and relationships between one document and another are *rare*.
+   - Graph databases go in the opposite direction, targeting use cases where anything is potentially related to everything.
+
 
 * Tools
   - Redis
