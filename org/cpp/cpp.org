@@ -449,68 +449,41 @@
        decltype(auto) myWidget2 = cw; // decltype type deduction: myWidget2's type is const Widget&
      #+end_src
 
-
-** 类型推断
-*** Diagnositcs(Boost.TypeIndex)
-    #+BEGIN_SRC cpp
-      #include <boost/type_index.hpp>
-      using boost::typeindex::type_id;
-      using boost::typeindex::type_id_with_cvr;
-      type_id<T>();
-      type_id_with_cvr<T>().pretty_name(); // use pretty_name in ostream by default
-      // type_id_with_cvr<decltype(x)>()
-    #+END_SRC
-    - ~cvr~ stands for ~const~, ~volatile~, ~reference~
-
-*** 引用折叠
-    引用折叠只能应用于间接创建的引用的引用，如类型别名或模板参数
-    - X& &, X& &&, X&& &都折叠成 X&
-    - X&& &&折叠成 X&&
-*** decltype
+** Diagnostics
+*** Compile Time
     #+begin_src cpp
-      int i = 0;
-      decltype(i) a = 3;
-      decltype((i)) b = 5; //错误：b 为 int &
-      decltype((i)) c = i; //正确
+      template <typename T>
+      class TypeDisplayer;
+
+      int x = 0;
+      const int *y = &x;
+
+      TypeDisplayer<decltype(x)> xType; // aggregate ‘TypeDisplayer<int> yType’ has incomplete type ...
+      TypeDisplayer<decltype(y)> yType; // aggregate ‘TypeDisplayer<const int*> yType’ has incomplete type ...
     #+end_src
-    - *decltype* 通常不做任何修改的返回变量或表达式的类型，非常直观
-    - 对容器中的下标操作 *operator[]* 使用 *decltype* 则返回 *T&*
-    - *decltype* 常用于模板函数，通过函数的参数推断函数的返回值类型，并置于函数签名结尾
-      #+BEGIN_SRC cpp
-        template<typename Container, typename Index>
-        auto Access(Container &c, Index i)
-            -> decltype(c[i]) {
-          return c[i];
-        }
-      #+END_SRC
-      这里的 *auto* 没有任何推断作用，只是用于标识尾部的 *decltype* 。C++14 语法允许去掉尾部的 *decltype* 。
-      #+BEGIN_SRC cpp
-        std::vector<int> vec{1, 2, 3};
-        Access(vec, 1) = 10; // Wrong，实际返回值为 int，且是一个 rvalue
-      #+END_SRC
+*** Runtime
+    #+begin_src cpp
+      int x = 0;
+      const int &y = x;
 
-*** decltype(auto)
-    *auto* 说明类型需要被推断， *decltype* 说明推断的时候应使用 *decltype* 的规则；C++14 only.
-      #+BEGIN_SRC cpp
-  int i = 42;
-  const int &ci = i;
-  auto a1 = ci; // a1 -> int
-  decltype(auto) a2 = ci; // a2 -> const int &
-  decltype((i)) a3 = i; // a3 -> int & 因为(i)为表达式且求值结果为左值，decltype 返回引用
-  int *pi = 42;
-  decltype(*pi) a4 = i; // a4 -> int & 同 a3，*pi 为表达式
-      #+END_SRC
+      std::cout << typeid(x).name() << "\n"; // not reliable
+      std::cout << typeid(y).name() << "\n";
 
-*** perfect forwarding
-    #+BEGIN_SRC cpp
-      template <typename T> decltype(auto) f(T &&param) {
-  return std::forward<T>(param);
-      } // for C++14
+      // instead, use boost
+      #include <boost/type_index.hpp>
+      template<typename T>
+      void f(const T& param) {
+        using boost::typeindex::type_id_with_cvr;
+        std::cout << type_id_with_cvr<T>().pretty_name() << "\n";
+        std::cout << type_id_with_cvr<decltyp(param)>().pretty_name() << "\n";
+      }
+      // "with_cvr", cvr means const, volatile, reference
+    #+end_src
 
-      template <typename T> auto f(T &&param) -> decltype(std::forward<T>(param)) {
-  return std::forward<T>(param);
-      } // for C++11
-    #+END_SRC
+** 引用折叠
+   引用折叠只能应用于间接创建的引用的引用，如类型别名或模板参数
+   - X& &, X& &&, X&& &都折叠成 X&
+   - X&& &&折叠成 X&&
 
 ** 类型转换
 *** 隐式转换
