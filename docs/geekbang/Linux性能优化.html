@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2021-09-10 Fri 14:18 -->
+<!-- 2022-02-14 Mon 17:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux性能优化</title>
@@ -13,16 +13,16 @@
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
-	     margin-bottom: .2em; }
+             margin-bottom: .2em; }
   .subtitle { text-align: center;
-	      font-size: medium;
-	      font-weight: bold;
-	      margin-top:0; }
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
   .todo   { font-family: monospace; color: red; }
   .done   { font-family: monospace; color: green; }
   .priority { font-family: monospace; color: orange; }
   .tag    { background-color: #eee; font-family: monospace;
-	    padding: 2px; font-size: 80%; font-weight: normal; }
+            padding: 2px; font-size: 80%; font-weight: normal; }
   .timestamp { color: #bebebe; }
   .timestamp-kwd { color: #5f9ea0; }
   .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
@@ -203,33 +203,229 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0a1edc5">1. CPU问题</a>
+<li><a href="#orgbc20708">1. 平均负载</a>
 <ul>
-<li><a href="#orge1338ef">1.1. 排查顺序</a></li>
-<li><a href="#org4eb5d2b">1.2. 进程状态</a></li>
-<li><a href="#org0d0d86d">1.3. 工具</a></li>
+<li><a href="#org0cf9e32">1.1. 工具</a></li>
+<li><a href="#org3d6cc11">1.2. 实战</a></li>
+</ul>
+</li>
+<li><a href="#org48761f2">2. CPU问题</a>
+<ul>
+<li><a href="#orgd5e2ef6">2.1. 上下文切换</a></li>
+<li><a href="#org71346c7">2.2. 排查顺序</a></li>
+<li><a href="#orgfd950a3">2.3. 进程状态</a></li>
+<li><a href="#org97b6dd5">2.4. 工具</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0a1edc5" class="outline-2">
-<h2 id="org0a1edc5"><span class="section-number-2">1</span> CPU问题</h2>
+<div id="outline-container-orgbc20708" class="outline-2">
+<h2 id="orgbc20708"><span class="section-number-2">1</span> 平均负载</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+平均负载是指单位时间内，系统处于可运行状态和不可中断状态的平均进程数，也就是平均活跃进程数。
+</p>
+<ul class="org-ul">
+<li>running or runnable (on run queue): 可运行状态的进程是指正在使用 CPU 或者正在等待 CPU 的进程，状态码 R</li>
+<li>uninterruptible sleep (usually IO): 不可中断状态的进程则是正处于内核态关键流程中的进程，状态码 D</li>
+</ul>
 </div>
-<div id="outline-container-orge1338ef" class="outline-3">
-<h3 id="orge1338ef"><span class="section-number-3">1.1</span> 排查顺序</h3>
+
+<div id="outline-container-org0cf9e32" class="outline-3">
+<h3 id="org0cf9e32"><span class="section-number-3">1.1</span> 工具</h3>
 <div class="outline-text-3" id="text-1-1">
+<p>
+<code>sudo apt install stress sysstat</code>
+</p>
+<ul class="org-ul">
+<li>stress: linux压力测试工具，模拟异常进程</li>
+<li>sysstat: 常用linux性能工具集
+<ul class="org-ul">
+<li>mpstat: 多核CPU性能分析工具</li>
+<li>pidstat: 进程性能分析工具</li>
+</ul></li>
+<li>watch: Execute a command repeatedly</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3d6cc11" class="outline-3">
+<h3 id="org3d6cc11"><span class="section-number-3">1.2</span> 实战</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-bash">watch -d uptime
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-P ALL &#34920;&#31034;&#30417;&#25511;&#25152;&#26377;CPU&#65292;&#21518;&#38754;&#25968;&#23383;5&#34920;&#31034;&#38388;&#38548;5&#31186;&#21518;&#36755;&#20986;&#19968;&#32452;&#25968;&#25454;</span>
+mpstat -P ALL 55
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#38388;&#38548;5&#31186;&#21518;&#36755;&#20986;&#19968;&#32452;&#25968;&#25454;</span>
+pidstat -u 5 1
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>CPU 密集型进程 <code>stress --cpu 1 --timeout 600</code></li>
+<li>I/O 密集型进程 <code>stress -i 1 --timeout 600</code></li>
+<li>大量进程等待CPU调度 <code>stress -c 10 --timeout 600</code></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org48761f2" class="outline-2">
+<h2 id="org48761f2"><span class="section-number-2">2</span> CPU问题</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgd5e2ef6" class="outline-3">
+<h3 id="orgd5e2ef6"><span class="section-number-3">2.1</span> 上下文切换</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-orgb3af9eb" class="outline-4">
+<h4 id="orgb3af9eb"><span class="section-number-4">2.1.1</span> 特权模式切换</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+系统调用过程通常称为特权模式切换。需保存和恢复寄存器、PC的状态。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4db223e" class="outline-4">
+<h4 id="org4db223e"><span class="section-number-4">2.1.2</span> 进程上下文切换</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+进程上下文切换相比特权模式切换，还需要保存进程的栈、虚拟内存。
+</p>
+
+<p>
+进程上下文切换都需要几十纳秒到数微秒的 CPU 时间。这个时间还是相当可观的，特别是在进程上下文切换次数较多的情况下，
+很容易导致 CPU 将大量时间耗费在寄存器、内核栈以及虚拟内存等资源的保存和恢复上，进而大大缩短了真正运行进程的时间。
+</p>
+
+<p>
+Linux 为每个 CPU 都维护了一个就绪队列，将活跃进程（即正在运行和正在等待 CPU 的进程）按照优先级和等待 CPU 的时间排序，
+然后选择最需要 CPU 的进程，也就是优先级最高和等待 CPU 时间最长的进程来运行。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgab60924" class="outline-4">
+<h4 id="orgab60924"><span class="section-number-4">2.1.3</span> 线程上下文切换</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+线程是调度的基本单位，而进程则是资源拥有的基本单位。进程只是给线程提供了虚拟内存、全局变量等资源。
+</p>
+<ul class="org-ul">
+<li>当进程拥有多个线程时，这些线程会共享相同的虚拟内存和全局变量等资源，线程上下文切换时是不需要修改。</li>
+<li>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时也是需要保存的。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfbe9ca4" class="outline-4">
+<h4 id="orgfbe9ca4"><span class="section-number-4">2.1.4</span> 中断上下文切换</h4>
+<div class="outline-text-4" id="text-2-1-4">
+<p>
+为了快速响应硬件的事件，中断处理会打断进程的正常调度和执行，转而调用中断处理程序响应设备事件。
+</p>
+<ul class="org-ul">
+<li>对同一个 CPU 来说，中断处理比进程拥有更高的优先级。</li>
+<li>中断上下文指的是包括内核态中断服务程序执行所必需的状态，包括 CPU 寄存器、内核堆栈、硬件中断参数等。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9550383" class="outline-4">
+<h4 id="org9550383"><span class="section-number-4">2.1.5</span> 实战</h4>
+<div class="outline-text-4" id="text-2-1-5">
+</div>
+<ul class="org-ul">
+<li><a id="orgbf3736f"></a>模拟工具<br />
+<div class="outline-text-5" id="text-orgbf3736f">
+<p>
+<code>sudo apt install sysbench</code> sysbench 是一个多线程的基准测试工具，一般用来评估不同系
+统参数下的数据库负载情况。可用来模拟上下文切换过多的问题。
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">sysbench --threads=10 --max-time=300 threads run
+</pre>
+</div>
+</div>
+</li>
+<li><a id="orgaafec05"></a><code>vmstat</code> 查看系统整体<br />
+<div class="outline-text-5" id="text-orgaafec05">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#27599;&#38548;5&#31186;&#36755;&#20986;1&#32452;&#25968;&#25454; --unit=M &#21487;&#29992;&#20110;&#23545;&#40784;&#36755;&#20986;</span>
+vmstat --unit=M 5
+</pre>
+</div>
+<ul class="org-ul">
+<li>cs（context switch）是每秒上下文切换的次数</li>
+<li>in（interrupt）则是每秒中断的次数</li>
+<li>r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数</li>
+<li>b（Blocked）则是处于不可中断睡眠状态的进程数</li>
+</ul>
+</div>
+</li>
+<li><a id="org45feee8"></a><code>pidstat</code> 查看进程指标<br />
+<div class="outline-text-5" id="text-org45feee8">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-w&#21442;&#25968;&#34920;&#31034;&#36755;&#20986;&#36827;&#31243;&#20999;&#25442;&#25351;&#26631;&#65292;&#32780;-u&#21442;&#25968;&#21017;&#34920;&#31034;&#36755;&#20986;CPU&#20351;&#29992;&#25351;&#26631;</span>
+pidstat -w -u 1
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pidstat &#40664;&#35748;&#36755;&#20986;&#36827;&#31243;&#25351;&#26631;&#65292;-t &#21487;&#36755;&#20986;&#32447;&#31243;&#25351;&#26631;</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>cswch/s 每秒自愿上下文切换（voluntary context switches）的次数；指进程无法获取所需资源，导致的上下文切换</li>
+<li>nvcswch/s 每秒非自愿上下文切换（non voluntary context switches）的次数；是指进程由于时间片已到等原因，被系统强制调度，进而发生的上下文切换</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgfe17f44"></a>查看中断<br />
+<div class="outline-text-5" id="text-orgfe17f44">
+<p>
+中断发生在内核态，无法用用户态的 <code>pidstat</code> 查看，直接读取 <code>/proc/interrupts</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">watch -d cat /proc/interrupts <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">&#21457;&#29616;RES&#26368;&#22810;</span>
+watch -d grep <span style="color: #2d9574;">"Rescheduling interrupts"</span> /proc/interrupts
+</pre>
+</div>
+<p>
+重调度中断（RES），这个中断类型表示，唤醒空闲状态的 CPU 来调度新的任务运行。这是多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）。
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org238113a" class="outline-4">
+<h4 id="org238113a"><span class="section-number-4">2.1.6</span> 情况分析建议</h4>
+<div class="outline-text-4" id="text-2-1-6">
+<ul class="org-ul">
+<li>自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题。</li>
+<li>非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈。</li>
+<li>中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org71346c7" class="outline-3">
+<h3 id="org71346c7"><span class="section-number-3">2.2</span> 排查顺序</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 top/pidstat/dstat -&gt; perf top
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4eb5d2b" class="outline-3">
-<h3 id="org4eb5d2b"><span class="section-number-3">1.2</span> 进程状态</h3>
-<div class="outline-text-3" id="text-1-2">
+<div id="outline-container-orgfd950a3" class="outline-3">
+<h3 id="orgfd950a3"><span class="section-number-3">2.3</span> 进程状态</h3>
+<div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li>R 是 Running 或 Runnable 的缩写，表示进程在 CPU 的就绪队列中，正在运行或者正在等待运行。</li>
 <li>D 是 Disk Sleep 的缩写，也就是不可中断状态睡眠（Uninterruptible Sleep），一般表示进程正在跟硬件交互，并且交互过程不允许被其他进程或中断打断。</li>
@@ -242,9 +438,9 @@ top/pidstat/dstat -&gt; perf top
 </div>
 </div>
 
-<div id="outline-container-org0d0d86d" class="outline-3">
-<h3 id="org0d0d86d"><span class="section-number-3">1.3</span> 工具</h3>
-<div class="outline-text-3" id="text-1-3">
+<div id="outline-container-org97b6dd5" class="outline-3">
+<h3 id="org97b6dd5"><span class="section-number-3">2.4</span> 工具</h3>
+<div class="outline-text-3" id="text-2-4">
 <p>
 top, pidstat, dstat, perf, pstree, execsnoop
 </p>

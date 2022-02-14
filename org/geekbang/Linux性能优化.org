@@ -5,7 +5,97 @@
 #+AUTHOR: ChrisChen
 #+EMAIL: ChrisChen3121@gmail.com
 
+* 平均负载
+  平均负载是指单位时间内，系统处于可运行状态和不可中断状态的平均进程数，也就是平均活跃进程数。
+  - running or runnable (on run queue): 可运行状态的进程是指正在使用 CPU 或者正在等待 CPU 的进程，状态码 R
+  - uninterruptible sleep (usually IO): 不可中断状态的进程则是正处于内核态关键流程中的进程，状态码 D
+
+** 工具
+   ~sudo apt install stress sysstat~
+   - stress: linux压力测试工具，模拟异常进程
+   - sysstat: 常用linux性能工具集
+     - mpstat: 多核CPU性能分析工具
+     - pidstat: 进程性能分析工具
+   - watch: Execute a command repeatedly
+
+** 实战
+   #+begin_src bash
+     watch -d uptime
+
+     # -P ALL 表示监控所有CPU，后面数字5表示间隔5秒后输出一组数据
+     mpstat -P ALL 55
+
+     # 间隔5秒后输出一组数据
+     pidstat -u 5 1
+   #+end_src
+
+   - CPU 密集型进程 ~stress --cpu 1 --timeout 600~
+   - I/O 密集型进程 ~stress -i 1 --timeout 600~
+   - 大量进程等待CPU调度 ~stress -c 10 --timeout 600~
+
+
 * CPU问题
+** 上下文切换
+*** 特权模式切换
+    系统调用过程通常称为特权模式切换。需保存和恢复寄存器、PC的状态。
+
+*** 进程上下文切换
+    进程上下文切换相比特权模式切换，还需要保存进程的栈、虚拟内存。
+
+    进程上下文切换都需要几十纳秒到数微秒的 CPU 时间。这个时间还是相当可观的，特别是在进程上下文切换次数较多的情况下，
+    很容易导致 CPU 将大量时间耗费在寄存器、内核栈以及虚拟内存等资源的保存和恢复上，进而大大缩短了真正运行进程的时间。
+
+    Linux 为每个 CPU 都维护了一个就绪队列，将活跃进程（即正在运行和正在等待 CPU 的进程）按照优先级和等待 CPU 的时间排序，
+    然后选择最需要 CPU 的进程，也就是优先级最高和等待 CPU 时间最长的进程来运行。
+
+*** 线程上下文切换
+    线程是调度的基本单位，而进程则是资源拥有的基本单位。进程只是给线程提供了虚拟内存、全局变量等资源。
+    - 当进程拥有多个线程时，这些线程会共享相同的虚拟内存和全局变量等资源，线程上下文切换时是不需要修改。
+    - 线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时也是需要保存的。
+
+*** 中断上下文切换
+    为了快速响应硬件的事件，中断处理会打断进程的正常调度和执行，转而调用中断处理程序响应设备事件。
+    - 对同一个 CPU 来说，中断处理比进程拥有更高的优先级。
+    - 中断上下文指的是包括内核态中断服务程序执行所必需的状态，包括 CPU 寄存器、内核堆栈、硬件中断参数等。
+
+*** 实战
+**** 模拟工具
+    ~sudo apt install sysbench~ sysbench 是一个多线程的基准测试工具，一般用来评估不同系
+    统参数下的数据库负载情况。可用来模拟上下文切换过多的问题。
+    #+begin_src bash
+      sysbench --threads=10 --max-time=300 threads run
+    #+end_src
+**** ~vmstat~ 查看系统整体
+    #+begin_src bash
+      # 每隔5秒输出1组数据 --unit=M 可用于对齐输出
+      vmstat --unit=M 5
+    #+end_src
+    - cs（context switch）是每秒上下文切换的次数
+    - in（interrupt）则是每秒中断的次数
+    - r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数
+    - b（Blocked）则是处于不可中断睡眠状态的进程数
+**** ~pidstat~ 查看进程指标
+    #+begin_src bash
+      # -w参数表示输出进程切换指标，而-u参数则表示输出CPU使用指标
+      pidstat -w -u 1
+      # pidstat 默认输出进程指标，-t 可输出线程指标
+    #+end_src
+    - cswch/s 每秒自愿上下文切换（voluntary context switches）的次数；指进程无法获取所需资源，导致的上下文切换
+    - nvcswch/s 每秒非自愿上下文切换（non voluntary context switches）的次数；是指进程由于时间片已到等原因，被系统强制调度，进而发生的上下文切换
+
+**** 查看中断
+     中断发生在内核态，无法用用户态的 ~pidstat~ 查看，直接读取 =/proc/interrupts=
+     #+begin_src bash
+       watch -d cat /proc/interrupts # 发现RES最多
+       watch -d grep "Rescheduling interrupts" /proc/interrupts
+     #+end_src
+     重调度中断（RES），这个中断类型表示，唤醒空闲状态的 CPU 来调度新的任务运行。这是多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）。
+
+*** 情况分析建议
+    - 自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题。
+    - 非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈。
+    - 中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。
+
 ** 排查顺序
    top/pidstat/dstat -> perf top
 
