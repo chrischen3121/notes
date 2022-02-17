@@ -10,29 +10,6 @@
   - running or runnable (on run queue): 可运行状态的进程是指正在使用 CPU 或者正在等待 CPU 的进程，状态码 R
   - uninterruptible sleep (usually IO): 不可中断状态的进程则是正处于内核态关键流程中的进程，状态码 D
 
-** 工具
-   ~sudo apt install stress sysstat~
-   - stress: linux压力测试工具，模拟异常进程
-   - sysstat: 常用linux性能工具集
-     - mpstat: 多核CPU性能分析工具
-     - pidstat: 进程CPU性能分析工具
-   - watch: Execute a command repeatedly
-
-** 实战
-   #+begin_src bash
-     watch -d uptime
-
-     # -P ALL 表示监控所有CPU，后面数字5表示间隔5秒后输出一组数据
-     mpstat -P ALL 55
-
-     # 间隔5秒后输出一组数据
-     pidstat -u 5 1
-   #+end_src
-
-   - CPU 密集型进程 ~stress --cpu 1 --timeout 600~
-   - I/O 密集型进程 ~stress -i 1 --timeout 600~
-   - 大量进程等待CPU调度 ~stress -c 10 --timeout 600~
-
 * CPU性能分析
 ** 上下文切换
 *** 特权模式切换
@@ -58,44 +35,6 @@
     - 中断上下文指的是包括内核态中断服务程序执行所必需的状态，包括 CPU 寄存器、内核堆栈、硬件中断参数等。
     - 内核调度时间中断频率配置 ~grep 'CONFIG_HZ=' /boot/config-$(uname -r)~ 250Hz，即每秒钟触发 250 次时间中断
     - 用户节拍率 USER_HZ 总是固定为 100Hz， 即10ms一次时间中断
-
-*** 实战
-**** 模拟工具
-    ~sudo apt install sysbench~ sysbench 是一个多线程的基准测试工具，一般用来评估不同系
-    统参数下的数据库负载情况。可用来模拟上下文切换过多的问题。
-    #+begin_src bash
-      sysbench --threads=10 --max-time=300 threads run
-    #+end_src
-**** ~vmstat~ 查看系统整体
-    #+begin_src bash
-      # 每隔5秒输出1组数据 --unit=M 可用于对齐输出
-      vmstat --unit=M 5
-    #+end_src
-    - cs（context switch）是每秒上下文切换的次数
-    - in（interrupt）则是每秒中断的次数
-    - r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数
-    - b（Blocked）则是处于不可中断睡眠状态的进程数
-**** ~pidstat~ 查看进程指标
-    #+begin_src bash
-      # -w参数表示输出进程切换指标，而-u参数则表示输出CPU使用指标
-      pidstat -w -u 1
-      # pidstat 默认输出进程指标，-t 可输出线程指标
-    #+end_src
-    - cswch/s 每秒自愿上下文切换（voluntary context switches）的次数；指进程无法获取所需资源，导致的上下文切换
-    - nvcswch/s 每秒非自愿上下文切换（non voluntary context switches）的次数；是指进程由于时间片已到等原因，被系统强制调度，进而发生的上下文切换
-
-**** 查看中断
-     中断发生在内核态，无法用用户态的 ~pidstat~ 查看，直接读取 =/proc/interrupts=
-     #+begin_src bash
-       watch -d cat /proc/interrupts # 发现RES最多
-       watch -d grep "Rescheduling interrupts" /proc/interrupts
-     #+end_src
-     重调度中断（RES），这个中断类型表示，唤醒空闲状态的 CPU 来调度新的任务运行。这是多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）。
-
-*** 情况分析建议
-    - 自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题。
-    - 非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈。
-    - 中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。
 
 ** CPU使用率
     CPU 使用率，就是除了空闲时间外的其他时间占总 CPU 时间的百分比。 =/proc/stat= 提供 CPU 和任务统计信息。
@@ -127,28 +66,6 @@
 *** 进程相关
     =/proc/[pid]/stat=
 
-*** 工具
-    使用性能工具时需注意配置工具采样的间隔时间
-    - ~top~: top 并没有细分进程的用户态 CPU 和内核态 CPU。%CPU 列是总和。
-    - ~pidstat~: 查看进程CPU使用率
-    - ~perf top~ 能够实时显示占用 CPU 时钟最多的函数或者指令，因此可以用来查找热点函数
-      - Overhead 该符号的性能事件在所有采样中的比例，用百分比来表示。
-      - Shared Object 是该函数或指令所在的动态共享对象（Dynamic Shared Object），如内核、进程名、动态链接库名、内核模块名等。
-      - [ ] 是动态共享对象的类型； [.] 表示用户空间的可执行程序、或者动态链接库，而 [k] 则表示内核空间。
-      - Symbol 是符号名，也就是函数名。当函数名未知时，用十六进制的地址来表示。
-    - ~perf record/report~
-      - ~-g~ 开启调用关系的采样，方便我们根据调用链来分析性能问题。
-      - ~-p~ 指定pid
-    - ~ab~
-      #+begin_src bash
-        # 并发10个请求测试Web服务器性能，总共测试100个请求
-        ab -c 10 -n 100 http://192.168.0.10:10000/
-      #+end_src
-    - ~execsnoop~: 是一个专为短时进程设计的工具，它通过 ftrace 实时监控进程的 exec() 。
-      #+begin_src bash
-        git clone --depth 1 https://github.com/brendangregg/perf-tools
-      #+end_src
-
 *** 软中断/硬中断
     中断处理程序的上部分和下半部可以理解为：
     - 上半部直接处理硬件请求，也就是硬中断，主要是负责耗时短的工作，特点是快速执行
@@ -163,17 +80,135 @@
     - I/O 等待 CPU 高，应该着重排查系统存储是不是出现了 I/O 问题。
     - 软中断和硬中断高，说明软中断或硬中断的处理程序占用了较多的 CPU，所以应该着重排查内核中的中断服务程序。
 
-** 排查顺序
-   top/pidstat/dstat -> perf top
-
 ** 进程状态
-- R 是 Running 或 Runnable 的缩写，表示进程在 CPU 的就绪队列中，正在运行或者正在等待运行。
-- D 是 Disk Sleep 的缩写，也就是不可中断状态睡眠（Uninterruptible Sleep），一般表示进程正在跟硬件交互，并且交互过程不允许被其他进程或中断打断。
-- Z 是 Zombie 的缩写，表示僵尸进程，也就是进程实际上已经结束了，但是父进程还没有回收它的资源（比如进程的描述符、PID 等）。
-- S 是 Interruptible Sleep 的缩写，也就是可中断状态睡眠，表示进程因为等待某个事件而被系统挂起。当进程等待的事件发生时，它会被唤醒并进入 R 状态。
-- I 是 Idle 的缩写，也就是空闲状态，用在不可中断睡眠的内核线程上。前面说了，硬件交互导致的不可中断进程用 D 表示，但对某些内核线程来说，它们有可能实际上并没有任何负载，用 Idle 正是为了区分这种情况。要注意，D 状态的进程会导致平均负载升高， I 状态的进程却不会。
-- T 或者 t，也就是 Stopped 或 Traced 的缩写，表示进程处于暂停或者跟踪状态。
-- X，也就是 Dead 的缩写，表示进程已经消亡，所以你不会在 top 或者 ps 命令中看到它。
+  [[../resources/geekbang/perf/process_state_codes.png]]
 
-** 工具
-   top, pidstat, dstat, perf, pstree, execsnoop
+  - R 是 Running 或 Runnable 的缩写，表示进程在 CPU 的就绪队列中，正在运行或者正在等待运行。
+  - D 是 Disk Sleep 的缩写，也就是不可中断状态睡眠（Uninterruptible Sleep）
+    - 一般表示进程正在跟硬件交互(iowait升高)，并且交互过程不允许被其他进程或中断打断。
+    - 为了保证进程数据与硬件状态一致，并且正常情况下，不可中断状态在很短时间内就会结束
+  - Z 是 Zombie 的缩写，表示僵尸进程，也就是进程实际上已经结束了，但是父进程还没有回收它的资源（比如进程的描述符、PID 等）。
+    - 父进程正常应该通过系统调用 wait() 或者 waitpid() 等待子进程结束，回收子进程的资源
+    - 子进程在结束时，会向它的父进程发送 SIGCHLD 信号，所以，父进程还可以注册 SIGCHLD 信号的处理函数，异步回收资源。
+  - S 是 Interruptible Sleep 的缩写，也就是可中断状态睡眠，表示进程因为等待某个事件而被系统挂起。当进程等待的事件发生时，它会被唤醒并进入 R 状态。
+  - I 是 Idle 的缩写，也就是空闲状态，用在不可中断睡眠的内核线程上。前面说了，硬件交互导致的不可中断进程用 D 表示，但对某些内核线程来说，它们有可能实际上并没有任何负载，用 Idle 正是为了区分这种情况。要注意，D 状态的进程会导致平均负载升高， I 状态的进程却不会。
+  - T 或者 t，也就是 Stopped 或 Traced 的缩写，表示进程处于暂停或者跟踪状态。
+    - 暂停恢复：SIGSTOP暂停，SIGCONT恢复
+    - GDB进断点中断时，变为跟踪状态
+  - X，也就是 Dead 的缩写，表示进程已经消亡，所以你不会在 top 或者 ps 命令中看到它。
+
+* 实战
+** 中断上下文切换
+    1. vmstat 查看每秒中断次数过多
+    2. 检查中断类型
+
+       中断发生在内核态，无法用用户态的 ~pidstat~ 查看，直接读取 =/proc/interrupts=
+       #+begin_src bash
+         watch -d cat /proc/interrupts # 发现RES最多 <- 关键； watch会标注前后两次的变化
+         watch -d grep "Rescheduling interrupts" /proc/interrupts
+       #+end_src
+       重调度中断（RES），这个中断类型表示，唤醒空闲状态的 CPU 来调度新的任务运行。
+       这是多处理器系统（SMP）中，调度器用来分散任务到不同 CPU 的机制，通常也被称为处理器间中断（Inter-Processor Interrupts，IPI）。
+
+*** 情况分析建议
+    - 自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题。
+    - 非自愿上下文切换变多了，说明进程都在被强制调度，也就是都在争抢 CPU，说明 CPU 的确成了瓶颈。
+    - 中断次数变多了，说明 CPU 被中断处理程序占用，还需要通过查看 /proc/interrupts 文件来分析具体的中断类型。
+
+* 工具
+  [[../resources/geekbang/perf/linux_perf_tools_full.png]]
+
+
+** 压力测试工具
+*** sysbench
+    sysbench 是一个多线程的基准测试工具，一般用来评估不同系统参数下的数据库负载情况。可用来模拟上下文切换过多的问题。
+
+    安装： ~sudo apt install sysbench~
+
+    #+begin_src bash
+      sysbench --threads=10 --max-time=300 threads run
+    #+end_src
+
+*** stress
+    压力测试工具，模拟异常进程 ~sudo apt install stress~
+    #+begin_src bash
+      # CPU密集型模拟
+      stress --cpu 1 --timeout 600
+
+      # I/O密集型模拟
+      stress -i 1 --timeout 600
+
+      # 模拟大量进程，等待CPU调度
+      stress -c 16 -- timeout 600
+    #+end_src
+
+*** ab
+    Web服务器性能测试工具，Apache HTTP server benchmarking tool
+
+    #+begin_src bash
+      # 并发10个请求测试Web服务器性能，总共测试100个请求
+      ab -c 10 -n 100 http://192.168.0.10:10000/
+    #+end_src
+
+** 监控工具
+*** watch
+    持续执行指定命令输出，并标注出变化
+    #+begin_src bash
+      watch -d uptime
+      watch -d cat /proc/interrupts
+      watch -d grep "Rescheduling interrupts" /proc/interrupts
+    #+end_src
+
+*** sysstat工具集
+    - mpstat: 多核CPU性能分析工具
+      #+begin_src bash
+        # -P ALL 表示监控所有CPU，后面数字5表示间隔5秒后输出一组数据
+        mpstat -P ALL 55
+      #+end_src
+
+    - pidstat: 进程CPU性能分析工具
+      #+begin_src bash
+        # 间隔5秒后输出一组数据
+        pidstat -u 5 1
+
+        # -w参数表示输出进程切换指标，而-u参数则表示输出CPU使用指标
+        pidstat -w -u 1
+
+        # pidstat 默认输出进程指标，-t 可输出线程指标
+        pidstat -t 8929
+      #+end_src
+      - cswch/s 每秒自愿上下文切换（voluntary context switches）的次数；指进程无法获取所需资源，导致的上下文切换
+      - nvcswch/s 每秒非自愿上下文切换（non voluntary context switches）的次数；是指进程由于时间片已到等原因，被系统强制调度，进而发生的上下文切换
+
+    - vmstat: 查看系统整体
+      #+begin_src bash
+        # 每隔5秒输出1组数据 --unit=M 可用于对齐输出
+        vmstat --unit=M 5
+      #+end_src
+      - cs（context switch）是每秒上下文切换的次数
+      - in（interrupt）则是每秒中断的次数
+      - r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待 CPU 的进程数
+      - b（Blocked）则是处于不可中断睡眠状态的进程数
+
+*** dstat
+    dstat 吸收了 vmstat、iostat、ifstat 等几种工具的优点，可以同时观察系统的 CPU、磁盘 I/O、网络以及内存使用情况。
+    ~sudo apt install dstat~
+
+*** perf
+    - ~perf top~ 能够实时显示占用 CPU 时钟最多的函数或者指令，因此可以用来查找热点函数
+      - Overhead 该符号的性能事件在所有采样中的比例，用百分比来表示。
+      - Shared Object 是该函数或指令所在的动态共享对象（Dynamic Shared Object），如内核、进程名、动态链接库名、内核模块名等。
+      - [ ] 是动态共享对象的类型； [.] 表示用户空间的可执行程序、或者动态链接库，而 [k] 则表示内核空间。
+      - Symbol 是符号名，也就是函数名。当函数名未知时，用十六进制的地址来表示。
+    - ~perf record/report~
+      - ~-g~ 开启调用关系的采样，方便我们根据调用链来分析性能问题。
+      - ~-p~ 指定pid
+
+*** perf-tools工具集
+    [[https://github.com/brendangregg/perf-tools]]
+    - ~execsnoop~: 是一个专为短时进程设计的工具，它通过 ftrace 实时监控进程的 exec()
+
+** 重要文件
+   - =/proc/interrupts=: 中断统计信息
+   - =/proc/stat=: CPU和任务统计信息 ~cat /proc/stat | grep ^cpu~
+   - =/proc/[pid]/stat=: 进程统计信息
