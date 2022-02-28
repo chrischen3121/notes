@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2022-02-17 Thu 17:16 -->
+<!-- 2022-02-28 Mon 17:11 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux性能优化</title>
@@ -225,32 +225,36 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org73825fa">1. 系统平均负载</a></li>
-<li><a href="#org254a32d">2. CPU性能分析</a>
+<li><a href="#org289c706">1. 系统平均负载</a></li>
+<li><a href="#orgf2a3372">2. CPU性能分析</a>
 <ul>
-<li><a href="#orgd5e2ef6">2.1. 上下文切换</a></li>
-<li><a href="#org7d40f12">2.2. CPU使用率</a></li>
-<li><a href="#orgfd950a3">2.3. 进程状态</a></li>
+<li><a href="#org15ad6ba">2.1. 上下文切换</a></li>
+<li><a href="#orge3bcfa7">2.2. CPU使用率</a></li>
+<li><a href="#orgdf63e1b">2.3. 软中断/硬中断</a></li>
+<li><a href="#org6abd786">2.4. 进程状态</a></li>
 </ul>
 </li>
-<li><a href="#orgd894b78">3. 实战</a>
+<li><a href="#org514fae4">3. 实战</a>
 <ul>
-<li><a href="#orgdebb159">3.1. 中断上下文切换</a></li>
+<li><a href="#orgecd319b">3.1. 中断上下文切换</a></li>
+<li><a href="#org8846ea5">3.2. I/O 问题排查</a></li>
+<li><a href="#orga0ea628">3.3. 僵尸进程排查</a></li>
 </ul>
 </li>
-<li><a href="#org6ea8838">4. 工具</a>
+<li><a href="#org92492a3">4. 工具</a>
 <ul>
-<li><a href="#org0224e7c">4.1. 压力测试工具</a></li>
-<li><a href="#org3370b37">4.2. 监控工具</a></li>
-<li><a href="#org0ec77f0">4.3. 重要文件</a></li>
+<li><a href="#org66b7042">4.1. 压力测试工具</a></li>
+<li><a href="#org3e3705e">4.2. 问题追踪工具</a></li>
+<li><a href="#org527f701">4.3. 重要文件</a></li>
+<li><a href="#orgc1e8b7d">4.4. <code>/proc/softirqs</code></a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org73825fa" class="outline-2">
-<h2 id="org73825fa"><span class="section-number-2">1</span> 系统平均负载</h2>
+<div id="outline-container-org289c706" class="outline-2">
+<h2 id="org289c706"><span class="section-number-2">1</span> 系统平均负载</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 平均负载是指单位时间内，系统处于可运行状态和不可中断状态的平均进程数，也就是平均活跃进程数。
@@ -262,16 +266,16 @@
 </div>
 </div>
 
-<div id="outline-container-org254a32d" class="outline-2">
-<h2 id="org254a32d"><span class="section-number-2">2</span> CPU性能分析</h2>
+<div id="outline-container-orgf2a3372" class="outline-2">
+<h2 id="orgf2a3372"><span class="section-number-2">2</span> CPU性能分析</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgd5e2ef6" class="outline-3">
-<h3 id="orgd5e2ef6"><span class="section-number-3">2.1</span> 上下文切换</h3>
+<div id="outline-container-org15ad6ba" class="outline-3">
+<h3 id="org15ad6ba"><span class="section-number-3">2.1</span> 上下文切换</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-orgb3af9eb" class="outline-4">
-<h4 id="orgb3af9eb"><span class="section-number-4">2.1.1</span> 特权模式切换</h4>
+<div id="outline-container-orgda1f198" class="outline-4">
+<h4 id="orgda1f198"><span class="section-number-4">2.1.1</span> 特权模式切换</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 系统调用过程通常称为特权模式切换。需保存和恢复寄存器、PC的状态。
@@ -279,8 +283,8 @@
 </div>
 </div>
 
-<div id="outline-container-org4db223e" class="outline-4">
-<h4 id="org4db223e"><span class="section-number-4">2.1.2</span> 进程上下文切换</h4>
+<div id="outline-container-orgd0e1e3b" class="outline-4">
+<h4 id="orgd0e1e3b"><span class="section-number-4">2.1.2</span> 进程上下文切换</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 进程上下文切换相比特权模式切换，还需要保存进程的栈、虚拟内存。
@@ -298,21 +302,21 @@ Linux 为每个 CPU 都维护了一个就绪队列，将活跃进程（即正在
 </div>
 </div>
 
-<div id="outline-container-orgab60924" class="outline-4">
-<h4 id="orgab60924"><span class="section-number-4">2.1.3</span> 线程上下文切换</h4>
+<div id="outline-container-org0a44e3f" class="outline-4">
+<h4 id="org0a44e3f"><span class="section-number-4">2.1.3</span> 线程上下文切换</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <p>
-线程是调度的基本单位，而进程则是资源拥有的基本单位。进程只是给线程提供了虚拟内存、全局变量等资源。
+线程是调度的基本单位，而进程则是资源拥有的基本单位。进程只是给线程提供了共享的虚拟内存、全局变量等资源。
 </p>
 <ul class="org-ul">
-<li>当进程拥有多个线程时，这些线程会共享相同的虚拟内存和全局变量等资源，线程上下文切换时是不需要修改。</li>
+<li>当进程拥有多个线程时，这些线程会共享相同的虚拟内存和全局变量等资源，线程上下文切换时不需要修改。</li>
 <li>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时也是需要保存的。</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc9c14fd" class="outline-4">
-<h4 id="orgc9c14fd"><span class="section-number-4">2.1.4</span> 中断上下文切换</h4>
+<div id="outline-container-org3f59554" class="outline-4">
+<h4 id="org3f59554"><span class="section-number-4">2.1.4</span> 中断上下文切换</h4>
 <div class="outline-text-4" id="text-2-1-4">
 <p>
 为了快速响应硬件的事件，中断处理会打断进程的正常调度和执行，转而调用中断处理程序响应设备事件。
@@ -320,24 +324,26 @@ Linux 为每个 CPU 都维护了一个就绪队列，将活跃进程（即正在
 <ul class="org-ul">
 <li>对同一个 CPU 来说，中断处理比进程拥有更高的优先级。</li>
 <li>中断上下文指的是包括内核态中断服务程序执行所必需的状态，包括 CPU 寄存器、内核堆栈、硬件中断参数等。</li>
-<li>内核调度时间中断频率配置 <code>grep 'CONFIG_HZ=' /boot/config-$(uname -r)</code> 250Hz，即每秒钟触发 250 次时间中断</li>
+<li>内核调度中断频率配置 <code>grep 'CONFIG_HZ=' /boot/config-$(uname -r)</code> 250Hz，即每秒钟触发 250 次时间中断</li>
 <li>用户节拍率 USER_HZ 总是固定为 100Hz， 即10ms一次时间中断</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org7d40f12" class="outline-3">
-<h3 id="org7d40f12"><span class="section-number-3">2.2</span> CPU使用率</h3>
+<div id="outline-container-orge3bcfa7" class="outline-3">
+<h3 id="orge3bcfa7"><span class="section-number-3">2.2</span> CPU使用率</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 CPU 使用率，就是除了空闲时间外的其他时间占总 CPU 时间的百分比。 <code>/proc/stat</code> 提供 CPU 和任务统计信息。
 </p>
 <ul class="org-ul">
-<li>只关注cpu，执行 <code>cat /proc/stat | grep ^cpu</code></li>
+<li>只关注cpu，执行 <code>cat /proc/stat | grep cpu</code></li>
 <li>每列代表不同场景下 CPU 的累加节拍数，它的单位是 USER_HZ，也就是 10 ms （即不同场景下的 CPU 时间）</li>
 </ul>
-<pre class="example" id="orga5c1351">
+<pre class="example" id="org9ccc1e5">
+单位 10ms
+
 cpu  100898 490 31309 2195013 10269 0 9757 0 0 0
 cpu0 13066 99 4666 273267 1044 0 4636 0 0 0
 cpu1 12794 48 4203 274005 1114 0 2619 0 0 0
@@ -361,8 +367,8 @@ cpu7 12395 63 3629 273926 1915 0 114 0 0 0
 </ul>
 </div>
 
-<div id="outline-container-org2347db7" class="outline-4">
-<h4 id="org2347db7"><span class="section-number-4">2.2.1</span> 使用率计算</h4>
+<div id="outline-container-org03a8341" class="outline-4">
+<h4 id="org03a8341"><span class="section-number-4">2.2.1</span> 使用率计算</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <p>
 <code>/proc/stat</code> 统计的是开机以来的平均 CPU 使用率。为了计算 CPU 使用率，性能工具一般都会取间隔一段时间（比如 3 秒）的两次值，作差后，再计算出这段时间内的平均 CPU 使用率。
@@ -371,8 +377,8 @@ cpu7 12395 63 3629 273926 1915 0 114 0 0 0
 </div>
 </div>
 
-<div id="outline-container-orga52a125" class="outline-4">
-<h4 id="orga52a125"><span class="section-number-4">2.2.2</span> 进程相关</h4>
+<div id="outline-container-orga459d7a" class="outline-4">
+<h4 id="orga459d7a"><span class="section-number-4">2.2.2</span> 进程相关</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <p>
 <code>/proc/[pid]/stat</code>
@@ -380,32 +386,9 @@ cpu7 12395 63 3629 273926 1915 0 114 0 0 0
 </div>
 </div>
 
-<div id="outline-container-org459aa9f" class="outline-4">
-<h4 id="org459aa9f"><span class="section-number-4">2.2.3</span> 软中断/硬中断</h4>
+<div id="outline-container-org0a7bf51" class="outline-4">
+<h4 id="org0a7bf51"><span class="section-number-4">2.2.3</span> 总结</h4>
 <div class="outline-text-4" id="text-2-2-3">
-<p>
-中断处理程序的上部分和下半部可以理解为：
-</p>
-<ul class="org-ul">
-<li>上半部直接处理硬件请求，也就是硬中断，主要是负责耗时短的工作，特点是快速执行</li>
-<li>下半部是由内核触发，也就说软中断，主要是负责上半部未完成的工作，通常都是耗时比较长的事情，特点是延迟执行；</li>
-</ul>
-</div>
-<ul class="org-ul">
-<li><a id="orgdb4f0a6"></a>网络包例子<br />
-<div class="outline-text-5" id="text-orgdb4f0a6">
-<ul class="org-ul">
-<li>硬中断：要做到快速处理，所以只需把网卡的数据读到内存中，然后更新一下硬件寄存器的状态即可。</li>
-<li>软中断：处理比较耗时且复杂的事情。如从内存中找到网络数据，再按照网络协议栈，对网络数据进行逐层解析和处理，最后把数据送给应用程序。</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-
-<div id="outline-container-orgf6f1411" class="outline-4">
-<h4 id="orgf6f1411"><span class="section-number-4">2.2.4</span> 总结</h4>
-<div class="outline-text-4" id="text-2-2-4">
 <ul class="org-ul">
 <li>用户 CPU 和 Nice CPU 高，应着重排查进程的性能问题。</li>
 <li>系统 CPU 高，应着重排查内核线程或者系统调用的性能问题。</li>
@@ -415,12 +398,41 @@ cpu7 12395 63 3629 273926 1915 0 114 0 0 0
 </div>
 </div>
 </div>
-
-<div id="outline-container-orgfd950a3" class="outline-3">
-<h3 id="orgfd950a3"><span class="section-number-3">2.3</span> 进程状态</h3>
+<div id="outline-container-orgdf63e1b" class="outline-3">
+<h3 id="orgdf63e1b"><span class="section-number-3">2.3</span> 软中断/硬中断</h3>
 <div class="outline-text-3" id="text-2-3">
+<p>
+中断处理程序的上部分和下半部可以理解为：
+</p>
+<ul class="org-ul">
+<li>上半部直接处理硬件请求，也就是硬中断，主要是负责耗时短的工作，特点是快速执行</li>
+<li>下半部是由内核触发，也就说软中断，主要是负责上半部未完成的工作，通常都是耗时比较长的事情，特点是延迟执行。
+<ul class="org-ul">
+<li>软中断通常以内核线程的方式运行，每个 CPU 都对应一个软中断内核线程。ksoftirqd/0 即为 0 号 CPU 对应的软中断内核线程的名字。 <code>ps aux | grep softirq</code> 查看</li>
+<li>软中断不仅包括了硬件设备中断处理程序的下半部，一些内核自定义的事件也属于软中断，比如内核调度和 RCU 锁（Read-Copy Update）等。</li>
+</ul></li>
+</ul>
+</div>
 
-<div id="orge4cb649" class="figure">
+<ul class="org-ul">
+<li><a id="org0c83395"></a>网络包例子<br />
+<div class="outline-text-5" id="text-org0c83395">
+<ul class="org-ul">
+<li>硬中断：要做到快速处理，所以只需把网卡的数据读到内存中，然后更新一下硬件寄存器的状态即可。</li>
+<li>软中断：处理比较耗时且复杂的事情。如从内存中找到网络数据，再按照网络协议栈，对网络数据进行逐层解析和处理，最后把数据送给应用程序。</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+
+
+<div id="outline-container-org6abd786" class="outline-3">
+<h3 id="org6abd786"><span class="section-number-3">2.4</span> 进程状态</h3>
+<div class="outline-text-3" id="text-2-4">
+
+<div id="org37592d0" class="figure">
 <p><img src="../resources/geekbang/perf/process_state_codes.png" alt="process_state_codes.png" />
 </p>
 </div>
@@ -450,12 +462,12 @@ cpu7 12395 63 3629 273926 1915 0 114 0 0 0
 </div>
 </div>
 
-<div id="outline-container-orgd894b78" class="outline-2">
-<h2 id="orgd894b78"><span class="section-number-2">3</span> 实战</h2>
+<div id="outline-container-org514fae4" class="outline-2">
+<h2 id="org514fae4"><span class="section-number-2">3</span> 实战</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgdebb159" class="outline-3">
-<h3 id="orgdebb159"><span class="section-number-3">3.1</span> 中断上下文切换</h3>
+<div id="outline-container-orgecd319b" class="outline-3">
+<h3 id="orgecd319b"><span class="section-number-3">3.1</span> 中断上下文切换</h3>
 <div class="outline-text-3" id="text-3-1">
 <ol class="org-ol">
 <li>vmstat 查看每秒中断次数过多</li>
@@ -478,8 +490,8 @@ watch -d grep <span style="color: #2d9574;">"Rescheduling interrupts"</span> /pr
 </ol>
 </div>
 
-<div id="outline-container-org238113a" class="outline-4">
-<h4 id="org238113a"><span class="section-number-4">3.1.1</span> 情况分析建议</h4>
+<div id="outline-container-org2e228c0" class="outline-4">
+<h4 id="org2e228c0"><span class="section-number-4">3.1.1</span> 情况分析建议</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <ul class="org-ul">
 <li>自愿上下文切换变多了，说明进程都在等待资源，有可能发生了 I/O 等其他问题。</li>
@@ -489,25 +501,46 @@ watch -d grep <span style="color: #2d9574;">"Rescheduling interrupts"</span> /pr
 </div>
 </div>
 </div>
+
+
+<div id="outline-container-org8846ea5" class="outline-3">
+<h3 id="org8846ea5"><span class="section-number-3">3.2</span> I/O 问题排查</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li>需要先用 dstat、pidstat 等工具，确认是不是磁盘 I/O 的问题，找到哪个进程导致了 I/O 问题</li>
+<li>等待 I/O 的进程通常为不可中断状态，用 ps 找到状态为 D 的可疑进程</li>
+<li>可以用 strace 直接分析可疑进程的系统调用</li>
+</ul>
+</div>
 </div>
 
-<div id="outline-container-org6ea8838" class="outline-2">
-<h2 id="org6ea8838"><span class="section-number-2">4</span> 工具</h2>
+<div id="outline-container-orga0ea628" class="outline-3">
+<h3 id="orga0ea628"><span class="section-number-3">3.3</span> 僵尸进程排查</h3>
+<div class="outline-text-3" id="text-3-3">
+<ul class="org-ul">
+<li>pstree 找到父进程</li>
+<li>检查父进程是否有 wait() / waitpid() 的调用，或者处理了 SIGCHLD 信号</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org92492a3" class="outline-2">
+<h2 id="org92492a3"><span class="section-number-2">4</span> 工具</h2>
 <div class="outline-text-2" id="text-4">
 
-<div id="orgabaa4cd" class="figure">
+<div id="orgb94cdba" class="figure">
 <p><img src="../resources/geekbang/perf/linux_perf_tools_full.png" alt="linux_perf_tools_full.png" />
 </p>
 </div>
 </div>
 
-
-<div id="outline-container-org0224e7c" class="outline-3">
-<h3 id="org0224e7c"><span class="section-number-3">4.1</span> 压力测试工具</h3>
+<div id="outline-container-org66b7042" class="outline-3">
+<h3 id="org66b7042"><span class="section-number-3">4.1</span> 压力测试工具</h3>
 <div class="outline-text-3" id="text-4-1">
 </div>
-<div id="outline-container-org6730c7d" class="outline-4">
-<h4 id="org6730c7d"><span class="section-number-4">4.1.1</span> sysbench</h4>
+<div id="outline-container-orgeafb8c8" class="outline-4">
+<h4 id="orgeafb8c8"><span class="section-number-4">4.1.1</span> sysbench</h4>
 <div class="outline-text-4" id="text-4-1-1">
 <p>
 sysbench 是一个多线程的基准测试工具，一般用来评估不同系统参数下的数据库负载情况。可用来模拟上下文切换过多的问题。
@@ -524,8 +557,8 @@ sysbench 是一个多线程的基准测试工具，一般用来评估不同系�
 </div>
 </div>
 
-<div id="outline-container-orgad67931" class="outline-4">
-<h4 id="orgad67931"><span class="section-number-4">4.1.2</span> stress</h4>
+<div id="outline-container-org6238a71" class="outline-4">
+<h4 id="org6238a71"><span class="section-number-4">4.1.2</span> stress</h4>
 <div class="outline-text-4" id="text-4-1-2">
 <p>
 压力测试工具，模拟异常进程 <code>sudo apt install stress</code>
@@ -544,8 +577,8 @@ stress -c 16 -- timeout 600
 </div>
 </div>
 
-<div id="outline-container-org3603da4" class="outline-4">
-<h4 id="org3603da4"><span class="section-number-4">4.1.3</span> ab</h4>
+<div id="outline-container-org040c1aa" class="outline-4">
+<h4 id="org040c1aa"><span class="section-number-4">4.1.3</span> ab</h4>
 <div class="outline-text-4" id="text-4-1-3">
 <p>
 Web服务器性能测试工具，Apache HTTP server benchmarking tool
@@ -560,12 +593,12 @@ ab -c 10 -n 100 http://192.168.0.10:10000/
 </div>
 </div>
 
-<div id="outline-container-org3370b37" class="outline-3">
-<h3 id="org3370b37"><span class="section-number-3">4.2</span> 监控工具</h3>
+<div id="outline-container-org3e3705e" class="outline-3">
+<h3 id="org3e3705e"><span class="section-number-3">4.2</span> 问题追踪工具</h3>
 <div class="outline-text-3" id="text-4-2">
 </div>
-<div id="outline-container-org38f7cf5" class="outline-4">
-<h4 id="org38f7cf5"><span class="section-number-4">4.2.1</span> watch</h4>
+<div id="outline-container-org5e594e9" class="outline-4">
+<h4 id="org5e594e9"><span class="section-number-4">4.2.1</span> watch</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <p>
 持续执行指定命令输出，并标注出变化
@@ -579,8 +612,8 @@ watch -d grep <span style="color: #2d9574;">"Rescheduling interrupts"</span> /pr
 </div>
 </div>
 
-<div id="outline-container-org4697f50" class="outline-4">
-<h4 id="org4697f50"><span class="section-number-4">4.2.2</span> sysstat工具集</h4>
+<div id="outline-container-orgc980c74" class="outline-4">
+<h4 id="orgc980c74"><span class="section-number-4">4.2.2</span> sysstat工具集</h4>
 <div class="outline-text-4" id="text-4-2-2">
 <ul class="org-ul">
 <li><p>
@@ -604,6 +637,9 @@ pidstat -w -u 1
 
 <span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">pidstat &#40664;&#35748;&#36755;&#20986;&#36827;&#31243;&#25351;&#26631;&#65292;-t &#21487;&#36755;&#20986;&#32447;&#31243;&#25351;&#26631;</span>
 pidstat -t 8929
+
+<span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-d &#23637;&#31034; I/O &#32479;&#35745;&#25968;&#25454;&#65292;&#38388;&#38548; 1 &#31186;&#36755;&#20986; 3 &#32452;&#25968;&#25454;</span>
+pidstat -d 1 3
 </pre>
 </div>
 <ul class="org-ul">
@@ -629,8 +665,8 @@ vmstat --unit=M 5
 </div>
 </div>
 
-<div id="outline-container-orgd167d57" class="outline-4">
-<h4 id="orgd167d57"><span class="section-number-4">4.2.3</span> dstat</h4>
+<div id="outline-container-org0a8b2d0" class="outline-4">
+<h4 id="org0a8b2d0"><span class="section-number-4">4.2.3</span> dstat</h4>
 <div class="outline-text-4" id="text-4-2-3">
 <p>
 dstat 吸收了 vmstat、iostat、ifstat 等几种工具的优点，可以同时观察系统的 CPU、磁盘 I/O、网络以及内存使用情况。
@@ -639,9 +675,13 @@ dstat 吸收了 vmstat、iostat、ifstat 等几种工具的优点，可以同时
 </div>
 </div>
 
-<div id="outline-container-orgd9543c7" class="outline-4">
-<h4 id="orgd9543c7"><span class="section-number-4">4.2.4</span> perf</h4>
+<div id="outline-container-orgdde4758" class="outline-4">
+<h4 id="orgdde4758"><span class="section-number-4">4.2.4</span> perf</h4>
 <div class="outline-text-4" id="text-4-2-4">
+<p>
+基于事件记录的动态追踪工具
+</p>
+
 <ul class="org-ul">
 <li><code>perf top</code> 能够实时显示占用 CPU 时钟最多的函数或者指令，因此可以用来查找热点函数
 <ul class="org-ul">
@@ -659,8 +699,8 @@ dstat 吸收了 vmstat、iostat、ifstat 等几种工具的优点，可以同时
 </div>
 </div>
 
-<div id="outline-container-org4062f1d" class="outline-4">
-<h4 id="org4062f1d"><span class="section-number-4">4.2.5</span> perf-tools工具集</h4>
+<div id="outline-container-org0293325" class="outline-4">
+<h4 id="org0293325"><span class="section-number-4">4.2.5</span> perf-tools工具集</h4>
 <div class="outline-text-4" id="text-4-2-5">
 <p>
 <a href="https://github.com/brendangregg/perf-tools">https://github.com/brendangregg/perf-tools</a>
@@ -670,15 +710,45 @@ dstat 吸收了 vmstat、iostat、ifstat 等几种工具的优点，可以同时
 </ul>
 </div>
 </div>
-</div>
 
-<div id="outline-container-org0ec77f0" class="outline-3">
-<h3 id="org0ec77f0"><span class="section-number-3">4.3</span> 重要文件</h3>
+<div id="outline-container-orgcb08ada" class="outline-4">
+<h4 id="orgcb08ada"><span class="section-number-4">4.2.6</span> strace</h4>
+<div class="outline-text-4" id="text-4-2-6">
+<p>
+跟踪进程 <b>系统调用</b> 的工具
+</p>
+</div>
+</div>
+<div id="outline-container-org028d17f" class="outline-4">
+<h4 id="org028d17f"><span class="section-number-4">4.2.7</span> pstree</h4>
+<div class="outline-text-4" id="text-4-2-7">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #2aa1ae; background-color: #ecf3ec;"># </span><span style="color: #2aa1ae; background-color: #ecf3ec;">-a &#34920;&#31034;&#36755;&#20986;&#21629;&#20196;&#34892;&#36873;&#39033;&#65292;p&#34920;&#31034;PID s&#34920;&#31034;&#25351;&#23450;&#36827;&#31243;&#30340;&#29238;&#36827;&#31243;</span>
+pstree -aps 3084
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org527f701" class="outline-3">
+<h3 id="org527f701"><span class="section-number-3">4.3</span> 重要文件</h3>
 <div class="outline-text-3" id="text-4-3">
 <ul class="org-ul">
-<li><code>/proc/interrupts</code>: 中断统计信息</li>
+<li><code>/proc/interrupts</code>: 硬中断运行情况</li>
 <li><code>/proc/stat</code>: CPU和任务统计信息 <code>cat /proc/stat | grep ^cpu</code></li>
 <li><code>/proc/[pid]/stat</code>: 进程统计信息</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc1e8b7d" class="outline-3">
+<h3 id="orgc1e8b7d"><span class="section-number-3">4.4</span> <code>/proc/softirqs</code></h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+软中断运行情况，类型说明:
+</p>
+<ul class="org-ul">
+<li>NET_RX: 网络接收中断</li>
+<li>NET_TX: 网络发送中断</li>
 </ul>
 </div>
 </div>
