@@ -293,11 +293,13 @@
 
      #+begin_src cpp
        const char array[] = {"42"};
+
+       template<typename T>
+       void f(T param);
        f(array); // T -> const char *, ParamType -> const char *
 
        template<typename T>
        void f2(T &param);
-       // WTF
        f2(array); // T -> const char [2], ParamType -> const char (&)[2]
 
        // practical array template example
@@ -312,7 +314,7 @@
 
    - Case 5: function
 
-     decay into pointers
+     decay into pointers when pass-by-value
      #+begin_src cpp
        void someFunc(int, double);
 
