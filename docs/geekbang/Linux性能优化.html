@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
 <head>
-<!-- 2022-02-28 Mon 17:11 -->
+<!-- 2022-03-01 Tue 17:58 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Linux性能优化</title>
@@ -236,7 +236,7 @@
 </li>
 <li><a href="#org514fae4">3. 实战</a>
 <ul>
-<li><a href="#orgecd319b">3.1. 中断上下文切换</a></li>
+<li><a href="#orgaa693a5">3.1. 中断上下文切换</a></li>
 <li><a href="#org8846ea5">3.2. I/O 问题排查</a></li>
 <li><a href="#orga0ea628">3.3. 僵尸进程排查</a></li>
 </ul>
@@ -299,6 +299,11 @@
 Linux 为每个 CPU 都维护了一个就绪队列，将活跃进程（即正在运行和正在等待 CPU 的进程）按照优先级和等待 CPU 的时间排序，
 然后选择最需要 CPU 的进程，也就是优先级最高和等待 CPU 时间最长的进程来运行。
 </p>
+
+<ul class="org-ul">
+<li>自愿上下文切换：无法获取资源而导致</li>
+<li>非自愿上下文切换：被系统强制调度而导致</li>
+</ul>
 </div>
 </div>
 
@@ -315,8 +320,8 @@ Linux 为每个 CPU 都维护了一个就绪队列，将活跃进程（即正在
 </div>
 </div>
 
-<div id="outline-container-org3f59554" class="outline-4">
-<h4 id="org3f59554"><span class="section-number-4">2.1.4</span> 中断上下文切换</h4>
+<div id="outline-container-orgecd319b" class="outline-4">
+<h4 id="orgecd319b"><span class="section-number-4">2.1.4</span> 中断上下文切换</h4>
 <div class="outline-text-4" id="text-2-1-4">
 <p>
 为了快速响应硬件的事件，中断处理会打断进程的正常调度和执行，转而调用中断处理程序响应设备事件。
@@ -341,7 +346,7 @@ CPU 使用率，就是除了空闲时间外的其他时间占总 CPU 时间的�
 <li>只关注cpu，执行 <code>cat /proc/stat | grep cpu</code></li>
 <li>每列代表不同场景下 CPU 的累加节拍数，它的单位是 USER_HZ，也就是 10 ms （即不同场景下的 CPU 时间）</li>
 </ul>
-<pre class="example" id="org9ccc1e5">
+<pre class="example" id="org5eecc6d">
 单位 10ms
 
 cpu  100898 490 31309 2195013 10269 0 9757 0 0 0
@@ -432,7 +437,7 @@ cpu7 12395 63 3629 273926 1915 0 114 0 0 0
 <h3 id="org6abd786"><span class="section-number-3">2.4</span> 进程状态</h3>
 <div class="outline-text-3" id="text-2-4">
 
-<div id="org37592d0" class="figure">
+<div id="orgbdea2b8" class="figure">
 <p><img src="../resources/geekbang/perf/process_state_codes.png" alt="process_state_codes.png" />
 </p>
 </div>
@@ -466,8 +471,8 @@ cpu7 12395 63 3629 273926 1915 0 114 0 0 0
 <h2 id="org514fae4"><span class="section-number-2">3</span> 实战</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgecd319b" class="outline-3">
-<h3 id="orgecd319b"><span class="section-number-3">3.1</span> 中断上下文切换</h3>
+<div id="outline-container-orgaa693a5" class="outline-3">
+<h3 id="orgaa693a5"><span class="section-number-3">3.1</span> 中断上下文切换</h3>
 <div class="outline-text-3" id="text-3-1">
 <ol class="org-ol">
 <li>vmstat 查看每秒中断次数过多</li>
@@ -529,7 +534,7 @@ watch -d grep <span style="color: #2d9574;">"Rescheduling interrupts"</span> /pr
 <h2 id="org92492a3"><span class="section-number-2">4</span> 工具</h2>
 <div class="outline-text-2" id="text-4">
 
-<div id="orgb94cdba" class="figure">
+<div id="org3f5508d" class="figure">
 <p><img src="../resources/geekbang/perf/linux_perf_tools_full.png" alt="linux_perf_tools_full.png" />
 </p>
 </div>
